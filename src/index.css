@@ -30,6 +30,50 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+    --brand-aqua: 182 59% 54%; /* #46C7CD */
+    --brand-bg: 198 100% 96%; /* #AAE1FE at low opacity */
+
+    /* Main Brand Color (#46C7CD) */
+    --brand-aqua: 182 59% 54%;
+
+    /* Alerts */
+    --info: 182 59% 54%; /* #46C7CD (same as main) */
+    --success: 151 72% 46%; /* #12D18E */
+    --warning: 45 98% 54%; /* #FACC15 */
+    --error: 0 100% 65%; /* #F75555 */
+    --light-dis: 0, 0%, 85%; /* #D8D8D8 */
+    --dark-dis: 0, 0%, 13%; /* #212121 */
+    --button-dis: 274, 88%, 43%; /* #780DCC */
+
+    --bg-info: 182, 90%, 92%; /* #d7fcfd */
+    --bg-success: 160, 81%, 89%; /* #cefaeb*/
+    --bg-warning: 49, 91%, 91%; /* #fdf5d3 */
+    --bg-error: 0, 70%, 94%; /* #fae5e5 */
+
+    /* Greyscale Mapping */
+    --grey-900: 240 6% 21%; /* #33343A approximation */
+    --grey-800: 240 5% 31%;
+    --grey-700: 240 4% 41%;
+    --grey-600: 240 3% 51%;
+    --grey-500: 240 2% 61%;
+    --grey-400: 240 2% 71%;
+    --grey-300: 240 2% 81%;
+    --grey-200: 240 2% 87%;
+    --grey-100: 240 2% 93%;
+    --grey-50: 240 2% 98%;
+
+    /* Backgrounds */
+    --aqua-gradient-start: 200 98% 83%; /* #AAE1FE */
+    --aqua-gradient-end: 182 100% 95%; /* #E6FFFD */
+    --bg-gray: 0 0% 98%; /* #F8F8F8 */
   }
   .dark {
     --background: 0 0% 3.9%;
@@ -56,6 +100,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -65,5 +117,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 }

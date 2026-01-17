@@ -1,9 +1,10 @@
-//src/app/store/rootReducer.js
 import { combineReducers } from "@reduxjs/toolkit";
-// import authReducer from "../slices/authSlice";
+import authReducer from "@/modules/authentication/store/auth.slice";
+import usersReducer from "@/modules/users/store/user.slice";
+import dashboardReducer from "@/modules/dashboard/store/dashboard.slice";
 
-const rootReducer = combineReducers({
-  //   auth: authReducer,
+export const rootReducer = combineReducers({
+  auth: authReducer,
+  users: usersReducer,
+  dashboard: dashboardReducer,
 });
-
-export default rootReducer;
