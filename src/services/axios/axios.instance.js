@@ -8,9 +8,6 @@ export const axiosInstance = axios.create({
   },
 });
 
-/* =========================
-   REQUEST INTERCEPTOR
-========================= */
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_Token");

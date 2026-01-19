@@ -25,8 +25,6 @@ createRoot(document.getElementById("root")).render(
               "group toast rounded-xl border-2 p-4 shadow-lg flex items-center gap-3",
             title: "font-bold text-base",
             description: "!text-sm !font-bold !text-grey-800 opacity-90",
-            // Mapping your alert types to your Tailwind colors
-            // Use ! to force override Sonner defaults
             success:
               "!bg-alerts-bg_success !border-alerts-success !text-alerts-success ",
             error:

@@ -10,7 +10,7 @@ import { Link } from "react-router";
 export function NavManagements({ items }) {
   return (
     <SidebarGroup className="gap-2">
-      <SidebarGroupLabel>Managements</SidebarGroupLabel>
+      <SidebarGroupLabel>User Management</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Link to={item.url} key={item.title}>

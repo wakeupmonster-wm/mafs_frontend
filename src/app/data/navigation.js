@@ -33,11 +33,11 @@ const navigationData = {
       url: "/admin/analytics",
       icon: IconChartLine, // trends, graphs, analytics
     },
-    {
-      title: "KPI's",
-      url: "/admin/kpi",
-      icon: IconChecklist, // metrics, performance indicators
-    },
+    // {
+    //   title: "KPI's",
+    //   url: "/admin/kpi",
+    //   icon: IconChecklist, // metrics, performance indicators
+    // },
     {
       title: "Quick Actions",
       url: "/admin/quick-actions",
@@ -51,17 +51,67 @@ const navigationData = {
   ],
   navManagement: [
     {
-      title: "User Management",
+      title: "User List & Actions",
       url: "/admin/management/users-management",
       icon: IconUsers, // users, accounts, roles
     },
     {
-      title: "Business Management",
-      url: "/admin/management/business-management",
-      icon: IconBuildingStore, // businesses, vendors, organizations
+      title: "Profile Review",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+     {
+      title: "KYC Verification",
+      url: "/admin/management/pending-verifications",
+      icon: IconDiscount2, // offers, promotions, discounts
     },
     {
-      title: "Offer Management",
+      title: "Chat overview & Actions",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Reported Chats",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Reports & Safety",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Block Management",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Subscriptions & Payments",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Entitlements",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "Notifications Management",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+     {
+      title: "App Setting Management",
+      url: "/admin/management/offer-management",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+     {
+      title: "Giveaway Management",
+      url: "/admin/management/giveaway",
+      icon: IconDiscount2, // offers, promotions, discounts
+    },
+    {
+      title: "CMS Management",
       url: "/admin/management/offer-management",
       icon: IconDiscount2, // offers, promotions, discounts
     },

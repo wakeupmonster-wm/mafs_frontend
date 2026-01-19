@@ -25,7 +25,6 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 z-[110] overflow-hidden">
-      {/* Background Overlay */}
       <div
         className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
@@ -37,7 +36,6 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
             onSubmit={handleSubmit(handleFormSubmit)}
             className="h-full flex flex-col bg-white shadow-2xl border-l border-gray-100"
           >
-            {/* Header */}
             <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-pink-100 rounded-lg text-pink-600">
@@ -56,9 +54,7 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
               </button>
             </div>
 
-            {/* Form Fields */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              {/* Name */}
               <div className="space-y-1">
                 <label className="text-sm font-bold text-gray-700 ml-1">
                   Full Name
@@ -79,7 +75,6 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
                 )}
               </div>
 
-              {/* Email */}
               <div className="space-y-1">
                 <label className="text-sm font-bold text-gray-700 ml-1">
                   Email Address
@@ -101,7 +96,6 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
                 )}
               </div>
 
-              {/* Role & Status Grid */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-gray-700 ml-1 text-center flex items-center gap-1">
@@ -139,7 +133,6 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
               </div>
             </div>
 
-            {/* Footer Actions */}
             <div className="p-6 border-t border-gray-100 bg-gray-50/50 flex gap-3">
               <button
                 type="button"
@@ -162,5 +155,4 @@ const UserFormDrawer = ({ isOpen, onClose, onSubmit }) => {
     </div>
   );
 };
-
 export default UserFormDrawer;
