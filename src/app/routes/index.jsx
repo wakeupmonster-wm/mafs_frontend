@@ -8,10 +8,21 @@ import App from "@/App";
 import NotFoundPage from "@/modules/not-found/Pages/not-found.page";
 import UserManagementPage from "@/modules/users/pages/user-management";
 import PendingVerifications from "@/modules/users/pages/PendingVerifications";
+import PendingDeliveries from "@/modules/giveaway/pages/PendingDeliveries";
+import BulkCampaigns from "@/modules/giveaway/pages/BulkCampaigns";
+import CampaignWinner from "@/modules/giveaway/pages/CampaignWinner";
 import Campaigns from "@/modules/giveaway/pages/Campaigns";
 import CreatePrize from "@/modules/giveaway/pages/Prizes";
 import GiveawayManagement from "@/modules/giveaway/pages/GiveawayManagement";
-import { ContactSupportPage, MyTicketsPage, TicketDetailPage } from "@/modules/support/pages/SupportPages";
+import {
+  ContactSupportPage,
+  MyTicketsPage,
+  TicketDetailPage,
+} from "@/modules/support/pages/SupportPages";
+import {
+  ReportedProfilesPage,
+  ProfileReviewDetailPage,
+} from "@/modules/profileReview/pages/ProfileReviewPages";
 import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
 import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
@@ -75,23 +86,36 @@ export const router = createBrowserRouter([
 
           { path: "pending-verifications", element: <PendingVerifications /> },
 
-            {
-          path: "giveaway",
-          children: [
-            { index: true, element: <GiveawayManagement /> },
-
-            { path: "prizes", element: <CreatePrize /> },
-            { path: "campaigns", element: <Campaigns /> },
-          ],
-        },
           {
-        path: "support",
-        children: [
-          { index: true, element: <MyTicketsPage /> },
-          { path: "contact", element: <ContactSupportPage /> },
-          { path: "ticket/:ticketId", element: <TicketWrapper /> },
-        ],
-      },
+            path: "giveaway",
+            children: [
+              { index: true, element: <GiveawayManagement /> },
+
+              { path: "prizes", element: <CreatePrize /> },
+              { path: "campaigns", element: <Campaigns /> },
+              { path: "bulk-campaigns", element: <BulkCampaigns /> },
+              { path: "winner", element: <CampaignWinner /> },
+              {
+                path: "pending-deliveries",
+                element: <PendingDeliveries />,
+              },
+            ],
+          },
+          {
+            path: "support",
+            children: [
+              { index: true, element: <MyTicketsPage /> },
+              { path: "contact", element: <ContactSupportPage /> },
+              { path: "ticket/:ticketId", element: <TicketWrapper /> },
+            ],
+          },
+          {
+            path: "profile-review",
+            children: [
+              { index: true, element: <ReportedProfilesPage /> },
+              { path: ":userId", element: <ProfileReviewWrapper /> },
+            ],
+          },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],
@@ -100,7 +124,6 @@ export const router = createBrowserRouter([
       {
         path: "membership",
         children: [
-        
           { index: true, element: <NotFoundPage /> },
 
           { path: "billing", element: <>Billings</> },
@@ -144,4 +167,10 @@ export const router = createBrowserRouter([
 function TicketWrapper() {
   const { ticketId } = useParams();
   return <TicketDetailPage ticketId={ticketId} />;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+function ProfileReviewWrapper() {
+  const { userId } = useParams();
+  return <ProfileReviewDetailPage userId={userId} />;
 }

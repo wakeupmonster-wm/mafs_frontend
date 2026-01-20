@@ -57,7 +57,7 @@ const navigationData = {
     },
     {
       title: "Profile Review",
-      url: "/admin/management/offer-management",
+      url: "/admin/management/profile-review",
       icon: IconDiscount2, // offers, promotions, discounts
     },
      {

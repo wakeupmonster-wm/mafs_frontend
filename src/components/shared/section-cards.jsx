@@ -135,7 +135,7 @@ export function SectionCards() {
        console.log(token)
 
 const res = await axios.get(
-  "https://api.matchatfirstswipe.com.au/api/v1/admintest/getkpi",
+  "http://localhost:3001/api/v1/admintest/getkpi",
   {
     headers: {
       Authorization: `Bearer ${token}`,
