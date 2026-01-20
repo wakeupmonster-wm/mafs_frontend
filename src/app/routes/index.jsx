@@ -1,5 +1,5 @@
 // src/app/routes/index.js
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, useParams } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
@@ -11,6 +11,7 @@ import PendingVerifications from "@/modules/users/pages/PendingVerifications";
 import Campaigns from "@/modules/giveaway/pages/Campaigns";
 import CreatePrize from "@/modules/giveaway/pages/Prizes";
 import GiveawayManagement from "@/modules/giveaway/pages/GiveawayManagement";
+import { ContactSupportPage, MyTicketsPage, TicketDetailPage } from "@/modules/support/pages/SupportPages";
 import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
 import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
@@ -83,6 +84,14 @@ export const router = createBrowserRouter([
             { path: "campaigns", element: <Campaigns /> },
           ],
         },
+          {
+        path: "support",
+        children: [
+          { index: true, element: <MyTicketsPage /> },
+          { path: "contact", element: <ContactSupportPage /> },
+          { path: "ticket/:ticketId", element: <TicketWrapper /> },
+        ],
+      },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],
@@ -130,3 +139,9 @@ export const router = createBrowserRouter([
   },
   { path: "*", element: <NotFoundPage /> },
 ]);
+
+// eslint-disable-next-line react-refresh/only-export-components
+function TicketWrapper() {
+  const { ticketId } = useParams();
+  return <TicketDetailPage ticketId={ticketId} />;
+}

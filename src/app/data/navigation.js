@@ -102,7 +102,7 @@ const navigationData = {
     },
      {
       title: "App Setting Management",
-      url: "/admin/management/offer-management",
+      url: "/admin/management/support",
       icon: IconDiscount2, // offers, promotions, discounts
     },
      {
@@ -180,7 +180,7 @@ const navigationData = {
     },
     {
       title: "Get Help",
-      url: "/admin/get-help",
+      url: "/admin/management/support",
       icon: IconHelp,
     },
     {
