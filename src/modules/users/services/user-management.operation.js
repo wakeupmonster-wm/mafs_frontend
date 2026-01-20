@@ -15,13 +15,13 @@ export const getALLUserListApi = async (page, limit, search, filters) => {
 };
 
 export const getAllPendingVerificationsApi = async () => {
-  return apiConnector(
-    "GET",
-    USERENDPOINTS.GETALLPENDINGVERIFICATIONS
-  )
+  return apiConnector("GET", USERENDPOINTS.GETALLPENDINGVERIFICATIONS);
 };
 
-export const verifyUserProfileApi = async(userId,payload)=>{
-  return apiConnector("POST",  `/api/v1/admintest/users/${userId}/verify`,
-    payload)
-}
+export const verifyUserProfileApi = async (userId, payload) => {
+  return apiConnector(
+    "POST",
+    `/api/v1/admintest/users/${userId}/verify`,
+    payload
+  );
+};

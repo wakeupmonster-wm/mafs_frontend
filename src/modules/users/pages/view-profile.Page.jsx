@@ -1,4 +1,666 @@
-"use client";
+// import React from "react";
+// import { useLocation, useNavigate } from "react-router";
+// import {
+//   IconArrowLeft,
+//   IconCalendar,
+//   IconMapPin,
+//   IconBriefcase,
+//   IconShieldCheck,
+//   IconUser,
+//   IconHeart,
+//   IconAlertTriangle,
+//   IconSettings,
+//   IconMail,
+//   IconDeviceMobile,
+//   IconChartBar,
+//   IconSearch,
+//   IconMusic,
+//   IconMovie,
+//   IconBook,
+//   IconWorld,
+// } from "@tabler/icons-react";
+
+// import { Button } from "@/components/ui/button";
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Badge } from "@/components/ui/badge";
+// import { Separator } from "@/components/ui/separator";
+// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import { BanUserModal } from "../components/ban-user-modal";
+// import BanAlert from "../components/banAlert";
+// import { cn } from "@/lib/utils";
+
+// export default function ViewProfilePage() {
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const userData = location.state?.userData;
+//   const [isBanModalOpen, setIsBanModalOpen] = React.useState(false);
+
+//   if (!userData) {
+//     return (
+//       <div className="flex flex-col items-center justify-center h-screen gap-4">
+//         <p>No user data found.</p>
+//         <Button onClick={() => navigate(-1)}>Go Back</Button>
+//       </div>
+//     );
+//   }
+
+//   const {
+//     profile,
+//     account,
+//     attributes,
+//     discovery,
+//     location: userLoc,
+//     photos,
+//     verification,
+//   } = userData;
+//   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
+
+//   const handleBanConfirm = async (reason) => {
+//     // Here you would dispatch your Redux action or call your API
+//     console.log(`Banning user ${userData._id} for: ${reason}`);
+
+//     // Example: dispatch(banUser({ id: userData._id, reason }));
+
+//     // After success, you might want to refresh data or navigate back
+//   };
+
+//   return (
+//     <>
+//       <div className="p-6 w-full space-y-6">
+//         {/* Header Area */}
+//         <div className="flex items-center justify-between">
+//           <div className="flex items-center gap-4">
+//             <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+//               <IconArrowLeft className="h-5 w-5" />
+//             </Button>
+//             <div>
+//               <div className="flex items-center gap-2">
+//                 <h1 className="text-3xl font-bold tracking-tight">
+//                   {profile?.nickname || "User Profile"}
+//                 </h1>
+//                 {account.isPremium && (
+//                   <Badge variant="premium" className="h-fit">
+//                     PRO
+//                   </Badge>
+//                 )}
+//               </div>
+//               <p className="text-sm text-muted-foreground font-mono">
+//                 ID: {userData._id}
+//               </p>
+//             </div>
+//           </div>
+
+//           <div className="flex items-center gap-3">
+//             <Badge
+//               variant={isBanned ? "destructive" : "default"}
+//               className="px-3 py-1"
+//             >
+//               {account.status.toUpperCase()}
+//             </Badge>
+
+//             <DropdownMenu>
+//               <DropdownMenuTrigger asChild>
+//                 <Button variant="outline">
+//                   <IconSettings className="mr-2 h-4 w-4" /> Manage User
+//                 </Button>
+//               </DropdownMenuTrigger>
+//               <DropdownMenuContent align="end" className="w-56">
+//                 <DropdownMenuLabel>Account Actions</DropdownMenuLabel>
+//                 <DropdownMenuSeparator />
+//                 <DropdownMenuItem>Verify Identity Manually</DropdownMenuItem>
+//                 <DropdownMenuItem>Reset Password Link</DropdownMenuItem>
+//                 <DropdownMenuSeparator />
+
+//                 {/* Update your DropdownMenuItem to open the modal */}
+//                 {isBanned ? (
+//                   <DropdownMenuItem className="text-green-600">
+//                     Unban User
+//                   </DropdownMenuItem>
+//                 ) : (
+//                   <DropdownMenuItem
+//                     className="text-destructive"
+//                     onClick={() => setIsBanModalOpen(true)}
+//                   >
+//                     Ban User Account
+//                   </DropdownMenuItem>
+//                 )}
+//               </DropdownMenuContent>
+//             </DropdownMenu>
+//           </div>
+//         </div>
+
+//         {/* BAN ALERT SECTION */}
+
+//         {isBanned && <BanAlert account={account} />}
+
+//         <div className="w-full flex gap-6">
+//           {/* LEFT COLUMN: Avatar & Photos */}
+//           <div className="w-2/12 space-y-6">
+//             <Card className="overflow-hidden">
+//               <CardContent className="pt-6 flex flex-col items-center text-center">
+//                 <Avatar className="h-40 w-40 mb-4 border-4 border-background shadow-xl">
+//                   <AvatarImage
+//                     src={photos?.[0]?.url}
+//                     className="object-cover"
+//                   />
+//                   <AvatarFallback className="text-4xl font-bold">
+//                     {profile?.nickname?.[0]}
+//                   </AvatarFallback>
+//                 </Avatar>
+//                 <h3 className="text-2xl font-bold">
+//                   {profile?.nickname || "Unknown"}, {profile?.age || "N/A"}
+//                 </h3>
+//                 <p className="text-muted-foreground flex items-center gap-1 text-sm">
+//                   <IconMapPin size={14} /> {userLoc?.city || "Unknown Location"}
+//                   , {userLoc?.country}
+//                 </p>
+//               </CardContent>
+//             </Card>
+
+//             <Card>
+//               <CardHeader className="pb-3">
+//                 <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+//                   Gallery
+//                 </h4>
+//               </CardHeader>
+//               <CardContent>
+//                 <div className="grid grid-cols-2 gap-3">
+//                   {photos?.length > 0 ? (
+//                     photos.map((photo, index) => (
+//                       <img
+//                         key={index}
+//                         src={photo.url}
+//                         className="rounded-lg object-cover aspect-square border hover:opacity-90 transition-opacity cursor-zoom-in"
+//                         alt="User"
+//                       />
+//                     ))
+//                   ) : (
+//                     <div className="col-span-2 text-center py-6 text-xs text-muted-foreground bg-muted/30 rounded-lg">
+//                       No photos uploaded
+//                     </div>
+//                   )}
+//                 </div>
+//               </CardContent>
+//             </Card>
+//           </div>
+
+//           {/* RIGHT COLUMN: Extensive Details */}
+//           <div className="w-10/12 space-y-6">
+//             {/* 1. TOP SECTION: ACCOUNT SECURITY & STATUS */}
+//             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+// <Card className="md:col-span-2">
+//   <CardHeader className="pb-2">
+//     <CardTitle className="text-sm font-medium text-muted-foreground">
+//       Account Connectivity
+//     </CardTitle>
+//   </CardHeader>
+//   <CardContent className="flex flex-wrap gap-4">
+//     <div className="flex items-center gap-2">
+//       <IconMail size={18} className="text-muted-foreground" />
+//       <span className="text-sm font-medium">{account.email}</span>
+//       <Badge
+//         variant={userData.isEmailVerified ? "success" : "outline"}
+//       >
+//         {userData.isEmailVerified ? "Verified" : "Unverified"}
+//       </Badge>
+//     </div>
+//     <div className="flex items-center gap-2">
+//       <IconDeviceMobile
+//         size={18}
+//         className="text-muted-foreground"
+//       />
+//       <span className="text-sm font-medium">{account.phone}</span>
+//       <Badge
+//         variant={userData.isPhoneVerified ? "success" : "outline"}
+//       >
+//         {userData.isPhoneVerified ? "Verified" : "Unverified"}
+//       </Badge>
+//     </div>
+//     <Badge variant="secondary" className="ml-auto capitalize">
+//       Auth: {account.authMethod}
+//     </Badge>
+//   </CardContent>
+// </Card>
+
+//   <Card>
+//     <CardHeader className="pb-2">
+//       <CardTitle className="text-sm font-medium text-muted-foreground">
+//         Profile Completion
+//       </CardTitle>
+//     </CardHeader>
+//     <CardContent className="flex items-center gap-4">
+//       <IconChartBar className="text-primary" />
+//       <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+//         <div
+//           className="bg-primary h-full"
+//           style={{ width: `${profile.totalCompletion}%` }}
+//         />
+//       </div>
+//       <span className="text-sm font-bold">
+//         {profile.totalCompletion}%
+//       </span>
+//     </CardContent>
+//   </Card>
+// </div>
+
+// {/* 2. PERSONAL DETAILS & BIO */}
+// <Card>
+//   <CardHeader>
+//     <div className="flex items-center gap-2">
+//       <IconUser className="h-5 w-5 text-primary" />
+//       <h3 className="font-semibold text-lg">Personal Details</h3>
+//     </div>
+//   </CardHeader>
+//   <CardContent className="space-y-6">
+//     <p className="text-muted-foreground leading-relaxed italic border-l-4 border-primary/20 pl-4 py-1">
+//       {profile?.about || "User has not provided a bio."}
+//     </p>
+
+//     <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+//       <AttributeBlock label="Nickname" value={profile.nickname} />
+//       <AttributeBlock
+//         label="Age / Gender"
+//         value={`${profile.age} / ${profile.gender}`}
+//       />
+//       <AttributeBlock
+//         label="Height"
+//         value={`${profile.height} cm`}
+//       />
+//       <AttributeBlock label="Zodiac" value={attributes.zodiac} />
+//     </div>
+
+//     <Separator />
+
+//     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//       <DetailRow
+//         icon={<IconBriefcase size={16} />}
+//         label="Work"
+//         value={`${profile.jobTitle} at ${profile.company}`}
+//       />
+//       <DetailRow
+//         icon={<IconCalendar size={16} />}
+//         label="Joined"
+//         value={new Date(account.createdAt).toLocaleDateString()}
+//       />
+//       <DetailRow
+//         icon={<IconMapPin size={16} />}
+//         label="Location"
+//         value={location.full_address}
+//       />
+//       <DetailRow
+//         icon={<IconHeart size={16} className="text-pink-500" />}
+//         label="Dating Goal"
+//         value={discovery.relationshipGoal}
+//       />
+//     </div>
+//   </CardContent>
+// </Card>
+
+// {/* 3. LIFESTYLE & DISCOVERY PREFERENCES */}
+// <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//   <Card>
+//     <CardHeader>
+//       <CardTitle className="text-md font-semibold">
+//         Lifestyle Attributes
+//       </CardTitle>
+//     </CardHeader>
+//     <CardContent className="grid grid-cols-2 gap-y-4">
+//       <AttributeBlock
+//         label="Education"
+//         value={attributes.education}
+//       />
+//       <AttributeBlock
+//         label="Religion"
+//         value={attributes.religion}
+//       />
+//       <AttributeBlock label="Smoking" value={attributes.smoking} />
+//       <AttributeBlock
+//         label="Drinking"
+//         value={attributes.drinking}
+//       />
+//       <AttributeBlock label="Diet" value={attributes.dietary} />
+//       <AttributeBlock label="Workout" value={attributes.workout} />
+//       <AttributeBlock
+//         label="Sleeping"
+//         value={attributes.sleeping}
+//       />
+//       <AttributeBlock label="Pets" value={attributes.pets} />
+//     </CardContent>
+//   </Card>
+
+//   {/* DISCOVERY SETTINGS CARD */}
+//   <Card>
+//     <CardHeader>
+//       <CardTitle className="text-md font-semibold flex items-center gap-2">
+//         <IconSearch size={20} className="text-blue-500" /> Discovery
+//         Settings
+//       </CardTitle>
+//     </CardHeader>
+//     <CardContent className="space-y-4">
+//       <div className="grid grid-cols-2 gap-4">
+//         {/* Distance Fallback */}
+//         <AttributeBlock
+//           label="Distance Range"
+//           value={
+//             discovery?.distanceRange
+//               ? `${discovery.distanceRange} km`
+//               : "N/A"
+//           }
+//         />
+
+//         {/* Age Range Fallback */}
+//         <AttributeBlock
+//           label="Age Preference"
+//           value={
+//             discovery?.ageRange?.min && discovery?.ageRange?.max
+//               ? `${discovery.ageRange.min} - ${discovery.ageRange.max} years`
+//               : "N/A"
+//           }
+//         />
+
+//         {/* Gender Preference Fallback */}
+//         <AttributeBlock
+//           label="Interested In"
+//           value={
+//             discovery?.showMeGender?.length > 0
+//               ? discovery.showMeGender.join(", ")
+//               : "N/A"
+//           }
+//         />
+
+//         {/* Visibility Fallback */}
+//         <AttributeBlock
+//           label="Visible To"
+//           value={discovery?.globalVisibility || "N/A"}
+//         />
+//       </div>
+
+//       <Separator />
+
+//       {/* Relationship Goal with Heart Icon */}
+//       <div className="flex items-center gap-6">
+//         <div className="flex items-center gap-2 pt-2">
+//           <IconHeart size={16} className="text-pink-500" />
+//           <span className="text-sm font-semibold text-muted-foreground uppercase text-[10px]">
+//             Relationship Goal:
+//           </span>
+//           <span className="text-sm font-medium">
+//             {discovery?.relationshipGoal || "Not Specified"}
+//           </span>
+//         </div>
+
+//         <div className="pt-2">
+//           <p className="text-[10px] uppercase font-bold text-muted-foreground">
+//             Social Media Linked
+//           </p>
+//           <Badge
+//             variant="outline"
+//             className="text-blue-600 border-blue-200 bg-blue-50"
+//           >
+//             {attributes.socialMedia}
+//           </Badge>
+//         </div>
+//       </div>
+//     </CardContent>
+//   </Card>
+// </div>
+
+//             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//               {/* LOCATION CARD */}
+//               <Card>
+//                 <CardHeader>
+//                   <CardTitle className="text-md font-semibold flex items-center gap-2">
+//                     <IconMapPin size={20} className="text-orange-500" /> Current
+//                     Location
+//                   </CardTitle>
+//                 </CardHeader>
+//                 <CardContent className="space-y-4">
+//                   <div className="grid grid-cols-1 gap-2">
+//                     <div className="flex items-center gap-2">
+//                       <span className="text-xs font-bold text-muted-foreground uppercase w-20">
+//                         City:
+//                       </span>
+//                       <span className="text-sm">{location?.city || "N/A"}</span>
+//                     </div>
+//                     <div className="flex items-center gap-2">
+//                       <span className="text-xs font-bold text-muted-foreground uppercase w-20">
+//                         Country:
+//                       </span>
+//                       <span className="text-sm">
+//                         {location?.country || "N/A"}
+//                       </span>
+//                     </div>
+//                     <Separator className="my-2" />
+//                     <div className="bg-muted/30 p-3 rounded-md">
+//                       <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">
+//                         Full Address
+//                       </p>
+//                       <p className="text-sm italic">
+//                         {location?.full_address ||
+//                           "No address provided by user"}
+//                       </p>
+//                     </div>
+
+//                     {/* Coordinate check */}
+//                     <div className="pt-2 flex gap-4">
+//                       <div className="text-[10px] text-muted-foreground">
+//                         LAT: {location?.coordinates?.[1] ?? "0.00"}
+//                       </div>
+//                       <div className="text-[10px] text-muted-foreground">
+//                         LNG: {location?.coordinates?.[0] ?? "0.00"}
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </CardContent>
+//               </Card>
+
+//               {/* 4. INTERESTS & MEDIA */}
+//               <Card>
+//                 <CardHeader>
+//                   <CardTitle className="text-md font-semibold">
+//                     Interests & Media Preferences
+//                   </CardTitle>
+//                 </CardHeader>
+//                 <CardContent className="space-y-6">
+//                   <MediaSection
+//                     icon={<IconHeart size={16} className="text-red-400" />}
+//                     label="Interests"
+//                     items={attributes.interests}
+//                   />
+//                   <MediaSection
+//                     icon={<IconMusic size={16} className="text-purple-400" />}
+//                     label="Music"
+//                     items={attributes.music}
+//                   />
+//                   <MediaSection
+//                     icon={<IconMovie size={16} className="text-orange-400" />}
+//                     label="Movies"
+//                     items={attributes.movies}
+//                   />
+//                   <MediaSection
+//                     icon={<IconBook size={16} className="text-green-400" />}
+//                     label="Books"
+//                     items={attributes.books}
+//                   />
+//                   <MediaSection
+//                     icon={<IconWorld size={16} className="text-blue-400" />}
+//                     label="Languages"
+//                     items={attributes.languages}
+//                   />
+//                 </CardContent>
+//               </Card>
+//             </div>
+
+//             {/* 5. KYC / VERIFICATION SECTION */}
+//             <Card
+//               className={cn(
+//                 "transition-all duration-200",
+//                 verification?.status === "approved" &&
+//                   "border-green-200 bg-green-500/10",
+//                 verification?.status === "rejected" &&
+//                   "border-red-200 bg-red-500/5",
+//                 verification?.status === "pending" &&
+//                   "border-amber-200 bg-amber-500/5"
+//               )}
+//             >
+//               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+//                 <div className="flex items-center gap-2">
+//                   <IconShieldCheck
+//                     className={cn(
+//                       "h-5 w-5",
+//                       verification?.status === "approved"
+//                         ? "text-green-600"
+//                         : "text-muted-foreground"
+//                     )}
+//                   />
+//                   <h3 className="font-semibold text-lg text-foreground">
+//                     Identity Verification
+//                   </h3>
+//                 </div>
+
+//                 <Badge
+//                   className={cn(
+//                     "capitalize font-bold shadow-none",
+//                     verification?.status === "approved" &&
+//                       "bg-green-600 hover:bg-green-600 text-white",
+//                     verification?.status === "rejected" &&
+//                       "bg-red-600 hover:bg-red-600 text-white",
+//                     verification?.status === "pending" &&
+//                       "bg-amber-500 hover:bg-amber-500 text-white",
+//                     !verification?.status && "bg-gray-500 text-white"
+//                   )}
+//                 >
+//                   {verification?.status?.replace("_", " ") || "NOT STARTED"}
+//                 </Badge>
+//               </CardHeader>
+
+//               <CardContent className="space-y-4">
+//                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+//                   <div className="space-y-1">
+//                     <p className="text-sm text-muted-foreground">
+//                       Verification documents: <strong>Selfie</strong> and{" "}
+//                       <strong>Govt ID</strong>.
+//                     </p>
+//                     {/* Verification Date Fallback */}
+//                     <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">
+//                       Last Action:{" "}
+//                       {verification?.verifiedAt
+//                         ? new Date(verification.verifiedAt).toLocaleDateString()
+//                         : "N/A"}
+//                     </p>
+//                   </div>
+
+//                   <div className="flex gap-2">
+//                     <Button
+//                       variant="outline"
+//                       size="sm"
+//                       className="h-8 gap-1.5"
+//                       onClick={() =>
+//                         verification?.selfieUrl &&
+//                         window.open(verification.selfieUrl)
+//                       }
+//                       disabled={!verification?.selfieUrl}
+//                     >
+//                       Selfie {!verification?.selfieUrl && "(N/A)"}
+//                     </Button>
+//                     <Button
+//                       variant="outline"
+//                       size="sm"
+//                       className="h-8 gap-1.5"
+//                       onClick={() =>
+//                         verification?.docUrl && window.open(verification.docUrl)
+//                       }
+//                       disabled={!verification?.docUrl}
+//                     >
+//                       ID Card {!verification?.docUrl && "(N/A)"}
+//                     </Button>
+//                   </div>
+//                 </div>
+
+//                 {/* REJECTION REASON ALERT (Only shows if status is rejected) */}
+//                 {verification?.status === "rejected" &&
+//                   verification?.rejectionReason && (
+//                     <div className="mt-2 rounded-lg bg-red-100/50 p-3 border border-red-200">
+//                       <div className="flex items-center gap-2 text-red-800 text-xs font-bold mb-1">
+//                         <IconAlertTriangle size={14} />
+//                         REJECTION REASON
+//                       </div>
+//                       <p className="text-xs text-red-700 italic">
+//                         "{verification.rejectionReason}"
+//                       </p>
+//                     </div>
+//                   )}
+//               </CardContent>
+//             </Card>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* The Modal Component */}
+//       <BanUserModal
+//         isOpen={isBanModalOpen}
+//         onClose={() => setIsBanModalOpen(false)}
+//         onConfirm={handleBanConfirm}
+//         userName={profile?.nickname}
+//       />
+//     </>
+//   );
+// }
+
+// /* Helper Components for clean code */
+
+// function DetailRow({ icon, label, value }) {
+//   return (
+//     <div className="flex items-center gap-2 text-sm">
+//       <span className="text-muted-foreground">{icon}</span>
+//       <span className="font-semibold min-w-[70px]">{label}:</span>
+//       <span className="text-foreground truncate">{value || "N/A"}</span>
+//     </div>
+//   );
+// }
+
+// function AttributeBlock({ label, value }) {
+//   return (
+//     <div className="space-y-1">
+//       <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-tight">
+//         {label}
+//       </p>
+//       <p className="text-sm font-medium capitalize">{value || "Not Set"}</p>
+//     </div>
+//   );
+// }
+
+// function MediaSection({ icon, label, items }) {
+//   if (!items || items.length === 0) return null;
+//   return (
+//     <div className="space-y-2">
+//       <div className="flex items-center gap-2 text-sm font-semibold">
+//         {icon} <span>{label}</span>
+//       </div>
+//       <div className="flex flex-wrap gap-2">
+//         {items.map((item) => (
+//           <Badge
+//             key={item}
+//             variant="secondary"
+//             className="capitalize text-[11px]"
+//           >
+//             {item}
+//           </Badge>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+;
 
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
@@ -10,7 +672,6 @@ import {
   IconShieldCheck,
   IconUser,
   IconHeart,
-  IconCrown,
   IconAlertTriangle,
   IconSettings,
   IconMail,
@@ -21,6 +682,14 @@ import {
   IconMovie,
   IconBook,
   IconWorld,
+  IconEdit,
+  IconCheck,
+  IconX,
+  IconLock,
+  IconBrandInstagram,
+  IconBrandFacebook,
+  IconBrandTwitter,
+  IconBrandSnapchat,
 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -28,7 +697,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,7 +718,7 @@ export default function ViewProfilePage() {
   if (!userData) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <p>No user data found.</p>
+        <p className="text-muted-foreground text-lg">No user data found.</p>
         <Button onClick={() => navigate(-1)}>Go Back</Button>
       </div>
     );
@@ -65,24 +733,59 @@ export default function ViewProfilePage() {
     photos,
     verification,
   } = userData;
+
   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
 
   const handleBanConfirm = async (reason) => {
-    // Here you would dispatch your Redux action or call your API
     console.log(`Banning user ${userData._id} for: ${reason}`);
+    // dispatch(banUser({ id: userData._id, reason }));
+  };
 
-    // Example: dispatch(banUser({ id: userData._id, reason }));
+  const handleVerification = (status) => {
+    console.log(`Updating verification for ${userData._id} to: ${status}`);
+    // dispatch(updateKYC({ id: userData._id, status }));
+  };
 
-    // After success, you might want to refresh data or navigate back
+  // Social Media Config mapping
+  const socialConfig = {
+    instagram: {
+      icon: <IconBrandInstagram size={14} />,
+      color:
+        "text-pink-600 border-pink-200 bg-pink-50 dark:bg-pink-950/30 dark:border-pink-900",
+      label: "Instagram",
+    },
+    facebook: {
+      icon: <IconBrandFacebook size={14} />,
+      color:
+        "text-blue-600 border-blue-200 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900",
+      label: "Facebook",
+    },
+    twitter: {
+      icon: <IconBrandTwitter size={14} />,
+      color:
+        "text-sky-600 border-sky-200 bg-sky-50 dark:bg-sky-950/30 dark:border-sky-900",
+      label: "Twitter",
+    },
+    snapchat: {
+      icon: <IconBrandSnapchat size={14} />,
+      color:
+        "text-yellow-600 border-yellow-200 bg-yellow-50 dark:bg-yellow-950/30 dark:border-yellow-900",
+      label: "Snapchat",
+    },
   };
 
   return (
     <>
-      <div className="p-6 w-full space-y-6">
-        {/* Header Area */}
-        <div className="flex items-center justify-between">
+      <div className="p-6 w-full space-y-6 max-w-[1600px] mx-auto">
+        {/* --- HEADER AREA --- */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+              className="rounded-full"
+            >
               <IconArrowLeft className="h-5 w-5" />
             </Button>
             <div>
@@ -90,11 +793,7 @@ export default function ViewProfilePage() {
                 <h1 className="text-3xl font-bold tracking-tight">
                   {profile?.nickname || "User Profile"}
                 </h1>
-                {account.isPremium && (
-                  <Badge variant="premium" className="h-fit">
-                    PRO
-                  </Badge>
-                )}
+                {account.isPremium && <Badge variant="premium">PRO</Badge>}
               </div>
               <p className="text-sm text-muted-foreground font-mono">
                 ID: {userData._id}
@@ -105,32 +804,38 @@ export default function ViewProfilePage() {
           <div className="flex items-center gap-3">
             <Badge
               variant={isBanned ? "destructive" : "default"}
-              className="px-3 py-1"
+              className="px-4 py-1.5 shadow-sm"
             >
-              {account.status.toUpperCase()}
+              {account.status?.toUpperCase()}
             </Badge>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline">
-                  <IconSettings className="mr-2 h-4 w-4" /> Manage User
+                <Button variant="outline" className="shadow-sm">
+                  <IconSettings className="mr-2 h-4 w-4" /> Manage Account
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Account Actions</DropdownMenuLabel>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Verify Identity Manually</DropdownMenuItem>
-                <DropdownMenuItem>Reset Password Link</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate("../edit-profile", { state: { userData } })
+                  }
+                >
+                  <IconEdit className="mr-2 h-4 w-4" /> Edit Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <IconMail className="mr-2 h-4 w-4" /> Message User
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-
-                {/* Update your DropdownMenuItem to open the modal */}
                 {isBanned ? (
-                  <DropdownMenuItem className="text-green-600">
+                  <DropdownMenuItem className="text-green-600 font-medium">
                     Unban User
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem
-                    className="text-destructive"
+                    className="text-destructive font-medium"
                     onClick={() => setIsBanModalOpen(true)}
                   >
                     Ban User Account
@@ -141,169 +846,273 @@ export default function ViewProfilePage() {
           </div>
         </div>
 
-        {/* BAN ALERT SECTION */}
-
+        {/* --- BAN ALERT --- */}
         {isBanned && <BanAlert account={account} />}
 
-        <div className="w-full flex gap-6">
-          {/* LEFT COLUMN: Avatar & Photos */}
-          <div className="w-2/12 space-y-6">
-            <Card className="overflow-hidden">
-              <CardContent className="pt-6 flex flex-col items-center text-center">
-                <Avatar className="h-40 w-40 mb-4 border-4 border-background shadow-xl">
+        {/* --- MAIN CONTENT GRID --- */}
+        <div className="relative grid grid-cols-12 gap-6">
+          {/* LEFT SIDEBAR (3/12) */}
+          <div className="col-span-12 lg:col-span-3 space-y-6">
+            <Card className="overflow-hidden shadow-sm border-muted">
+              <CardContent className="pt-8 flex flex-col items-center text-center">
+                <Avatar className="h-44 w-44 mb-4 border-4 border-background shadow-2xl">
                   <AvatarImage
                     src={photos?.[0]?.url}
                     className="object-cover"
                   />
-                  <AvatarFallback className="text-4xl font-bold">
-                    {profile?.nickname?.[0]}
+                  <AvatarFallback className="text-5xl font-bold bg-primary/5 text-primary">
+                    {profile?.nickname?.[0] || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="text-2xl font-bold">
-                  {profile?.nickname || "Unknown"}, {profile?.age || "N/A"}
+                  {profile?.nickname || "Unknown User"}, {profile?.age || "N/A"}
                 </h3>
-                <p className="text-muted-foreground flex items-center gap-1 text-sm">
-                  <IconMapPin size={14} /> {userLoc?.city || "Unknown Location"}
-                  , {userLoc?.country}
+                <p className="text-muted-foreground flex items-center gap-1.5 text-sm mt-1">
+                  <IconMapPin size={16} className="text-orange-500" />
+                  {userLoc?.city || "Unknown City"},{" "}
+                  {userLoc?.country || "Unknown Country"}
                 </p>
+                <div className="w-full grid grid-cols-2 gap-2 mt-6">
+                  <div className="bg-muted/40 p-2 rounded-lg text-center">
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                      Height
+                    </p>
+                    <p className="text-sm font-semibold">
+                      {profile?.height ? `${profile.height} cm` : "N/A"}
+                    </p>
+                  </div>
+                  <div className="bg-muted/40 p-2 rounded-lg text-center">
+                    <p className="text-[10px] uppercase font-bold text-muted-foreground">
+                      Gender
+                    </p>
+                    <p className="text-sm font-semibold capitalize">
+                      {profile?.gender || "N/A"}
+                    </p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader className="pb-3">
-                <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                  Gallery
+                <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
+                  Gallery{" "}
+                  <Badge
+                    variant="secondary"
+                    className="rounded-full h-5 w-5 p-0 flex items-center justify-center"
+                  >
+                    {photos?.length || 0}
+                  </Badge>
                 </h4>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
                   {photos?.length > 0 ? (
-                    photos.map((photo) => (
-                      <img
-                        key={photo.id}
-                        src={photo.url}
-                        className="rounded-lg object-cover aspect-square border hover:opacity-90 transition-opacity cursor-zoom-in"
-                        alt="User"
-                      />
+                    photos.map((photo, index) => (
+                      <div
+                        key={index}
+                        className="group relative aspect-square overflow-hidden rounded-lg border bg-muted"
+                      >
+                        <img
+                          src={photo.url}
+                          className="h-full w-full object-cover transition-transform group-hover:scale-110 cursor-zoom-in"
+                          alt="User upload"
+                        />
+                      </div>
                     ))
                   ) : (
-                    <div className="col-span-2 text-center py-6 text-xs text-muted-foreground bg-muted/30 rounded-lg">
+                    <div className="col-span-2 text-center py-10 text-xs text-muted-foreground bg-muted/20 rounded-xl border-2 border-dashed">
                       No photos uploaded
                     </div>
                   )}
                 </div>
               </CardContent>
             </Card>
+
+            {/* LOCATION CARD */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-md font-semibold flex items-center gap-2">
+                  <IconMapPin size={20} className="text-orange-500" /> Current
+                  Location
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-muted-foreground uppercase w-20">
+                      City:
+                    </span>
+                    <span className="text-sm">
+                      {userLoc?.city || "Unknown City"},{" "}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-muted-foreground uppercase w-20">
+                      Country:
+                    </span>
+                    <span className="text-sm">
+                      {userLoc?.country || "Unknown Country"}
+                    </span>
+                  </div>
+                  <Separator className="my-2" />
+                  <div className="bg-muted/30 p-3 rounded-md">
+                    <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">
+                      Full Address
+                    </p>
+                    <p className="text-sm italic">
+                      {userLoc?.full_address || "No address provided by user"}
+                    </p>
+                  </div>
+
+                  {/* Coordinate check */}
+                  <div className="pt-2 flex gap-4">
+                    <div className="text-[10px] text-muted-foreground">
+                      LAT: {userLoc?.coordinates?.[1] ?? "0.00"}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">
+                      LNG: {userLoc?.coordinates?.[0] ?? "0.00"}
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* RIGHT COLUMN: Extensive Details */}
-          <div className="w-10/12 space-y-6">
-            {/* About & Basic Stats */}
-            {/* 1. TOP SECTION: ACCOUNT SECURITY & STATUS */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="md:col-span-2">
+          {/* RIGHT CONTENT (9/12) */}
+          <div className="col-span-12 lg:col-span-9 space-y-6">
+            {/* 1. Account & Progress */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="md:col-span-2 shadow-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                     Account Connectivity
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-wrap gap-4">
-                  <div className="flex items-center gap-2">
-                    <IconMail size={18} className="text-muted-foreground" />
-                    <span className="text-sm font-medium">{account.email}</span>
-                    <Badge
-                      variant={userData.isEmailVerified ? "success" : "outline"}
-                    >
-                      {userData.isEmailVerified ? "Verified" : "Unverified"}
-                    </Badge>
+                <CardContent className="flex flex-wrap items-center gap-6 py-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-50 border border-blue-300 text-blue-600 rounded-lg">
+                      <IconMail size={20} />
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-sm font-bold">
+                        {account?.email || "N/A"}
+                      </span>
+                      <Badge
+                        variant={
+                          userData.isEmailVerified ? "success" : "outline"
+                        }
+                        // className="w-fit scale-75 -ml-2"
+                      >
+                        {userData.isEmailVerified ? "Verified" : "Unverified"}
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <IconDeviceMobile
-                      size={18}
-                      className="text-muted-foreground"
-                    />
-                    <span className="text-sm font-medium">{account.phone}</span>
-                    <Badge
-                      variant={userData.isPhoneVerified ? "success" : "outline"}
-                    >
-                      {userData.isPhoneVerified ? "Verified" : "Unverified"}
-                    </Badge>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-50 border border-green-300 text-green-600 rounded-lg">
+                      <IconDeviceMobile size={20} />
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-sm font-bold">
+                        {account?.phone || "N/A"}
+                      </span>
+                      <Badge
+                        variant={
+                          userData.isPhoneVerified ? "success" : "outline"
+                        }
+                        // className="w-fit scale-75 -ml-2"
+                      >
+                        {userData.isPhoneVerified ? "Verified" : "Unverified"}
+                      </Badge>
+                    </div>
                   </div>
-                  <Badge variant="secondary" className="ml-auto capitalize">
-                    Auth: {account.authMethod}
-                  </Badge>
+
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-50 border border-red-300 text-red-600 rounded-lg">
+                      <IconLock size={20} />
+                    </div>
+                    <div className="flex gap-3">
+                      <span className="text-sm font-bold">Auth:</span>
+                      <Badge variant="secondary" className="ml-auto capitalize">
+                        {account.authMethod}
+                      </Badge>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card>
+              <Card className="shadow-sm">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    Profile Completion
+                  <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                    Profile Quality
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex items-center gap-4">
-                  <IconChartBar className="text-primary" />
-                  <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl font-black text-primary">
+                      {profile?.totalCompletion || 0}%
+                    </span>
+                    <IconChartBar className="text-muted-foreground" />
+                  </div>
+                  <div className="w-full bg-muted h-2.5 rounded-full overflow-hidden">
                     <div
-                      className="bg-primary h-full"
-                      style={{ width: `${profile.totalCompletion}%` }}
+                      className="bg-primary h-full transition-all duration-500"
+                      style={{ width: `${profile?.totalCompletion || 0}%` }}
                     />
                   </div>
-                  <span className="text-sm font-bold">
-                    {profile.totalCompletion}%
-                  </span>
                 </CardContent>
               </Card>
             </div>
 
-            {/* 2. PERSONAL DETAILS & BIO */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <IconUser className="h-5 w-5 text-primary" />
-                  <h3 className="font-semibold text-lg">Personal Details</h3>
-                </div>
+            {/* 2. Personal Bio */}
+            <Card className="shadow-sm">
+              <CardHeader className="pb-2 flex flex-row items-center gap-2">
+                <IconUser className="text-primary h-5 w-5" />
+                <CardTitle className="text-lg">
+                  Bio & Essential Details
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                <p className="text-muted-foreground leading-relaxed italic border-l-4 border-primary/20 pl-4 py-1">
-                  {profile?.about || "User has not provided a bio."}
-                </p>
+                <blockquote className="border-l-4 border-primary/30 pl-4 py-2 bg-muted/20 rounded-r-lg">
+                  <p className="text-muted-foreground italic leading-relaxed">
+                    "{profile?.about || "This user hasn't written a bio yet."}"
+                  </p>
+                </blockquote>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                  <AttributeBlock label="Nickname" value={profile.nickname} />
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <AttributeBlock label="Nickname" value={profile?.nickname} />
+                  <AttributeBlock label="Gender" value={profile?.gender} />
                   <AttributeBlock
-                    label="Age / Gender"
-                    value={`${profile.age} / ${profile.gender}`}
+                    label="Age"
+                    value={profile?.age ? `${profile.age} yrs` : null}
                   />
-                  <AttributeBlock
-                    label="Height"
-                    value={`${profile.height} cm`}
-                  />
-                  <AttributeBlock label="Zodiac" value={attributes.zodiac} />
+                  <AttributeBlock label="Zodiac" value={attributes?.zodiac} />
                 </div>
 
                 <Separator />
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
                   <DetailRow
-                    icon={<IconBriefcase size={16} />}
-                    label="Work"
-                    value={`${profile.jobTitle} at ${profile.company}`}
+                    icon={<IconBriefcase size={18} />}
+                    label="Professional"
+                    value={`${profile?.jobTitle || "N/A"} at ${
+                      profile?.company || "N/A"
+                    }`}
                   />
                   <DetailRow
-                    icon={<IconCalendar size={16} />}
-                    label="Joined"
-                    value={new Date(account.createdAt).toLocaleDateString()}
+                    icon={<IconCalendar size={18} />}
+                    label="Member Since"
+                    value={new Date(account?.createdAt).toLocaleDateString()}
                   />
                   <DetailRow
-                    icon={<IconMapPin size={16} />}
-                    label="Location"
-                    value={location.full_address}
+                    icon={<IconMapPin size={18} />}
+                    label="Full Address"
+                    value={userLoc?.full_address}
                   />
                   <DetailRow
-                    icon={<IconHeart size={16} className="text-pink-500" />}
+                    icon={<IconHeart size={18} className="text-pink-500" />}
                     label="Dating Goal"
-                    value={discovery.relationshipGoal}
+                    value={discovery?.relationshipGoal}
                   />
                 </div>
               </CardContent>
@@ -341,266 +1150,217 @@ export default function ViewProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* DISCOVERY SETTINGS CARD */}
-              <Card>
+              <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-md font-semibold flex items-center gap-2">
-                    <IconSearch size={20} className="text-blue-500" /> Discovery
+                  <CardTitle className="text-md font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                    <IconSearch size={18} className="text-blue-500" /> Discovery
                     Settings
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
-                    {/* Distance Fallback */}
                     <AttributeBlock
-                      label="Distance Range"
+                      label="Distance Limit"
                       value={
                         discovery?.distanceRange
                           ? `${discovery.distanceRange} km`
                           : "N/A"
                       }
                     />
-
-                    {/* Age Range Fallback */}
                     <AttributeBlock
-                      label="Age Preference"
+                      label="Age Range"
                       value={
                         discovery?.ageRange?.min && discovery?.ageRange?.max
-                          ? `${discovery.ageRange.min} - ${discovery.ageRange.max} years`
+                          ? `${discovery.ageRange.min}-${discovery.ageRange.max} yrs`
                           : "N/A"
                       }
                     />
-
-                    {/* Gender Preference Fallback */}
                     <AttributeBlock
                       label="Interested In"
-                      value={
-                        discovery?.showMeGender?.length > 0
-                          ? discovery.showMeGender.join(", ")
-                          : "N/A"
-                      }
+                      value={discovery?.showMeGender?.join(", ") || "N/A"}
                     />
-
-                    {/* Visibility Fallback */}
                     <AttributeBlock
-                      label="Visible To"
+                      label="Profile Visibility"
                       value={discovery?.globalVisibility || "N/A"}
                     />
                   </div>
-
                   <Separator />
+                  <div className="flex items-center justify-between group">
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
+                      Linked Socials
+                    </span>
 
-                  {/* Relationship Goal with Heart Icon */}
-                  <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2 pt-2">
-                      <IconHeart size={16} className="text-pink-500" />
-                      <span className="text-sm font-semibold text-muted-foreground uppercase text-[10px]">
-                        Relationship Goal:
-                      </span>
-                      <span className="text-sm font-medium">
-                        {discovery?.relationshipGoal || "Not Specified"}
-                      </span>
-                    </div>
+                    {attributes?.socialMedia &&
+                    attributes.socialMedia !== "None" ? (
+                      (() => {
+                        const platform = attributes.socialMedia.toLowerCase();
+                        const config = socialConfig[platform] || {
+                          icon: <IconLink size={14} />,
+                          color:
+                            "text-muted-foreground border-muted bg-muted/30",
+                          label: attributes.socialMedia,
+                        };
 
-                    <div className="pt-2">
-                      <p className="text-[10px] uppercase font-bold text-muted-foreground">
-                        Social Media Linked
-                      </p>
-                      <Badge
-                        variant="outline"
-                        className="text-blue-600 border-blue-200 bg-blue-50"
-                      >
-                        {attributes.socialMedia}
-                      </Badge>
-                    </div>
+                        return (
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "transition-all duration-300 px-3 py-1 gap-1.5 font-bold shadow-sm cursor-default",
+                              config.color
+                            )}
+                          >
+                            {config.icon}
+                            {config.label}
+                          </Badge>
+                        );
+                      })()
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic bg-muted/20 px-2 py-1 rounded border border-dashed">
+                        No account linked
+                      </span>
+                    )}
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* LOCATION CARD */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-md font-semibold flex items-center gap-2">
-                    <IconMapPin size={20} className="text-orange-500" /> Current
-                    Location
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-muted-foreground uppercase w-20">
-                        City:
-                      </span>
-                      <span className="text-sm">{location?.city || "N/A"}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-muted-foreground uppercase w-20">
-                        Country:
-                      </span>
-                      <span className="text-sm">
-                        {location?.country || "N/A"}
-                      </span>
-                    </div>
-                    <Separator className="my-2" />
-                    <div className="bg-muted/30 p-3 rounded-md">
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase mb-1">
-                        Full Address
-                      </p>
-                      <p className="text-sm italic">
-                        {location?.full_address ||
-                          "No address provided by user"}
-                      </p>
-                    </div>
-
-                    {/* Coordinate check */}
-                    <div className="pt-2 flex gap-4">
-                      <div className="text-[10px] text-muted-foreground">
-                        LAT: {location?.coordinates?.[1] ?? "0.00"}
-                      </div>
-                      <div className="text-[10px] text-muted-foreground">
-                        LNG: {location?.coordinates?.[0] ?? "0.00"}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* 4. INTERESTS & MEDIA */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-md font-semibold">
-                    Interests & Media Preferences
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+            {/* 4. Interests & Media */}
+            <Card className="shadow-sm">
+              <CardHeader>
+                <CardTitle className="text-md font-bold uppercase tracking-wider text-muted-foreground">
+                  Interests & Media Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-6">
                   <MediaSection
-                    icon={<IconHeart size={16} className="text-red-400" />}
-                    label="Interests"
-                    items={attributes.interests}
+                    icon={<IconHeart size={18} className="text-red-500" />}
+                    label="Hobbies"
+                    items={attributes?.interests}
                   />
                   <MediaSection
-                    icon={<IconMusic size={16} className="text-purple-400" />}
-                    label="Music"
-                    items={attributes.music}
+                    icon={<IconMusic size={18} className="text-purple-500" />}
+                    label="Music Taste"
+                    items={attributes?.music}
+                  />
+                </div>
+                <div className="space-y-6">
+                  <MediaSection
+                    icon={<IconMovie size={18} className="text-orange-500" />}
+                    label="Movie Genres"
+                    items={attributes?.movies}
                   />
                   <MediaSection
-                    icon={<IconMovie size={16} className="text-orange-400" />}
-                    label="Movies"
-                    items={attributes.movies}
+                    icon={<IconBook size={18} className="text-green-500" />}
+                    label="Reading List"
+                    items={attributes?.books}
                   />
-                  <MediaSection
-                    icon={<IconBook size={16} className="text-green-400" />}
-                    label="Books"
-                    items={attributes.books}
-                  />
-                  <MediaSection
-                    icon={<IconWorld size={16} className="text-blue-400" />}
-                    label="Languages"
-                    items={attributes.languages}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* 5. KYC / VERIFICATION SECTION */}
+                </div>
+              </CardContent>
+            </Card>
+            {/* 5. KYC / VERIFICATION */}
             <Card
               className={cn(
-                "transition-all duration-200",
-                verification?.status === "approved" &&
-                  "border-green-200 bg-green-500/10",
-                verification?.status === "rejected" &&
-                  "border-red-200 bg-red-500/5",
-                verification?.status === "pending" &&
-                  "border-amber-200 bg-amber-500/5"
+                "transition-all duration-300 border-2",
+                verification?.status === "approved"
+                  ? "border-green-200 bg-green-50/30"
+                  : "border-muted shadow-sm"
               )}
             >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                 <div className="flex items-center gap-2">
                   <IconShieldCheck
                     className={cn(
-                      "h-5 w-5",
+                      "h-6 w-6",
                       verification?.status === "approved"
                         ? "text-green-600"
                         : "text-muted-foreground"
                     )}
                   />
-                  <h3 className="font-semibold text-lg text-foreground">
+                  <CardTitle className="text-lg">
                     Identity Verification
-                  </h3>
+                  </CardTitle>
                 </div>
-
                 <Badge
                   className={cn(
-                    "capitalize font-bold shadow-none",
-                    verification?.status === "approved" &&
-                      "bg-green-600 hover:bg-green-600 text-white",
-                    verification?.status === "rejected" &&
-                      "bg-red-600 hover:bg-red-600 text-white",
-                    verification?.status === "pending" &&
-                      "bg-amber-500 hover:bg-amber-500 text-white",
-                    !verification?.status && "bg-gray-500 text-white"
+                    "px-4 py-1 font-bold",
+                    verification?.status === "approved"
+                      ? "bg-green-600 text-white"
+                      : "bg-amber-500 text-white"
                   )}
                 >
-                  {verification?.status?.replace("_", " ") || "NOT STARTED"}
+                  {verification?.status?.toUpperCase() || "PENDING"}
                 </Badge>
               </CardHeader>
-
-              <CardContent className="space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <CardContent className="space-y-6">
+                <div className="flex flex-col md:flex-row justify-between gap-6">
                   <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">
-                      Verification documents: <strong>Selfie</strong> and{" "}
-                      <strong>Govt ID</strong>.
+                    <p className="text-sm font-medium">
+                      Document Check Required
                     </p>
-                    {/* Verification Date Fallback */}
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">
-                      Last Action:{" "}
-                      {verification?.verifiedAt
-                        ? new Date(verification.verifiedAt).toLocaleDateString()
-                        : "N/A"}
+                    <p className="text-xs text-muted-foreground">
+                      Compare the live selfie against the government-issued
+                      photo ID.
                     </p>
                   </div>
-
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-8 gap-1.5"
-                      onClick={() =>
-                        verification?.selfieUrl &&
-                        window.open(verification.selfieUrl)
-                      }
+                      className="h-9"
+                      onClick={() => window.open(verification?.selfieUrl)}
                       disabled={!verification?.selfieUrl}
                     >
-                      Selfie {!verification?.selfieUrl && "(N/A)"}
+                      View Selfie
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="h-8 gap-1.5"
-                      onClick={() =>
-                        verification?.docUrl && window.open(verification.docUrl)
-                      }
+                      className="h-9"
+                      onClick={() => window.open(verification?.docUrl)}
                       disabled={!verification?.docUrl}
                     >
-                      ID Card {!verification?.docUrl && "(N/A)"}
+                      View ID Card
                     </Button>
                   </div>
                 </div>
 
-                {/* REJECTION REASON ALERT (Only shows if status is rejected) */}
+                <Separator />
+
+                {/* Admin Actions for Verification */}
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <p className="text-xs font-bold text-muted-foreground mr-auto">
+                    MODERATOR ACTIONS:
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:bg-red-50"
+                    onClick={() => handleVerification("rejected")}
+                  >
+                    <IconX size={16} className="mr-1.5" /> Reject Identity
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={() => handleVerification("approved")}
+                  >
+                    <IconCheck size={16} className="mr-1.5" /> Approve Identity
+                  </Button>
+                </div>
+
                 {verification?.status === "rejected" &&
                   verification?.rejectionReason && (
-                    <div className="mt-2 rounded-lg bg-red-100/50 p-3 border border-red-200">
-                      <div className="flex items-center gap-2 text-red-800 text-xs font-bold mb-1">
-                        <IconAlertTriangle size={14} />
-                        REJECTION REASON
+                    <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-lg flex gap-3 text-red-800">
+                      <IconAlertTriangle size={18} />
+                      <div className="text-xs">
+                        <p className="font-bold uppercase tracking-tight">
+                          Rejection Reason
+                        </p>
+                        <p className="italic opacity-80 mt-0.5">
+                          "{verification.rejectionReason}"
+                        </p>
                       </div>
-                      <p className="text-xs text-red-700 italic">
-                        "{verification.rejectionReason}"
-                      </p>
                     </div>
                   )}
               </CardContent>
@@ -609,7 +1369,6 @@ export default function ViewProfilePage() {
         </div>
       </div>
 
-      {/* The Modal Component */}
       <BanUserModal
         isOpen={isBanModalOpen}
         onClose={() => setIsBanModalOpen(false)}
@@ -620,14 +1379,22 @@ export default function ViewProfilePage() {
   );
 }
 
-/* Helper Components for clean code */
+/* --- REUSABLE COMPONENTS --- */
 
 function DetailRow({ icon, label, value }) {
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <span className="text-muted-foreground">{icon}</span>
-      <span className="font-semibold min-w-[70px]">{label}:</span>
-      <span className="text-foreground truncate">{value || "N/A"}</span>
+    <div className="flex items-center gap-3 text-sm">
+      <div className="p-1.5 bg-muted/50 rounded-md text-muted-foreground">
+        {icon}
+      </div>
+      <div className="flex flex-col">
+        <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-tighter">
+          {label}
+        </span>
+        <span className="text-foreground font-semibold leading-tight">
+          {value || "N/A"}
+        </span>
+      </div>
     </div>
   );
 }
@@ -635,27 +1402,40 @@ function DetailRow({ icon, label, value }) {
 function AttributeBlock({ label, value }) {
   return (
     <div className="space-y-1">
-      <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-tight">
+      <p className="text-[10px] uppercase font-black text-muted-foreground/70 tracking-widest">
         {label}
       </p>
-      <p className="text-sm font-medium capitalize">{value || "Not Set"}</p>
+      <p className="text-sm font-bold text-foreground capitalize">
+        {value || "N/A"}
+      </p>
     </div>
   );
 }
 
 function MediaSection({ icon, label, items }) {
-  if (!items || items.length === 0) return null;
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2 text-sm font-semibold">
-        {icon} <span>{label}</span>
+  if (!items || items.length === 0)
+    return (
+      <div className="space-y-2 opacity-50">
+        <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+          {icon} <span className="uppercase tracking-tighter">{label}</span>
+        </div>
+        <p className="text-xs italic">No data provided</p>
       </div>
-      <div className="flex flex-wrap gap-2">
+    );
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 text-sm font-bold text-muted-foreground">
+        {icon}{" "}
+        <span className="uppercase tracking-tighter text-foreground">
+          {label}
+        </span>
+      </div>
+      <div className="flex flex-wrap gap-1.5">
         {items.map((item) => (
           <Badge
             key={item}
             variant="secondary"
-            className="capitalize text-[11px]"
+            className="capitalize text-[10px] font-bold py-0 h-6 bg-muted/50 hover:bg-muted border-none"
           >
             {item}
           </Badge>
