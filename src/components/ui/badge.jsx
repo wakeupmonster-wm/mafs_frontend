@@ -1,6 +1,5 @@
 import * as React from "react";
 import { cva } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
@@ -19,9 +18,9 @@ const badgeVariants = cva(
         premium:
           "border-transparent bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 hover:bg-amber-100/80",
       },
-    },
-    defaultVariants: {
-      variant: "default",
+      defaultVariants: {
+        variant: "default",
+      },
     },
   }
 );

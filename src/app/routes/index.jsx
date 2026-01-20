@@ -6,18 +6,25 @@ import RootLayout from "../layouts/RootLayout";
 import Dashboard from "@/modules/dashboard/pages/Dashboard";
 import App from "@/App";
 import NotFoundPage from "@/modules/not-found/Pages/not-found.page";
-import UserManagementPage from "@/modules/users/pages/user-management";
 import PendingVerifications from "@/modules/users/pages/PendingVerifications";
 import Campaigns from "@/modules/giveaway/pages/Campaigns";
 import CreatePrize from "@/modules/giveaway/pages/Prizes";
 import GiveawayManagement from "@/modules/giveaway/pages/GiveawayManagement";
-import { ContactSupportPage, MyTicketsPage, TicketDetailPage } from "@/modules/support/pages/SupportPages";
+import {
+  ContactSupportPage,
+  MyTicketsPage,
+  TicketDetailPage,
+} from "@/modules/support/pages/SupportPages";
 import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
 import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
 import RequestResetEmailForm from "@/modules/authentication/components/request-resetEmail";
 import VerifyEmailOtp from "@/modules/authentication/components/verify-emailOTP";
 import ForgotPasswordForm from "@/modules/authentication/components/forgotPasswordForm";
+import BusinessPage from "@/modules/businesses/pages/businesses.page";
+import ViewProfilePage from "@/modules/users/pages/view-profile.Page";
+import EditProfilePage from "@/modules/users/pages/edit-profile.Page";
+import UserManagementPage from "@/modules/users/pages/user-management.Page";
 
 export const router = createBrowserRouter([
   {
@@ -71,27 +78,34 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <NotFoundPage /> },
 
-          { path: "users-management", element: <UserManagementPage /> },
+          {
+            path: "users-management",
+            children: [
+              { index: true, element: <UserManagementPage /> },
+              { path: "view-profile", element: <ViewProfilePage /> },
+              { path: "edit-profile", element: <EditProfilePage /> },
+            ],
+          },
 
           { path: "pending-verifications", element: <PendingVerifications /> },
 
-            {
-          path: "giveaway",
-          children: [
-            { index: true, element: <GiveawayManagement /> },
-
-            { path: "prizes", element: <CreatePrize /> },
-            { path: "campaigns", element: <Campaigns /> },
-          ],
-        },
           {
-        path: "support",
-        children: [
-          { index: true, element: <MyTicketsPage /> },
-          { path: "contact", element: <ContactSupportPage /> },
-          { path: "ticket/:ticketId", element: <TicketWrapper /> },
-        ],
-      },
+            path: "giveaway",
+            children: [
+              { index: true, element: <GiveawayManagement /> },
+
+              { path: "prizes", element: <CreatePrize /> },
+              { path: "campaigns", element: <Campaigns /> },
+            ],
+          },
+          {
+            path: "support",
+            children: [
+              { index: true, element: <MyTicketsPage /> },
+              { path: "contact", element: <ContactSupportPage /> },
+              { path: "ticket/:ticketId", element: <TicketWrapper /> },
+            ],
+          },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],
@@ -100,7 +114,6 @@ export const router = createBrowserRouter([
       {
         path: "membership",
         children: [
-        
           { index: true, element: <NotFoundPage /> },
 
           { path: "billing", element: <>Billings</> },

@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "heading": "Total Revenue",
+    "title": "$1,250.00",
+    "badge": "+12.5%",
+    "footer": "Trending up this month",
+    "icon": "IconTrendingUp",
+    "description": "Visitors for the last 6 months"
+  },
+  {
+    "id": 2,
+    "heading": "New Customers",
+    "title": "1,234",
+    "badge": "-20%",
+    "footer": "Down 20% this period",
+    "icon": "IconTrendingDown",
+    "description": "Acquisition needs attention"
+  },
+  {
+    "id": 3,
+    "heading": "Active Accounts",
+    "title": "45,678",
+    "badge": "+12.5%",
+    "footer": "Strong user retention",
+    "icon": "IconTrendingUp",
+    "description": "Engagement exceed targets"
+  },
+  {
+    "id": 4,
+    "heading": "Growth Rate",
+    "title": "4.5%",
+    "badge": "+4.5%",
+    "footer": "Steady performance increase",
+    "icon": "IconTrendingUp",
+    "description": "Meets growth projections"
+  }
+]
