@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import {
   flexRender,
@@ -33,6 +31,7 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconFilter,
+  IconLoader,
   IconSearch,
 } from "@tabler/icons-react";
 import { Label } from "../ui/label";
@@ -45,32 +44,58 @@ import {
 } from "../ui/select";
 
 export function DataTable({
+  // columns,
+  // data,
+  // searchPlaceholder = "Search all columns...",
+  // globalFilter,
+  // setGlobalFilter,
   columns,
   data,
+  rowCount, // Total count from API
+  pagination, // { pageIndex, pageSize }
+  onPaginationChange,
   searchPlaceholder = "Search all columns...",
+  globalFilter,
+  setGlobalFilter,
+  isLoading,
 }) {
   const [sorting, setSorting] = React.useState([]);
-  const [globalFilter, setGlobalFilter] = React.useState(""); // Switch to Global
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  // const table = useReactTable({
+  //   data,
+  //   columns,
+  //   onSortingChange: setSorting,
+  //   onGlobalFilterChange: setGlobalFilter, // Update global filter
+  //   getCoreRowModel: getCoreRowModel(),
+  //   getPaginationRowModel: getPaginationRowModel(),
+  //   getSortedRowModel: getSortedRowModel(),
+  //   getFilteredRowModel: getFilteredRowModel(), // Required for filtering
+  //   onColumnVisibilityChange: setColumnVisibility,
+  //   onRowSelectionChange: setRowSelection,
+  //   state: {
+  //     sorting,
+  //     globalFilter, // Bind state
+  //     columnVisibility,
+  //     rowSelection,
+  //   },
+  // });
 
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
-    onGlobalFilterChange: setGlobalFilter, // Update global filter
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(), // Required for filtering
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
+    rowCount,
+    manualPagination: true, // 3️⃣ Disable client-side pagination
     state: {
-      sorting,
-      globalFilter, // Bind state
-      columnVisibility,
-      rowSelection,
+      pagination,
+      globalFilter,
     },
+    onPaginationChange, // 4️⃣ Capture page changes
+    onGlobalFilterChange: setGlobalFilter,
+    getCoreRowModel: getCoreRowModel(),
+    // getPaginationRowModel: getPaginationRowModel(), // 5️⃣ Remove this
+    manualFiltering: true, // Enable manual filtering for API search
   });
 
   return (
@@ -86,6 +111,7 @@ export function DataTable({
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
         </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -117,7 +143,13 @@ export function DataTable({
         </DropdownMenu>
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-md border relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+            <IconLoader className="animate-spin text-blue-600" />
+          </div>
+        )}
+
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -239,6 +271,51 @@ export function DataTable({
             >
               <span className="sr-only">Go to last page</span>
               <IconChevronsRight />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex items-center justify-between px-4">
+        <div className="flex w-full items-center gap-8 lg:w-fit">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium">Rows per page</p>
+            <Select
+              value={`${pagination.pageSize}`}
+              onValueChange={(value) => table.setPageSize(Number(value))}
+            >
+              <SelectTrigger className="h-8 w-[70px]">
+                <SelectValue placeholder={pagination.pageSize} />
+              </SelectTrigger>
+              <SelectContent side="top">
+                {[10, 20, 30, 40, 50].map((size) => (
+                  <SelectItem key={size} value={`${size}`}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="text-sm font-medium">
+            Page {pagination.pageIndex + 1} of {table.getPageCount()}
+          </div>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <IconChevronLeft />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <IconChevronRight />
             </Button>
           </div>
         </div>

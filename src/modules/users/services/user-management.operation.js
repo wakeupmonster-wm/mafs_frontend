@@ -25,3 +25,41 @@ export const verifyUserProfileApi = async (userId, payload) => {
     payload
   );
 };
+
+// export const exportUsersApi = async (filters = {}) => {
+//   try {
+//     const response = await apiConnector(
+//       "GET",
+//       USERENDPOINTS.GETEXPORTALLUSER,
+//       null,
+//       null,
+//       filters
+//     );
+//     return response; // Return the actual data ({success: true, downloadUrl: ...})
+//   } catch (err) {
+//     console.error("API Export Error:", err);
+//     throw err; // 🚨 IMPORTANT: Throw the error so createAsyncThunk can catch it
+//   }
+// };
+
+/*
+❌ axios for streaming → never works
+✅ fetch for streaming → industry standard
+*/
+
+export const exportUsersApi = async (filters = {}) => {
+  const token = localStorage.getItem("access_Token");
+
+  // Convert filters object to query string
+  const queryParams = new URLSearchParams(filters).toString();
+  const url = `${USERENDPOINTS.GETEXPORTALLUSER}?${queryParams}`;
+
+  // We use native fetch because it supports the ReadableStream API
+  // without buffering the entire response first.
+  return await fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
