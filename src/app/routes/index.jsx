@@ -25,6 +25,10 @@ import BusinessPage from "@/modules/businesses/pages/businesses.page";
 import ViewProfilePage from "@/modules/users/pages/view-profile.Page";
 import EditProfilePage from "@/modules/users/pages/edit-profile.Page";
 import UserManagementPage from "@/modules/users/pages/user-management.Page";
+import FAQSPage from "@/modules/cms/pages/faqs.page";
+import PrivacyAndPolicyPage from "@/modules/cms/pages/privacy-policy.page";
+import TermAndConditionsPage from "@/modules/cms/pages/terms-conditions.page";
+import FAQEditView from "@/modules/cms/components/faqs-edit-view.page";
 
 export const router = createBrowserRouter([
   {
@@ -37,17 +41,13 @@ export const router = createBrowserRouter([
         element: <AuthLayout />,
         children: [
           { index: true, element: <NotFoundPage /> },
-
           { path: "login", element: <LoginPage /> },
-
           {
             path: "forgot-password",
             element: <ForgotPasswordPage />, // This is the layout/parent
             children: [
               { index: true, element: <RequestResetEmailForm /> }, // The initial "Enter Email" step
-
               { path: "verify-email", element: <VerifyEmailOtp /> }, // The "Enter Code" step
-
               { path: "new-password", element: <ForgotPasswordForm /> }, // The "Set New Password" step
             ],
           },
@@ -137,9 +137,16 @@ export const router = createBrowserRouter([
         path: "cms",
         children: [
           { index: true, element: <NotFoundPage /> },
-          { path: "faqs", element: <>FAQ's</> },
-          { path: "privacy-policy", element: <>Privacy And Policy</> },
-          { path: "terms-conditions", element: <>Terms & Conditions</> },
+          {
+            path: "faqs",
+            children: [
+              { index: true, element: <FAQSPage /> },
+              { path: "edit", element: <FAQEditView /> },
+              { path: "edit/:id", element: <FAQEditView /> },
+            ],
+          },
+          { path: "privacy-policy", element: <PrivacyAndPolicyPage /> },
+          { path: "terms-conditions", element: <TermAndConditionsPage /> },
         ],
       },
       { path: "settings", element: <>Settings</> },

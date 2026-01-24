@@ -1,0 +1,74 @@
+[
+  {
+    "order": 1,
+    "category": "general",
+    "question": "What is Match At First Swipe?",
+    "answer": "Match At First Swipe is a dating app designed to help you meet new people, make meaningful connections, and find potential matches based on your interests and preferences."
+  },
+  {
+    "order": 2,
+    "category": "general",
+    "question": "How do I create a Match At First Swipe account?",
+    "answer": "You are matched based on preferences, location, and mutual interest. A match occurs when both users swipe right."
+  },
+  {
+    "order": 3,
+    "category": "general",
+    "question": "Who can use Match At First Swipe?",
+    "answer": "The app is available for users aged 18 years and above."
+  },
+  {
+    "order": 4,
+    "category": "account",
+    "question": "How do I create an account?",
+    "answer": "You can sign up using your mobile number or social login and complete your profile to start matching."
+  },
+  {
+    "order": 5,
+    "category": "account",
+    "question": "How can I delete my account?",
+    "answer": "Go to Settings > Account > Delete Account. Your data will be permanently removed."
+  },
+  {
+    "order": 6,
+    "category": "dating",
+    "question": "How does matching work?",
+    "answer": "You are matched based on preferences, location, and mutual interest. A match occurs when both users swipe right."
+  },
+  {
+    "order": 7,
+    "category": "dating",
+    "question": "Can I undo a swipe?",
+    "answer": "Undo swipe is available for premium users only."
+  },
+  {
+    "order": 8,
+    "category": "subscriptions",
+    "question": "Is Match At First Swipe free?",
+    "answer": "Yes, basic features are free. Premium plans unlock advanced features."
+  },
+  {
+    "order": 9,
+    "category": "troubleshooting",
+    "question": "I am not receiving OTP. What should I do?",
+    "answer": "Ensure your phone has network coverage and try again after a few minutes."
+  },
+  {
+    "order": 10,
+    "category": "security_privacy",
+    "question": "Is my personal data safe?",
+    "answer": "Yes, we use industry-standard security practices to protect your data."
+  },
+  {
+    "order": 11,
+    "category": "safety_reporting",
+    "question": "How do I report inappropriate behavior?",
+    "answer": "Tap on the user profile and select the report option with a reason."
+  },
+  {
+    "order": 12,
+    "category": "other",
+    "question": "How can I contact support?",
+    "answer": "You can contact support through the Help section in the app."
+  }
+]

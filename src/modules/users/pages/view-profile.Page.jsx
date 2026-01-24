@@ -660,8 +660,6 @@
 //   );
 // }
 
-;
-
 import React from "react";
 import { useLocation, useNavigate } from "react-router";
 import {
@@ -690,6 +688,8 @@ import {
   IconBrandFacebook,
   IconBrandTwitter,
   IconBrandSnapchat,
+  IconBan,
+  IconAlertCircle,
 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -708,12 +708,34 @@ import {
 import { BanUserModal } from "../components/ban-user-modal";
 import BanAlert from "../components/banAlert";
 import { cn } from "@/lib/utils";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  bannedUserProfile,
+  suspendUserProfile,
+  unbanUserProfile,
+} from "../store/user.slice";
+import { toast } from "sonner";
+import ConfirmModal from "@/components/common/ConfirmModal";
+import { SuspendUserModal } from "../components/suspendUserModal";
 
 export default function ViewProfilePage() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const userData = location.state?.userData;
   const [isBanModalOpen, setIsBanModalOpen] = React.useState(false);
+  const [isUnbannedOpen, setIsUnbannedOpen] = React.useState(false);
+  const [isSuspendModalOpen, setIsSuspendModalOpen] = React.useState(false);
+
+  // Get initial data from location
+  const initialUserData = location.state?.userData;
+
+  // Sync with Redux store to get "live" updates (status changes, etc.)
+  const liveUser = useSelector((state) =>
+    state.users.items.find((u) => u._id === initialUserData?._id)
+  );
+
+  // Fallback to initial data if not found in store yet
+  const userData = liveUser || initialUserData;
 
   if (!userData) {
     return (
@@ -736,14 +758,58 @@ export default function ViewProfilePage() {
 
   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
 
-  const handleBanConfirm = async (reason) => {
-    console.log(`Banning user ${userData._id} for: ${reason}`);
-    // dispatch(banUser({ id: userData._id, reason }));
+  const handleBanConfirm = async (category, reason) => {
+    const userId = userData._id;
+    try {
+      await dispatch(bannedUserProfile({ userId, category, reason })).unwrap();
+      toast.success("User banned successfully", {
+        description: `${profile?.nickname} is now restricted.`,
+      });
+      setIsBanModalOpen(false);
+    } catch (error) {
+      toast.error(error || "Failed to ban user");
+    }
   };
 
-  const handleVerification = (status) => {
-    console.log(`Updating verification for ${userData._id} to: ${status}`);
-    // dispatch(updateKYC({ id: userData._id, status }));
+  // 2. New Unban Handler
+  const handleUnban = async () => {
+    try {
+      await dispatch(unbanUserProfile(userData._id)).unwrap();
+      toast.success("Account Restored", {
+        description: `${profile?.nickname} can now access their profile.`,
+      });
+      setIsUnbannedOpen(false);
+    } catch (err) {
+      toast.error(err || "Failed to unban user");
+    }
+  };
+
+  const handleVerification = async (status) => {
+    try {
+      // Assuming you create a verifyUserProfile thunk later
+      // await dispatch(verifyUserProfile({ userId: userData._id, status })).unwrap();
+      toast.success(`Identity ${status}`);
+    } catch (err) {
+      toast.error("Failed to update verification");
+    }
+  };
+
+  const handleSuspendConfirm = async (reason, duration) => {
+    try {
+      await dispatch(
+        suspendUserProfile({
+          userId: userData._id,
+          reason,
+          durationHours: Number(duration),
+        })
+      ).unwrap();
+      toast.success("User Suspended", {
+        description: `Access restricted for ${duration} hours.`,
+      });
+      setIsSuspendModalOpen(false);
+    } catch (err) {
+      toast.error(err || "Failed to suspend user");
+    }
   };
 
   // Social Media Config mapping
@@ -803,10 +869,22 @@ export default function ViewProfilePage() {
 
           <div className="flex items-center gap-3">
             <Badge
-              variant={isBanned ? "destructive" : "default"}
-              className="px-4 py-1.5 shadow-sm"
+              variant={
+                isBanned
+                  ? "destructive"
+                  : account.status === "suspended" ||
+                    userData.accountStatus === "suspended"
+                  ? "warning"
+                  : "default"
+              }
+              className={cn(
+                "px-4 py-1.5 shadow-sm",
+                (account.status === "suspended" ||
+                  userData.accountStatus === "suspended") &&
+                  "bg-orange-500 hover:bg-orange-500 text-white"
+              )}
             >
-              {account.status?.toUpperCase()}
+              {(account.status || userData.accountStatus)?.toUpperCase()}
             </Badge>
 
             <DropdownMenu>
@@ -815,9 +893,11 @@ export default function ViewProfilePage() {
                   <IconSettings className="mr-2 h-4 w-4" /> Manage Account
                 </Button>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
+
                 <DropdownMenuItem
                   onClick={() =>
                     navigate("../edit-profile", { state: { userData } })
@@ -828,9 +908,13 @@ export default function ViewProfilePage() {
                 <DropdownMenuItem>
                   <IconMail className="mr-2 h-4 w-4" /> Message User
                 </DropdownMenuItem>
+
                 <DropdownMenuSeparator />
                 {isBanned ? (
-                  <DropdownMenuItem className="text-green-600 font-medium">
+                  <DropdownMenuItem
+                    className="text-green-600 font-medium"
+                    onClick={() => setIsUnbannedOpen(true)}
+                  >
                     Unban User
                   </DropdownMenuItem>
                 ) : (
@@ -838,7 +922,16 @@ export default function ViewProfilePage() {
                     className="text-destructive font-medium"
                     onClick={() => setIsBanModalOpen(true)}
                   >
+                    <IconBan className="mr-2 h-4 w-4 text-red-500" />
                     Ban User Account
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuSeparator />
+                {!isBanned && account.status !== "suspended" && (
+                  <DropdownMenuItem onClick={() => setIsSuspendModalOpen(true)}>
+                    <IconAlertCircle className="mr-2 h-4 w-4 text-orange-500" />
+                    Suspend User
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -1369,11 +1462,29 @@ export default function ViewProfilePage() {
         </div>
       </div>
 
+      {/* --- MODALS --- */}
+      <SuspendUserModal
+        isOpen={isSuspendModalOpen}
+        onClose={() => setIsSuspendModalOpen(false)}
+        onConfirm={handleSuspendConfirm}
+        userName={profile?.nickname}
+      />
+
       <BanUserModal
         isOpen={isBanModalOpen}
         onClose={() => setIsBanModalOpen(false)}
         onConfirm={handleBanConfirm}
         userName={profile?.nickname}
+      />
+
+      <ConfirmModal
+        isOpen={isUnbannedOpen}
+        onClose={() => setIsUnbannedOpen(false)}
+        onConfirm={handleUnban}
+        title="Unban User?"
+        message={`Are you sure you want to restore access for ${profile?.nickname}? they will be able to use the app immediately.`}
+        confirmText="Restore Access"
+        type="warning" // Changed to warning as it's a "positive" restoration
       />
     </>
   );

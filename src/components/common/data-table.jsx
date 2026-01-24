@@ -58,6 +58,7 @@ export function DataTable({
   globalFilter,
   setGlobalFilter,
   isLoading,
+  meta,
 }) {
   const [sorting, setSorting] = React.useState([]);
   const [columnVisibility, setColumnVisibility] = React.useState({});
@@ -96,6 +97,7 @@ export function DataTable({
     getCoreRowModel: getCoreRowModel(),
     // getPaginationRowModel: getPaginationRowModel(), // 5️⃣ Remove this
     manualFiltering: true, // Enable manual filtering for API search
+    meta: meta,
   });
 
   return (

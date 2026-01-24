@@ -120,3 +120,92 @@
     font-family: "Plus Jakarta Sans", sans-serif;
   }
 }
+
+/* Fix Preview Typography (The standard Tailwind reset fix) */
+.preview-content {
+  color: #334155; /* slate-700 */
+  line-height: 1.6;
+  font-size: 1rem;
+
+  /* This forces the text to wrap even if there are no spaces */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+
+  /* Ensures the container itself doesn't expand horizontally */
+  max-width: 100%;
+}
+
+.preview-content p {
+  margin-bottom: 1.25rem;
+}
+
+.preview-content strong {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.preview-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.preview-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.preview-content h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+}
+.preview-content h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.25rem;
+}
+
+.preview-content a {
+  color: #2563eb; /* blue-600 */
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+/* Container styling */
+.quill-modern-container .ql-toolbar.ql-snow {
+  border: 1px solid #e2e8f0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #fafafa;
+  padding: 12px;
+}
+
+.quill-modern-container .ql-container.ql-snow {
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  min-height: 260px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 14px;
+}
+
+.quill-modern-container .ql-editor {
+  min-height: 200px;
+  color: var(--grey-800);
+  line-height: 1.8;
+}
+
+/* Customizing the toolbar button active state */
+.quill-modern-container .ql-snow.ql-toolbar button:hover,
+.quill-modern-container .ql-snow.ql-toolbar button.ql-active {
+  color: #7c3aed !important;
+}
+
+.quill-modern-container .ql-snow.ql-toolbar button:hover .ql-stroke,
+.quill-modern-container .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+  stroke: #7c3aed !important;
+}
+

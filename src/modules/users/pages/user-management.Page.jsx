@@ -6,9 +6,11 @@ import { toast } from "sonner";
 import { userColumns } from "@/components/common/userColumns";
 import { DataTable } from "@/components/common/data-table";
 import {
+  bannedUserProfile,
   exportUsersStream,
   fetchUsers,
 } from "@/modules/users/store/user.slice";
+import { BanUserModal } from "../components/ban-user-modal";
 
 // export default function UserManagementPage() {
 //   const dispatch = useDispatch();
@@ -197,6 +199,8 @@ export default function UserManagementPage() {
     exportLoading,
     exportProgress,
   } = useSelector((state) => state.users);
+  const [isBanModalOpen, setIsBanModalOpen] = useState(false);
+  const [selectedUserForBan, setSelectedUserForBan] = useState(null);
 
   // 6️⃣ Local state to track table's pagination
   const [pagination, setPagination] = useState({
@@ -265,6 +269,28 @@ export default function UserManagementPage() {
 
   console.log("items: ", items);
 
+  const handleBanClick = (user) => {
+    setSelectedUserForBan(user);
+    setIsBanModalOpen(true);
+  };
+
+  const handleBanConfirm = async (category, reason) => {
+    try {
+      await dispatch(
+        bannedUserProfile({
+          userId: selectedUserForBan._id,
+          category,
+          reason,
+        })
+      ).unwrap();
+
+      toast.success("User banned successfully");
+      setIsBanModalOpen(false);
+    } catch (error) {
+      toast.error(error || "Failed to ban user");
+    }
+  };
+
   return (
     <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen relative">
       <div className="flex items-center justify-between">
@@ -318,6 +344,9 @@ export default function UserManagementPage() {
           setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to page 1 on search
         }}
         isLoading={loading}
+        meta={{
+          onBan: (user) => handleBanClick(user),
+        }}
       />
 
       {/* --- FLOATING PROGRESS BAR (Controlled by Redux) --- */}
@@ -339,6 +368,14 @@ export default function UserManagementPage() {
           </div>
         </div>
       )}
+
+      {/* ADD THE MODAL HERE */}
+      <BanUserModal
+        isOpen={isBanModalOpen}
+        onClose={() => setIsBanModalOpen(false)}
+        onConfirm={handleBanConfirm}
+        userName={selectedUserForBan?.profile?.nickname || "this user"}
+      />
     </div>
   );
 }

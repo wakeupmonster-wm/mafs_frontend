@@ -272,10 +272,11 @@ export const userColumns = [
   {
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const user = row.original;
       const navigate = useNavigate();
-
+      // Access the ban handler from table meta
+      const onBan = table.options.meta?.onBan;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -290,14 +291,6 @@ export const userColumns = [
               Copy User ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem onClick={navigate("../view-profile")}>
-              View Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
-              Ban Account
-            </DropdownMenuItem> */}
-
-            {/* OPTION A: Relative Path */}
             <DropdownMenuItem
               onClick={() =>
                 navigate(`./view-profile`, {
@@ -307,8 +300,6 @@ export const userColumns = [
             >
               View Profile
             </DropdownMenuItem>
-
-            {/* OPTION B: Absolute Path (Recommended) */}
             <DropdownMenuItem
               onClick={() =>
                 navigate(`./edit-profile`, {
@@ -318,7 +309,12 @@ export const userColumns = [
             >
               Edit Details
             </DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={() => {
+                onBan(user); // Call the function passed via meta
+              }}
+            >
               Ban Account
             </DropdownMenuItem>
           </DropdownMenuContent>

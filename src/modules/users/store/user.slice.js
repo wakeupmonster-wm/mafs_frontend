@@ -1,8 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  bannedUserAPI,
   exportUsersApi,
   getALLUserListApi,
   getAllPendingVerificationsApi,
+  suspendUserAPI,
+  unBannedUserAPI,
   verifyUserProfileApi,
 } from "../services/user-management.operation";
 
@@ -178,6 +181,64 @@ export const exportUsersStream = createAsyncThunk(
   }
 );
 
+export const bannedUserProfile = createAsyncThunk(
+  "users/bannedUserProfile",
+  async ({ userId, category, reason }, { rejectWithValue }) => {
+    try {
+      // Pass userId separately and group category/reason into the payload object
+      const response = await bannedUserAPI({
+        userId,
+        payload: { category, reason },
+      });
+
+      console.log("response: ", response);
+
+      if (!response.success) {
+        return rejectWithValue(response.message);
+      }
+
+      return { userId, category, reason };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Ban failed");
+    }
+  }
+);
+
+// Thunk for Unbanning
+export const unbanUserProfile = createAsyncThunk(
+  "users/unbanUserProfile",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await unBannedUserAPI(userId);
+      console.log("response: ", response);
+      if (!response.success) return rejectWithValue(response.message);
+      return { userId };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Unban failed");
+    }
+  }
+);
+
+export const suspendUserProfile = createAsyncThunk(
+  "users/suspendUserProfile",
+  async ({ userId, reason, durationHours }, { rejectWithValue }) => {
+    try {
+      const response = await suspendUserAPI({
+        userId,
+        payload: { reason, durationHours },
+      });
+
+      if (!response.success) return rejectWithValue(response.message);
+
+      return { userId, reason, durationHours };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Suspension failed"
+      );
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -220,6 +281,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      /* FETCH USER DATA LIST */
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -233,6 +295,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      /* PENDING USERVERIFICATION */
       .addCase(fetchPendingVerifications.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -246,11 +309,100 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      /* VERIFY USER PROFILE */
       .addCase(verifyUserProfile.fulfilled, (state, action) => {
         state.pendingVerifications = state.pendingVerifications.filter(
           (item) => item.userId !== action.payload.userId
         );
       })
+      /* BANNED USER SUCCESS */
+      .addCase(bannedUserProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(bannedUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId, category, reason } = action.payload;
+
+        const user = state.items.find(
+          (u) => u._id === userId || u.id === userId
+        );
+        if (user) {
+          // Aligning with both potential frontend/backend property names
+          user.accountStatus = "banned";
+          if (user.account) user.account.status = "banned";
+
+          user.account.banDetails = {
+            isBanned: true,
+            reason,
+            category,
+            bannedAt: new Date().toISOString(),
+          };
+        }
+      })
+      .addCase(bannedUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* UNBAN USER SUCCESS */
+      .addCase(unbanUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(unbanUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId } = action.payload;
+
+        const user = state.items.find(
+          (u) => u._id === userId || u.id === userId
+        );
+        if (user) {
+          // Update status to active as per backend controller
+          user.accountStatus = "active";
+          if (user.account) user.account.status = "active";
+
+          // Cleanup ban details
+          if (user.account.banDetails) {
+            user.account.banDetails.isBanned = false;
+            user.account.banDetails.unbannedAt = new Date().toISOString();
+          }
+        }
+      })
+      .addCase(unbanUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* SUSPEND USER SUCCESS */
+      .addCase(suspendUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(suspendUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId, reason, durationHours } = action.payload;
+        const user = state.items.find(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (user) {
+          user.accountStatus = "suspended";
+          if (user.account) user.account.status = "suspended";
+
+          const suspendUntil = new Date(
+            Date.now() + durationHours * 60 * 60 * 1000
+          ).toISOString();
+
+          user.suspensionDetails = {
+            isSuspended: true,
+            reason,
+            suspendedAt: new Date().toISOString(),
+            suspendUntil,
+          };
+        }
+      })
+      .addCase(suspendUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* BULK EXPORT USER DATA CSV FILE */
       .addCase(exportUsersStream.pending, (state) => {
         state.exportLoading = true;
         state.exportProgress = 0;
@@ -264,6 +416,7 @@ const userSlice = createSlice({
       });
   },
 });
+
 export const {
   setExportProgress,
   setPagination,

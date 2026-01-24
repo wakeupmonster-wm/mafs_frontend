@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "data": {
+    "status": "Publish",
+    "_id": "695df1dfa98c9b369a3f9650",
+    "__v": 0,
+    "createdAt": "2026-01-07T05:40:47.475Z",
+    "sections": [
+      {
+        "order": 1,
+        "heading": "Data Collection",
+        "paragraph": "",
+        "list": [
+          "Match At First Swipe collects user data, including personal information, to provide and improve our services.",
+          "Information collected may include profile data, location, and usage patterns."
+        ],
+        "_id": "695df1df89a9f0a55559eb7e"
+      },
+      {
+        "order": 2,
+        "heading": "Data Use",
+        "paragraph": "",
+        "list": [
+          "We use data to facilitate matching, communication and personalize of the app.",
+          "Your data may be shared with third-party service providers for app functionality"
+        ],
+        "_id": "695df2d98a3584938b010ec8"
+      },
+      {
+        "order": 3,
+        "heading": "Data Protection",
+        "paragraph": "Match At First Swipe employs security measures to protect user data. However, no system is entirely foolproof, and we cannot guarantee absolute security.",
+        "list": [],
+        "_id": "695df2f88a3584938b010ece"
+      },
+      {
+        "order": 4,
+        "heading": "Cookies and Analytics",
+        "paragraph": "We use cookies and analytics tools to gather information about app usage, improve our services, and deliver targeted content.",
+        "list": [],
+        "_id": "695df3168a3584938b010ed5"
+      },
+      {
+        "order": 5,
+        "heading": "Third-Party Links",
+        "paragraph": "Match At First Swipe may contain links to third-party websites or services. We are not responsible for their privacy practices.",
+        "list": [],
+        "_id": "695df33d8a3584938b010edd"
+      }
+    ],
+    "title": "Privacy & Policy",
+    "updatedAt": "2026-01-07T07:24:41.798Z"
+  }
+}

@@ -1,5 +1,3 @@
-
-
 import React, { useState } from "react";
 import {
   Dialog,
@@ -29,10 +27,11 @@ export function BanUserModal({ isOpen, onClose, onConfirm, userName }) {
   const handleSubmit = async () => {
     setLoading(true);
     // Combine category and specific reason
-    const finalReason = `${category}: ${reason}`;
-    await onConfirm(finalReason);
+    // const finalReason = `${category reason}`;
+    await onConfirm(category, reason);
     setLoading(false);
     onClose();
+    setReason("");
   };
 
   return (
@@ -57,16 +56,18 @@ export function BanUserModal({ isOpen, onClose, onConfirm, userName }) {
                 <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Fake Profile">Fake Profile / Bot</SelectItem>
-                <SelectItem value="Harassment">
-                  Harassment / Abusive Behavior
+                <SelectItem value="Fake Profile/Bot">
+                  Fake Profile /Bot
                 </SelectItem>
-                <SelectItem value="Inappropriate Content">
+                <SelectItem value="Harassment/Abusive Behavior">
+                  Harassment /Abusive Behavior
+                </SelectItem>
+                <SelectItem value="Inappropriate Photos/Bio">
                   Inappropriate Photos/Bio
                 </SelectItem>
-                <SelectItem value="Underage">Underage User</SelectItem>
-                <SelectItem value="Scamming">
-                  Solicitation / Scamming
+                <SelectItem value="Underage User">Underage User</SelectItem>
+                <SelectItem value="Solicitation /Scamming">
+                  Solicitation /Scamming
                 </SelectItem>
                 <SelectItem value="Other">Other Reason</SelectItem>
               </SelectContent>
@@ -74,7 +75,7 @@ export function BanUserModal({ isOpen, onClose, onConfirm, userName }) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="reason">Internal Notes (Optional)</Label>
+            <Label htmlFor="reason">Internal Notes (reason)</Label>
             <Textarea
               id="reason"
               placeholder="Provide more details for other admins..."

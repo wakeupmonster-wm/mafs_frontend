@@ -63,3 +63,19 @@ export const exportUsersApi = async (filters = {}) => {
     },
   });
 };
+
+export const bannedUserAPI = async ({ userId, payload }) => {
+  return apiConnector("POST", `/api/v1/admintest/users/${userId}/ban`, payload);
+};
+
+export const unBannedUserAPI = async (userId) => {
+  return apiConnector("POST", `/api/v1/admintest/users/${userId}/unban`, {});
+};
+
+export const suspendUserAPI = async ({ userId, payload }) => {
+  return apiConnector(
+    "POST",
+    `/api/v1/admintest/users/${userId}/suspend`,
+    payload
+  );
+};
