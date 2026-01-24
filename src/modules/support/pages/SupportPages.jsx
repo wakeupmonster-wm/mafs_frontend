@@ -555,7 +555,7 @@ export function ContactSupportPage() {
 export function MyTicketsPage() {
   const dispatch = useDispatch();
   const { tickets, loading, error } = useSelector((s) => s.support);
-
+console.log(tickets,"tickest")
   useEffect(() => {
     dispatch(fetchMyTickets());
   }, [dispatch]);

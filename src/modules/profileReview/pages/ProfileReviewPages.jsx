@@ -347,6 +347,7 @@ import {
   XCircle,
   Ban,
   ArrowLeft,
+  Reply,
 } from "lucide-react";
 import {
   fetchReportedProfiles,
@@ -1053,6 +1054,12 @@ export function ProfileReviewDetailPage({ userId }) {
                           <div className="flex items-center gap-2">
                             <Ban className="w-4 h-4 text-red-600" />
                             Ban User
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="reply">
+                          <div className="flex items-center gap-2">
+                            <Reply className="w-4 h-4 text-red-600" />
+                            reply to reporter
                           </div>
                         </SelectItem>
                       </SelectContent>

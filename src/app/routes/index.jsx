@@ -23,6 +23,9 @@ import {
   ReportedProfilesPage,
   ProfileReviewDetailPage,
 } from "@/modules/profileReview/pages/ProfileReviewPages";
+import ChatReportedList from "@/modules/chatManagement/pages/ChatReportedList";
+import ChatReviewDetail from "@/modules/chatManagement/pages/ChatReviewDetail";
+import NotificationManagementPages from "@/modules/notificationManagement/pages/NotificationManagementPages";
 import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
 import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
@@ -116,6 +119,14 @@ export const router = createBrowserRouter([
               { path: ":userId", element: <ProfileReviewWrapper /> },
             ],
           },
+          {
+            path: "chat",
+            children: [
+              { index: true, element: <ChatReportedList /> },
+              { path: ":matchId", element: <ChatReviewWrapper /> },
+            ],
+          },
+          { path: "notifications", element: <NotificationManagementPages /> },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],
@@ -173,4 +184,10 @@ function TicketWrapper() {
 function ProfileReviewWrapper() {
   const { userId } = useParams();
   return <ProfileReviewDetailPage userId={userId} />;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+function ChatReviewWrapper() {
+  const { matchId } = useParams();
+  return <ChatReviewDetail matchId={matchId} />;
 }

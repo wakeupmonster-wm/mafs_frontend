@@ -38,11 +38,11 @@ const navigationData = {
     //   url: "/admin/kpi",
     //   icon: IconChecklist, // metrics, performance indicators
     // },
-    {
-      title: "Quick Actions",
-      url: "/admin/quick-actions",
-      icon: IconBolt, // fast actions, shortcuts
-    },
+    // {
+    //   title: "Quick Actions",
+    //   url: "/admin/quick-actions",
+    //   icon: IconBolt, // fast actions, shortcuts
+    // },
     // {
     //   title: "Team",
     //   url: "#",
@@ -67,24 +67,24 @@ const navigationData = {
     },
     {
       title: "Chat overview & Actions",
-      url: "/admin/management/offer-management",
+      url: "/admin/management/chat",
       icon: IconDiscount2, // offers, promotions, discounts
     },
-    {
-      title: "Reported Chats",
-      url: "/admin/management/offer-management",
-      icon: IconDiscount2, // offers, promotions, discounts
-    },
-    {
-      title: "Reports & Safety",
-      url: "/admin/management/offer-management",
-      icon: IconDiscount2, // offers, promotions, discounts
-    },
-    {
-      title: "Block Management",
-      url: "/admin/management/offer-management",
-      icon: IconDiscount2, // offers, promotions, discounts
-    },
+    // {
+    //   title: "Reported Chats",
+    //   url: "/admin/management/offer-management",
+    //   icon: IconDiscount2, // offers, promotions, discounts
+    // },
+    // {
+    //   title: "Reports & Safety",
+    //   url: "/admin/management/offer-management",
+    //   icon: IconDiscount2, // offers, promotions, discounts
+    // },
+    // {
+    //   title: "Block Management",
+    //   url: "/admin/management/offer-management",
+    //   icon: IconDiscount2, // offers, promotions, discounts
+    // },
     {
       title: "Subscriptions & Payments",
       url: "/admin/management/offer-management",
@@ -97,7 +97,7 @@ const navigationData = {
     },
     {
       title: "Notifications Management",
-      url: "/admin/management/offer-management",
+      url: "/admin/management/notifications",
       icon: IconDiscount2, // offers, promotions, discounts
     },
      {
@@ -117,94 +117,94 @@ const navigationData = {
     },
   ],
   navPlateform: [
-    {
-      title: "Membership & Billings",
-      icon: IconCreditCard, // subscriptions, payments, billing
-      items: [
-        {
-          title: "Billings",
-          url: "/admin/membership/billing",
-        },
-        {
-          title: "View Subscriptions",
-          url: "/admin/membership/subscriptions",
-        },
-        {
-          title: "Manual Entitlements & Trials",
-          url: "/admin/membership/entitlements",
-        },
-        {
-          title: "Configure SKUs & Pricing",
-          url: "/admin/membership/pricing",
-        },
-      ],
-    },
-    {
-      title: "Reports & Moderation",
-      icon: IconAlertCircle, // safety, abuse, moderation
-      items: [
-        {
-          title: "Report Queue",
-          url: "/admin/report-moderation/report-queue",
-        },
-        {
-          title: "Blocked & Banned Users",
-          url: "/admin/report-moderation/block-banned-users",
-        },
-      ],
-    },
-    {
-      title: "CMS",
-      icon: IconFileText, // content management
-      items: [
-        {
-          title: "FAQ's",
-          url: "/admin/cms/faqs",
-        },
-        {
-          title: "Privacy And Policy",
-          url: "/admin/cms/privacy-policy",
-        },
-        {
-          title: "Terms & Conditions",
-          url: "/admin/cms/terms-conditions",
-        },
-      ],
-    },
+    // {
+    //   title: "Membership & Billings",
+    //   icon: IconCreditCard, // subscriptions, payments, billing
+    //   items: [
+    //     {
+    //       title: "Billings",
+    //       url: "/admin/membership/billing",
+    //     },
+    //     {
+    //       title: "View Subscriptions",
+    //       url: "/admin/membership/subscriptions",
+    //     },
+    //     {
+    //       title: "Manual Entitlements & Trials",
+    //       url: "/admin/membership/entitlements",
+    //     },
+    //     {
+    //       title: "Configure SKUs & Pricing",
+    //       url: "/admin/membership/pricing",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "Reports & Moderation",
+    //   icon: IconAlertCircle, // safety, abuse, moderation
+    //   items: [
+    //     {
+    //       title: "Report Queue",
+    //       url: "/admin/report-moderation/report-queue",
+    //     },
+    //     {
+    //       title: "Blocked & Banned Users",
+    //       url: "/admin/report-moderation/block-banned-users",
+    //     },
+    //   ],
+    // },
+    // {
+    //   title: "CMS",
+    //   icon: IconFileText, // content management
+    //   items: [
+    //     {
+    //       title: "FAQ's",
+    //       url: "/admin/cms/faqs",
+    //     },
+    //     {
+    //       title: "Privacy And Policy",
+    //       url: "/admin/cms/privacy-policy",
+    //     },
+    //     {
+    //       title: "Terms & Conditions",
+    //       url: "/admin/cms/terms-conditions",
+    //     },
+    //   ],
+    // },
   ],
   navSecondary: [
-    {
-      title: "Settings",
-      url: "/admin/settings",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
-      url: "/admin/management/support",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "/admin/search",
-      icon: IconSearch,
-    },
+    // {
+    //   title: "Settings",
+    //   url: "/admin/settings",
+    //   icon: IconSettings,
+    // },
+    // {
+    //   title: "Get Help",
+    //   url: "/admin/management/support",
+    //   icon: IconHelp,
+    // },
+    // {
+    //   title: "Search",
+    //   url: "/admin/search",
+    //   icon: IconSearch,
+    // },
   ],
   documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
     // {
-    //   name: "Word Assistant",
+    //   name: "Data Library",
     //   url: "#",
-    //   icon: IconFileWord,
+    //   icon: IconDatabase,
     // },
+    // {
+    //   name: "Reports",
+    //   url: "#",
+    //   icon: IconReport,
+    // },
+    // // {
+    // //   name: "Word Assistant",
+    // //   url: "#",
+    // //   icon: IconFileWord,
+    // // },
   ],
 };
 
