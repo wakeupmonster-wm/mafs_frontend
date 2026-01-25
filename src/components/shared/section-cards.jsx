@@ -108,8 +108,7 @@
 // }
 
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { IconTrendingUp } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -120,40 +119,21 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 
 export function SectionCards() {
-  const [kpis, setKpis] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { stats, loading, error } = useSelector((state) => state.dashboard);
+
   useEffect(() => {
-    const fetchKPIs = async () => {
-      try {
-        const token = localStorage.getItem("access_Token");
-        console.log(token);
-
-        const res = await axios.get(
-          // "https://api.matchatfirstswipe.com.au/api/v1/admintest/getkpi",
-          "http://localhost:3001/api/v1/admin/dashboard/stats/kpi",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (res.data?.success) {
-          setKpis(res.data.data.kpis);
-        }
-      } catch (error) {
-        console.error("Failed to fetch KPIs", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchKPIs();
-  }, []);
+    // Only fetch if data doesn't exist (optional caching logic)
+    if (!stats) {
+      dispatch(fetchDashboardKPIs());
+    }
+  }, [dispatch, stats]);
 
   if (loading) {
     return (
@@ -161,10 +141,11 @@ export function SectionCards() {
     );
   }
 
-  if (!kpis) {
+  // Safety check: kpis.totalUsers is required before rendering
+  if (error || !stats?.totalUsers) {
     return (
       <div className="px-4 text-sm text-red-500">
-        Failed to load dashboard data
+        {error || "Failed to load dashboard data"}
       </div>
     );
   }
@@ -179,7 +160,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Total Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.totalUsers.value}
+            {stats.totalUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -201,7 +182,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Active Users (24h)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.activeUsers24h.value}
+            {stats.activeUsers24h.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -223,7 +204,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Paid Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.paidUsers.value}
+            {stats.paidUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -243,7 +224,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Ban Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.TotalBanUsers.value}
+            {stats.TotalBanUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -287,7 +268,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Total Tickets</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.TotalTickets.value}
+            {stats.TotalTickets.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -305,7 +286,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Total Claimed Prizes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.ClaimedPrize.value}
+            {stats.ClaimedPrize.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -327,12 +308,14 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Pending Verifications</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.pendingVerifications.value}
+            {stats.pendingVerifications.value}
           </CardTitle>
           <CardAction>
             <Badge
               variant={
-                kpis.pendingVerifications.actionable ? "destructive" : "outline"
+                stats.pendingVerifications.actionable
+                  ? "destructive"
+                  : "outline"
               }
             >
               Action Needed
