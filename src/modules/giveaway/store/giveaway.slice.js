@@ -10,10 +10,68 @@ import {
   pauseCampaignApi,
   activateCampaignApi,
   deleteCampaignApi,
-  deletePrizeApi
+  deletePrizeApi,
+  bulkCreateCampaignApi,
+  getPendingDeliveriesApi,
+  markAsDeliveredApi,
+  getWinnerApi,
 } from "../services/giveaway.api";
 
+export const bulkCreateCampaign = createAsyncThunk(
+  "giveaway/bulkCreateCampaign",
+  async (payload, { rejectWithValue }) => {
+    try {
+      return await bulkCreateCampaignApi(payload);
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Bulk create failed"
+      );
+    }
+  }
+);
 
+/* ============ PENDING DELIVERIES ============ */
+export const fetchPendingDeliveries = createAsyncThunk(
+  "giveaway/fetchPendingDeliveries",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await getPendingDeliveriesApi();
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch deliveries"
+      );
+    }
+  }
+);
+
+/* ============ MARK AS DELIVERED ============ */
+export const markAsDelivered = createAsyncThunk(
+  "giveaway/markAsDelivered",
+  async (winHistoryId, { rejectWithValue }) => {
+    try {
+      await markAsDeliveredApi(winHistoryId);
+      return winHistoryId;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to mark delivered"
+      );
+    }
+  }
+);
+
+/* ============ GET WINNER ============ */
+export const fetchWinner = createAsyncThunk(
+  "giveaway/fetchWinner",
+  async (campaignId, { rejectWithValue }) => {
+    try {
+      return await getWinnerApi(campaignId);
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch winner"
+      );
+    }
+  }
+);
 export const fetchPrizes = createAsyncThunk(
   "giveaway/fetchPrizes",
   async (_, { rejectWithValue }) => {
@@ -141,6 +199,8 @@ const giveawaySlice = createSlice({
   initialState: {
     prizes: [],
     campaigns: [],
+    pendingDeliveries: [],
+    winner: [],
     loading: false,
     error: null,
   },
@@ -189,27 +249,60 @@ const giveawaySlice = createSlice({
         const c = s.campaigns.find((x) => x._id === a.payload);
         if (c) c.isActive = false;
       })
-      .addCase(activateCampaign.fulfilled, (state, action) => {
-  const c = state.campaigns.find(
-    (x) => x._id === action.payload
+      /* Pending Deliveries */
+      .addCase(fetchPendingDeliveries.fulfilled, (state, action) => {
+        state.pendingDeliveries = action.payload.data || [];
+      })
+
+      /* Mark Delivered */
+      .addCase(markAsDelivered.fulfilled, (state, action) => {
+        state.pendingDeliveries = state.pendingDeliveries.filter(
+          (d) => d._id !== action.payload
+        );
+      })
+      .addCase(fetchWinner.fulfilled, (state, action) => {
+  const winnerData = action.payload.data;
+
+  if (!Array.isArray(state.winner)) {
+    state.winner = [];
+  }
+
+  const alreadyExists = state.winner.find(
+    (w) => w.campaignId === winnerData.campaignId
   );
-  if (c) {
-    c.isActive = true;
-    c.failureReason = null;
+
+  if (!alreadyExists) {
+    state.winner.push(winnerData);
   }
 })
 
-.addCase(deleteCampaign.fulfilled, (state, action) => {
-  state.campaigns = state.campaigns.filter(
-    (c) => c._id !== action.payload
-  );
-})
 
-.addCase(deletePrize.fulfilled, (state, action) => {
-  state.prizes = state.prizes.filter(
-    (p) => p._id !== action.payload
-  );
-})
+      /* Winner */
+      // .addCase(fetchWinner.fulfilled, (state, action) => {
+      //   state.winner = action.payload.data;
+      // })
+      .addCase(activateCampaign.fulfilled, (state, action) => {
+        const c = state.campaigns.find(
+          (x) => x._id === action.payload
+        );
+        if (c) {
+          c.isActive = true;
+          c.failureReason = null;
+        }
+
+      })
+
+      .addCase(deleteCampaign.fulfilled, (state, action) => {
+        state.campaigns = state.campaigns.filter(
+          (c) => c._id !== action.payload
+        );
+      })
+
+      .addCase(deletePrize.fulfilled, (state, action) => {
+        state.prizes = state.prizes.filter(
+          (p) => p._id !== action.payload
+        );
+      })
 
 
       .addMatcher(

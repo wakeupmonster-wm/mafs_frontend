@@ -119,10 +119,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 export function SectionCards() {
   const [kpis, setKpis] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchKPIs = async () => {
@@ -169,7 +172,7 @@ export function SectionCards() {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {/* Total Users */}
-      <Card className="@container/card">
+      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
         <CardHeader>
           <CardDescription>Total Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -188,7 +191,7 @@ export function SectionCards() {
       </Card>
 
       {/* Active Users (24h) */}
-      <Card className="@container/card">
+      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
         <CardHeader>
           <CardDescription>Active Users (24h)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -207,7 +210,7 @@ export function SectionCards() {
       </Card>
 
       {/* Paid Users */}
-      <Card className="@container/card">
+      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
         <CardHeader>
           <CardDescription>Paid Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -224,9 +227,85 @@ export function SectionCards() {
           Users with active subscriptions
         </CardFooter>
       </Card>
+ <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")} >
+        <CardHeader>
+          <CardDescription>Ban Users</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {kpis.TotalBanUsers.value}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              <IconTrendingUp />
+              Banned
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="text-muted-foreground text-sm">
+         Banned Users 
+        </CardFooter>
+      </Card>
+      
+
+    <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+        <CardHeader>
+          <CardDescription>Suspend Users</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              <IconTrendingUp />
+              Suspended
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="text-muted-foreground text-sm">
+         Suspended Users 
+        </CardFooter>
+      </Card>
+
+      {/* Total Tickets */}
+
+         <Card className="@container/card" onClick={() => navigate("/admin/management/support")}>
+        <CardHeader>
+          <CardDescription>Total Tickets</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {kpis.TotalTickets.value}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              <IconTrendingUp />
+              Ticket
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="text-muted-foreground text-sm">
+         Users query 
+        </CardFooter>
+      </Card>
+
+
+         <Card className="@container/card">
+        <CardHeader>
+          <CardDescription>Total Claimed Prizes</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {kpis.ClaimedPrize.value}
+          </CardTitle>
+          <CardAction>
+            <Badge variant="outline">
+              <IconTrendingUp />
+              Claimed prizes
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="text-muted-foreground text-sm">
+       Claimed Prizes
+        </CardFooter>
+      </Card>
+
 
       {/* Pending Verifications */}
-      <Card className="@container/card">
+      <Card className="@container/card cursor" onClick={() => navigate("/admin/management/pending-verifications")}>
         <CardHeader>
           <CardDescription>Pending Verifications</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">

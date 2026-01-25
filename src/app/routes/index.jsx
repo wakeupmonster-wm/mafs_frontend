@@ -7,6 +7,9 @@ import Dashboard from "@/modules/dashboard/pages/Dashboard";
 import App from "@/App";
 import NotFoundPage from "@/modules/not-found/Pages/not-found.page";
 import PendingVerifications from "@/modules/users/pages/PendingVerifications";
+import PendingDeliveries from "@/modules/giveaway/pages/PendingDeliveries";
+import BulkCampaigns from "@/modules/giveaway/pages/BulkCampaigns";
+import CampaignWinner from "@/modules/giveaway/pages/CampaignWinner";
 import Campaigns from "@/modules/giveaway/pages/Campaigns";
 import CreatePrize from "@/modules/giveaway/pages/Prizes";
 import GiveawayManagement from "@/modules/giveaway/pages/GiveawayManagement";
@@ -15,6 +18,13 @@ import {
   MyTicketsPage,
   TicketDetailPage,
 } from "@/modules/support/pages/SupportPages";
+import {
+  ReportedProfilesPage,
+  ProfileReviewDetailPage,
+} from "@/modules/profileReview/pages/ProfileReviewPages";
+import ChatReportedList from "@/modules/chatManagement/pages/ChatReportedList";
+import ChatReviewDetail from "@/modules/chatManagement/pages/ChatReviewDetail";
+import NotificationManagementPages from "@/modules/notificationManagement/pages/NotificationManagementPages";
 import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
 import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
@@ -96,6 +106,12 @@ export const router = createBrowserRouter([
 
               { path: "prizes", element: <CreatePrize /> },
               { path: "campaigns", element: <Campaigns /> },
+              { path: "bulk-campaigns", element: <BulkCampaigns /> },
+              { path: "winner", element: <CampaignWinner /> },
+              {
+                path: "pending-deliveries",
+                element: <PendingDeliveries />,
+              },
             ],
           },
           {
@@ -106,6 +122,21 @@ export const router = createBrowserRouter([
               { path: "ticket/:ticketId", element: <TicketWrapper /> },
             ],
           },
+          {
+            path: "profile-review",
+            children: [
+              { index: true, element: <ReportedProfilesPage /> },
+              { path: ":userId", element: <ProfileReviewWrapper /> },
+            ],
+          },
+          {
+            path: "chat",
+            children: [
+              { index: true, element: <ChatReportedList /> },
+              { path: ":matchId", element: <ChatReviewWrapper /> },
+            ],
+          },
+          { path: "notifications", element: <NotificationManagementPages /> },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],
@@ -164,4 +195,16 @@ export const router = createBrowserRouter([
 function TicketWrapper() {
   const { ticketId } = useParams();
   return <TicketDetailPage ticketId={ticketId} />;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+function ProfileReviewWrapper() {
+  const { userId } = useParams();
+  return <ProfileReviewDetailPage userId={userId} />;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components
+function ChatReviewWrapper() {
+  const { matchId } = useParams();
+  return <ChatReviewDetail matchId={matchId} />;
 }

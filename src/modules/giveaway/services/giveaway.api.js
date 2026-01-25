@@ -24,8 +24,8 @@ export const disableCampaignApi = (id) =>
 export const pauseCampaignApi = (campaignId) =>
   apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${campaignId}/pause`,{});
 
-export const getWinnerApi = (id) =>
-  apiConnector("GET", `api/v1/admin/giveaway/campaigns/${id}/winner`);
+export const getWinnerApi = (campaignId) =>
+  apiConnector("GET", `api/v1/admin/giveaway/campaigns/${campaignId}/winner`);
 
 export const resendPrizeApi = (id) =>
   apiConnector("POST", `api/v1/admin/giveaway/campaigns/${id}/resend-prize`);
@@ -43,13 +43,11 @@ export const getDeliveredPrizesApi = () =>
 export const getAllClaimsApi = () =>
   apiConnector("GET", "api/v1/admin/giveaway/claims");
 
-/* ========= AUDIT ========= */
 export const getAuditReportApi = (params) =>
   apiConnector("GET", "api/v1/admin/giveaway/audit", null, {}, params);
 
-/* ========= BULK ========= */
-export const bulkCreateCampaignApi = (data) =>
-  apiConnector("POST", "api/v1/admin/giveaway/campaigns/bulk", data);
+export const bulkCreateCampaignApi = (payload) =>
+  apiConnector("POST", "api/v1/admin/giveaway/campaigns/bulk", payload);
 
 
 export const activateCampaignApi = (id) =>
