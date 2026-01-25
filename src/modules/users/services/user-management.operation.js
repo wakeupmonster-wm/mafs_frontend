@@ -22,6 +22,6 @@ export const getAllPendingVerificationsApi = async () => {
 };
 
 export const verifyUserProfileApi = async(userId,payload)=>{
-  return apiConnector("POST",  `/api/v1/admintest/users/${userId}/verify`,
+  return apiConnector("POST",  `/api/v1/admin/users/${userId}/verify`,
     payload)
 }

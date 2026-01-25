@@ -138,7 +138,7 @@ export function SectionCards() {
        console.log(token)
 
 const res = await axios.get(
-  "http://localhost:3001/api/v1/admintest/getkpi",
+  "http://localhost:3001/api/v1/admin/getkpi",
   {
     headers: {
       Authorization: `Bearer ${token}`,
