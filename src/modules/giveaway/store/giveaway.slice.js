@@ -5,7 +5,7 @@ import {
   updatePrizeApi,
   createCampaignApi,
   getAllCampaignsApi,
-  updateCampaignApi,
+  // updateCampaignApi,
   disableCampaignApi,
   pauseCampaignApi,
   activateCampaignApi,
@@ -234,11 +234,11 @@ const giveawaySlice = createSlice({
       .addCase(createCampaign.fulfilled, (s, a) => {
         s.campaigns.unshift(a.payload);
       })
-      .addCase(updateCampaign.fulfilled, (s, a) => {
-        s.campaigns = s.campaigns.map((c) =>
-          c._id === a.payload._id ? a.payload : c
-        );
-      })
+      // .addCase(updateCampaign.fulfilled, (s, a) => {
+      //   s.campaigns = s.campaigns.map((c) =>
+      //     c._id === a.payload._id ? a.payload : c
+      //   );
+      // })
       .addCase(disableCampaign.fulfilled, (s, a) => {
         const c = s.campaigns.find((x) => x._id === a.payload);
         if (c) c.isActive = false;

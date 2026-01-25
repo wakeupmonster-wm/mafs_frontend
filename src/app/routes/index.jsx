@@ -1,6 +1,6 @@
 // src/app/routes/index.js
 import { createBrowserRouter, useParams } from "react-router-dom";
-import { PrivateRoute } from "./PrivateRoute";
+import PrivateRoute from "./PrivateRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
 import Dashboard from "@/modules/dashboard/pages/Dashboard";

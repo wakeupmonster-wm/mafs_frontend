@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { ROLES } from "@/constants/roles";
 
-export const PrivateRoute = ({ children }) => {
+export default function PrivateRoute({ children }) {
   const location = useLocation();
   const { isAuthenticated, user, initialized } = useSelector(
     (state) => state.auth
@@ -22,7 +22,7 @@ export const PrivateRoute = ({ children }) => {
   }
 
   return children ?? <Outlet />;
-};
+}
 
 /*=====Summary of RBAC Behavior======
 |  Feature       |   ADMIN Role     | USER Role |
