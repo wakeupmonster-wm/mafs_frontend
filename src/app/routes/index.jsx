@@ -31,7 +31,6 @@ import AuthLayout from "../layouts/AuthLayout";
 import RequestResetEmailForm from "@/modules/authentication/components/request-resetEmail";
 import VerifyEmailOtp from "@/modules/authentication/components/verify-emailOTP";
 import ForgotPasswordForm from "@/modules/authentication/components/forgotPasswordForm";
-import BusinessPage from "@/modules/businesses/pages/businesses.page";
 import ViewProfilePage from "@/modules/users/pages/view-profile.Page";
 import EditProfilePage from "@/modules/users/pages/edit-profile.Page";
 import UserManagementPage from "@/modules/users/pages/user-management.Page";
@@ -39,6 +38,7 @@ import FAQSPage from "@/modules/cms/pages/faqs.page";
 import PrivacyAndPolicyPage from "@/modules/cms/pages/privacy-policy.page";
 import TermAndConditionsPage from "@/modules/cms/pages/terms-conditions.page";
 import FAQEditView from "@/modules/cms/components/faqs-edit-view.page";
+import NotificationManagementPage from "@/modules/notificationManagement/pages/notificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -137,6 +137,11 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "notifications", element: <NotificationManagementPages /> },
+
+          {
+            path: "all-notifications",
+            element: <NotificationManagementPage />,
+          },
 
           { path: "offer-management", element: <>Offer Management</> },
         ],

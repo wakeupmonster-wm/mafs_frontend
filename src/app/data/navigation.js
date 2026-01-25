@@ -60,7 +60,7 @@ const navigationData = {
       url: "/admin/management/profile-review",
       icon: IconDiscount2, // offers, promotions, discounts
     },
-     {
+    {
       title: "KYC Verification",
       url: "/admin/management/pending-verifications",
       icon: IconDiscount2, // offers, promotions, discounts
@@ -97,15 +97,15 @@ const navigationData = {
     },
     {
       title: "Notifications Management",
-      url: "/admin/management/notifications",
+      url: "/admin/management/all-notifications",
       icon: IconDiscount2, // offers, promotions, discounts
     },
-     {
+    {
       title: "App Setting Management",
       url: "/admin/management/support",
       icon: IconDiscount2, // offers, promotions, discounts
     },
-     {
+    {
       title: "Giveaway Management",
       url: "/admin/management/giveaway",
       icon: IconDiscount2, // offers, promotions, discounts
@@ -117,6 +117,24 @@ const navigationData = {
     },
   ],
   navPlateform: [
+    {
+      title: "CMS",
+      icon: IconFileText, // content management
+      items: [
+        {
+          title: "FAQ's",
+          url: "/admin/cms/faqs",
+        },
+        {
+          title: "Privacy And Policy",
+          url: "/admin/cms/privacy-policy",
+        },
+        {
+          title: "Terms & Conditions",
+          url: "/admin/cms/terms-conditions",
+        },
+      ],
+    },
     // {
     //   title: "Membership & Billings",
     //   icon: IconCreditCard, // subscriptions, payments, billing

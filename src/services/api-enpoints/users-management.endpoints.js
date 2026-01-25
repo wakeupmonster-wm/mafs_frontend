@@ -4,8 +4,14 @@ export const BASE_URL =
 
 /*===================== USER ENDPOINTS=====================*/
 export const USERENDPOINTS = {
-  GETALLUSERDETAILS: BASE_URL + "/api/v1/admin/user-management/user-list",
-  GETALLPENDINGVERIFICATIONS:
-    BASE_URL + "/api/v1/admintest/pending-verifications",
-  GETEXPORTALLUSER: BASE_URL + "/api/v1/admin/user-management/export/stream",
+  // Base User Management
+  GET_USERS: `${BASE_URL}/api/v1/admin/users`,
+  EXPORT_USERS: `${BASE_URL}/api/v1/admin/users/export/stream`,
+
+  // Moderation & Verification
+  GET_PENDING_KYC: `${BASE_URL}/api/v1/admin/moderation/pending-verifications`,
+
+  // Dynamic URL Function
+  VERIFY_USER_KYC: (userId) =>
+    `${BASE_URL}/api/v1/admin/moderation/users/${userId}/verify`,
 };

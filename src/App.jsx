@@ -175,10 +175,6 @@
 // // // // //   );
 // // // // // }
 
-
-
-
-
 // // // import { useState } from "react";
 
 // // // export default function App() {
@@ -326,7 +322,6 @@
 // // //     </div>
 // // //   );
 // // // }
-
 
 // // import { useEffect, useMemo, useRef, useState } from "react";
 // // import { io } from "socket.io-client";
@@ -606,7 +601,6 @@
 // //     sentAt: msg.createdAt
 // //   };
 // // }
-
 
 // import { useRef, useState } from "react";
 // import { io } from "socket.io-client";
@@ -895,10 +889,6 @@
 //   };
 // }
 
-
-
-
-
 // import { useEffect } from "react";
 // import gsap from "gsap";
 // import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -1081,8 +1071,6 @@
 //                 </div>
 //               </div>
 
-              
-
 //               {/* <div className="col-span-1 flex justify-center">
 //                 <img
 //                   src="/After Scroll.png"
@@ -1137,9 +1125,6 @@
 //   );
 // }
 
-
-
-
 // export default function ConcentricCircles() {
 //   return (
 //     <div className="min-h-screen bg-black flex items-center justify-center p-8">
@@ -1166,27 +1151,7 @@
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 export default function BenefitsSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -1206,27 +1171,28 @@ export default function BenefitsSection() {
 
       // Calculate when object should start moving (from hero section)
       const startMoving = Math.max(0, scrollY - 100);
-      
+
       // Calculate section visibility
-      const sectionMiddle = sectionTop + (sectionHeight / 2) - (windowHeight / 2);
+      const sectionMiddle = sectionTop + sectionHeight / 2 - windowHeight / 2;
       // eslint-disable-next-line no-unused-vars
       const distanceToCenter = Math.abs(scrollY - sectionMiddle);
-      
+
       // Object is centered when section is in view
-      const centered = scrollY >= sectionTop - windowHeight / 2 && 
-                      scrollY <= sectionTop + sectionHeight / 2;
-      
+      const centered =
+        scrollY >= sectionTop - windowHeight / 2 &&
+        scrollY <= sectionTop + sectionHeight / 2;
+
       setIsObjectCentered(centered);
-      
+
       // Calculate scroll progress for smooth movement
       const progress = Math.min(1, startMoving / (sectionTop - windowHeight));
       setScrollProgress(progress);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
@@ -1241,16 +1207,14 @@ export default function BenefitsSection() {
         ref={objectRef}
         className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out`}
         style={{
-          top: isObjectCentered ? '50%' : `${20 + scrollProgress * 30}%`,
-          transform: `translate(-50%, -50%) scale(${isObjectCentered ? 1.1 : 0.9})`,
+          top: isObjectCentered ? "50%" : `${20 + scrollProgress * 30}%`,
+          transform: `translate(-50%, -50%) scale(${
+            isObjectCentered ? 1.1 : 0.9
+          })`,
         }}
       >
         <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
-          <img
-            src=""
-            alt="Product"
-            className="w-full h-full object-cover"
-          />
+          <img src="" alt="Product" className="w-full h-full object-cover" />
         </div>
       </div>
 
@@ -1262,7 +1226,7 @@ export default function BenefitsSection() {
         <div className="relative w-full max-w-4xl aspect-square">
           {/* First circle - darkest gray with rotating red border */}
           <div className="absolute inset-0 rounded-full bg-[#F0F1Fd] flex items-center justify-center overflow-hidden">
-          {/* {isObjectCentered && (
+            {/* {isObjectCentered && (
   <div className="absolute inset-0 rounded-full animate-spin-slow">
     <div
       className="absolute inset-0 rounded-full"
@@ -1285,12 +1249,12 @@ export default function BenefitsSection() {
   </div>
 )} */}
 
-{isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
+            {isObjectCentered && (
+              <div className="absolute inset-0 rounded-full animate-spin-slow">
+                <div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: `
           conic-gradient(
             from 0deg,
             rgba(239,68,68,0) 0deg,
@@ -1302,26 +1266,23 @@ export default function BenefitsSection() {
             rgba(239,68,68,0) 360deg
           )
         `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
+                    WebkitMask:
+                      "radial-gradient(circle, transparent 69%, black 70%)",
+                    mask: "radial-gradient(circle, transparent 69%, black 70%)",
+                    filter: "blur(0.6px)",
+                  }}
+                />
+              </div>
+            )}
 
-
-            
             {/* Second circle - medium gray with rotating red border */}
             <div className="w-[70%] h-[70%] rounded-full bg-zinc-400 flex items-center justify-center relative overflow-hidden">
-    {isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
+              {isObjectCentered && (
+                <div className="absolute inset-0 rounded-full animate-spin-slow">
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: `
           conic-gradient(
             from 0deg,
             rgba(239,68,68,0) 0deg,
@@ -1333,24 +1294,23 @@ export default function BenefitsSection() {
             rgba(239,68,68,0) 360deg
           )
         `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
+                      WebkitMask:
+                        "radial-gradient(circle, transparent 69%, black 70%)",
+                      mask: "radial-gradient(circle, transparent 69%, black 70%)",
+                      filter: "blur(0.6px)",
+                    }}
+                  />
+                </div>
+              )}
 
               {/* Third circle - light gray with rotating red border */}
               <div className="w-[70%] h-[70%] rounded-full bg-zinc-200 flex items-center justify-center relative overflow-hidden">
-    {isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
+                {isObjectCentered && (
+                  <div className="absolute inset-0 rounded-full animate-spin-slow">
+                    <div
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: `
           conic-gradient(
             from 0deg,
             rgba(239,68,68,0) 0deg,
@@ -1362,17 +1322,15 @@ export default function BenefitsSection() {
             rgba(239,68,68,0) 360deg
           )
         `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
+                        WebkitMask:
+                          "radial-gradient(circle, transparent 69%, black 70%)",
+                        mask: "radial-gradient(circle, transparent 69%, black 70%)",
+                        filter: "blur(0.6px)",
+                      }}
+                    />
+                  </div>
+                )}
 
-                
                 {/* Center space for the floating object */}
                 <div className="w-64 h-64" />
               </div>
@@ -1381,8 +1339,14 @@ export default function BenefitsSection() {
         </div>
 
         {/* Benefits Content */}
-        <div className={`absolute bottom-20 left-0 right-0 text-center transition-opacity duration-1000 ${isObjectCentered ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 className="text-4xl font-bold text-white mb-4">Premium Benefits</h2>
+        <div
+          className={`absolute bottom-20 left-0 right-0 text-center transition-opacity duration-1000 ${
+            isObjectCentered ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Premium Benefits
+          </h2>
           <p className="text-xl text-zinc-400">Experience the difference</p>
         </div>
       </div>

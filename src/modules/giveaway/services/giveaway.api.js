@@ -1,71 +1,65 @@
+import { GIVEAWAYS_ENDPOINTS } from "@/services/api-enpoints/giveaway.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
+/* ===== PRIZE MANAGEMENT ===== */
 export const createPrizeApi = (data) =>
-  apiConnector("POST", "/api/v1/admin/giveaway/prizes", data);
+  apiConnector("POST", GIVEAWAYS_ENDPOINTS.PRIZES, data);
 
 export const getAllPrizesApi = () =>
-  apiConnector("GET", "/api/v1/admin/giveaway/prizes");
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.PRIZES);
 
 export const updatePrizeApi = (id, data) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/prizes/${id}`, data);
+  apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PRIZE_BY_ID(id), data);
 
+export const deletePrizeApi = (id) =>
+  apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.PRIZE_BY_ID(id));
+
+/* ===== CAMPAIGN MANAGEMENT ===== */
 export const createCampaignApi = (data) =>
-  apiConnector("POST", "api/v1/admin/giveaway/campaigns", data);
-
-export const getAllCampaignsApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/campaigns");
-
-export const updateCampaignApi = (id, data) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${id}`, data);
-
-export const disableCampaignApi = (id) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${id}/disable`,{});
-
-export const pauseCampaignApi = (campaignId) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${campaignId}/pause`,{});
-
-export const getWinnerApi = (campaignId) =>
-  apiConnector("GET", `api/v1/admin/giveaway/campaigns/${campaignId}/winner`);
-
-export const resendPrizeApi = (id) =>
-  apiConnector("POST", `api/v1/admin/giveaway/campaigns/${id}/resend-prize`);
-
-/* ========= DELIVERY / CLAIMS ========= */
-export const getPendingDeliveriesApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/pending-deliveries");
-
-export const markAsDeliveredApi = (winHistoryId) =>
-  apiConnector("POST", "api/v1/admin/giveaway/mark-as-deliver", { winHistoryId });
-
-export const getDeliveredPrizesApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/get-delivered-price");
-
-export const getAllClaimsApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/claims");
-
-export const getAuditReportApi = (params) =>
-  apiConnector("GET", "api/v1/admin/giveaway/audit", null, {}, params);
+  apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGNS, data);
 
 export const bulkCreateCampaignApi = (payload) =>
-  apiConnector("POST", "api/v1/admin/giveaway/campaigns/bulk", payload);
+  apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BULK, payload);
 
+export const getAllCampaignsApi = () =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.CAMPAIGNS);
+
+export const updateCampaignApi = (id, data) =>
+  apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BY_ID(id), data);
 
 export const activateCampaignApi = (id) =>
-  apiConnector(
-    "PATCH",
-    `api/v1/admin/giveaway/campaigns/${id}`,
-    { isActive: true, failureReason: null }
-  );
+  apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BY_ID(id), {
+    isActive: true,
+    failureReason: null,
+  });
+
+export const disableCampaignApi = (id) =>
+  apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_DISABLE(id), {});
+
+export const pauseCampaignApi = (id) =>
+  apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_PAUSE(id), {});
 
 export const deleteCampaignApi = (id) =>
-  apiConnector(
-    "DELETE",
-    `api/v1/admin/giveaway/campaigns/${id}`,{}
-  );
+  apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BY_ID(id));
 
-/* ===== PRIZE DELETE ===== */
-export const deletePrizeApi = (id) =>
-  apiConnector(
-    "DELETE",
-    `api/v1/admin/giveaway/prizes/${id}`,{}
-  );
+/* ===== WINNERS & LOGISTICS ===== */
+export const getWinnerApi = (campaignId) =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER(campaignId));
+
+export const resendPrizeApi = (id) =>
+  apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_RESEND(id));
+
+export const getPendingDeliveriesApi = () =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.PENDING_DELIVERIES);
+
+export const markAsDeliveredApi = (winHistoryId) =>
+  apiConnector("POST", GIVEAWAYS_ENDPOINTS.MARK_DELIVERED, { winHistoryId });
+
+export const getDeliveredPrizesApi = () =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.DELIVERED_PRIZES);
+
+export const getAllClaimsApi = () =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.CLAIMS);
+
+export const getAuditReportApi = (params) =>
+  apiConnector("GET", GIVEAWAYS_ENDPOINTS.AUDIT, null, {}, params);

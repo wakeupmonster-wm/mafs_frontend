@@ -1,10 +1,11 @@
 // src/services/adminAuth.api.js
 import { apiConnector } from "@/services/axios/axios.connector";
 import { USERENDPOINTS } from "@/services/api-enpoints/users-management.endpoints";
+import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
 
 /*================= ADMIN LOGIN API OPERATION =====================*/
 export const getALLUserListApi = async (page, limit, search, filters) => {
-  return apiConnector("GET", USERENDPOINTS.GETALLUSERDETAILS, {
+  return apiConnector("GET", USERENDPOINTS.GET_USERS, {
     params: {
       page,
       limit,
@@ -15,15 +16,12 @@ export const getALLUserListApi = async (page, limit, search, filters) => {
 };
 
 export const getAllPendingVerificationsApi = async () => {
-  return apiConnector("GET", USERENDPOINTS.GETALLPENDINGVERIFICATIONS);
+  return apiConnector("GET", USERENDPOINTS.GET_PENDING_KYC);
 };
 
 export const verifyUserProfileApi = async (userId, payload) => {
-  return apiConnector(
-    "POST",
-    `/api/v1/admintest/users/${userId}/verify`,
-    payload
-  );
+  const url = USERENDPOINTS.VERIFY_USER_KYC(userId);
+  return apiConnector("POST", url, payload);
 };
 
 // export const exportUsersApi = async (filters = {}) => {
@@ -52,10 +50,8 @@ export const exportUsersApi = async (filters = {}) => {
 
   // Convert filters object to query string
   const queryParams = new URLSearchParams(filters).toString();
-  const url = `${USERENDPOINTS.GETEXPORTALLUSER}?${queryParams}`;
+  const url = `${USERENDPOINTS.EXPORT_USERS}?${queryParams}`;
 
-  // We use native fetch because it supports the ReadableStream API
-  // without buffering the entire response first.
   return await fetch(url, {
     method: "GET",
     headers: {
@@ -65,17 +61,16 @@ export const exportUsersApi = async (filters = {}) => {
 };
 
 export const bannedUserAPI = async ({ userId, payload }) => {
-  return apiConnector("POST", `/api/v1/admintest/users/${userId}/ban`, payload);
+  const url = PROFILE_ENDPOINTS.MODERATION.BAN_USER(userId);
+  return apiConnector("POST", url, payload);
 };
 
 export const unBannedUserAPI = async (userId) => {
-  return apiConnector("POST", `/api/v1/admintest/users/${userId}/unban`, {});
+  const url = PROFILE_ENDPOINTS.MODERATION.UNBAN_USER(userId);
+  return apiConnector("POST", url, {});
 };
 
 export const suspendUserAPI = async ({ userId, payload }) => {
-  return apiConnector(
-    "POST",
-    `/api/v1/admintest/users/${userId}/suspend`,
-    payload
-  );
+  const url = PROFILE_ENDPOINTS.MODERATION.SUSPEND_USER(userId);
+  return apiConnector("POST", url, payload);
 };

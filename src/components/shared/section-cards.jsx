@@ -126,7 +126,6 @@ export function SectionCards() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     const fetchKPIs = async () => {
       try {
@@ -134,7 +133,8 @@ export function SectionCards() {
         console.log(token);
 
         const res = await axios.get(
-          "https://api.matchatfirstswipe.com.au/api/v1/admintest/getkpi",
+          // "https://api.matchatfirstswipe.com.au/api/v1/admintest/getkpi",
+          "http://localhost:3001/api/v1/admin/dashboard/stats/kpi",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -172,7 +172,10 @@ export function SectionCards() {
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       {/* Total Users */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Total Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -191,7 +194,10 @@ export function SectionCards() {
       </Card>
 
       {/* Active Users (24h) */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Active Users (24h)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -210,7 +216,10 @@ export function SectionCards() {
       </Card>
 
       {/* Paid Users */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Paid Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -227,7 +236,10 @@ export function SectionCards() {
           Users with active subscriptions
         </CardFooter>
       </Card>
- <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")} >
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Ban Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -241,12 +253,14 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Banned Users 
+          Banned Users
         </CardFooter>
       </Card>
-      
 
-    <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Suspend Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -260,13 +274,16 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Suspended Users 
+          Suspended Users
         </CardFooter>
       </Card>
 
       {/* Total Tickets */}
 
-         <Card className="@container/card" onClick={() => navigate("/admin/management/support")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/support")}
+      >
         <CardHeader>
           <CardDescription>Total Tickets</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -280,12 +297,11 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Users query 
+          Users query
         </CardFooter>
       </Card>
 
-
-         <Card className="@container/card">
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Total Claimed Prizes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -299,13 +315,15 @@ export function SectionCards() {
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-       Claimed Prizes
+          Claimed Prizes
         </CardFooter>
       </Card>
 
-
       {/* Pending Verifications */}
-      <Card className="@container/card cursor" onClick={() => navigate("/admin/management/pending-verifications")}>
+      <Card
+        className="@container/card cursor"
+        onClick={() => navigate("/admin/management/pending-verifications")}
+      >
         <CardHeader>
           <CardDescription>Pending Verifications</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">

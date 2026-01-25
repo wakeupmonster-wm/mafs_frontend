@@ -23,11 +23,18 @@ export default function ChatReportedList() {
               <MessageSquareWarning className="w-5 h-5 text-red-600" />
             </div>
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-gray-900">Reported Chats</h1>
-              <p className="text-sm text-gray-500">Moderate reported chat conversations</p>
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
+                Reported Chats
+              </h1>
+              <p className="text-sm text-gray-500">
+                Moderate reported chat conversations
+              </p>
             </div>
           </div>
-          <Badge variant="secondary" className="bg-red-50 text-red-700 border-red-200">
+          <Badge
+            variant="secondary"
+            className="bg-red-50 text-red-700 border-red-200"
+          >
             {queue?.length || 0} Pending
           </Badge>
         </div>
@@ -37,11 +44,21 @@ export default function ChatReportedList() {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Match</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Reports</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Reasons</th>
-                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Last Reported</th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Match
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Reports
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Reasons
+                  </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Last Reported
+                  </th>
+                  <th className="px-6 py-4 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    Action
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -50,7 +67,9 @@ export default function ChatReportedList() {
                     <td colSpan={5} className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-                        <span className="text-gray-500">Loading reported chats...</span>
+                        <span className="text-gray-500">
+                          Loading reported chats...
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -58,14 +77,20 @@ export default function ChatReportedList() {
 
                 {!loading && (queue?.length || 0) === 0 && (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                    <td
+                      colSpan={5}
+                      className="px-6 py-12 text-center text-gray-500"
+                    >
                       No reported chats found
                     </td>
                   </tr>
                 )}
 
                 {queue?.map((c) => (
-                  <tr key={c._id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={c._id}
+                    className="hover:bg-gray-50/50 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <span className="font-medium text-gray-900">{c._id}</span>
                     </td>
@@ -77,7 +102,11 @@ export default function ChatReportedList() {
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
                         {c.reasons?.map((r, i) => (
-                          <Badge key={i} variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                          <Badge
+                            key={i}
+                            variant="outline"
+                            className="bg-red-50 text-red-700 border-red-200"
+                          >
                             {r}
                           </Badge>
                         ))}
@@ -87,7 +116,9 @@ export default function ChatReportedList() {
                       <div className="flex items-center gap-2 text-gray-600">
                         <Clock className="w-4 h-4 text-gray-400" />
                         <span className="text-sm">
-                          {c.lastReportedAt ? new Date(c.lastReportedAt).toLocaleString() : "-"}
+                          {c.lastReportedAt
+                            ? new Date(c.lastReportedAt).toLocaleString()
+                            : "-"}
                         </span>
                       </div>
                     </td>
@@ -116,7 +147,9 @@ export default function ChatReportedList() {
             )}
 
             {!loading && (queue?.length || 0) === 0 && (
-              <div className="p-8 text-center text-gray-500">No reported chats found</div>
+              <div className="p-8 text-center text-gray-500">
+                No reported chats found
+              </div>
             )}
 
             {queue?.map((c) => (
@@ -124,7 +157,9 @@ export default function ChatReportedList() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="font-medium text-gray-900">{c._id}</p>
-                    <p className="text-xs text-gray-500">{c.reportCount} reports</p>
+                    <p className="text-xs text-gray-500">
+                      {c.reportCount} reports
+                    </p>
                   </div>
                   <a
                     href={`/admin/management/chat/${c._id}`}
@@ -136,7 +171,11 @@ export default function ChatReportedList() {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {c.reasons?.map((r, i) => (
-                    <Badge key={i} variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="bg-red-50 text-red-700 border-red-200"
+                    >
                       {r}
                     </Badge>
                   ))}
