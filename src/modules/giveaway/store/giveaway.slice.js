@@ -5,7 +5,7 @@ import {
   updatePrizeApi,
   createCampaignApi,
   getAllCampaignsApi,
-  updateCampaignApi,
+  // updateCampaignApi,
   disableCampaignApi,
   pauseCampaignApi,
   activateCampaignApi,
@@ -108,7 +108,6 @@ export const updatePrize = createAsyncThunk(
   }
 );
 
-
 export const fetchCampaigns = createAsyncThunk(
   "giveaway/fetchCampaigns",
   async (_, { rejectWithValue }) => {
@@ -133,17 +132,17 @@ export const createCampaign = createAsyncThunk(
   }
 );
 
-export const updateCampaign = createAsyncThunk(
-  "giveaway/updateCampaign",
-  async ({ id, payload }, { rejectWithValue }) => {
-    try {
-      const res = await updateCampaignApi(id, payload);
-      return res.data;
-    } catch {
-      return rejectWithValue("Failed to update campaign");
-    }
-  }
-);
+// export const updateCampaign = createAsyncThunk(
+//   "giveaway/updateCampaign",
+//   async ({ id, payload }, { rejectWithValue }) => {
+//     try {
+//       const res = await updateCampaignApi(id, payload);
+//       return res.data;
+//     } catch {
+//       return rejectWithValue("Failed to update campaign");
+//     }
+//   }
+// );
 
 export const disableCampaign = createAsyncThunk(
   "giveaway/disableCampaign",
@@ -193,7 +192,6 @@ export const deletePrize = createAsyncThunk(
   }
 );
 
-
 const giveawaySlice = createSlice({
   name: "giveaway",
   initialState: {
@@ -236,11 +234,11 @@ const giveawaySlice = createSlice({
       .addCase(createCampaign.fulfilled, (s, a) => {
         s.campaigns.unshift(a.payload);
       })
-      .addCase(updateCampaign.fulfilled, (s, a) => {
-        s.campaigns = s.campaigns.map((c) =>
-          c._id === a.payload._id ? a.payload : c
-        );
-      })
+      // .addCase(updateCampaign.fulfilled, (s, a) => {
+      //   s.campaigns = s.campaigns.map((c) =>
+      //     c._id === a.payload._id ? a.payload : c
+      //   );
+      // })
       .addCase(disableCampaign.fulfilled, (s, a) => {
         const c = s.campaigns.find((x) => x._id === a.payload);
         if (c) c.isActive = false;
@@ -261,35 +259,31 @@ const giveawaySlice = createSlice({
         );
       })
       .addCase(fetchWinner.fulfilled, (state, action) => {
-  const winnerData = action.payload.data;
+        const winnerData = action.payload.data;
 
-  if (!Array.isArray(state.winner)) {
-    state.winner = [];
-  }
+        if (!Array.isArray(state.winner)) {
+          state.winner = [];
+        }
 
-  const alreadyExists = state.winner.find(
-    (w) => w.campaignId === winnerData.campaignId
-  );
+        const alreadyExists = state.winner.find(
+          (w) => w.campaignId === winnerData.campaignId
+        );
 
-  if (!alreadyExists) {
-    state.winner.push(winnerData);
-  }
-})
-
+        if (!alreadyExists) {
+          state.winner.push(winnerData);
+        }
+      })
 
       /* Winner */
       // .addCase(fetchWinner.fulfilled, (state, action) => {
       //   state.winner = action.payload.data;
       // })
       .addCase(activateCampaign.fulfilled, (state, action) => {
-        const c = state.campaigns.find(
-          (x) => x._id === action.payload
-        );
+        const c = state.campaigns.find((x) => x._id === action.payload);
         if (c) {
           c.isActive = true;
           c.failureReason = null;
         }
-
       })
 
       .addCase(deleteCampaign.fulfilled, (state, action) => {
@@ -299,11 +293,8 @@ const giveawaySlice = createSlice({
       })
 
       .addCase(deletePrize.fulfilled, (state, action) => {
-        state.prizes = state.prizes.filter(
-          (p) => p._id !== action.payload
-        );
+        state.prizes = state.prizes.filter((p) => p._id !== action.payload);
       })
-
 
       .addMatcher(
         (a) => a.type.endsWith("rejected"),

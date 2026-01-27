@@ -107,13 +107,8 @@
 //   );
 // }
 
-
-import { useEffect, useState } from "react";
-import axios from "axios";
-import {
-  IconTrendingDown,
-  IconTrendingUp,
-} from "@tabler/icons-react";
+import { useEffect} from "react";
+import { IconTrendingUp } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -124,66 +119,48 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 
 export function SectionCards() {
-  const [kpis, setKpis] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { stats, loading, error } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
-    const fetchKPIs = async () => {
-      try {
-       const token = localStorage.getItem("access_Token");
-       console.log(token)
-
-const res = await axios.get(
-  "http://localhost:3001/api/v1/admin/getkpi",
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  }
-);
-
-        if (res.data?.success) {
-          setKpis(res.data.data.kpis);
-        }
-      } catch (error) {
-        console.error("Failed to fetch KPIs", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchKPIs();
-  }, []);
+    // Only fetch if data doesn't exist (optional caching logic)
+    if (!stats) {
+      dispatch(fetchDashboardKPIs());
+    }
+  }, [dispatch, stats]);
 
   if (loading) {
     return (
-      <div className="px-4 text-sm text-muted-foreground">
-        Loading KPIs...
-      </div>
+      <div className="px-4 text-sm text-muted-foreground">Loading KPIs...</div>
     );
   }
 
-  if (!kpis) {
+  // Safety check: kpis.totalUsers is required before rendering
+  if (error || !stats?.totalUsers) {
     return (
       <div className="px-4 text-sm text-red-500">
-        Failed to load dashboard data
+        {error || "Failed to load dashboard data"}
       </div>
     );
   }
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      
       {/* Total Users */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Total Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.totalUsers.value}
+            {stats.totalUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -198,11 +175,14 @@ const res = await axios.get(
       </Card>
 
       {/* Active Users (24h) */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Active Users (24h)</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.activeUsers24h.value}
+            {stats.activeUsers24h.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -217,11 +197,14 @@ const res = await axios.get(
       </Card>
 
       {/* Paid Users */}
-      <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Paid Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.paidUsers.value}
+            {stats.paidUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -234,11 +217,14 @@ const res = await axios.get(
           Users with active subscriptions
         </CardFooter>
       </Card>
- <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")} >
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Ban Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.TotalBanUsers.value}
+            {stats.TotalBanUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -248,16 +234,18 @@ const res = await axios.get(
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Banned Users 
+          Banned Users
         </CardFooter>
       </Card>
-      
 
-    <Card className="@container/card" onClick={() => navigate("/admin/management/users-management")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/users-management")}
+      >
         <CardHeader>
           <CardDescription>Suspend Users</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {}
+             {stats.TotalSuspendedUsers.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -267,17 +255,20 @@ const res = await axios.get(
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Suspended Users 
+          Suspended Users
         </CardFooter>
       </Card>
 
       {/* Total Tickets */}
 
-         <Card className="@container/card" onClick={() => navigate("/admin/management/support")}>
+      <Card
+        className="@container/card"
+        onClick={() => navigate("/admin/management/support")}
+      >
         <CardHeader>
           <CardDescription>Total Tickets</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.TotalTickets.value}
+            {stats.TotalTickets.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -287,16 +278,15 @@ const res = await axios.get(
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-         Users query 
+          Users query
         </CardFooter>
       </Card>
 
-
-         <Card className="@container/card">
+      <Card className="@container/card">
         <CardHeader>
           <CardDescription>Total Claimed Prizes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.ClaimedPrize.value}
+            {stats.ClaimedPrize.value}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -306,21 +296,27 @@ const res = await axios.get(
           </CardAction>
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
-       Claimed Prizes
+          Claimed Prizes
         </CardFooter>
       </Card>
 
-
       {/* Pending Verifications */}
-      <Card className="@container/card cursor" onClick={() => navigate("/admin/management/pending-verifications")}>
+      <Card
+        className="@container/card cursor"
+        onClick={() => navigate("/admin/management/pending-verifications")}
+      >
         <CardHeader>
           <CardDescription>Pending Verifications</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.pendingVerifications.value}
+            {stats.pendingVerifications.value}
           </CardTitle>
           <CardAction>
             <Badge
-              variant={kpis.pendingVerifications.actionable ? "destructive" : "outline"}
+              variant={
+                stats.pendingVerifications.actionable
+                  ? "destructive"
+                  : "outline"
+              }
             >
               Action Needed
             </Badge>
@@ -328,24 +324,6 @@ const res = await axios.get(
         </CardHeader>
         <CardFooter className="text-muted-foreground text-sm">
           Profiles awaiting approval
-        </CardFooter>
-      </Card>
-  <Card className="@container/card" onClick={() => navigate("/admin/management/profile-review")}>
-        <CardHeader>
-          <CardDescription>Open Reports</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {kpis.openReports.value}
-          </CardTitle>
-          <CardAction>
-            <Badge
-              variant={kpis.openReports.actionable ? "destructive" : "outline"}
-            >
-              Action Needed
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="text-muted-foreground text-sm">
-          Reports awaiting approval
         </CardFooter>
       </Card>
     </div>

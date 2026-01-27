@@ -20,7 +20,7 @@ import { Link } from "react-router";
 export function NavPlateform({ items }) {
   return (
     <SidebarGroup>
-      {/* <SidebarGroupLabel>Managements</SidebarGroupLabel> */}
+      <SidebarGroupLabel>Managements</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible

@@ -56,7 +56,6 @@
 //   return "DISABLED";
 // }
 
-
 // export default function Campaigns() {
 //   const dispatch = useDispatch();
 //   const { campaigns, prizes, loading } =
@@ -318,12 +317,7 @@ import {
   deleteCampaign,
 } from "../store/giveaway.slice";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -439,7 +433,9 @@ export default function Campaigns() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Campaigns</h1>
-            <p className="text-sm text-gray-500">Manage your giveaway campaigns</p>
+            <p className="text-sm text-gray-500">
+              Manage your giveaway campaigns
+            </p>
           </div>
         </div>
 
@@ -536,7 +532,10 @@ export default function Campaigns() {
                 <Megaphone className="h-4 w-4 text-violet-600" />
                 All Campaigns
               </CardTitle>
-              <Badge variant="secondary" className="bg-violet-100 text-violet-700">
+              <Badge
+                variant="secondary"
+                className="bg-violet-100 text-violet-700"
+              >
                 {campaigns.length} Total
               </Badge>
             </div>
@@ -553,7 +552,9 @@ export default function Campaigns() {
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
                   <Inbox className="h-8 w-8" />
                 </div>
-                <p className="mt-4 font-medium text-gray-600">No campaigns yet</p>
+                <p className="mt-4 font-medium text-gray-600">
+                  No campaigns yet
+                </p>
                 <p className="mt-1 text-sm">Create your first campaign above</p>
               </div>
             ) : (
@@ -645,7 +646,9 @@ export default function Campaigns() {
                             </td>
                             <td className="px-5 py-4">
                               <span
-                                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(status)}`}
+                                className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
+                                  status
+                                )}`}
                               >
                                 {getStatusIcon(status)}
                                 {status}
@@ -658,7 +661,9 @@ export default function Campaigns() {
                                   Yes
                                 </span>
                               ) : (
-                                <span className="text-sm text-gray-400">No</span>
+                                <span className="text-sm text-gray-400">
+                                  No
+                                </span>
                               )}
                             </td>
                             <td className="px-5 py-4 text-right">
@@ -743,7 +748,9 @@ export default function Campaigns() {
                         </div>
                         <div className="mt-3 flex items-center gap-3">
                           <span
-                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(status)}`}
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
+                              status
+                            )}`}
                           >
                             {getStatusIcon(status)}
                             {status}

@@ -7,35 +7,65 @@ import {
 } from "../services/adminAuth.api";
 import axios from "axios";
 
+export const loginThunk = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const response = await adminLoginAPI(credentials);
+      const { success, message, screen, data } = response;
+
+      if (!success) {
+        return rejectWithValue(message || "Invalid credentials");
+      }
+
+      const user = {
+        id: data.id,
+        nickname: data.nickname,
+        email: data.email,
+        // role: "ADMIN",
+        role: data.role || "ADMIN",
+        avatar: data.avatar,
+        screen,
+        message,
+      };
+
+      const token = data.auth.accessToken;
+
+      // 🔐 Persist BOTH token + user
+      localStorage.setItem("access_Token", token);
+      localStorage.setItem("auth_user", JSON.stringify(user));
+
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+      return user;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  }
+);
+
 // export const loginThunk = createAsyncThunk(
 //   "auth/login",
 //   async (credentials, { rejectWithValue }) => {
 //     try {
 //       const response = await adminLoginAPI(credentials);
-//       const { success, message, screen, data } = response;
 
-//       if (!success) {
-//         return rejectWithValue(message || "Invalid credentials");
+//       if (!response.success) {
+//         return rejectWithValue("Invalid credentials");
 //       }
 
+//       const { accessToken, refreshToken } = response.data;
+
+//       // Minimal admin user (until backend sends profile)
 //       const user = {
-//         id: data.id,
-//         fullName: data.fullName,
-//         email: data.email,
-//         // role: "ADMIN",
-//         role: data.role || "ADMIN",
-//         avatar: data.avatar,
-//         screen,
-//         message,
+//         role: "ADMIN",
 //       };
 
-//       const token = data.auth.accessToken;
-
-//       // 🔐 Persist BOTH token + user
-//       localStorage.setItem("access_Token", token);
+//       localStorage.setItem("access_Token", accessToken);
+//       localStorage.setItem("refresh_Token", refreshToken);
 //       localStorage.setItem("auth_user", JSON.stringify(user));
 
-//       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+//       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
 
 //       return user;
 //     } catch (error) {
@@ -43,42 +73,6 @@ import axios from "axios";
 //     }
 //   }
 // );
-
-
-export const loginThunk = createAsyncThunk(
-  "auth/login",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await adminLoginAPI(credentials);
-
-      if (!response.success) {
-        return rejectWithValue("Invalid credentials");
-      }
-
-      const { accessToken, refreshToken } = response.data;
-
-      // Minimal admin user (until backend sends profile)
-      const user = {
-        role: "ADMIN",
-      };
-
-      localStorage.setItem("access_Token", accessToken);
-      localStorage.setItem("refresh_Token", refreshToken);
-      localStorage.setItem("auth_user", JSON.stringify(user));
-
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${accessToken}`;
-
-      return user;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Server error"
-      );
-    }
-  }
-);
-
 
 export const requestOtpThunk = createAsyncThunk(
   "auth/requestOtp",

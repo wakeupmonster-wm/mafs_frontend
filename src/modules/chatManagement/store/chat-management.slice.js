@@ -13,7 +13,9 @@ export const fetchReportedChats = createAsyncThunk(
       const res = await getReportedChatsApi();
       return res?.data || [];
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch reported chats");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch reported chats"
+      );
     }
   }
 );
@@ -25,7 +27,9 @@ export const fetchChatMessagesForReview = createAsyncThunk(
       const res = await getChatMessagesForReviewApi(matchId, { limit });
       return { matchId, ...res?.data };
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch chat messages");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch chat messages"
+      );
     }
   }
 );
@@ -37,19 +41,31 @@ export const fetchChatActionHistory = createAsyncThunk(
       const res = await getChatActionHistoryApi(matchId);
       return { matchId, history: res?.data || [] };
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch action history");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch action history"
+      );
     }
   }
 );
 
 export const performChatAction = createAsyncThunk(
   "chatManagement/performChatAction",
-  async ({ matchId, action, messageIds = [], userId, reason }, { rejectWithValue }) => {
+  async (
+    { matchId, action, messageIds = [], userId, reason },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await takeChatActionApi(matchId, { action, messageIds, userId, reason });
+      const res = await takeChatActionApi(matchId, {
+        action,
+        messageIds,
+        userId,
+        reason,
+      });
       return { matchId, ...res };
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to apply action");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to apply action"
+      );
     }
   }
 );
@@ -152,6 +168,10 @@ const chatManagementSlice = createSlice({
   },
 });
 
-export const { clearChatMgmtStatus, toggleSelectMessage, clearSelection, selectAllMessages } =
-  chatManagementSlice.actions;
+export const {
+  clearChatMgmtStatus,
+  toggleSelectMessage,
+  clearSelection,
+  selectAllMessages,
+} = chatManagementSlice.actions;
 export default chatManagementSlice.reducer;

@@ -505,6 +505,7 @@ export function DataTable({ data: initialData }) {
             </Table>
           </DndContext>
         </div>
+        
         <div className="flex items-center justify-between px-4">
           <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
@@ -582,7 +583,9 @@ export function DataTable({ data: initialData }) {
             </div>
           </div>
         </div>
+
       </TabsContent>
+
       <TabsContent
         value="past-performance"
         className="flex flex-col px-4 lg:px-6"

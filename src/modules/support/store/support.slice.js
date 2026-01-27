@@ -13,7 +13,9 @@ export const createSupportTicket = createAsyncThunk(
       const res = await contactSupportApi(payload);
       return res;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to create ticket");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to create ticket"
+      );
     }
   }
 );
@@ -25,7 +27,9 @@ export const fetchMyTickets = createAsyncThunk(
       const res = await getMyTicketsApi();
       return res?.data || [];
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch tickets");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch tickets"
+      );
     }
   }
 );
@@ -37,7 +41,9 @@ export const fetchTicketById = createAsyncThunk(
       const res = await getMyTicketByIdApi(ticketId);
       return res?.data;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch ticket");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch ticket"
+      );
     }
   }
 );

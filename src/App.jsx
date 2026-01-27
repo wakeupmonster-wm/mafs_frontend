@@ -1,37 +1,36 @@
-// // // // // // // src/App.jsx
-// // // // // // import React from "react";
-// // // // // // import { Sparkles } from "lucide-react";
+ import React from "react";
+ import { Sparkles } from "lucide-react";
 
-// // // // // // export default function App() {
-// // // // // //   return (
-// // // // // //     <div className="min-h-[80vh] relative bg-aqua-gradient-start flex flex-col items-center justify-center px-6 text-center">
-// // // // // //       {/* Background Orbs */}
-// // // // // //       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-aqua-gradient blur-[120px] opacity-95" />
+ export default function App() {
+   return (
+     <div className="min-h-[80vh] relative bg-aqua-gradient-start flex flex-col items-center justify-center px-6 text-center">
+       {/* Background Orbs */}
+       <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-aqua-gradient blur-[120px] opacity-95" />
 
-// // // // // //       <main className="max-w-3xl w-full space-y-10 z-10 py-20">
-// // // // // //         <div className="flex justify-center">
-// // // // // //           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#46C7CD]/10 border border-[#46C7CD]/20 rounded-full font-bold text-grey-800">
-// // // // // //             <Sparkles className="w-4 h-4" />
-// // // // // //             <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em]">
-// // // // // //               Coming soon 2026
-// // // // // //             </span>
-// // // // // //           </div>
-// // // // // //         </div>
+       <main className="max-w-3xl w-full space-y-10 z-10 py-20">
+         <div className="flex justify-center">
+           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#46C7CD]/10 border border-[#46C7CD]/20 rounded-full font-bold text-grey-800">
+             <Sparkles className="w-4 h-4" />
+             <span className="text-xs md:text-sm font-bold uppercase tracking-[0.2em]">
+               Coming soon 2026
+             </span>
+           </div>
+         </div>
 
-// // // // // //         <div className="space-y-6">
-// // // // // //           <h1 className="text-5xl md:text-8xl font-extrabold tracking-tight text-grey-900">
-// // // // // //             Match At First <br />
-// // // // // //             <span className="text-brand-aqua drop-shadow-sm">Swipe</span>
-// // // // // //           </h1>
-// // // // // //           <p className="text-lg md:text-2xl text-grey-500 max-w-xl mx-auto font-medium leading-relaxed">
-// // // // // //             The future of connection is almost here. Love shouldn't be a waiting
-// // // // // //             game.
-// // // // // //           </p>
-// // // // // //         </div>
-// // // // // //       </main>
-// // // // // //     </div>
-// // // // // //   );
-// // // // // // }
+         <div className="space-y-6">
+           <h1 className="text-5xl md:text-8xl font-extrabold tracking-tight text-grey-900">
+             Match At First <br />
+             <span className="text-brand-aqua drop-shadow-sm">Swipe</span>
+           </h1>
+           <p className="text-lg md:text-2xl text-grey-500 max-w-xl mx-auto font-medium leading-relaxed">
+             The future of connection is almost here. Love shouldn't be a waiting
+             game.
+           </p>
+         </div>
+       </main>
+     </div>
+   );
+ }
 
 // // // // // import { useState } from "react";
 
@@ -174,10 +173,6 @@
 // // // // //     </div>
 // // // // //   );
 // // // // // }
-
-
-
-
 
 // // // import { useState } from "react";
 
@@ -326,7 +321,6 @@
 // // //     </div>
 // // //   );
 // // // }
-
 
 // // import { useEffect, useMemo, useRef, useState } from "react";
 // // import { io } from "socket.io-client";
@@ -606,7 +600,6 @@
 // //     sentAt: msg.createdAt
 // //   };
 // // }
-
 
 // import { useRef, useState } from "react";
 // import { io } from "socket.io-client";
@@ -895,10 +888,6 @@
 //   };
 // }
 
-
-
-
-
 // import { useEffect } from "react";
 // import gsap from "gsap";
 // import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -1081,8 +1070,6 @@
 //                 </div>
 //               </div>
 
-              
-
 //               {/* <div className="col-span-1 flex justify-center">
 //                 <img
 //                   src="/After Scroll.png"
@@ -1137,9 +1124,6 @@
 //   );
 // }
 
-
-
-
 // export default function ConcentricCircles() {
 //   return (
 //     <div className="min-h-screen bg-black flex items-center justify-center p-8">
@@ -1166,259 +1150,238 @@
 //   );
 // }
 
+// import { useState, useEffect, useRef } from "react";
 
+// export default function BenefitsSection() {
+//   const [scrollProgress, setScrollProgress] = useState(0);
+//   const [isObjectCentered, setIsObjectCentered] = useState(false);
+//   const sectionRef = useRef(null);
+//   const objectRef = useRef(null);
 
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       if (!sectionRef.current) return;
 
+//       const section = sectionRef.current;
+//       const sectionTop = section.offsetTop;
+//       const sectionHeight = section.offsetHeight;
+//       const windowHeight = window.innerHeight;
+//       const scrollY = window.scrollY;
 
+//       // Calculate when object should start moving (from hero section)
+//       const startMoving = Math.max(0, scrollY - 100);
 
+//       // Calculate section visibility
+//       const sectionMiddle = sectionTop + sectionHeight / 2 - windowHeight / 2;
+//       // eslint-disable-next-line no-unused-vars
+//       const distanceToCenter = Math.abs(scrollY - sectionMiddle);
 
+//       // Object is centered when section is in view
+//       const centered =
+//         scrollY >= sectionTop - windowHeight / 2 &&
+//         scrollY <= sectionTop + sectionHeight / 2;
 
+//       setIsObjectCentered(centered);
 
+//       // Calculate scroll progress for smooth movement
+//       const progress = Math.min(1, startMoving / (sectionTop - windowHeight));
+//       setScrollProgress(progress);
+//     };
 
+//     window.addEventListener("scroll", handleScroll);
+//     handleScroll();
 
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
 
+//   return (
+//     <div className="bg-black">
+//       {/* Hero Section Placeholder */}
+//       <div className="h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
+//         <h1 className="text-6xl font-bold text-white">Hero Section</h1>
+//       </div>
 
+//       {/* Floating Object (Phone/Product) */}
+//       <div
+//         ref={objectRef}
+//         className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out`}
+//         style={{
+//           top: isObjectCentered ? "50%" : `${20 + scrollProgress * 30}%`,
+//           transform: `translate(-50%, -50%) scale(${
+//             isObjectCentered ? 1.1 : 0.9
+//           })`,
+//         }}
+//       >
+//         <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
+//           <img src="" alt="Product" className="w-full h-full object-cover" />
+//         </div>
+//       </div>
 
+//       {/* Benefits Section */}
+//       <div
+//         ref={sectionRef}
+//         className="min-h-screen flex items-center justify-center p-8 relative"
+//       >
+//         <div className="relative w-full max-w-4xl aspect-square">
+//           {/* First circle - darkest gray with rotating red border */}
+//           <div className="absolute inset-0 rounded-full bg-[#F0F1Fd] flex items-center justify-center overflow-hidden">
+//             {/* {isObjectCentered && (
+//   <div className="absolute inset-0 rounded-full animate-spin-slow">
+//     <div
+//       className="absolute inset-0 rounded-full"
+//       style={{
+//         background: `
+//           conic-gradient(
+//             from 0deg,
+//             #7f1d1d 0deg,
+//             #ef4444 40deg,
+//             #7f1d1d 80deg,
+//             #7f1d1d 360deg
+//           )
+//         `,
+//         WebkitMask:
+//           'radial-gradient(circle, transparent 69%, black 70%)',
+//         mask:
+//           'radial-gradient(circle, transparent 69%, black 70%)',
+//       }}
+//     />
+//   </div>
+// )} */}
 
+//             {isObjectCentered && (
+//               <div className="absolute inset-0 rounded-full animate-spin-slow">
+//                 <div
+//                   className="absolute inset-0 rounded-full"
+//                   style={{
+//                     background: `
+//           conic-gradient(
+//             from 0deg,
+//             rgba(239,68,68,0) 0deg,
+//             rgba(239,68,68,0.15) 60deg,
+//             rgba(239,68,68,0.4) 120deg,
+//             rgba(239,68,68,0.9) 180deg,
+//             rgba(239,68,68,0.4) 240deg,
+//             rgba(239,68,68,0.15) 300deg,
+//             rgba(239,68,68,0) 360deg
+//           )
+//         `,
+//                     WebkitMask:
+//                       "radial-gradient(circle, transparent 69%, black 70%)",
+//                     mask: "radial-gradient(circle, transparent 69%, black 70%)",
+//                     filter: "blur(0.6px)",
+//                   }}
+//                 />
+//               </div>
+//             )}
 
+//             {/* Second circle - medium gray with rotating red border */}
+//             <div className="w-[70%] h-[70%] rounded-full bg-zinc-400 flex items-center justify-center relative overflow-hidden">
+//               {isObjectCentered && (
+//                 <div className="absolute inset-0 rounded-full animate-spin-slow">
+//                   <div
+//                     className="absolute inset-0 rounded-full"
+//                     style={{
+//                       background: `
+//           conic-gradient(
+//             from 0deg,
+//             rgba(239,68,68,0) 0deg,
+//             rgba(239,68,68,0.15) 60deg,
+//             rgba(239,68,68,0.4) 120deg,
+//             rgba(239,68,68,0.9) 180deg,
+//             rgba(239,68,68,0.4) 240deg,
+//             rgba(239,68,68,0.15) 300deg,
+//             rgba(239,68,68,0) 360deg
+//           )
+//         `,
+//                       WebkitMask:
+//                         "radial-gradient(circle, transparent 69%, black 70%)",
+//                       mask: "radial-gradient(circle, transparent 69%, black 70%)",
+//                       filter: "blur(0.6px)",
+//                     }}
+//                   />
+//                 </div>
+//               )}
 
+//               {/* Third circle - light gray with rotating red border */}
+//               <div className="w-[70%] h-[70%] rounded-full bg-zinc-200 flex items-center justify-center relative overflow-hidden">
+//                 {isObjectCentered && (
+//                   <div className="absolute inset-0 rounded-full animate-spin-slow">
+//                     <div
+//                       className="absolute inset-0 rounded-full"
+//                       style={{
+//                         background: `
+//           conic-gradient(
+//             from 0deg,
+//             rgba(239,68,68,0) 0deg,
+//             rgba(239,68,68,0.15) 60deg,
+//             rgba(239,68,68,0.4) 120deg,
+//             rgba(239,68,68,0.9) 180deg,
+//             rgba(239,68,68,0.4) 240deg,
+//             rgba(239,68,68,0.15) 300deg,
+//             rgba(239,68,68,0) 360deg
+//           )
+//         `,
+//                         WebkitMask:
+//                           "radial-gradient(circle, transparent 69%, black 70%)",
+//                         mask: "radial-gradient(circle, transparent 69%, black 70%)",
+//                         filter: "blur(0.6px)",
+//                       }}
+//                     />
+//                   </div>
+//                 )}
 
+//                 {/* Center space for the floating object */}
+//                 <div className="w-64 h-64" />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
 
+//         {/* Benefits Content */}
+//         <div
+//           className={`absolute bottom-20 left-0 right-0 text-center transition-opacity duration-1000 ${
+//             isObjectCentered ? "opacity-100" : "opacity-0"
+//           }`}
+//         >
+//           <h2 className="text-4xl font-bold text-white mb-4">
+//             Premium Benefits
+//           </h2>
+//           <p className="text-xl text-zinc-400">Experience the difference</p>
+//         </div>
+//       </div>
 
+//       {/* Next Section Placeholder */}
+//       <div className="h-screen flex items-center justify-center bg-zinc-900">
+//         <h2 className="text-5xl font-bold text-white">Next Section</h2>
+//       </div>
 
-import { useState, useEffect, useRef } from 'react';
+//       <style jsx>{`
+//         @keyframes spin-slow {
+//           from {
+//             transform: rotate(0deg);
+//           }
+//           to {
+//             transform: rotate(360deg);
+//           }
+//         }
 
-export default function BenefitsSection() {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [isObjectCentered, setIsObjectCentered] = useState(false);
-  const sectionRef = useRef(null);
-  const objectRef = useRef(null);
+//         @keyframes spin-slow-reverse {
+//           from {
+//             transform: rotate(360deg);
+//           }
+//           to {
+//             transform: rotate(0deg);
+//           }
+//         }
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
+//         .animate-spin-slow {
+//           animation: spin-slow 8s linear infinite;
+//         }
 
-      const section = sectionRef.current;
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-      const windowHeight = window.innerHeight;
-      const scrollY = window.scrollY;
-
-      // Calculate when object should start moving (from hero section)
-      const startMoving = Math.max(0, scrollY - 100);
-      
-      // Calculate section visibility
-      const sectionMiddle = sectionTop + (sectionHeight / 2) - (windowHeight / 2);
-      // eslint-disable-next-line no-unused-vars
-      const distanceToCenter = Math.abs(scrollY - sectionMiddle);
-      
-      // Object is centered when section is in view
-      const centered = scrollY >= sectionTop - windowHeight / 2 && 
-                      scrollY <= sectionTop + sectionHeight / 2;
-      
-      setIsObjectCentered(centered);
-      
-      // Calculate scroll progress for smooth movement
-      const progress = Math.min(1, startMoving / (sectionTop - windowHeight));
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return (
-    <div className="bg-black">
-      {/* Hero Section Placeholder */}
-      <div className="h-screen flex items-center justify-center bg-gradient-to-b from-zinc-900 to-black">
-        <h1 className="text-6xl font-bold text-white">Hero Section</h1>
-      </div>
-
-      {/* Floating Object (Phone/Product) */}
-      <div
-        ref={objectRef}
-        className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-700 ease-out`}
-        style={{
-          top: isObjectCentered ? '50%' : `${20 + scrollProgress * 30}%`,
-          transform: `translate(-50%, -50%) scale(${isObjectCentered ? 1.1 : 0.9})`,
-        }}
-      >
-        <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center">
-          <img
-            src=""
-            alt="Product"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </div>
-
-      {/* Benefits Section */}
-      <div
-        ref={sectionRef}
-        className="min-h-screen flex items-center justify-center p-8 relative"
-      >
-        <div className="relative w-full max-w-4xl aspect-square">
-          {/* First circle - darkest gray with rotating red border */}
-          <div className="absolute inset-0 rounded-full bg-[#F0F1Fd] flex items-center justify-center overflow-hidden">
-          {/* {isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
-          conic-gradient(
-            from 0deg,
-            #7f1d1d 0deg,
-            #ef4444 40deg,
-            #7f1d1d 80deg,
-            #7f1d1d 360deg
-          )
-        `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-      }}
-    />
-  </div>
-)} */}
-
-{isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
-          conic-gradient(
-            from 0deg,
-            rgba(239,68,68,0) 0deg,
-            rgba(239,68,68,0.15) 60deg,
-            rgba(239,68,68,0.4) 120deg,
-            rgba(239,68,68,0.9) 180deg,
-            rgba(239,68,68,0.4) 240deg,
-            rgba(239,68,68,0.15) 300deg,
-            rgba(239,68,68,0) 360deg
-          )
-        `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
-
-
-            
-            {/* Second circle - medium gray with rotating red border */}
-            <div className="w-[70%] h-[70%] rounded-full bg-zinc-400 flex items-center justify-center relative overflow-hidden">
-    {isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
-          conic-gradient(
-            from 0deg,
-            rgba(239,68,68,0) 0deg,
-            rgba(239,68,68,0.15) 60deg,
-            rgba(239,68,68,0.4) 120deg,
-            rgba(239,68,68,0.9) 180deg,
-            rgba(239,68,68,0.4) 240deg,
-            rgba(239,68,68,0.15) 300deg,
-            rgba(239,68,68,0) 360deg
-          )
-        `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
-
-              {/* Third circle - light gray with rotating red border */}
-              <div className="w-[70%] h-[70%] rounded-full bg-zinc-200 flex items-center justify-center relative overflow-hidden">
-    {isObjectCentered && (
-  <div className="absolute inset-0 rounded-full animate-spin-slow">
-    <div
-      className="absolute inset-0 rounded-full"
-      style={{
-        background: `
-          conic-gradient(
-            from 0deg,
-            rgba(239,68,68,0) 0deg,
-            rgba(239,68,68,0.15) 60deg,
-            rgba(239,68,68,0.4) 120deg,
-            rgba(239,68,68,0.9) 180deg,
-            rgba(239,68,68,0.4) 240deg,
-            rgba(239,68,68,0.15) 300deg,
-            rgba(239,68,68,0) 360deg
-          )
-        `,
-        WebkitMask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        mask:
-          'radial-gradient(circle, transparent 69%, black 70%)',
-        filter: 'blur(0.6px)',
-      }}
-    />
-  </div>
-)}
-
-                
-                {/* Center space for the floating object */}
-                <div className="w-64 h-64" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Benefits Content */}
-        <div className={`absolute bottom-20 left-0 right-0 text-center transition-opacity duration-1000 ${isObjectCentered ? 'opacity-100' : 'opacity-0'}`}>
-          <h2 className="text-4xl font-bold text-white mb-4">Premium Benefits</h2>
-          <p className="text-xl text-zinc-400">Experience the difference</p>
-        </div>
-      </div>
-
-      {/* Next Section Placeholder */}
-      <div className="h-screen flex items-center justify-center bg-zinc-900">
-        <h2 className="text-5xl font-bold text-white">Next Section</h2>
-      </div>
-
-      <style jsx>{`
-        @keyframes spin-slow {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @keyframes spin-slow-reverse {
-          from {
-            transform: rotate(360deg);
-          }
-          to {
-            transform: rotate(0deg);
-          }
-        }
-
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
-
-        .animate-spin-slow-reverse {
-          animation: spin-slow-reverse 10s linear infinite;
-        }
-      `}</style>
-    </div>
-  );
-}
+//         .animate-spin-slow-reverse {
+//           animation: spin-slow-reverse 10s linear infinite;
+//         }
+//       `}</style>
+//     </div>
+//   );
+// }

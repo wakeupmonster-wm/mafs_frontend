@@ -118,7 +118,6 @@
 //   );
 // }
 
-
 // export function MyTicketsPage() {
 //   const dispatch = useDispatch();
 //   const { tickets, loading, error } = useSelector(
@@ -429,9 +428,7 @@ export function ContactSupportPage() {
               <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
                 Contact Support
               </h1>
-              <p className="text-sm text-gray-500">
-                We're here to help you
-              </p>
+              <p className="text-sm text-gray-500">We're here to help you</p>
             </div>
           </div>
         </div>
@@ -447,7 +444,10 @@ export function ContactSupportPage() {
                   New Support Ticket
                 </span>
               </div>
-              <Badge variant="outline" className="bg-white text-gray-600 border-gray-200">
+              <Badge
+                variant="outline"
+                className="bg-white text-gray-600 border-gray-200"
+              >
                 Help Desk
               </Badge>
             </div>
@@ -463,7 +463,9 @@ export function ContactSupportPage() {
               </label>
               <Select
                 value={form.category}
-                onValueChange={(value) => setForm((p) => ({ ...p, category: value }))}
+                onValueChange={(value) =>
+                  setForm((p) => ({ ...p, category: value }))
+                }
               >
                 <SelectTrigger className="h-11 bg-gray-50 border-gray-200 focus:bg-white transition-colors">
                   <SelectValue placeholder="Select category" />
@@ -485,7 +487,9 @@ export function ContactSupportPage() {
               <Input
                 placeholder="Brief description of your issue"
                 value={form.subject}
-                onChange={(e) => setForm((p) => ({ ...p, subject: e.target.value }))}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, subject: e.target.value }))
+                }
                 className="h-11 bg-gray-50 border-gray-200 focus:bg-white transition-colors"
               />
             </div>
@@ -500,7 +504,9 @@ export function ContactSupportPage() {
                 rows={5}
                 placeholder="Describe your issue in detail..."
                 value={form.message}
-                onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, message: e.target.value }))
+                }
                 className="bg-gray-50 border-gray-200 focus:bg-white transition-colors resize-none"
               />
             </div>
@@ -536,7 +542,9 @@ export function ContactSupportPage() {
               {successMessage && (
                 <div className="mt-4 flex items-center gap-2 p-3 bg-emerald-50 border border-emerald-100 rounded-lg">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                  <span className="text-sm text-emerald-600">{successMessage}</span>
+                  <span className="text-sm text-emerald-600">
+                    {successMessage}
+                  </span>
                 </div>
               )}
             </div>
@@ -555,7 +563,7 @@ export function ContactSupportPage() {
 export function MyTicketsPage() {
   const dispatch = useDispatch();
   const { tickets, loading, error } = useSelector((s) => s.support);
-console.log(tickets,"tickest")
+  console.log(tickets, "tickest");
   useEffect(() => {
     dispatch(fetchMyTickets());
   }, [dispatch]);
@@ -628,7 +636,9 @@ console.log(tickets,"tickest")
                     <td colSpan={4} className="px-6 py-12 text-center">
                       <div className="flex flex-col items-center gap-3">
                         <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-                        <span className="text-sm text-gray-500">Loading tickets...</span>
+                        <span className="text-sm text-gray-500">
+                          Loading tickets...
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -641,19 +651,28 @@ console.log(tickets,"tickest")
                         <div className="p-3 bg-gray-100 rounded-full">
                           <Ticket className="w-6 h-6 text-gray-400" />
                         </div>
-                        <span className="text-sm text-gray-500">No tickets found</span>
+                        <span className="text-sm text-gray-500">
+                          No tickets found
+                        </span>
                       </div>
                     </td>
                   </tr>
                 )}
 
                 {tickets?.map((t) => (
-                  <tr key={t._id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr
+                    key={t._id}
+                    className="hover:bg-gray-50/50 transition-colors"
+                  >
                     <td className="px-6 py-4">
-                      <span className="font-medium text-gray-900">{t.subject}</span>
+                      <span className="font-medium text-gray-900">
+                        {t.subject}
+                      </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-sm text-gray-600">{t.category}</span>
+                      <span className="text-sm text-gray-600">
+                        {t.category}
+                      </span>
                     </td>
                     <td className="px-6 py-4">
                       <Badge
@@ -686,7 +705,9 @@ console.log(tickets,"tickest")
             <Card className="border-0 shadow-sm bg-white p-6">
               <div className="flex flex-col items-center gap-3">
                 <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
-                <span className="text-sm text-gray-500">Loading tickets...</span>
+                <span className="text-sm text-gray-500">
+                  Loading tickets...
+                </span>
               </div>
             </Card>
           )}
@@ -706,7 +727,9 @@ console.log(tickets,"tickest")
             <Card key={t._id} className="border-0 shadow-sm bg-white p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-gray-900 truncate">{t.subject}</h3>
+                  <h3 className="font-medium text-gray-900 truncate">
+                    {t.subject}
+                  </h3>
                   <p className="text-sm text-gray-500 mt-1">{t.category}</p>
                 </div>
                 <Badge
@@ -839,8 +862,13 @@ export function TicketDetailPage({ ticketId }) {
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-gray-900">{ticket.subject}</h2>
-              <Badge variant="outline" className={getStatusStyle(ticket.status)}>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {ticket.subject}
+              </h2>
+              <Badge
+                variant="outline"
+                className={getStatusStyle(ticket.status)}
+              >
                 {ticket.status === "RESOLVED" ? (
                   <CheckCircle2 className="w-3 h-3 mr-1.5" />
                 ) : (
@@ -857,7 +885,10 @@ export function TicketDetailPage({ ticketId }) {
             <div className="flex items-center gap-2">
               <Tag className="w-4 h-4 text-gray-400" />
               <span className="text-sm text-gray-600">Category:</span>
-              <Badge variant="outline" className="bg-gray-50 text-gray-600 border-gray-200">
+              <Badge
+                variant="outline"
+                className="bg-gray-50 text-gray-600 border-gray-200"
+              >
                 {ticket.category}
               </Badge>
             </div>
@@ -868,7 +899,9 @@ export function TicketDetailPage({ ticketId }) {
                 <div className="p-1.5 bg-gray-200 rounded-full">
                   <User className="w-3 h-3 text-gray-600" />
                 </div>
-                <span className="text-sm font-medium text-gray-700">User Message</span>
+                <span className="text-sm font-medium text-gray-700">
+                  User Message
+                </span>
               </div>
               <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
                 {ticket.message}
@@ -882,7 +915,9 @@ export function TicketDetailPage({ ticketId }) {
                   <div className="p-1.5 bg-emerald-200 rounded-full">
                     <Reply className="w-3 h-3 text-emerald-700" />
                   </div>
-                  <span className="text-sm font-medium text-emerald-700">Admin Reply</span>
+                  <span className="text-sm font-medium text-emerald-700">
+                    Admin Reply
+                  </span>
                 </div>
                 <p className="text-emerald-800 whitespace-pre-wrap leading-relaxed">
                   {ticket.adminReply}
@@ -903,7 +938,9 @@ export function TicketDetailPage({ ticketId }) {
 
           <form onSubmit={onReply} className="p-6 space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Your Reply</label>
+              <label className="text-sm font-medium text-gray-700">
+                Your Reply
+              </label>
               <Textarea
                 rows={4}
                 value={reply}
@@ -914,7 +951,9 @@ export function TicketDetailPage({ ticketId }) {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Update Status</label>
+              <label className="text-sm font-medium text-gray-700">
+                Update Status
+              </label>
               <Select value={status} onValueChange={setStatus}>
                 <SelectTrigger className="h-11 bg-gray-50 border-gray-200 focus:bg-white transition-colors">
                   <SelectValue placeholder="Select status" />

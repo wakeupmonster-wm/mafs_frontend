@@ -1,71 +1,86 @@
+import { GIVEAWAYS_ENDPOINTS } from "@/services/api-enpoints/giveaway.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
-export const createPrizeApi = (data) =>
-  apiConnector("POST", "/api/v1/admin/giveaway/prizes", data);
+/* ===== PRIZE MANAGEMENT ===== */
+export const createPrizeApi = (data) => {
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.ADD_PRIZES, data);
+};
 
-export const getAllPrizesApi = () =>
-  apiConnector("GET", "/api/v1/admin/giveaway/prizes");
+export const getAllPrizesApi = () => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.GET_PRIZES);
+};
 
-export const updatePrizeApi = (id, data) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/prizes/${id}`, data);
+export const updatePrizeApi = (id, data) => {
+  return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_PRIZE_BY_ID(id), data);
+};
 
-export const createCampaignApi = (data) =>
-  apiConnector("POST", "api/v1/admin/giveaway/campaigns", data);
+export const deletePrizeApi = (id) => {
+  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_PRIZE_BY_ID(id),{});
+};
 
-export const getAllCampaignsApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/campaigns");
+/* ===== CAMPAIGN MANAGEMENT ===== */
+export const getAllCampaignsApi = () => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.ADD_CAMPAIGNS);
+};
 
-export const updateCampaignApi = (id, data) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${id}`, data);
+export const createCampaignApi = (data) => {
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.GET_CAMPAIGNS, data);
+};
 
-export const disableCampaignApi = (id) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${id}/disable`,{});
+export const bulkCreateCampaignApi = (payload) => {
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BULK, payload);
+};
 
-export const pauseCampaignApi = (campaignId) =>
-  apiConnector("PATCH", `api/v1/admin/giveaway/campaigns/${campaignId}/pause`,{});
+// export const updateCampaignApi = (id, data) => {
+// return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id), data);
+// }
 
-export const getWinnerApi = (campaignId) =>
-  apiConnector("GET", `api/v1/admin/giveaway/campaigns/${campaignId}/winner`);
+export const deleteCampaignApi = (id) => {
+  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id),{});
+};
 
-export const resendPrizeApi = (id) =>
-  apiConnector("POST", `api/v1/admin/giveaway/campaigns/${id}/resend-prize`);
+export const activateCampaignApi = (id) => {
+  return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id), {
+    isActive: true,
+    failureReason: null,
+  });
+};
 
-/* ========= DELIVERY / CLAIMS ========= */
-export const getPendingDeliveriesApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/pending-deliveries");
+export const disableCampaignApi = (id) => {
+  return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_DISABLE(id), {});
+};
 
-export const markAsDeliveredApi = (winHistoryId) =>
-  apiConnector("POST", "api/v1/admin/giveaway/mark-as-deliver", { winHistoryId });
+export const pauseCampaignApi = (id) => {
+  return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.CAMPAIGN_PAUSE(id), {});
+};
 
-export const getDeliveredPrizesApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/get-delivered-price");
+/* ===== WINNERS & LOGISTICS ===== */
+export const getWinnerApi = (campaignId) => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER(campaignId));
+};
 
-export const getAllClaimsApi = () =>
-  apiConnector("GET", "api/v1/admin/giveaway/claims");
+export const resendPrizeApi = (id) => {
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_RESEND(id));
+};
 
-export const getAuditReportApi = (params) =>
-  apiConnector("GET", "api/v1/admin/giveaway/audit", null, {}, params);
+export const getPendingDeliveriesApi = () => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.PENDING_DELIVERIES);
+};
 
-export const bulkCreateCampaignApi = (payload) =>
-  apiConnector("POST", "api/v1/admin/giveaway/campaigns/bulk", payload);
+export const markAsDeliveredApi = (winHistoryId) => {
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.MARK_DELIVERED, {
+    winHistoryId,
+  });
+};
 
+export const getDeliveredPrizesApi = () => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.DELIVERED_PRIZES);
+};
 
-export const activateCampaignApi = (id) =>
-  apiConnector(
-    "PATCH",
-    `api/v1/admin/giveaway/campaigns/${id}`,
-    { isActive: true, failureReason: null }
-  );
+export const getAllClaimsApi = () => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.CLAIMS);
+};
 
-export const deleteCampaignApi = (id) =>
-  apiConnector(
-    "DELETE",
-    `api/v1/admin/giveaway/campaigns/${id}`,{}
-  );
-
-/* ===== PRIZE DELETE ===== */
-export const deletePrizeApi = (id) =>
-  apiConnector(
-    "DELETE",
-    `api/v1/admin/giveaway/prizes/${id}`,{}
-  );
+export const getAuditReportApi = (params) => {
+  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.AUDIT, null, {}, params);
+};

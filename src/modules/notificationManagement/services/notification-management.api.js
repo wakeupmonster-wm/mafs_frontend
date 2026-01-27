@@ -1,15 +1,44 @@
+import { NOTIFY_ENDPOINTS } from "@/services/api-enpoints/notify.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
-const BASE = "/api/v1/admin/notification-management";
+/**
+ * Sends a push notification to all, free, or premium segments
+ */
+export const broadcastNotificationApi = (payload) => {
+  return apiConnector("POST", NOTIFY_ENDPOINTS.BROADCAST, payload);
+};
 
-export const broadcastNotificationApi = (payload) =>
-  apiConnector("POST", `${BASE}/broadcast`, payload);
+/**
+ * Direct push blast to all active premium subscribers
+ */
+export const sendNotificationToPremiumUsersApi = (payload) => {
+  return apiConnector("POST", NOTIFY_ENDPOINTS.PREMIUM_SEND, payload);
+};
 
-export const sendNotificationToPremiumUsersApi = (payload) =>
-  apiConnector("POST", `${BASE}/premium/send`, payload);
+/**
+ * Logic-based trigger for users whose subscription is ending
+ */
+export const createPremiumExpiryCampaignApi = (payload) => {
+  return apiConnector("POST", NOTIFY_ENDPOINTS.EXPIRY_SEND, payload);
+};
 
-export const createPremiumExpiryCampaignApi = (payload) =>
-  apiConnector("POST", `${BASE}/premium-expiry/send`, payload);
+/**
+ * Fetches history logs for all previous campaigns
+ */
+export const notificationHistoryApi = (params) => {
+  return apiConnector("GET", NOTIFY_ENDPOINTS.HISTORY, null, params);
+};
 
-export const notificationHistoryApi = (payload) => 
-  apiConnector("GET",`${BASE}/notifications/history`,payload)
+/**
+ * Full-scale email marketing broadcast
+ */
+export const sendEmailCampaignApi = (payload) => {
+  return apiConnector("POST", NOTIFY_ENDPOINTS.EMAIL_CAMPAIGN, payload);
+};
+
+/**
+ * Sends the current draft to a specific admin email for verification
+ */
+export const sendTestEmailApi = (payload) => {
+  return apiConnector("POST", NOTIFY_ENDPOINTS.TEST_EMAIL, payload);
+};

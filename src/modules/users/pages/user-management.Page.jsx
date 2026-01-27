@@ -1,212 +1,380 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Plus, Search, Filter, Mail, Trash2, Edit2 } from "lucide-react";
-
-// shadcn UI components
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+import { IconDownload, IconLoader } from "@tabler/icons-react";
+import { toast } from "sonner";
+import { userColumns } from "@/components/common/userColumns";
+import { DataTable } from "@/components/common/data-table";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  bannedUserProfile,
+  exportUsersStream,
+  fetchUsers,
+} from "@/modules/users/store/user.slice";
+import { BanUserModal } from "../components/ban-user-modal";
 
-// Your shared logic components (Keep these as they likely wrap shadcn Dialog/Sheet)
-import ConfirmModal from "@/components/common/ConfirmModal";
-import UserFormDrawer from "../components/UserFormDrawer";
+// export default function UserManagementPage() {
+//   const dispatch = useDispatch();
 
-// Store Actions
-import { deleteUser, addUser } from "../store/user.slice";
+//   // Pulling state from Redux
+//   const { items, loading, pagination } = useSelector((state) => state.users);
+//   const { exportLoading, exportProgress } = useSelector((state) => state.users);
 
-export default function UsersManagementPage() {
+//   // Local state for search
+//   const [globalFilter, setGlobalFilter] = useState("");
+
+//   const [progress, setProgress] = useState(0);
+//   const [exporting, setExporting] = useState(false);
+
+//   // 1. Fetch Users with debounce logic
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       dispatch(
+//         fetchUsers({
+//           page: pagination.page,
+//           limit: pagination.limit,
+//           search: globalFilter,
+//         })
+//       );
+//     }, 500);
+
+//     return () => clearTimeout(timer);
+//   }, [dispatch, pagination.page, globalFilter]);
+
+//   // 2. Handle Export logic
+
+//   // const handleExport = async () => {
+//   //   setExporting(true);
+//   //   setTimeout(() => {
+//   //     setProgress(0);
+//   //   }, 2000);
+
+//   //   try {
+//   //     const token = localStorage.getItem("access_Token");
+//   //     const response = await fetch(
+//   //       `${BASE_URL}/api/v1/admin/user-management/export/stream`,
+//   //       {
+//   //         headers: { Authorization: `Bearer ${token}` },
+//   //       }
+//   //     );
+
+//   //     if (!response.ok) throw new Error("Network response was not ok");
+
+//   //     const reader = response.body.getReader();
+//   //     const decoder = new TextDecoder();
+//   //     let csvData = "";
+
+//   //     while (true) {
+//   //       const { done, value } = await reader.read();
+//   //       if (done) break;
+
+//   //       const chunk = decoder.decode(value, { stream: true });
+
+//   //       // 1. Look for ALL markers in the chunk (using 'g' flag for global)
+//   //       const progressRegex = /---PROG:(\d+)---/g;
+//   //       let match;
+//   //       while ((match = progressRegex.exec(chunk)) !== null) {
+//   //         setProgress(Number(match[1]));
+//   //       }
+
+//   //       // 2. Clean the data immediately
+//   //       const cleanChunk = chunk.replace(/---PROG:\d+---/g, "");
+//   //       csvData += cleanChunk;
+//   //     }
+
+//   //     // 3. Create and Trigger Download
+//   //     const blob = new Blob([csvData], { type: "text/csv" });
+//   //     const url = window.URL.createObjectURL(blob);
+//   //     const a = document.createElement("a");
+//   //     a.href = url;
+//   //     a.download = `MAFS_Users_${new Date().getTime()}.csv`;
+//   //     document.body.appendChild(a);
+//   //     a.click();
+//   //     document.body.removeChild(a);
+//   //     window.URL.revokeObjectURL(url);
+
+//   //     toast.success("Export finished successfully");
+//   //   } catch (error) {
+//   //     console.error("Export Error:", error);
+//   //     toast.error("Failed to stream export data");
+//   //   } finally {
+//   //     setExporting(false);
+//   //   }
+//   // };
+
+//   const handleExport = async () => {
+//     const resultAction = await dispatch(exportUsersStream());
+
+//     if (exportUsersStream.fulfilled.match(resultAction)) {
+//       const csvData = resultAction.payload;
+
+//       // Create Blob and Trigger Download
+//       const blob = new Blob([csvData], { type: "text/csv" });
+//       const url = window.URL.createObjectURL(blob);
+//       const a = document.createElement("a");
+//       a.href = url;
+//       a.download = `MAFS_Users_${Date.now()}.csv`;
+//       document.body.appendChild(a);
+//       a.click();
+//       document.body.removeChild(a);
+//       window.URL.revokeObjectURL(url);
+
+//       toast.success("Export downloaded successfully");
+//     } else {
+//       toast.error(resultAction.payload || "Export failed");
+//     }
+//   };
+
+//   return (
+//     <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen relative">
+//       {/* Page Header */}
+//       <div className="flex items-center justify-between">
+//         <div>
+//           <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
+//           <p className="text-[#606060] font-medium">
+//             Manage your community members.
+//           </p>
+//         </div>
+
+//         <div className="flex gap-2">
+//           <Button
+//             variant="outline"
+//             size="sm"
+//             onClick={handleExport}
+//             disabled={exporting}
+//           >
+//             {exporting ? (
+//               <>
+//                 <IconLoader className="mr-2 h-4 w-4 animate-spin" />{" "}
+//                 Exporting...
+//               </>
+//             ) : (
+//               <>
+//                 <IconDownload className="mr-2 h-4 w-4" /> Export
+//               </>
+//             )}
+//           </Button>
+//           <Button size="sm">Add New User</Button>
+//         </div>
+//       </div>
+
+//       {/* Data Table */}
+//       <DataTable
+//         columns={userColumns}
+//         data={items}
+//         globalFilter={globalFilter}
+//         setGlobalFilter={setGlobalFilter}
+//         searchPlaceholder="Search..."
+//         isLoading={loading}
+//       />
+
+//       {/* --- FLOATING PROGRESS BAR --- */}
+//       {exporting && (
+//         <div className="fixed bottom-6 right-6 w-80 bg-white p-5 rounded-xl shadow-2xl border border-blue-100 z-[9999] animate-in fade-in slide-in-from-bottom-4">
+//           <div className="flex items-center justify-between mb-2">
+//             <span className="text-sm font-bold text-slate-700">
+//               Downloading Report...
+//             </span>
+//             <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+//               {progress}%
+//             </span>
+//           </div>
+//           <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+//             <div
+//               className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
+//               style={{ width: `${progress}%` }}
+//             />
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+export default function UserManagementPage() {
   const dispatch = useDispatch();
-  const { items, loading } = useSelector((state) => state.users);
+  const {
+    items,
+    loading,
+    pagination: reduxPagination,
+    exportLoading,
+    exportProgress,
+  } = useSelector((state) => state.users);
+  const [isBanModalOpen, setIsBanModalOpen] = useState(false);
+  const [selectedUserForBan, setSelectedUserForBan] = useState(null);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  // 6️⃣ Local state to track table's pagination
+  const [pagination, setPagination] = useState({
+    pageIndex: 0, // Zero-based for TanStack
+    pageSize: 20,
+  });
 
-  // Logic Handlers
-  const handleDeleteClick = (id) => {
-    setSelectedUserId(id);
-    setDeleteModalOpen(true);
+  const [globalFilter, setGlobalFilter] = useState("");
+
+  const handleExport = async () => {
+    const filters = { search: globalFilter };
+
+    const resultAction = await dispatch(exportUsersStream(filters));
+
+    if (exportUsersStream.fulfilled.match(resultAction)) {
+      const csvContent = resultAction.payload;
+
+      // Create download link
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.setAttribute("download", `MAFS_Export_${Date.now()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success("Users exported successfully!");
+    } else {
+      toast.error(resultAction.payload || "Export failed");
+    }
   };
 
-  const handleConfirmDelete = () => {
-    dispatch(deleteUser(selectedUserId));
-    setDeleteModalOpen(false);
+  // // 1. Fetch Users with debounce logic
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     dispatch(
+  //       fetchUsers({
+  //         page: pagination.page,
+  //         limit: pagination.limit,
+  //         search: globalFilter,
+  //       })
+  //     );
+  //   }, 500);
+
+  //   return () => clearTimeout(timer);
+  // }, [dispatch, pagination.page, globalFilter]);
+
+  // 7️⃣ Fetch data whenever page, limit, or search changes
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      dispatch(
+        fetchUsers({
+          page: pagination.pageIndex + 1, // API is 1-based
+          limit: pagination.pageSize,
+          search: globalFilter,
+        })
+      );
+    }, 500); // Debounce search calls
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [dispatch, pagination.pageIndex, pagination.pageSize, globalFilter]);
+
+  console.log("items: ", items);
+
+  const handleBanClick = (user) => {
+    setSelectedUserForBan(user);
+    setIsBanModalOpen(true);
   };
 
-  const filteredUsers = items.filter(
-    (user) =>
-      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleBanConfirm = async (category, reason) => {
+    try {
+      await dispatch(
+        bannedUserProfile({
+          userId: selectedUserForBan._id,
+          category,
+          reason,
+        })
+      ).unwrap();
+
+      toast.success("User banned successfully");
+      setIsBanModalOpen(false);
+    } catch (error) {
+      toast.error(error || "Failed to ban user");
+    }
+  };
 
   return (
-    <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen">
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen relative">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold text-[#212121] tracking-tight">
-            User Management
-          </h1>
+          <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
           <p className="text-[#606060] font-medium">
-            Manage your MAFS community members.
+            Manage community members.
           </p>
         </div>
-        <Button
-          onClick={() => setDrawerOpen(true)}
-          className="bg-[#46C7CD] hover:bg-[#3bb1b6] text-white rounded-xl font-bold px-6 shadow-lg shadow-[#46C7CD]/20"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add New User
-        </Button>
-      </div>
 
-      <Separator className="bg-[#E6FFFD]" />
-
-      {/* Filters Bar */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-[#E6FFFD] shadow-sm">
-        <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8D8D8D]" />
-          <Input
-            placeholder="Search by name or email..."
-            className="pl-10 bg-[#F8FDFF] border-[#E6FFFD] focus-visible:ring-[#46C7CD] rounded-xl"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <Button
-          variant="outline"
-          className="border-[#E6FFFD] text-[#606060] rounded-xl hover:bg-[#F8FDFF]"
-        >
-          <Filter className="w-4 h-4 mr-2" />
-          Filter
-        </Button>
-      </div>
-
-      {/* Users Table */}
-      <div className="bg-white rounded-2xl border border-[#E6FFFD] shadow-sm overflow-hidden">
-        <Table>
-          <TableHeader className="bg-[#F8FDFF]">
-            <TableRow className="hover:bg-transparent border-[#E6FFFD]">
-              <TableHead className="font-bold text-[#212121]">User</TableHead>
-              <TableHead className="font-bold text-[#212121]">Role</TableHead>
-              <TableHead className="font-bold text-[#212121]">Status</TableHead>
-              <TableHead className="font-bold text-[#212121]">
-                Joined Date
-              </TableHead>
-              <TableHead className="text-right font-bold text-[#212121]">
-                Actions
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center py-10">
-                  Loading users...
-                </TableCell>
-              </TableRow>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+            disabled={exportLoading} // Use Redux state
+          >
+            {exportLoading ? (
+              <>
+                <IconLoader className="mr-2 h-4 w-4 animate-spin" />{" "}
+                Exporting...
+              </>
             ) : (
-              filteredUsers.map((user) => (
-                <TableRow
-                  key={user.id}
-                  className="border-[#E6FFFD] hover:bg-[#F8FDFF]/50 transition-colors"
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-aqua-gradient flex items-center justify-center text-white font-bold text-sm">
-                        {user.name.charAt(0)}
-                      </div>
-                      <div>
-                        <div className="font-bold text-[#212121]">
-                          {user.name}
-                        </div>
-                        <div className="text-xs text-[#8D8D8D] flex items-center gap-1">
-                          <Mail className="w-3 h-3" /> {user.email}
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="secondary"
-                      className={`${
-                        user.role === "admin"
-                          ? "bg-[#46C7CD]/10 text-brand-aqua"
-                          : "bg-aqua-gradient/10 text-[#212121]"
-                      } border-none rounded-lg font-bold px-2 py-0.5 uppercase text-[10px]`}
-                    >
-                      {user.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={`w-2 h-2 rounded-full ${
-                          user.status === "active"
-                            ? "bg-[#12D18E]"
-                            : "bg-[#F75555]"
-                        }`}
-                      />
-                      <span className="text-sm font-medium text-[#606060] capitalize">
-                        {user.status}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-[#606060] text-sm">
-                    {user.joined}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-[#8D8D8D] hover:text-brand-aqua"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-[#8D8D8D] hover:text-[#F75555]"
-                        onClick={() => handleDeleteClick(user.id)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))
+              <>
+                <IconDownload className="mr-2 h-4 w-4" /> Export
+              </>
             )}
-          </TableBody>
-        </Table>
+          </Button>
+          <Button size="sm">Add New User</Button>
+        </div>
       </div>
+      {/* 
+      <DataTable
+        columns={userColumns}
+        data={items}
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
+        searchPlaceholder="Search..."
+        isLoading={loading}
+      /> */}
 
-      {/* Drawer and Modal Components remain the same as they wrap their specific shadcn logic */}
-      <UserFormDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onSubmit={(data) => {
-          dispatch(addUser(data));
-          setDrawerOpen(false);
+      <DataTable
+        columns={userColumns}
+        data={items}
+        rowCount={reduxPagination.total} // Total count from DB
+        pagination={pagination}
+        onPaginationChange={setPagination} // Set local state on click
+        globalFilter={globalFilter}
+        setGlobalFilter={(val) => {
+          setGlobalFilter(val);
+          setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to page 1 on search
+        }}
+        isLoading={loading}
+        meta={{
+          onBan: (user) => handleBanClick(user),
         }}
       />
 
-      <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        title="Remove User"
-        message="Are you sure? This will revoke their access to Match At First Swipe immediately."
+      {/* --- FLOATING PROGRESS BAR (Controlled by Redux) --- */}
+      {exportLoading && (
+        <div className="fixed bottom-6 right-6 w-80 bg-white p-5 rounded-xl shadow-2xl border border-blue-100 z-[9999] animate-in fade-in slide-in-from-bottom-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-bold text-slate-700">
+              Downloading Report...
+            </span>
+            <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+              {exportProgress}%
+            </span>
+          </div>
+          <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${exportProgress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ADD THE MODAL HERE */}
+      <BanUserModal
+        isOpen={isBanModalOpen}
+        onClose={() => setIsBanModalOpen(false)}
+        onConfirm={handleBanConfirm}
+        userName={selectedUserForBan?.profile?.nickname || "this user"}
       />
     </div>
   );

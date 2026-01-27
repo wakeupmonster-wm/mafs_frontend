@@ -8,7 +8,6 @@
 // //     (state) => state.users
 // //   );
 
-
 // //   useEffect(() => {
 // //     dispatch(fetchPendingVerifications());
 // //   }, [dispatch]);
@@ -56,8 +55,6 @@
 // //     </div>
 // //   );
 // // }
-
-
 
 // import { useEffect, useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
@@ -121,7 +118,7 @@
 //           key={item._id}
 //           className="border rounded-xl p-4 flex flex-col gap-4 bg-white shadow-sm"
 //         >
-      
+
 //           {/* USER INFO */}
 //           <div className="flex justify-between items-center">
 //             <div>
@@ -198,7 +195,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -225,9 +221,7 @@ import {
 
 export default function PendingVerifications() {
   const dispatch = useDispatch();
-  const { pendingVerifications, loading } = useSelector(
-    (state) => state.users
-  );
+  const { pendingVerifications, loading } = useSelector((state) => state.users);
   console.log("Pending", pendingVerifications);
 
   const [rejectingUser, setRejectingUser] = useState(null);
@@ -306,7 +300,8 @@ export default function PendingVerifications() {
               All Caught Up!
             </h3>
             <p className="text-gray-500 max-w-sm mx-auto">
-              No pending verifications at the moment. Check back later for new requests.
+              No pending verifications at the moment. Check back later for new
+              requests.
             </p>
           </div>
         )}
@@ -364,8 +359,12 @@ export default function PendingVerifications() {
                       <Camera className="h-4 w-4 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">View Selfie</p>
-                      <p className="text-xs text-gray-500">Photo verification</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        View Selfie
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Photo verification
+                      </p>
                     </div>
                     <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />
                   </a>
@@ -380,7 +379,9 @@ export default function PendingVerifications() {
                       <FileText className="h-4 w-4 text-violet-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">View Document</p>
+                      <p className="text-sm font-medium text-gray-900">
+                        View Document
+                      </p>
                       <p className="text-xs text-gray-500">ID verification</p>
                     </div>
                     <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-gray-600" />

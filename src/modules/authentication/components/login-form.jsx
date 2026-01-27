@@ -52,7 +52,7 @@ export function LoginForm({ className, ...props }) {
 
         // Clean and simple call
         toast.success(user.message || "Login successful", {
-          description: `Welcome back, ${user.fullName}!`,
+          description: `Welcome back, ${user.nickname}!`,
         });
       } else {
         navigate("/", { replace: true });
