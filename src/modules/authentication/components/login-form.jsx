@@ -48,7 +48,7 @@ export function LoginForm({ className, ...props }) {
 
       // STRICT ROLE CONTROL
       if (user?.role === ROLES.ADMIN) {
-        navigate(user.screen || "/admin", { replace: true });
+        navigate(user.screen || "/admin/dashboard", { replace: true });
 
         // Clean and simple call
         toast.success(user.message || "Login successful", {
