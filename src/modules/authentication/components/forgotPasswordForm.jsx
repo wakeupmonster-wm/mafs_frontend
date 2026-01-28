@@ -44,7 +44,7 @@ export default function ForgotPasswordForm() {
       ).unwrap();
 
       // Pass the email to the next route
-      navigate(response.screen || "/auth/", { replace: true });
+      navigate(response.screen || "/auth/login", { replace: true });
       toast.success(response.message || "Password is forgot successful!", {
         description: "Please enter email and password.",
       });

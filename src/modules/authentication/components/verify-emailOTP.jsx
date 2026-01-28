@@ -7,10 +7,10 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Button } from "@/components/ui/button";
-import { verifyOtpThunk } from "../store/auth.slice";
+import { verifyOtpThunk, requestOtpThunk } from "../store/auth.slice";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
-// import { verifyOtpThunk, requestOtpThunk } from "../store/auth.slice";
+import maskedEmail from "@/constants/masked.email";
 
 export default function VerifyEmailOtp() {
   const navigate = useNavigate();
@@ -68,7 +68,7 @@ export default function VerifyEmailOtp() {
     if (timer > 0) return; // Guard clause
 
     try {
-      // await dispatch(requestOtpThunk(email)).unwrap();
+      await dispatch(requestOtpThunk({ email })).unwrap();
       console.log("OTP Resent to:", email);
       setTimer(30); // Reset the clock
       setOtp(""); // Clear old OTP input for fresh start
@@ -83,7 +83,9 @@ export default function VerifyEmailOtp() {
         <h1 className="text-2xl font-bold">Enter verification code</h1>
         <p className="text-muted-foreground mt-2">
           We sent a 6-digit code to{" "}
-          <span className="font-medium text-foreground">{email}</span>
+          <span className="font-medium text-foreground">
+            {maskedEmail(email)}
+          </span>
         </p>
       </div>
 
