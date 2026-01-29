@@ -4,16 +4,46 @@ import { USERENDPOINTS } from "@/services/api-enpoints/users-management.endpoint
 import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
 
 /*================= ADMIN LOGIN API OPERATION =====================*/
-export const getALLUserListApi = async (page, limit, search, filters) => {
-  return apiConnector("GET", USERENDPOINTS.GET_USERS, {
-    params: {
-      page,
-      limit,
-      search,
-      ...filters,
-    },
-  }).then((res) => res.data);
+export const getALLUserListApi = async (page, limit, search, accountStatus, isPremium) => {
+  // Construct the params object carefully
+  const queryParams = { page, limit,
+    ...(search && { search }),
+    ...(accountStatus && { accountStatus }),
+    ...(isPremium !== undefined && { isPremium: String(isPremium) }),
+  };
+  try {
+    const response = await apiConnector(
+      "GET",
+      USERENDPOINTS.GET_USERS,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
+
+// export const getALLUserListApi = async (
+//   page,
+//   limit,
+//   search,
+//   accountStatus,
+//   isPremium
+// ) => {
+//   const params = new URLSearchParams({
+//     page,
+//     limit,
+//     ...(search && { search }),
+//     ...(accountStatus && { accountStatus }),
+//     // Only add isPremium if it's explicitly true or false
+//     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
+//   });
+
+//   const response = await axios.get(`/api/v1/admin/users?${params.toString()}`);
+//   return response.data;
+// };
 
 export const getAllPendingVerificationsApi = async () => {
   return apiConnector("GET", USERENDPOINTS.GET_PENDING_KYC);
