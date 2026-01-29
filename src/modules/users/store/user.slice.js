@@ -55,36 +55,38 @@ import {
 //  Pending This Fetch Users list API/.
 export const fetchUsers = createAsyncThunk(
   "users/fetchAll",
-  async ({ page, limit, search, filters }, { rejectWithValue }) => {
+  async (
+    { page, limit, search, accountStatus, isPremium },
+    { rejectWithValue }
+  ) => {
+    console.log("page: ", page);
+    console.log("limit: ", limit);
+    console.log("search: ", search);
+    console.log("accountStatus: ", accountStatus);
+    console.log("isPremium: ", isPremium);
     try {
-      const response = await getALLUserListApi(page, limit, search, filters);
+      // Pass the new filters directly to your API function
+      const response = await getALLUserListApi(
+        page,
+        limit,
+        search,
+        accountStatus,
+        isPremium
+      );
 
-      // 1. Backend now returns { success, data, pagination }
+      console.log("response: ", response);
+
       if (response && response.success) {
         return {
           users: response.data || [],
           pagination: {
-            page: response.pagination.page || page,
-            limit: response.pagination.limit || limit,
-            total: response.pagination.total || 0, // 👈 Crucial for the "Page X of Y" logic
-            totalPages: response.pagination.totalPages || 0,
+            page: response.pagination.page,
+            limit: response.pagination.limit,
+            total: response.pagination.total,
+            totalPages: response.pagination.totalPages,
           },
         };
       }
-
-      // 2. Fallback for legacy array responses
-      if (Array.isArray(response)) {
-        return {
-          users: response,
-          pagination: {
-            page: page || 1,
-            limit: limit || 20,
-            total: response.length,
-            totalPages: Math.ceil(response.length / (limit || 20)),
-          },
-        };
-      }
-
       return rejectWithValue(response.message || "Failed to fetch users");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
@@ -322,22 +324,27 @@ const userSlice = createSlice({
       })
       .addCase(bannedUserProfile.fulfilled, (state, action) => {
         state.loading = false;
+        // Note: Ensure your thunk payload returns 'userId', 'category', and 'reason'
         const { userId, category, reason } = action.payload;
 
         const user = state.items.find(
           (u) => u._id === userId || u.id === userId
         );
-        if (user) {
-          // Aligning with both potential frontend/backend property names
-          user.accountStatus = "banned";
-          if (user.account) user.account.status = "banned";
 
-          user.account.banDetails = {
-            isBanned: true,
-            reason,
-            category,
-            bannedAt: new Date().toISOString(),
-          };
+        if (user) {
+          // 1. Update top-level status if your UI uses it
+          user.accountStatus = "banned";
+
+          // 2. Update nested account object (matches your API structure)
+          if (user.account) {
+            user.account.status = "banned";
+            user.account.banDetails = {
+              isBanned: true,
+              reason: reason || "No reason provided",
+              category: category || "General",
+              bannedAt: new Date().toISOString(),
+            };
+          }
         }
       })
       .addCase(bannedUserProfile.rejected, (state, action) => {
@@ -355,15 +362,15 @@ const userSlice = createSlice({
         const user = state.items.find(
           (u) => u._id === userId || u.id === userId
         );
-        if (user) {
-          // Update status to active as per backend controller
-          user.accountStatus = "active";
-          if (user.account) user.account.status = "active";
 
-          // Cleanup ban details
-          if (user.account.banDetails) {
-            user.account.banDetails.isBanned = false;
-            user.account.banDetails.unbannedAt = new Date().toISOString();
+        if (user) {
+          user.accountStatus = "active";
+          if (user.account) {
+            user.account.status = "active";
+            user.account.banDetails = {
+              isBanned: false,
+              unbannedAt: new Date().toISOString(),
+            };
           }
         }
       })
