@@ -84,6 +84,18 @@ export const fetchPrizes = createAsyncThunk(
   }
 );
 
+// export const createPrize = createAsyncThunk(
+//   "giveaway/createPrize",
+//   async (payload, { rejectWithValue }) => {
+//     try {
+//       const res = await createPrizeApi(payload);
+//       return res.data;
+//     } catch (e) {
+//       return rejectWithValue(e.response?.data?.message);
+//     }
+//   }
+// );
+
 export const createPrize = createAsyncThunk(
   "giveaway/createPrize",
   async (payload, { rejectWithValue }) => {
@@ -91,10 +103,13 @@ export const createPrize = createAsyncThunk(
       const res = await createPrizeApi(payload);
       return res.data;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message);
+      return rejectWithValue(
+        e.response?.data || { message: "Failed to create prize" }
+      );
     }
   }
 );
+
 
 export const updatePrize = createAsyncThunk(
   "giveaway/updatePrize",
@@ -127,7 +142,12 @@ export const createCampaign = createAsyncThunk(
       const res = await createCampaignApi(payload);
       return res.data;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message);
+      // return rejectWithValue(e.response?.data?.message);
+       return rejectWithValue(
+        e.response?.data || {
+          message: "Something went wrong",
+        }
+      );
     }
   }
 );
@@ -201,10 +221,43 @@ const giveawaySlice = createSlice({
     winner: [],
     loading: false,
     error: null,
+    successMessage: null,
+    bulkCampaignLoading: false,  // For bulk operations
+  markDeliveredLoading: false,
   },
-  reducers: {},
+  // reducers: {},
+  reducers: {
+  clearGiveawayStatus: (s) => {
+    s.error = null;
+    s.successMessage = null;
+  },
+},
+
   extraReducers: (builder) => {
     builder
+
+
+    /* CREATE PRIZE */
+.addCase(createPrize.pending, (s) => {
+  s.loading = true;
+  s.error = null;
+  s.successMessage = null;
+})
+
+.addCase(createPrize.fulfilled, (s, a) => {
+  s.loading = false;
+  s.prizes.unshift(a.payload);
+  s.successMessage = "Prize created successfully";
+})
+
+.addCase(createPrize.rejected, (s, a) => {
+  s.loading = false;
+  s.error =
+    a.payload?.message ||
+    a.payload ||
+    a.error?.message ||
+    "Failed to create prize";
+})
 
       /* PRIZES */
       .addCase(fetchPrizes.pending, (s) => {
@@ -214,9 +267,9 @@ const giveawaySlice = createSlice({
         s.loading = false;
         s.prizes = a.payload;
       })
-      .addCase(createPrize.fulfilled, (s, a) => {
-        s.prizes.unshift(a.payload);
-      })
+      // .addCase(createPrize.fulfilled, (s, a) => {
+      //   s.prizes.unshift(a.payload);
+      // })
       .addCase(updatePrize.fulfilled, (s, a) => {
         s.prizes = s.prizes.map((p) =>
           p._id === a.payload._id ? a.payload : p
@@ -232,8 +285,19 @@ const giveawaySlice = createSlice({
         s.campaigns = a.payload;
       })
       .addCase(createCampaign.fulfilled, (s, a) => {
+        s.loading = false;
         s.campaigns.unshift(a.payload);
+        s.successMessage = "Campaign created successfully";
       })
+     .addCase(createCampaign.rejected, (s, a) => {
+  s.loading = false;
+  s.error =
+    a.payload?.message ||      // 👈 backend message
+    a.payload ||               // 👈 fallback
+    a.error?.message ||
+    "Failed to create campaign";
+})
+
       // .addCase(updateCampaign.fulfilled, (s, a) => {
       //   s.campaigns = s.campaigns.map((c) =>
       //     c._id === a.payload._id ? a.payload : c
@@ -295,15 +359,27 @@ const giveawaySlice = createSlice({
       .addCase(deletePrize.fulfilled, (state, action) => {
         state.prizes = state.prizes.filter((p) => p._id !== action.payload);
       })
+.addMatcher(
+  (a) => a.type.endsWith("rejected"),
+  (s, a) => {
+    s.loading = false;
+    s.error =
+      a.payload?.message ||
+      a.payload ||
+      a.error?.message ||
+      "Something went wrong";
+  }
+);
 
-      .addMatcher(
-        (a) => a.type.endsWith("rejected"),
-        (s, a) => {
-          s.loading = false;
-          s.error = a.payload;
-        }
-      );
+      // .addMatcher(
+      //   (a) => a.type.endsWith("rejected"),
+      //   (s, a) => {
+      //     s.loading = false;
+      //     s.error = a.payload;
+      //   }
+      // );
   },
 });
 
 export default giveawaySlice.reducer;
+export const { clearGiveawayStatus } = giveawaySlice.actions;

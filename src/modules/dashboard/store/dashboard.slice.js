@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { dashboardKPIAPI } from "../services/dashboard.services";
 
 // Define the async thunk
+
 export const fetchDashboardKPIs = createAsyncThunk(
   "kpis/fetchDashboardKPIs",
   async (_, { rejectWithValue }) => {
@@ -53,6 +54,5 @@ const dashboardSlice = createSlice({
       });
   },
 });
-
 export const { clearDashboardError } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

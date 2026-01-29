@@ -5,6 +5,25 @@ import {
   updateProfileStatusApi,
 } from "../services/profile-review.api";
 
+
+
+
+// export const fetchReportedProfiles = createAsyncThunk(
+//   "profileReview/fetchReportedProfiles",
+//   async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {
+//     try {
+//       const res = await getReportedProfilesApi({ page, limit });
+//       return res.data; // 🔥 THIS FIX
+//     } catch (e) {
+//       return rejectWithValue(
+//         e.response?.data?.message || "Failed to fetch reported profiles"
+//       );
+//     }
+//   }
+// );
+
+
+
 export const fetchReportedProfiles = createAsyncThunk(
   "profileReview/fetchReportedProfiles",
   async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {

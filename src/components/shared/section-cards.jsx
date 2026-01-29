@@ -238,7 +238,7 @@ export function SectionCards() {
         </CardFooter>
       </Card>
 
-      <Card
+      {/* <Card
         className="@container/card"
         onClick={() => navigate("/admin/management/users-management")}
       >
@@ -257,7 +257,7 @@ export function SectionCards() {
         <CardFooter className="text-muted-foreground text-sm">
           Suspended Users
         </CardFooter>
-      </Card>
+      </Card> */}
 
       {/* Total Tickets */}
 
@@ -299,6 +299,34 @@ export function SectionCards() {
           Claimed Prizes
         </CardFooter>
       </Card>
+
+
+  <Card
+        className="@container/card cursor"
+        onClick={() => navigate("/admin/management/profile-review")}
+      >
+        <CardHeader>
+          <CardDescription>Total Reports</CardDescription>
+          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+            {stats.openReports.value}
+          </CardTitle>
+          <CardAction>
+            <Badge
+              variant={
+                stats.openReports.actionable
+                  ? "destructive"
+                  : "outline"
+              }
+            >
+              Action Needed
+            </Badge>
+          </CardAction>
+        </CardHeader>
+        <CardFooter className="text-muted-foreground text-sm">
+          Reports
+        </CardFooter>
+      </Card>
+
 
       {/* Pending Verifications */}
       <Card

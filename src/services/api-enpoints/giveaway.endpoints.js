@@ -30,7 +30,7 @@ export const GIVEAWAYS_ENDPOINTS = {
   CAMPAIGN_RESEND: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/resend-prize`,
 
   // LOGISTICS / DELIVERY
-  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/deliveries/pending`,
+  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/pending-deliveries`,
   MARK_DELIVERED: `${GIVEAWAY_BASE}/mark-as-deliver`,
   DELIVERED_PRIZES: `${GIVEAWAY_BASE}/deliveries/completed`,
   CLAIMS: `${GIVEAWAY_BASE}/claims`,
