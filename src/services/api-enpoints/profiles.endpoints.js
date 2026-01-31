@@ -9,7 +9,7 @@ export const PROFILE_ENDPOINTS = {
     REPORTED: `${BASE_URL}/api/v1/admin/profile-review/reported`,
     DETAILS: (id) => `${BASE_URL}/api/v1/admin/profile-review/${id}`,
     UPDATE_STATUS: (id) =>
-      `${BASE_URL}/api/v1/admin/profile-review/${id}/status`,
+      `http://localhost:3001/api/v1/admin/profile-review/${id}/status`,
   },
 
   // Moderation Section

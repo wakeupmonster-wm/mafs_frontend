@@ -84,7 +84,7 @@ export function NavUser({ user }) {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <Link to="/admin/accounts">
+              <Link to="settings">
                 <DropdownMenuItem>
                   <IconUserCircle />
                   Account

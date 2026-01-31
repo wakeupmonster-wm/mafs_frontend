@@ -11,6 +11,7 @@ export const getALLUserListApi = async (page, limit, search, accountStatus, isPr
     ...(accountStatus && { accountStatus }),
     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
   };
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await apiConnector(
       "GET",
@@ -40,13 +41,16 @@ export const getALLUserListApi = async (page, limit, search, accountStatus, isPr
 //     // Only add isPremium if it's explicitly true or false
 //     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
 //   });
-
 //   const response = await axios.get(`/api/v1/admin/users?${params.toString()}`);
 //   return response.data;
 // };
 
-export const getAllPendingVerificationsApi = async () => {
-  return apiConnector("GET", USERENDPOINTS.GET_PENDING_KYC);
+
+export const getAllPendingVerificationsApi = async (status = "pending") => {
+  const urlWithFilter = `${USERENDPOINTS.GET_PENDING_KYC}?status=${status}`;
+  
+  return apiConnector("GET", urlWithFilter);
+  // return apiConnector("GET", USERENDPOINTS.GET_PENDING_KYC);
 };
 
 export const verifyUserProfileApi = async (userId, payload) => {

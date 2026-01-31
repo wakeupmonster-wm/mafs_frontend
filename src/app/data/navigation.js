@@ -101,7 +101,7 @@ const navigationData = {
       icon: IconDiscount2, // offers, promotions, discounts
     },
     {
-      title: "App Setting Management",
+      title: "Users Ticket",
       url: "/admin/management/support",
       icon: IconDiscount2, // offers, promotions, discounts
     },

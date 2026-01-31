@@ -282,7 +282,7 @@ export function SectionCards() {
         </CardFooter>
       </Card>
 
-      <Card className="@container/card">
+      <Card className="@container/card"  onClick={() => navigate("/admin/management/giveaway")}>
         <CardHeader>
           <CardDescription>Total Claimed Prizes</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">

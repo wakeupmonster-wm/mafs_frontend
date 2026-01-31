@@ -6,12 +6,12 @@ export const BASE_URL =
 export const SUPPORT_ENDPOINTS = {
   // User Side
   CREATE_TICKET: `${BASE_URL}/api/v1/contact`,
-  MY_TICKETS: `${BASE_URL}/api/v1/contact/alltickets`,
+  MY_TICKETS: `http://localhost:3001/api/v1/contact/alltickets`,
 
   // Shared/Admin Side
-  TICKET_DETAILS: (id) => `${BASE_URL}/api/v1/contact/ticket/${id}`,
-  ADMIN_REPLY: `${BASE_URL}/api/v1/contact/adminreply`,
+  TICKET_DETAILS: (id) => `http://localhost:3001/api/v1/contact/ticket/${id}`,
+  ADMIN_REPLY: `http://localhost:3001/api/v1/contact/adminreply`,
 
   // Highly Recommended for Admin Panel:
-  GET_ALL_TICKETS: `${BASE_URL}/api/v1/admin/support/alltickets`,
+  GET_ALL_TICKETS: `http://localhost:3001/api/v1/admin/support/alltickets`,
 };

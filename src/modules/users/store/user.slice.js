@@ -96,9 +96,9 @@ export const fetchUsers = createAsyncThunk(
 
 export const fetchPendingVerifications = createAsyncThunk(
   "users/fetchPendingVerifications",
-  async (_, { rejectWithValue }) => {
+  async (status = "pending", { rejectWithValue }) => {
     try {
-      const response = await getAllPendingVerificationsApi();
+      const response = await getAllPendingVerificationsApi(status);
 
       if (!response.success) {
         return rejectWithValue(

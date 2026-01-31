@@ -22,17 +22,29 @@ export const createSupportTicket = createAsyncThunk(
 
 export const fetchMyTickets = createAsyncThunk(
   "support/fetchMyTickets",
-  async (_, { rejectWithValue }) => {
+  async ({ status, search } = { status: "all", search: "" }, { rejectWithValue }) => {
     try {
-      const res = await getMyTicketsApi();
+      const res = await getMyTicketsApi(status, search);
       return res?.data || [];
     } catch (e) {
-      return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch tickets"
-      );
+      return rejectWithValue(e.response?.data?.message || "Failed to fetch tickets");
     }
   }
 );
+
+// export const fetchMyTickets = createAsyncThunk(
+//   "support/fetchMyTickets",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       const res = await getMyTicketsApi();
+//       return res?.data || [];
+//     } catch (e) {
+//       return rejectWithValue(
+//         e.response?.data?.message || "Failed to fetch tickets"
+//       );
+//     }
+//   }
+// );
 
 export const fetchTicketById = createAsyncThunk(
   "support/fetchTicketById",

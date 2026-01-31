@@ -3,7 +3,7 @@ export const BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "https://api.matchatfirstswipe.com.au";
 
 /*===================== GIVEAWAYS ENDPOINTS =====================*/
-const GIVEAWAY_BASE = `${BASE_URL}/api/v1/admin/giveaway`;
+const GIVEAWAY_BASE = `http://localhost:3001/api/v1/admin/giveaway`;
 
 export const GIVEAWAYS_ENDPOINTS = {
   // PRIZES
