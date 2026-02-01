@@ -50,7 +50,7 @@ export const fetchProfileForReview = createAsyncThunk(
 export const performUpdateProfileStatus = createAsyncThunk(
   "profileReview/updateProfileStatus",
   async (
-    { userId, action, reason, banDuration, replyMessage, reportId },
+    { userId, action, reason, banDuration, suspendDuration,replyMessage, reportId },
     { rejectWithValue }
   ) => {
     try {
@@ -58,6 +58,7 @@ export const performUpdateProfileStatus = createAsyncThunk(
         action,
         reason,
         banDuration,
+        suspendDuration,
         replyMessage,
         reportId,
       });

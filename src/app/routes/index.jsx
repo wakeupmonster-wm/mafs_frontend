@@ -97,6 +97,7 @@ export const router = createBrowserRouter([
               { path: "edit-profile", element: <EditProfilePage /> },
             ],
           },
+          
 
           { path: "pending-verifications", element: <PendingVerifications /> },
 

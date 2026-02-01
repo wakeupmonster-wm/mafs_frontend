@@ -91,7 +91,7 @@ export function NavUser({ user }) {
                 </DropdownMenuItem>
               </Link>
 
-              <Link to="/admin/billing">
+              {/* <Link to="/admin/billing">
                 <DropdownMenuItem>
                   <IconCreditCard />
                   Billing
@@ -100,7 +100,7 @@ export function NavUser({ user }) {
 
               <DropdownMenuItem>
                 <IconNotification /> Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />

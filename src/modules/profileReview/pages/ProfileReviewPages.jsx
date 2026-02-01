@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+
 import {
   Select,
   SelectContent,
@@ -62,6 +63,7 @@ export function ReportedProfilesPage() {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
   const [imageModal, setImageModal] = useState({
     open: false,
     src: "",
@@ -286,7 +288,8 @@ export function ReportedProfilesPage() {
                       <div className="flex flex-col items-center gap-4">
                         <div className="relative">
                           <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                          <Loader2 className="w-6 h-6 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+                          {/* <Loader2 className="w-6 h-6 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /> */}
+                          {/* <Loader2 className="w-4 h-4 mr-2 animate-spin" /> */}
                         </div>
                         <span className="text-gray-600 font-medium">
                           Loading reports...
@@ -431,7 +434,7 @@ export function ReportedProfilesPage() {
               <div className="p-12 text-center">
                 <div className="relative inline-block">
                   <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                  <Loader2 className="w-6 h-6 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                 </div>
                 <p className="mt-4 text-gray-600 font-medium">
                   Loading reports...
@@ -620,6 +623,7 @@ export function ProfileReviewDetailPage({ userId }) {
   const [action, setAction] = useState("");
   const [reason, setReason] = useState("");
   const [banDuration] = useState("");
+    const [suspendDuration, setSuspendDuration] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [replyMessage, setReplyMessage] = useState("");
@@ -649,6 +653,9 @@ export function ProfileReviewDetailPage({ userId }) {
       banDuration: banDuration ? Number(banDuration) : undefined,
       replyMessage: action === "reply" ? replyMessage : undefined,
       reportId: action === "reply" ? selectedReportId : undefined,
+       suspendDuration: action === "suspend"
+    ? Number(suspendDuration)
+    : undefined,
     };
     dispatch(performUpdateProfileStatus(payload)).then(() => {
       setTimeout(() => dispatch(clearProfileReviewStatus()), 2000);
@@ -666,7 +673,7 @@ export function ProfileReviewDetailPage({ userId }) {
         <div className="text-center">
           <div className="relative inline-block">
             <div className="w-20 h-20 border-4 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <Loader2 className="w-8 h-8 text-blue-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+         {/* <Loader2 className="w-4 h-4 mr-2 animate-spin" /> */}
           </div>
           <p className="mt-6 text-gray-700 font-semibold text-lg">
             Loading profile...
@@ -765,7 +772,7 @@ export function ProfileReviewDetailPage({ userId }) {
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            {/* <div className="flex items-center gap-3">
               {p.isBanned && (
                 <Badge className="bg-red-100 text-red-700 border-2 border-red-300 px-4 py-2.5 rounded-xl font-semibold">
                   <Ban className="w-4 h-4 mr-2" />
@@ -778,7 +785,33 @@ export function ProfileReviewDetailPage({ userId }) {
                   HIGH PRIORITY
                 </Badge>
               )}
-            </div>
+            </div> */}
+            <div className="flex items-center gap-3">
+  {/* BANNED */}
+  {p.accountStatus === "banned" && (
+    <Badge className="bg-red-100 text-red-700 border-2 border-red-300 px-4 py-2.5 rounded-xl font-semibold">
+      <Ban className="w-4 h-4 mr-2" />
+      USER BANNED
+    </Badge>
+  )}
+
+  {/* SUSPENDED */}
+  {p.accountStatus === "suspended" && (
+    <Badge className="bg-amber-100 text-amber-700 border-2 border-amber-300 px-4 py-2.5 rounded-xl font-semibold">
+      <Clock className="w-4 h-4 mr-2" />
+      USER SUSPENDED
+    </Badge>
+  )}
+
+  {/* HIGH PRIORITY */}
+  {p.reportCount >= 5 && (
+    <Badge className="bg-purple-100 text-purple-700 border-2 border-purple-300 px-4 py-2.5 rounded-xl font-semibold">
+      <AlertCircle className="w-4 h-4 mr-2" />
+      HIGH PRIORITY
+    </Badge>
+  )}
+</div>
+
           </div>
         </div>
 
@@ -967,6 +1000,55 @@ export function ProfileReviewDetailPage({ userId }) {
                     </div>
                   </div>
                 )}
+
+
+{p.accountStatus === "suspended" && p.suspensionDetails && (
+  <div className="mb-6 p-5 bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-300 rounded-xl shadow-sm">
+    <div className="flex items-center gap-3 mb-4">
+      <div className="p-2 bg-amber-200 rounded-lg">
+        <Clock className="w-5 h-5 text-amber-700" />
+      </div>
+      <h4 className="text-amber-800 font-bold text-lg">
+        Suspension Information
+      </h4>
+    </div>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Reason */}
+      <div className="bg-white/70 p-4 rounded-lg">
+        <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">
+          Reason
+        </p>
+        <p className="text-sm font-medium text-gray-900">
+          {p.suspensionDetails.reason || "—"}
+        </p>
+      </div>
+
+      {/* Suspended Till */}
+      <div className="bg-white/70 p-4 rounded-lg">
+        <p className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-1">
+          Suspended Till
+        </p>
+        <p className="text-sm font-medium text-gray-900">
+          {p.suspensionDetails.suspendUntil
+            ? new Date(p.suspensionDetails.suspendUntil).toLocaleDateString(
+                "en-IN",
+                {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )
+            : "Indefinite"}
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+
+                
 
                 {/* Bio - Enhanced */}
                 <div>
@@ -1243,6 +1325,15 @@ export function ProfileReviewDetailPage({ userId }) {
                                 <span className="font-semibold">Ban User</span>
                               </div>
                             </SelectItem>
+
+                              <SelectItem value="suspend">
+                              <div className="flex items-center gap-3 py-1">
+                                <div className="p-1.5 bg-red-100 rounded-lg">
+                                  <Ban className="w-4 h-4 text-red-600" />
+                                </div>
+                                <span className="font-semibold">Suspend User</span>
+                              </div>
+                            </SelectItem>
                             <SelectItem value="reply">
                               <div className="flex items-center gap-3 py-1">
                                 <div className="p-1.5 bg-blue-100 rounded-lg">
@@ -1259,6 +1350,7 @@ export function ProfileReviewDetailPage({ userId }) {
 
                       {(action === "reject" ||
                         action === "ban" ||
+                        action === "suspend" ||
                         action === "resolve") && (
                         <div>
                           <label className="text-sm font-bold text-gray-700 mb-3 block uppercase tracking-wider">
@@ -1282,6 +1374,39 @@ export function ProfileReviewDetailPage({ userId }) {
                           />
                         </div>
                       )}
+
+                      {action === "suspend" && (
+  <>
+    {/* Reason */}
+    <div>
+      <label className="text-sm font-bold text-gray-700 mb-2 block">
+        Suspension Reason <span className="text-red-500">*</span>
+      </label>
+      <Textarea
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        placeholder="Why are you suspending this user?"
+        required
+      />
+    </div>
+
+    {/* Duration */}
+    <div>
+      <label className="text-sm font-bold text-gray-700 mb-2 block">
+        Suspend Duration (in hours) <span className="text-red-500">*</span>
+      </label>
+      <Input
+        type="number"
+        min={1}
+        placeholder="Eg: 24"
+        value={suspendDuration}
+        onChange={(e) => setSuspendDuration(e.target.value)}
+        required
+      />
+    </div>
+  </>
+)}
+
 
                       {/* Reply to Reporter Section */}
                       {action === "reply" && (
