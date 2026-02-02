@@ -6,51 +6,9 @@ import {
   getAllPendingVerificationsApi,
   suspendUserAPI,
   unBannedUserAPI,
+  updateUserProfileApi,
   verifyUserProfileApi,
 } from "../services/user-management.operation";
-
-// export const fetchUsers = createAsyncThunk(
-//   "users/fetchAll",
-//   async ({ page, limit, search, filters }, { rejectWithValue }) => {
-//     try {
-//       const response = await getALLUserListApi(page, limit, search, filters);
-
-//       // console.log("response: ", response);
-
-//       // 1. Check if response is the raw array you showed me
-//       if (Array.isArray(response)) {
-//         return {
-//           users: response,
-//           // Since the API isn't returning a pagination object in this specific response,
-//           // we provide a fallback so the UI doesn't break.
-//           pagination: {
-//             page: page || 1,
-//             limit: limit || 20,
-//             total: response.length,
-//             totalPages: Math.ceil(response.length / (limit || 20)),
-//           },
-//         };
-//       }
-
-//       if (!response.success) {
-//         return rejectWithValue(response.message || "Failed to fetch users");
-//       }
-
-//       // 2. Fallback if the API ever changes to a { success, data, pagination } format
-//       return {
-//         users: response.data || [],
-//         pagination: response.pagination || {
-//           page: 1,
-//           limit: 20,
-//           total: 0,
-//           totalPages: 0,
-//         },
-//       };
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || "Server error");
-//     }
-//   }
-// );
 
 //  Pending This Fetch Users list API/.
 export const fetchUsers = createAsyncThunk(
@@ -225,6 +183,7 @@ export const suspendUserProfile = createAsyncThunk(
   "users/suspendUserProfile",
   async ({ userId, reason, durationHours }, { rejectWithValue }) => {
     try {
+      console.log("call suspend: ", userId);
       const response = await suspendUserAPI({
         userId,
         payload: { reason, durationHours },
@@ -241,6 +200,45 @@ export const suspendUserProfile = createAsyncThunk(
   }
 );
 
+export const updateUserProfile = createAsyncThunk(
+  "users/updateProfile",
+  async ({ userId, profile }, { rejectWithValue }) => {
+    try {
+      const payload = { profile };
+
+      // Assuming you have this API method in your services
+      const response = await updateUserProfileApi(userId, payload);
+
+      if (!response.success) {
+        return rejectWithValue(response.message || "Update failed");
+      }
+
+      // Return both the ID and the new data so the reducer knows who to update
+      return { userId, profile: response.data.profile };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  }
+);
+
+export const deleteUserPhoto = createAsyncThunk(
+  "users/deletePhoto",
+  async ({ userId, publicId }, { rejectWithValue }) => {
+    try {
+      const response = await deletePhotoApi(userId, publicId);
+
+      if (!response.success) {
+        return rejectWithValue(response.message || "Delete failed");
+      }
+
+      // Return these to update the local state without a refresh
+      return { userId, publicId, updatedPhotos: response.data.profile.photos };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "users",
   initialState: {
@@ -251,7 +249,7 @@ const userSlice = createSlice({
     error: null,
     pagination: {
       page: 1,
-      limit: 20,
+      limit: 10,
       total: 0,
       totalPages: 0,
     },
@@ -313,9 +311,66 @@ const userSlice = createSlice({
       })
       /* VERIFY USER PROFILE */
       .addCase(verifyUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+
+        const { userId, action: status, reason } = action.payload;
+
+        // 1. Remove from pending list (already doing this)
         state.pendingVerifications = state.pendingVerifications.filter(
-          (item) => item.userId !== action.payload.userId
+          (item) => item.userId !== userId
         );
+
+        // 2. FIND AND UPDATE THE USER IN THE LIST
+        // This is the key for real-time UI updates
+        const userIndex = state.items.findIndex(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (userIndex !== -1) {
+          state.items[userIndex].verification = {
+            ...state.items[userIndex].verification,
+            status: status === "approve" ? "approved" : "rejected",
+            rejectionReason: reason || undefined,
+          };
+        }
+      })
+      /* UPDATE USER PROFILE LIVE */
+      .addCase(updateUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId, profile } = action.payload;
+
+        // Find the user in the main list
+        const userIndex = state.items.findIndex(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (userIndex !== -1) {
+          // Merge the new profile data into the existing user object
+          // Immer handles the "immutable" update automatically here
+          state.items[userIndex].profile = {
+            ...state.items[userIndex].profile,
+            ...profile,
+          };
+        }
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* DELETE USER PHOTO LIVE */
+      .addCase(deleteUserPhoto.fulfilled, (state, action) => {
+        const { userId, updatedPhotos } = action.payload;
+        const userIndex = state.items.findIndex(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (userIndex !== -1) {
+          // Update the photos array with the new ordered list from the backend
+          state.items[userIndex].photos = updatedPhotos;
+        }
       })
       /* BANNED USER SUCCESS */
       .addCase(bannedUserProfile.pending, (state) => {

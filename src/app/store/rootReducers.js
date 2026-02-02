@@ -9,6 +9,7 @@ import chatManagementReducer from "@/modules/chatManagement/store/chat-managemen
 import notificationManagementReducer from "@/modules/notificationManagement/store/notification-management.slice";
 import faqsReducer from "@/modules/cms/store/faq.slice";
 import privacypolicyReducer from "@/modules/cms/store/privacy.slice";
+import termConditionReducer from "@/modules/cms/store/t&c.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -21,4 +22,5 @@ export const rootReducer = combineReducers({
   notificationManagement: notificationManagementReducer,
   faqs: faqsReducer,
   privacypolicy: privacypolicyReducer,
+  termsAndcondition: termConditionReducer,
 });

@@ -4,9 +4,17 @@ import { USERENDPOINTS } from "@/services/api-enpoints/users-management.endpoint
 import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
 
 /*================= ADMIN LOGIN API OPERATION =====================*/
-export const getALLUserListApi = async (page, limit, search, accountStatus, isPremium) => {
+export const getALLUserListApi = async (
+  page,
+  limit,
+  search,
+  accountStatus,
+  isPremium
+) => {
   // Construct the params object carefully
-  const queryParams = { page, limit,
+  const queryParams = {
+    page,
+    limit,
     ...(search && { search }),
     ...(accountStatus && { accountStatus }),
     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
@@ -52,6 +60,16 @@ export const getAllPendingVerificationsApi = async () => {
 export const verifyUserProfileApi = async (userId, payload) => {
   const url = USERENDPOINTS.VERIFY_USER_KYC(userId);
   return apiConnector("POST", url, payload);
+};
+
+export const updateUserProfileApi = async (userId, payload) => {
+  const url = USERENDPOINTS.UPDATE_USER_DETAILS(userId);
+  return apiConnector("PATCH", url, payload);
+};
+
+export const deletePhotoApi = async (userId, publicId) => {
+  const url = USERENDPOINTS.DELETE_USER_PHOTOS(userId);
+  return apiConnector("DELETE", url, { publicId });
 };
 
 // export const exportUsersApi = async (filters = {}) => {

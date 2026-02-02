@@ -39,6 +39,7 @@ import PrivacyAndPolicyPage from "@/modules/cms/pages/privacy-policy.page";
 import TermAndConditionsPage from "@/modules/cms/pages/terms-conditions.page";
 import FAQEditView from "@/modules/cms/components/faqs-edit-view.page";
 import NotificationManagementPage from "@/modules/notificationManagement/pages/notificationPage";
+import ViewPage from "@/modules/users/pages/viewPage";
 
 export const router = createBrowserRouter([
   {
@@ -93,6 +94,7 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <UserManagementPage /> },
               { path: "view-profile", element: <ViewProfilePage /> },
+              { path: "view-page", element: <ViewPage /> },
               { path: "edit-profile", element: <EditProfilePage /> },
             ],
           },

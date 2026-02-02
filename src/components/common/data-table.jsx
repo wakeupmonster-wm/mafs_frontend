@@ -1,13 +1,11 @@
-import * as React from "react";
+import { React, useState } from "react";
+
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel, // Important
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -35,9 +33,9 @@ import {
   IconChevronsLeft,
   IconChevronsRight,
   IconFilter,
-  IconLayoutColumns,
-  IconLoader,
+  IconInbox,
   IconSearch,
+  IconX,
 } from "@tabler/icons-react";
 import { Label } from "../ui/label";
 import {
@@ -47,350 +45,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-
-// export function DataTable({
-//   // columns,
-//   // data,
-//   // searchPlaceholder = "Search all columns...",
-//   // globalFilter,
-//   // setGlobalFilter,
-//   columns,
-//   data,
-//   rowCount, // Total count from API
-//   pagination, // { pageIndex, pageSize }
-//   onPaginationChange,
-//   searchPlaceholder = "Search all columns...",
-//   globalFilter,
-//   setGlobalFilter,
-//   isLoading,
-//   meta,
-// }) {
-//   const [sorting, setSorting] = React.useState([]);
-//   const [columnVisibility, setColumnVisibility] = React.useState({});
-//   const [rowSelection, setRowSelection] = React.useState({});
-//   const [columnFilters, setColumnFilters] = React.useState([
-//     { id: "status", value: "active" },
-//   ]);
-
-//   // const table = useReactTable({
-//   //   data,
-//   //   columns,
-//   //   onSortingChange: setSorting,
-//   //   onGlobalFilterChange: setGlobalFilter, // Update global filter
-//   //   getCoreRowModel: getCoreRowModel(),
-//   //   getPaginationRowModel: getPaginationRowModel(),
-//   //   getSortedRowModel: getSortedRowModel(),
-//   //   getFilteredRowModel: getFilteredRowModel(), // Required for filtering
-//   //   onColumnVisibilityChange: setColumnVisibility,
-//   //   onRowSelectionChange: setRowSelection,
-//   //   state: {
-//   //     sorting,
-//   //     globalFilter, // Bind state
-//   //     columnVisibility,
-//   //     rowSelection,
-//   //   },
-//   // });
-
-//   const table = useReactTable({
-//     data,
-//     columns,
-//     rowCount,
-//     manualPagination: true, // 3️⃣ Disable client-side pagination
-//     state: {
-//       pagination,
-//       globalFilter,
-//     },
-//     onPaginationChange, // 4️⃣ Capture page changes
-//     onGlobalFilterChange: setGlobalFilter,
-//     getCoreRowModel: getCoreRowModel(),
-//     // getPaginationRowModel: getPaginationRowModel(), // 5️⃣ Remove this
-//     manualFiltering: true, // Enable manual filtering for API search
-//     meta: meta,
-//   });
-
-//   return (
-//     <div className="w-full space-y-6">
-//       {/* SEARCH TOOLBAR */}
-//       <div className="flex items-center justify-between gap-4 bg-muted/30 p-4 rounded-lg border">
-//         <div className="relative flex-1 max-w-sm">
-//           <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-//           <Input
-//             placeholder={searchPlaceholder}
-//             className="pl-9 bg-background"
-//             value={globalFilter ?? ""}
-//             onChange={(e) => setGlobalFilter(e.target.value)}
-//           />
-//         </div>
-
-//         <div className="flex items-center gap-2 ml-auto">
-//           {/* --- NEW STATUS FILTER DROPDOWN --- */}
-//           <DropdownMenu>
-//             <DropdownMenuTrigger asChild>
-//               <Button variant="outline">
-//                 <IconFilter className="h-4 w-4 mr-2" /> Filters
-//               </Button>
-//             </DropdownMenuTrigger>
-//             <DropdownMenuContent align="end" className="w-48">
-//               <DropdownMenuLabel>Status</DropdownMenuLabel>
-//               <DropdownMenuSeparator />
-//               {/* You can manage this state via table.getColumn("status").setFilterValue() */}
-//               <DropdownMenuCheckboxItem
-//                 checked={
-//                   table.getColumn("status")?.getFilterValue() === "active"
-//                 }
-//                 onCheckedChange={() =>
-//                   table.getColumn("status")?.setFilterValue("active")
-//                 }
-//               >
-//                 Active
-//               </DropdownMenuCheckboxItem>
-//               <DropdownMenuCheckboxItem
-//                 checked={
-//                   table.getColumn("status")?.getFilterValue() === "banned"
-//                 }
-//                 onCheckedChange={() =>
-//                   table.getColumn("status")?.setFilterValue("banned")
-//                 }
-//               >
-//                 Banned
-//               </DropdownMenuCheckboxItem>
-//               <DropdownMenuCheckboxItem
-//                 checked={
-//                   table.getColumn("status")?.getFilterValue() === "suspended"
-//                 }
-//                 onCheckedChange={() =>
-//                   table.getColumn("status")?.setFilterValue("suspended")
-//                 }
-//               >
-//                 Suspended
-//               </DropdownMenuCheckboxItem>
-//               <DropdownMenuSeparator />
-//               <DropdownMenuItem
-//                 onClick={() =>
-//                   table.getColumn("status")?.setFilterValue(undefined)
-//                 }
-//               >
-//                 Clear Filter
-//               </DropdownMenuItem>
-//             </DropdownMenuContent>
-//           </DropdownMenu>
-
-//           {/* --- EXISTING COLUMN CUSTOMIZATION --- */}
-//           <DropdownMenu>
-//             <DropdownMenuTrigger asChild>
-//               <Button variant="outline">
-//                 <IconLayoutColumns className="h-4 w-4 mr-2" />
-//                 <span className="hidden lg:inline">Customize Columns</span>
-//                 <span className="lg:hidden">Columns</span>
-//                 <IconChevronDown className="ml-2 h-4 w-4" />
-//               </Button>
-//             </DropdownMenuTrigger>
-//             <DropdownMenuContent align="end">
-//               {table
-//                 .getAllColumns()
-//                 .filter((column) => column.getCanHide())
-//                 .map((column) => {
-//                   const header = column.columnDef.header;
-//                   const title = typeof header === "string" ? header : column.id;
-
-//                   return (
-//                     <DropdownMenuCheckboxItem
-//                       key={column.id}
-//                       className="capitalize"
-//                       checked={column.getIsVisible()}
-//                       onCheckedChange={(value) =>
-//                         column.toggleVisibility(!!value)
-//                       }
-//                     >
-//                       {title}
-//                     </DropdownMenuCheckboxItem>
-//                   );
-//                 })}
-//             </DropdownMenuContent>
-//           </DropdownMenu>
-//         </div>
-//       </div>
-
-//       <div className="rounded-md border relative">
-//         {isLoading && (
-//           <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-//             <IconLoader className="animate-spin text-blue-600" />
-//           </div>
-//         )}
-
-//         <Table>
-//           <TableHeader>
-//             {table.getHeaderGroups().map((headerGroup) => (
-//               <TableRow key={headerGroup.id}>
-//                 {headerGroup.headers.map((header) => (
-//                   <TableHead key={header.id}>
-//                     {header.isPlaceholder
-//                       ? null
-//                       : flexRender(
-//                           header.column.columnDef.header,
-//                           header.getContext()
-//                         )}
-//                   </TableHead>
-//                 ))}
-//               </TableRow>
-//             ))}
-//           </TableHeader>
-//           <TableBody>
-//             {table.getRowModel().rows?.length ? (
-//               table.getRowModel().rows.map((row) => (
-//                 <TableRow
-//                   key={row.id}
-//                   data-state={row.getIsSelected() && "selected"}
-//                 >
-//                   {row.getVisibleCells().map((cell) => (
-//                     <TableCell key={cell.id}>
-//                       {flexRender(
-//                         cell.column.columnDef.cell,
-//                         cell.getContext()
-//                       )}
-//                     </TableCell>
-//                   ))}
-//                 </TableRow>
-//               ))
-//             ) : (
-//               <TableRow>
-//                 <TableCell
-//                   colSpan={columns.length}
-//                   className="h-24 text-center"
-//                 >
-//                   No results.
-//                 </TableCell>
-//               </TableRow>
-//             )}
-//           </TableBody>
-//         </Table>
-//       </div>
-
-//       <div className="flex items-center justify-between px-4">
-//         <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-//           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-//           {table.getFilteredRowModel().rows.length} row(s) selected.
-//         </div>
-//         <div className="flex w-full items-center gap-8 lg:w-fit">
-//           <div className="hidden items-center gap-2 lg:flex">
-//             <Label htmlFor="rows-per-page" className="text-sm font-medium">
-//               Rows per page
-//             </Label>
-//             <Select
-//               value={`${table.getState().pagination.pageSize}`}
-//               onValueChange={(value) => {
-//                 table.setPageSize(Number(value));
-//               }}
-//             >
-//               <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-//                 <SelectValue
-//                   placeholder={table.getState().pagination.pageSize}
-//                 />
-//               </SelectTrigger>
-//               <SelectContent side="top">
-//                 {[10, 20, 30, 40, 50].map((pageSize) => (
-//                   <SelectItem key={pageSize} value={`${pageSize}`}>
-//                     {pageSize}
-//                   </SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//           </div>
-//           <div className="flex w-fit items-center justify-center text-sm font-medium">
-//             Page {table.getState().pagination.pageIndex + 1} of{" "}
-//             {table.getPageCount()}
-//           </div>
-//           <div className="ml-auto flex items-center gap-2 lg:ml-0">
-//             <Button
-//               variant="outline"
-//               className="hidden h-8 w-8 p-0 lg:flex"
-//               onClick={() => table.setPageIndex(0)}
-//               disabled={!table.getCanPreviousPage()}
-//             >
-//               <span className="sr-only">Go to first page</span>
-//               <IconChevronsLeft />
-//             </Button>
-//             <Button
-//               variant="outline"
-//               className="size-8"
-//               size="icon"
-//               onClick={() => table.previousPage()}
-//               disabled={!table.getCanPreviousPage()}
-//             >
-//               <span className="sr-only">Go to previous page</span>
-//               <IconChevronLeft />
-//             </Button>
-//             <Button
-//               variant="outline"
-//               className="size-8"
-//               size="icon"
-//               onClick={() => table.nextPage()}
-//               disabled={!table.getCanNextPage()}
-//             >
-//               <span className="sr-only">Go to next page</span>
-//               <IconChevronRight />
-//             </Button>
-//             <Button
-//               variant="outline"
-//               className="hidden size-8 lg:flex"
-//               size="icon"
-//               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-//               disabled={!table.getCanNextPage()}
-//             >
-//               <span className="sr-only">Go to last page</span>
-//               <IconChevronsRight />
-//             </Button>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Pagination Controls */}
-//       <div className="flex items-center justify-between px-4">
-//         <div className="flex w-full items-center gap-8 lg:w-fit">
-//           <div className="flex items-center gap-2">
-//             <p className="text-sm font-medium">Rows per page</p>
-//             <Select
-//               value={`${pagination.pageSize}`}
-//               onValueChange={(value) => table.setPageSize(Number(value))}
-//             >
-//               <SelectTrigger className="h-8 w-[70px]">
-//                 <SelectValue placeholder={pagination.pageSize} />
-//               </SelectTrigger>
-//               <SelectContent side="top">
-//                 {[10, 20, 30, 40, 50].map((size) => (
-//                   <SelectItem key={size} value={`${size}`}>
-//                     {size}
-//                   </SelectItem>
-//                 ))}
-//               </SelectContent>
-//             </Select>
-//           </div>
-//           <div className="text-sm font-medium">
-//             Page {pagination.pageIndex + 1} of {table.getPageCount()}
-//           </div>
-//           <div className="flex items-center space-x-2">
-//             <Button
-//               variant="outline"
-//               size="icon"
-//               onClick={() => table.previousPage()}
-//               disabled={!table.getCanPreviousPage()}
-//             >
-//               <IconChevronLeft />
-//             </Button>
-//             <Button
-//               variant="outline"
-//               size="icon"
-//               onClick={() => table.nextPage()}
-//               disabled={!table.getCanNextPage()}
-//             >
-//               <IconChevronRight />
-//             </Button>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+import { SimpleLoader } from "../ui/loading-overlay";
+import { Badge } from "../ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function DataTable({
   columns,
@@ -405,169 +63,598 @@ export function DataTable({
   meta,
   filters, // Destructure the new filters prop
 }) {
+  const [sorting, setSorting] = useState([]);
+
   const table = useReactTable({
     data,
     columns,
     rowCount,
+    onSortingChange: setSorting,
+    manualSorting: false, // 4. Tell TanStack you'll handle it via API
     manualPagination: true,
     manualFiltering: true,
-    state: { pagination, globalFilter },
     onPaginationChange,
     onGlobalFilterChange: setGlobalFilter,
+    getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
+    state: { sorting, pagination, globalFilter },
     meta: meta,
   });
 
-  console.log("globalFilter: ", globalFilter);
-  console.log("pagination: ", pagination);
+  const hasActiveFilters =
+    filters.accountStatus || filters.isPremium !== undefined;
+
+  // return (
+  //   <div className="w-full space-y-6">
+  //     <div className="flex items-center justify-between gap-4 bg-muted/30 p-4 rounded-lg border">
+  //       {/* Search Input */}
+  //       <div className="relative flex-1 max-w-sm">
+  //         <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+  //         <Input
+  //           placeholder={searchPlaceholder}
+  //           className="pl-9 bg-background"
+  //           value={globalFilter ?? ""}
+  //           onChange={(e) => setGlobalFilter(e.target.value)}
+  //         />
+  //       </div>
+
+  //       <div className="flex items-center gap-2 ml-auto">
+  //         {/* COMBINED FILTERS */}
+  //         <DropdownMenu>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button
+  //               variant="outline"
+  //               className="min-w-min justify-between capitalize"
+  //             >
+  //               <div className="flex items-center truncate">
+  //                 <IconFilter className="h-4 w-4 mr-2 shrink-0" />
+  //                 Filters:{" "}
+  //                 <span className="truncate pl-1">
+  //                   {!filters.accountStatus &&
+  //                   filters.isPremium === undefined ? (
+  //                     "All Users"
+  //                   ) : (
+  //                     <>
+  //                       {filters.accountStatus || "Any Status"}
+  //                       {" + "}
+  //                       {filters.isPremium === true
+  //                         ? "Premium"
+  //                         : filters.isPremium === false
+  //                         ? "Free"
+  //                         : "Any Plan"}
+  //                     </>
+  //                   )}
+  //                 </span>
+  //               </div>
+  //               <IconChevronDown className="h-4 w-4 opacity-50 shrink-0" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+
+  //           <DropdownMenuContent align="end" className="w-56">
+  //             {/* SECTION 1: ACCOUNT STATUS */}
+  //             <DropdownMenuLabel>Account Status</DropdownMenuLabel>
+  //             {["active", "banned", "suspended"].map((status) => (
+  //               <DropdownMenuCheckboxItem
+  //                 key={status}
+  //                 className="capitalize"
+  //                 checked={filters.accountStatus === status}
+  //                 onCheckedChange={() => filters.setAccountStatus(status)}
+  //               >
+  //                 {status}
+  //               </DropdownMenuCheckboxItem>
+  //             ))}
+  //             <DropdownMenuCheckboxItem
+  //               checked={!filters.accountStatus}
+  //               onCheckedChange={() => filters.setAccountStatus("")}
+  //             >
+  //               All Statuses
+  //             </DropdownMenuCheckboxItem>
+
+  //             <DropdownMenuSeparator />
+
+  //             {/* SECTION 2: MEMBERSHIP */}
+  //             <DropdownMenuLabel>Membership</DropdownMenuLabel>
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === true}
+  //               onCheckedChange={() => filters.setIsPremium(true)}
+  //             >
+  //               Premium Only
+  //             </DropdownMenuCheckboxItem>
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === false}
+  //               onCheckedChange={() => filters.setIsPremium(false)}
+  //             >
+  //               Free Only
+  //             </DropdownMenuCheckboxItem>
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === undefined}
+  //               onCheckedChange={() => filters.setIsPremium(undefined)}
+  //             >
+  //               All Tiers
+  //             </DropdownMenuCheckboxItem>
+
+  //             {(filters.accountStatus || filters.isPremium !== undefined) && (
+  //               <>
+  //                 <DropdownMenuSeparator />
+  //                 <DropdownMenuItem
+  //                   className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+  //                   onClick={() => {
+  //                     filters.setAccountStatus("");
+  //                     filters.setIsPremium(undefined);
+  //                   }}
+  //                 >
+  //                   Reset All Filters
+  //                 </DropdownMenuItem>
+  //               </>
+  //             )}
+  //           </DropdownMenuContent>
+  //         </DropdownMenu>
+
+  //         {/* ACCOUNT STATUS FILTER */}
+  //         {/* <DropdownMenu>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button
+  //               variant="outline"
+  //               className="min-w-[85px] justify-between capitalize"
+  //             >
+  //               <div className="flex items-center">
+  //                 <IconFilter className="h-4 w-4 mr-2" />
+  //                 Status: {filters.accountStatus || "All"}
+  //               </div>
+  //               <IconChevronDown className="h-4 w-4 opacity-50" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+
+  //           <DropdownMenuContent align="end" className="w-48">
+  //             <DropdownMenuLabel>Account Status</DropdownMenuLabel>
+
+  //             {["active", "banned", "suspended"].map((status) => (
+  //               <DropdownMenuCheckboxItem
+  //                 key={status}
+  //                 className="capitalize"
+  //                 // This ensures the checkmark appears when this status is selected
+  //                 checked={filters.accountStatus === status}
+  //                 onCheckedChange={() => filters.setAccountStatus(status)}
+  //               >
+  //                 {status}
+  //               </DropdownMenuCheckboxItem>
+  //             ))}
+
+  //             <DropdownMenuSeparator />
+
+  //             <DropdownMenuCheckboxItem
+  //               // Shows checked if no specific status is filtered (the "All" state)
+  //               checked={!filters.accountStatus || filters.accountStatus === ""}
+  //               onCheckedChange={() => filters.setAccountStatus("")}
+  //             >
+  //               All User
+  //             </DropdownMenuCheckboxItem>
+  //           </DropdownMenuContent>
+  //         </DropdownMenu> */}
+
+  //         {/* PREMIUM FILTER */}
+  //         {/* <DropdownMenu>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button
+  //               variant="outline"
+  //               className="min-w-[120px] justify-between"
+  //             >
+  //               <div className="flex items-center">
+  //                 <IconFilter className="h-4 w-4 mr-2" />
+  //                 User Type:{" "}
+  //                 {filters.isPremium === true
+  //                   ? "Premium"
+  //                   : filters.isPremium === false
+  //                   ? "Free"
+  //                   : "All"}
+  //               </div>
+  //               <IconChevronDown className="h-4 w-4 opacity-50" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+
+  //           <DropdownMenuContent align="end" className="w-48">
+  //             <DropdownMenuLabel>Membership</DropdownMenuLabel>
+
+  //             {/* Using DropdownMenuCheckboxItem for the checkmark effect
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === true}
+  //               onCheckedChange={() => filters.setIsPremium(true)}
+  //             >
+  //               Premium Only
+  //             </DropdownMenuCheckboxItem>
+
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === false}
+  //               onCheckedChange={() => filters.setIsPremium(false)}
+  //             >
+  //               Free Only
+  //             </DropdownMenuCheckboxItem>
+
+  //             <DropdownMenuSeparator />
+
+  //             <DropdownMenuCheckboxItem
+  //               checked={filters.isPremium === undefined}
+  //               onCheckedChange={() => filters.setIsPremium(undefined)}
+  //             >
+  //               Show All
+  //             </DropdownMenuCheckboxItem>
+  //           </DropdownMenuContent>
+  //         </DropdownMenu> */}
+
+  //         {/* COLUMN CUSTOMIZATION */}
+  //         {/* <DropdownMenu>
+  //           <DropdownMenuTrigger asChild>
+  //             <Button variant="outline">
+  //               <IconLayoutColumns className="h-4 w-4 mr-2" />
+  //               Columns <IconChevronDown className="ml-2 h-4 w-4" />
+  //             </Button>
+  //           </DropdownMenuTrigger>
+  //           <DropdownMenuContent align="end">
+  //             {table
+  //               .getAllColumns()
+  //               .filter((c) => c.getCanHide())
+  //               .map((column) => (
+  //                 <DropdownMenuCheckboxItem
+  //                   key={column.id}
+  //                   checked={column.getIsVisible()}
+  //                   onCheckedChange={(v) => column.toggleVisibility(!!v)}
+  //                 >
+  //                   {column.id}
+  //                 </DropdownMenuCheckboxItem>
+  //               ))}
+  //           </DropdownMenuContent>
+  //         </DropdownMenu> */}
+  //       </div>
+  //     </div>
+
+  //     {/* ... Table and Pagination UI remain the same ... */}
+
+  //     <div className="rounded-md border relative">
+  //       {/* {isLoading && (
+  //         // <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
+  //         //   <IconLoader className="animate-spin text-blue-600" />
+  //         // </div>
+
+  //         <SimpleLoader />
+  //       )} */}
+
+  //       <Table>
+  //         <TableHeader>
+  //           {table.getHeaderGroups().map((headerGroup) => (
+  //             <TableRow key={headerGroup.id}>
+  //               {headerGroup.headers.map((header) => (
+  //                 <TableHead key={header.id}>
+  //                   {header.isPlaceholder
+  //                     ? null
+  //                     : flexRender(
+  //                         header.column.columnDef.header,
+  //                         header.getContext()
+  //                       )}
+  //                 </TableHead>
+  //               ))}
+  //             </TableRow>
+  //           ))}
+  //         </TableHeader>
+  //         <TableBody>
+  //           {table.getRowModel().rows?.length ? (
+  //             table.getRowModel().rows.map((row) => (
+  //               <TableRow
+  //                 key={row.id}
+  //                 data-state={row.getIsSelected() && "selected"}
+  //               >
+  //                 {row.getVisibleCells().map((cell) => (
+  //                   <TableCell key={cell.id}>
+  //                     {flexRender(
+  //                       cell.column.columnDef.cell,
+  //                       cell.getContext()
+  //                     )}
+  //                   </TableCell>
+  //                 ))}
+  //               </TableRow>
+  //             ))
+  //           ) : (
+  //             <TableRow>
+  //               <TableCell
+  //                 colSpan={columns.length}
+  //                 className="h-24 text-center"
+  //               >
+  //                 {isLoading ? (
+  //                   <SimpleLoader text={"Loading..."} />
+  //                 ) : (
+  //                   "No results."
+  //                 )}
+  //               </TableCell>
+  //             </TableRow>
+  //           )}
+  //         </TableBody>
+  //       </Table>
+  //     </div>
+
+  //     {/* Pagination Controls */}
+  //     <div className="flex items-center justify-between bg-muted/50 px-4 py-3 rounded-b-lg">
+  //       {/* LEFT: Total Records Count */}
+  //       {/* <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
+  //         {table.getFilteredSelectedRowModel().rows.length} of{" "}
+  //         {table.getFilteredRowModel().rows.length} row(s) selected.
+  //       </div> */}
+  //       <div className="text-sm text-muted-foreground font-medium">
+  //         Total <span className="text-foreground"> ({rowCount}) </span> users
+  //         found
+  //       </div>
+
+  //       {/* RIGHT: Controls */}
+  //       <div className="flex items-center gap-4 lg:gap-6">
+  //         {/* Rows per page */}
+  //         <div className="hidden items-center gap-2 lg:flex">
+  //           <Label
+  //             htmlFor="rows-per-page"
+  //             className="text-sm font-semibold tracking-wider text-foreground"
+  //           >
+  //             Rows per page
+  //           </Label>
+
+  //           <Select
+  //             value={`${table.getState().pagination.pageSize}`}
+  //             onValueChange={(value) => table.setPageSize(Number(value))}
+  //           >
+  //             <SelectTrigger
+  //               className="h-8 w-[70px] bg-background shadow-sm"
+  //               id="rows-per-page"
+  //             >
+  //               <SelectValue
+  //                 placeholder={table.getState().pagination.pageSize}
+  //               />
+  //             </SelectTrigger>
+  //             <SelectContent side="top" className="min-w-[70px]">
+  //               {[10, 20, 30, 40, 50, 100].map((pageSize) => (
+  //                 <SelectItem key={pageSize} value={`${pageSize}`}>
+  //                   {pageSize}
+  //                 </SelectItem>
+  //               ))}
+  //             </SelectContent>
+  //           </Select>
+  //         </div>
+
+  //         {/* Page Indicator */}
+  //         <div className="flex items-center justify-center text-sm font-medium min-w-[100px]">
+  //           Page {table.getState().pagination.pageIndex + 1} of{" "}
+  //           {table.getPageCount()}
+  //         </div>
+
+  //         {/* Navigation Buttons */}
+  //         <div className="flex items-center gap-1">
+  //           <Button
+  //             variant="outline"
+  //             size="icon"
+  //             className="hidden h-8 w-8 lg:flex shadow-sm bg-background"
+  //             onClick={() => table.setPageIndex(0)}
+  //             disabled={!table.getCanPreviousPage()}
+  //           >
+  //             <IconChevronsLeft className="h-4 w-4" />
+  //           </Button>
+
+  //           <Button
+  //             variant="outline"
+  //             size="icon"
+  //             className="h-8 w-8 shadow-sm bg-background"
+  //             onClick={() => table.previousPage()}
+  //             disabled={!table.getCanPreviousPage()}
+  //           >
+  //             <IconChevronLeft className="h-4 w-4" />
+  //           </Button>
+
+  //           <Button
+  //             variant="outline"
+  //             size="icon"
+  //             className="h-8 w-8 shadow-sm bg-background"
+  //             onClick={() => table.nextPage()}
+  //             disabled={!table.getCanNextPage()}
+  //           >
+  //             <IconChevronRight className="h-4 w-4" />
+  //           </Button>
+
+  //           <Button
+  //             variant="outline"
+  //             size="icon"
+  //             className="hidden h-8 w-8 lg:flex shadow-sm bg-background"
+  //             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+  //             disabled={!table.getCanNextPage()}
+  //           >
+  //             <IconChevronsRight className="h-4 w-4" />
+  //           </Button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   return (
-    <div className="w-full space-y-6">
-      <div className="flex items-center justify-between gap-4 bg-muted/30 p-4 rounded-lg border">
-        {/* Search Input */}
-        <div className="relative flex-1 max-w-sm">
-          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <div className="w-full space-y-4">
+      {/* TOOLBAR */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-sm w-full">
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <Input
             placeholder={searchPlaceholder}
-            className="pl-9 bg-background"
+            className="pl-9 bg-white border-slate-200 h-10 shadow-sm focus-visible:ring-indigo-500"
             value={globalFilter ?? ""}
             onChange={(e) => setGlobalFilter(e.target.value)}
           />
         </div>
+        {/* TOOLBAR CONTAINER */}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Left Side: Search & Chips */}
+            <div className="flex flex-1 flex-wrap items-center gap-3 min-w-0">
+              {/* Search Input */}
+              {/* <div className="relative w-full max-w-sm">
+                <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <Input
+                  placeholder={searchPlaceholder}
+                  className="pl-9 bg-white h-10 shadow-sm"
+                  value={globalFilter ?? ""}
+                  onChange={(e) => setGlobalFilter(e.target.value)}
+                />
+              </div> */}
 
-        <div className="flex items-center gap-2 ml-auto">
-          {/* ACCOUNT STATUS FILTER */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="min-w-[85px] justify-between capitalize"
-              >
-                <div className="flex items-center">
-                  <IconFilter className="h-4 w-4 mr-2" />
-                  Status: {filters.accountStatus || "All"}
-                </div>
-                <IconChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
+              {/* --- FILTER CHIPS SECTION --- */}
+              <div className="flex flex-wrap items-center gap-2">
+                <AnimatePresence>
+                  {/* Account Status Chip */}
+                  {filters.accountStatus && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="pl-2 pr-1 py-1 gap-1 bg-indigo-50 text-indigo-700 border-indigo-100 group hover:bg-indigo-100 transition-colors"
+                      >
+                        <span className="text-[10px] font-bold uppercase opacity-60">
+                          Status:
+                        </span>
+                        <span className="capitalize">
+                          {filters.accountStatus}
+                        </span>
+                        <button
+                          onClick={() => filters.setAccountStatus("")}
+                          className="ml-1 p-0.5 rounded-full hover:bg-indigo-200 text-indigo-400 hover:text-indigo-600 transition-all"
+                        >
+                          <IconX size={12} />
+                        </button>
+                      </Badge>
+                    </motion.div>
+                  )}
 
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Account Status</DropdownMenuLabel>
+                  {/* Premium Tier Chip */}
+                  {filters.isPremium !== undefined && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="pl-2 pr-1 py-1 gap-1 bg-amber-50 text-amber-700 border-amber-100 group hover:bg-amber-100 transition-colors"
+                      >
+                        <span className="text-[10px] font-bold uppercase opacity-60">
+                          Plan:
+                        </span>
+                        <span>{filters.isPremium ? "Premium" : "Free"}</span>
+                        <button
+                          onClick={() => filters.setIsPremium(undefined)}
+                          className="ml-1 p-0.5 rounded-full hover:bg-amber-200 text-amber-400 hover:text-amber-600 transition-all"
+                        >
+                          <IconX size={12} />
+                        </button>
+                      </Badge>
+                    </motion.div>
+                  )}
 
-              {["active", "banned", "suspended"].map((status) => (
-                <DropdownMenuCheckboxItem
-                  key={status}
-                  className="capitalize"
-                  // This ensures the checkmark appears when this status is selected
-                  checked={filters.accountStatus === status}
-                  onCheckedChange={() => filters.setAccountStatus(status)}
-                >
-                  {status}
-                </DropdownMenuCheckboxItem>
-              ))}
+                  {/* Reset All (Only shows if 2+ filters are active) */}
+                  {filters.accountStatus && filters.isPremium !== undefined && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        filters.setAccountStatus("");
+                        filters.setIsPremium(undefined);
+                      }}
+                      className="h-7 px-2 text-[11px] font-bold text-slate-400 hover:text-rose-600"
+                    >
+                      Clear All
+                    </Button>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
 
-              <DropdownMenuSeparator />
-
-              <DropdownMenuCheckboxItem
-                // Shows checked if no specific status is filtered (the "All" state)
-                checked={!filters.accountStatus || filters.accountStatus === ""}
-                onCheckedChange={() => filters.setAccountStatus("")}
-              >
-                All User
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* PREMIUM FILTER */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="min-w-[120px] justify-between"
-              >
-                <div className="flex items-center">
-                  <IconFilter className="h-4 w-4 mr-2" />
-                  User Type:{" "}
-                  {filters.isPremium === true
-                    ? "Premium"
-                    : filters.isPremium === false
-                    ? "Free"
-                    : "All"}
-                </div>
-                <IconChevronDown className="h-4 w-4 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Membership</DropdownMenuLabel>
-
-              {/* Using DropdownMenuCheckboxItem for the checkmark effect */}
-              <DropdownMenuCheckboxItem
-                checked={filters.isPremium === true}
-                onCheckedChange={() => filters.setIsPremium(true)}
-              >
-                Premium Only
-              </DropdownMenuCheckboxItem>
-
-              <DropdownMenuCheckboxItem
-                checked={filters.isPremium === false}
-                onCheckedChange={() => filters.setIsPremium(false)}
-              >
-                Free Only
-              </DropdownMenuCheckboxItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuCheckboxItem
-                checked={filters.isPremium === undefined}
-                onCheckedChange={() => filters.setIsPremium(undefined)}
-              >
-                Show All
-              </DropdownMenuCheckboxItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* COLUMN CUSTOMIZATION */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <IconLayoutColumns className="h-4 w-4 mr-2" />
-                Columns <IconChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((c) => c.getCanHide())
-                .map((column) => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(v) => column.toggleVisibility(!!v)}
+            {/* Right Side: Filter Dropdown Trigger */}
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className={cn(
+                      "h-10 border-dashed border-slate-300",
+                      hasActiveFilters &&
+                        "border-indigo-500 bg-indigo-50/30 ring-1 ring-indigo-500/20"
+                    )}
                   >
-                    {column.id}
+                    <IconFilter
+                      className={cn(
+                        "h-4 w-4 mr-2",
+                        hasActiveFilters ? "text-indigo-600" : "text-slate-500"
+                      )}
+                    />
+                    Filter View
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 p-2">
+                  <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+                    Account Status
+                  </DropdownMenuLabel>
+                  {["active", "banned", "suspended"].map((status) => (
+                    <DropdownMenuCheckboxItem
+                      key={status}
+                      className="capitalize"
+                      checked={filters.accountStatus === status}
+                      onCheckedChange={() => filters.setAccountStatus(status)}
+                    >
+                      {status}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
+                    Plan Type
+                  </DropdownMenuLabel>
+                  <DropdownMenuCheckboxItem
+                    checked={filters.isPremium === true}
+                    onCheckedChange={() => filters.setIsPremium(true)}
+                  >
+                    Premium Only
                   </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  <DropdownMenuCheckboxItem
+                    checked={filters.isPremium === false}
+                    onCheckedChange={() => filters.setIsPremium(false)}
+                  >
+                    Free Only
+                  </DropdownMenuCheckboxItem>
+
+                  {hasActiveFilters && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="text-red-600 justify-center font-medium focus:bg-red-50 focus:text-red-700"
+                        onClick={() => {
+                          filters.setAccountStatus("");
+                          filters.setIsPremium(undefined);
+                        }}
+                      >
+                        Clear All Filters
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ... Table and Pagination UI remain the same ... */}
-
-      <div className="rounded-md border relative">
-        {isLoading && (
-          <div className="absolute inset-0 bg-white/50 flex items-center justify-center z-10">
-            <IconLoader className="animate-spin text-blue-600" />
-          </div>
-        )}
-
+      {/* TABLE AREA */}
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden relative">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-slate-50/50">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead
+                    key={header.id}
+                    className="text-slate-600 font-semibold py-4"
+                  >
                     {header.isPlaceholder
                       ? null
                       : flexRender(
@@ -579,15 +666,19 @@ export function DataTable({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody
+            className={
+              isLoading ? "opacity-40 transition-opacity" : "transition-opacity"
+            }
+          >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  className="hover:bg-slate-50/50 border-slate-100"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="py-3 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -600,9 +691,18 @@ export function DataTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-24 text-center"
+                  className="h-64 text-center"
                 >
-                  No results.
+                  {isLoading ? (
+                    <SimpleLoader text="Fetching data..." />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-slate-400 space-y-2">
+                      <IconInbox size={48} stroke={1} />
+                      <p className="text-sm font-medium">
+                        No results found for your search
+                      </p>
+                    </div>
+                  )}
                 </TableCell>
               </TableRow>
             )}
@@ -610,80 +710,81 @@ export function DataTable({
         </Table>
       </div>
 
-      {/* Pagination Controls */}
-      <div className="flex items-center justify-between px-4">
-        <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
-          {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+      {/* PAGINATION SECTION */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2 py-2">
+        <div className="text-sm text-slate-500 font-medium order-2 sm:order-1">
+          Showing <span className="text-slate-900">{data.length}</span> of{" "}
+          <span className="text-slate-900">{rowCount}</span> users
         </div>
-        <div className="flex w-full items-center gap-8 lg:w-fit">
-          <div className="hidden items-center gap-2 lg:flex">
-            <Label htmlFor="rows-per-page" className="text-sm font-medium">
-              Rows per page
+
+        <div className="flex items-center gap-4 lg:gap-8 order-1 sm:order-2">
+          <div className="hidden sm:flex items-center gap-2">
+            <Label className="text-xs font-bold text-slate-400 uppercase">
+              Rows
             </Label>
             <Select
               value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value));
-              }}
+              onValueChange={(value) => table.setPageSize(Number(value))}
             >
-              <SelectTrigger size="sm" className="w-20" id="rows-per-page">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+              <SelectTrigger className="h-9 w-[70px] border-slate-200 shadow-none">
+                <SelectValue />
               </SelectTrigger>
-              <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
+              <SelectContent>
+                {[10, 20, 50].map((size) => (
+                  <SelectItem key={size} value={`${size}`}>
+                    {size}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-fit items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+
+          {/* Navigation Buttons */}
+          <div className="flex items-center gap-1">
             <Button
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              size="icon"
+              className="hidden h-8 w-8 lg:flex shadow-sm bg-background"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
-              <span className="sr-only">Go to first page</span>
-              <IconChevronsLeft />
+              <IconChevronsLeft className="h-4 w-4" />
             </Button>
+
             <Button
               variant="outline"
-              className="size-8"
               size="icon"
+              className="h-8 w-8 shadow-sm bg-background"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
-              <span className="sr-only">Go to previous page</span>
-              <IconChevronLeft />
+              <IconChevronLeft className="h-4 w-4" />
             </Button>
+
+            {/* Page Indicator */}
+            <div className="flex items-center justify-center text-sm font-medium min-w-[80px]">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+
             <Button
               variant="outline"
-              className="size-8"
               size="icon"
+              className="h-8 w-8 shadow-sm bg-background"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
-              <span className="sr-only">Go to next page</span>
-              <IconChevronRight />
+              <IconChevronRight className="h-4 w-4" />
             </Button>
+
             <Button
               variant="outline"
-              className="hidden size-8 lg:flex"
               size="icon"
+              className="hidden h-8 w-8 lg:flex shadow-sm bg-background"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
-              <span className="sr-only">Go to last page</span>
-              <IconChevronsRight />
+              <IconChevronsRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
