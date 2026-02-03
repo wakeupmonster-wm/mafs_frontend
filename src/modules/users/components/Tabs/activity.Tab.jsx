@@ -9,7 +9,6 @@ import {
   IconMessage2,
   IconTrendingUp,
 } from "@tabler/icons-react";
-import { StatCard } from "../statCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";

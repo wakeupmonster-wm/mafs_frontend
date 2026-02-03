@@ -10,7 +10,9 @@ export function SimpleLoader({ className, text }) {
       )}
     >
       <IconLoader className="animate-spin text-blue-600" />
-      {text && <span className="text-sm text-muted-foreground">{text}</span>}
+      {text && (
+        <span className="w-max text-sm text-muted-foreground">{text}</span>
+      )}
     </div>
   );
 }

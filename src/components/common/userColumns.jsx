@@ -133,12 +133,12 @@ export const userColumns = [
       console.log("avatar: ", avatar);
 
       return (
-        <div className="flex items-center gap-3 w-36">
-          <Avatar className="h-9 w-9">
+        <div className="flex items-center gap-3 w-full">
+          <Avatar className="h-8 w-8">
             <AvatarImage src={avatar} alt={nickname} />
             <AvatarFallback>{nickname.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
-          <span className="font-bold text-sm truncate">{nickname}</span>
+          <span className="font-bold text-[11px] truncate">{nickname}</span>
         </div>
       );
     },
@@ -148,18 +148,18 @@ export const userColumns = [
     accessorKey: "account.phone",
     header: "Phone",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 w-36 text-sm text-foreground">
+      <div className="flex items-center gap-2 w-full text-[11px] text-foreground">
         <Phone className="w-3.5 h-3.5" />
         {row.original.account?.phone || "—"}
       </div>
     ),
   },
-  // Email Column
+  // Email Columnn
   {
     accessorKey: "account.email",
     header: "Email",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 text-foreground text-sm">
+      <div className="flex items-center gap-2 text-foreground text-[11px]">
         <Mail className="w-3.5 h-3.5" />
         {row.original.account?.email || "N/A"}
       </div>
@@ -214,7 +214,7 @@ export const userColumns = [
     id: "age",
     header: "Age",
     cell: ({ row }) => (
-      <span className="text-sm">{row.original.profile?.age || "N/A"}</span>
+      <span className="text-xs">{row.original.profile?.age || "N/A"}</span>
     ),
   },
   // Gender Column
@@ -222,7 +222,7 @@ export const userColumns = [
     id: "gender",
     header: "Gender",
     cell: ({ row }) => (
-      <span className="text-sm">{row.original.profile.gender || "N/A"}</span>
+      <span className="text-xs">{row.original.profile.gender || "N/A"}</span>
     ),
   },
   // Completion Column
@@ -231,7 +231,7 @@ export const userColumns = [
     header: "Completion",
     cell: ({ row }) => (
       <div className="w-[100px] flex flex-col gap-1">
-        <span className="text-[10px] font-medium">
+        <span className="text-[11px] font-base">
           {row.original.profile.totalCompletion}%
         </span>
         <Progress
@@ -256,7 +256,7 @@ export const userColumns = [
         <div className="flex gap-1 italic">
           <Badge
             variant={status === "active" ? "default" : "destructive"}
-            className="capitalize"
+            className="capitalize px-1.5"
           >
             {status}
           </Badge>
@@ -273,7 +273,7 @@ export const userColumns = [
       const isPremium = row.original.account?.isPremium;
 
       return isPremium ? (
-        <Badge variant="premium" className="gap-1">
+        <Badge variant="premium" className="gap-1 px-1.5 text-[11px]">
           <IconStarFilled size={10} /> PRO
         </Badge>
       ) : (
@@ -297,7 +297,7 @@ export const userColumns = [
       return (
         <Badge
           variant="outline"
-          className={`capitalize border-none ${variants[status]}`}
+          className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
         >
           {status.replace("_", " ")}
         </Badge>
@@ -314,10 +314,12 @@ export const userColumns = [
       const country = row.original.location?.country;
       if (!city && !country)
         return (
-          <span className="text-muted-foreground italic text-xs">Not set</span>
+          <span className="text-muted-foreground italic px-1.5 text-[11px]">
+            Not set
+          </span>
         );
       return (
-        <span className="capitalize">{`${city || ""}${
+        <span className="capitalize px-1.5 text-[11px]">{`${city || ""}${
           city && country ? ", " : ""
         }${country || ""}`}</span>
       );
@@ -340,7 +342,7 @@ export const userColumns = [
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
-      return <div className="text-xs">{date.toLocaleDateString()}</div>;
+      return <div className="text-[10px]">{date.toLocaleDateString()}</div>;
     },
   },
   // Actions Column

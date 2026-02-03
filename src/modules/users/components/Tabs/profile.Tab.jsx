@@ -23,7 +23,9 @@ import {
   IconMail,
   IconMapPin,
   IconMaximize,
+  IconQuote,
   IconShieldCheck,
+  IconSparkles,
   IconUser,
   IconX,
 } from "@tabler/icons-react";
@@ -506,6 +508,36 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
     }
   };
 
+  // Color map to fix Tailwind dynamic class issues
+  const colorStyles = {
+    blue: "bg-blue-50 border-blue-200 text-blue-600",
+    green: "bg-green-50 border-green-200 text-green-600",
+    orange: "bg-rose-50 border-rose-200 text-rose-600", // Using rose for the red 'Lock' look in image
+  };
+
+  const connectivityItems = [
+    {
+      label: "Email",
+      val: props?.account?.email,
+      icon: <IconMail />,
+      color: "blue",
+      verified: userData.isEmailVerified,
+    },
+    {
+      label: "Phone",
+      val: props?.account?.phone,
+      icon: <IconDeviceMobile />,
+      color: "green",
+      verified: userData.isPhoneVerified,
+    },
+    {
+      label: "Auth",
+      val: props?.account?.authMethod || "Email",
+      icon: <IconLock />,
+      color: "orange",
+    },
+  ];
+
   console.log("verification: ", verification);
 
   return (
@@ -581,150 +613,193 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
 
           {/* RIGHT COLUMN: SYSTEM DATA & BIO */}
           <div className="col-span-12 lg:col-span-8 xl:col-span-9 space-y-6">
-            {/* 4-COLUMN CONNECTIVITY GRID (Now including Auth) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-              {[
-                {
-                  label: "Email Address",
-                  val: props?.account?.email,
-                  icon: <IconMail />,
-                  color: "blue",
-                  verified: userData.isEmailVerified,
-                },
-                {
-                  label: "Phone Number",
-                  val: props?.account?.phone,
-                  icon: <IconDeviceMobile />,
-                  color: "green",
-                  verified: userData.isPhoneVerified,
-                },
-                {
-                  label: "Auth Method",
-                  val: props?.account?.authMethod || "Password",
-                  icon: <IconLock />,
-                  color: "orange",
-                },
-                {
-                  label: "Profile Strength",
-                  val: `${props?.profile?.totalCompletion || 0}%`,
-                  icon: <IconChartBar />,
-                  color: "indigo",
-                  progress: props?.profile?.totalCompletion,
-                },
-              ].map((item, i) => (
-                <Card key={i} className="shadow-sm border-slate-200 bg-white">
-                  <CardContent className="p-4 flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
+            <div className="flex flex-col lg:flex-row gap-4 w-full">
+              {/* ACCOUNT CONNECTIVITY CARD */}
+              <Card className="flex-[3] p-6 shadow-sm border-slate-200 flex flex-col justify-center">
+                <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                  Account Connectivity
+                </h3>
+
+                <div className="flex flex-wrap items-center gap-x-12 gap-y-6">
+                  {connectivityItems.map((item, i) => (
+                    <div key={i} className="flex items-center gap-4">
+                      {/* Icon Box */}
                       <div
                         className={cn(
-                          "p-1.5 rounded-md",
-                          `bg-${item.color}-50 text-${item.color}-600`
+                          "p-2.5 rounded-xl border transition-colors",
+                          colorStyles[item.color]
                         )}
                       >
-                        {React.cloneElement(item.icon, { size: 18 })}
+                        {React.cloneElement(item.icon, { size: 20, stroke: 2 })}
                       </div>
-                      {item.verified !== undefined && (
-                        <Badge
-                          variant={item.verified ? "success" : "outline"}
-                          className="text-[9px] font-black uppercase h-5 px-1.5"
-                        >
-                          {item.verified ? "Verified" : "Pending"}
-                        </Badge>
-                      )}
-                      {item.label === "Auth Method" && (
-                        <Badge className="bg-slate-100 text-slate-600 border-none text-[9px] font-black uppercase h-5 px-1.5">
-                          Secure
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] uppercase font-bold text-slate-400 tracking-tight mb-0.5">
-                        {item.label}
-                      </p>
-                      <p className="text-sm font-bold text-slate-900 truncate leading-none">
-                        {item.val || "N/A"}
-                      </p>
-                    </div>
-                    {item.progress !== undefined && (
-                      <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
-                        <div
-                          className="bg-indigo-600 h-full transition-all"
-                          style={{ width: `${item.progress}%` }}
-                        />
+
+                      {/* Data & Label */}
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold text-slate-900">
+                          {item.label === "Auth" ? (
+                            <span className="text-slate-400 font-medium mr-1">
+                              Auth:
+                            </span>
+                          ) : null}
+                          {item.val || "N/A"}
+                        </span>
+
+                        {/* Status Badges */}
+                        {item.verified !== undefined ? (
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "text-[10px] font-bold px-2 py-0 h-6 border-slate-200",
+                              item.verified
+                                ? "text-slate-900 bg-white"
+                                : "text-slate-400"
+                            )}
+                          >
+                            {item.verified ? "Verified" : "Unverified"}
+                          </Badge>
+                        ) : (
+                          <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-bold px-2 py-0 h-6">
+                            {item.val || "Email"}
+                          </Badge>
+                        )}
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* PROFILE QUALITY CARD */}
+              <Card className="flex-1 p-6 shadow-sm border-slate-200">
+                <div className="flex justify-between items-start">
+                  <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+                    Profile Quality
+                  </h3>
+                  <IconChartBar size={20} className="text-slate-400" />
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-black text-slate-900">
+                      {props?.profile?.totalCompletion || 82}%
+                    </span>
+                  </div>
+
+                  {/* Custom Progress Bar */}
+                  <div className="relative w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div
+                      className="absolute top-0 left-0 h-full bg-indigo-600 transition-all duration-1000 ease-out"
+                      style={{
+                        width: `${props?.profile?.totalCompletion || 0}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </Card>
             </div>
 
             {/* BIO SECTION */}
-            <Card className="shadow-sm border-slate-200">
-              <CardHeader className="flex flex-row items-center justify-between border-b border-slate-100 py-4 px-6">
-                <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <IconUser size={18} className="text-slate-400" /> Bio & Core
-                  Attributes
+            <Card className="overflow-hidden shadow-sm border-slate-200 bg-white rounded-3xl py-1 pb-5 gap-2">
+              {/* HEADER: Clean & Minimal */}
+              <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-5 px-6 bg-slate-50/30">
+                <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-2.5">
+                  <div className="p-1.5 bg-white rounded-lg border border-slate-200 shadow-sm">
+                    <IconUser size={16} className="text-indigo-500" />
+                  </div>
+                  Bio & Core Attributes
                 </CardTitle>
                 <EditProfileDialog userData={userData} />
               </CardHeader>
-              <CardContent className="p-6 space-y-8">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-slate-100 to-transparent rounded-2xl opacity-50" />
-                  <p className="relative text-slate-600 text-sm leading-relaxed italic border-l-2 border-indigo-200 pl-4 py-1">
-                    "
-                    {props?.profile?.about ||
-                      "User hasn't shared their story yet..."}
-                    "
-                  </p>
+
+              <CardContent className="px-5 space-y-6">
+                {/* STORY / ABOUT: The Narrative Focus */}
+                <div className="relative">
+                  <IconQuote
+                    size={40}
+                    className="absolute -top-4 -left-4 text-slate-100 -z-0 opacity-50"
+                    stroke={1.5}
+                  />
+                  <div className="relative z-10">
+                    <p className="text-slate-600 text-base leading-relaxed font-medium pl-6 border-l-4 border-indigo-500/20 py-1 italic">
+                      {props?.profile?.about ||
+                        "User hasn't shared their story yet..."}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                  <AttributeBlock
-                    label="Nickname"
-                    value={props?.profile?.nickname}
-                  />
-                  <AttributeBlock
-                    label="Gender"
-                    value={props?.profile?.gender}
-                  />
-                  <AttributeBlock
-                    label="Age"
-                    value={
-                      props?.profile?.age ? `${props?.profile.age} Yrs` : "N/A"
-                    }
-                  />
-                  <AttributeBlock
-                    label="Zodiac"
-                    value={props?.attributes?.zodiac}
-                  />
+                {/* ATTRIBUTE GRID: "Pill" Style Attributes */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: "Nickname", value: props?.profile?.nickname },
+                    { label: "Gender", value: props?.profile?.gender },
+                    {
+                      label: "Age",
+                      value: props?.profile?.age
+                        ? `${props?.profile.age} Yrs`
+                        : "N/A",
+                    },
+                    {
+                      label: "Zodiac",
+                      value: props?.attributes?.zodiac,
+                      highlight: true,
+                    },
+                  ].map((attr, idx) => (
+                    <div
+                      key={idx}
+                      className={cn(
+                        "p-4 rounded-2xl border transition-all hover:shadow-md hover:border-indigo-100",
+                        attr.highlight
+                          ? "bg-indigo-50/30 border-indigo-100"
+                          : "bg-white border-slate-100"
+                      )}
+                    >
+                      <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1.5">
+                        {attr.label}
+                      </p>
+                      <p className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                        {attr.value || "Not Set"}
+                        {attr.highlight && (
+                          <IconSparkles size={12} className="text-indigo-400" />
+                        )}
+                      </p>
+                    </div>
+                  ))}
                 </div>
 
                 <Separator className="bg-slate-100" />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-5">
+                {/* DETAILS LIST: Two-column Icon Rows */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-6">
                   <DetailRow
-                    icon={
-                      <IconBriefcase size={16} className="text-slate-400" />
-                    }
+                    icon={<IconBriefcase size={18} />}
+                    iconBg="bg-blue-50 text-blue-500"
                     label="Occupation"
-                    value={`${props?.profile?.jobTitle || "N/A"}`}
+                    value={props?.profile?.jobTitle || "N/A"}
                   />
                   <DetailRow
-                    icon={<IconHeart size={16} className="text-rose-400" />}
+                    icon={<IconHeart size={18} />}
+                    iconBg="bg-rose-50 text-rose-500"
                     label="Seeking"
-                    value={props?.discovery?.relationshipGoal}
+                    value={
+                      props?.discovery?.relationshipGoal || "Not Specified"
+                    }
                   />
                   <DetailRow
-                    icon={<IconCalendar size={16} className="text-slate-400" />}
+                    icon={<IconCalendar size={18} />}
+                    iconBg="bg-amber-50 text-amber-500"
                     label="Joined Date"
                     value={new Date(
                       props?.account?.createdAt
-                    ).toLocaleDateString()}
+                    ).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
                   />
                   <DetailRow
-                    icon={<IconMapPin size={16} className="text-slate-400" />}
-                    label="Current Location"
-                    value={props?.userLoc?.full_address}
+                    icon={<IconMapPin size={18} />}
+                    iconBg="bg-emerald-50 text-emerald-500"
+                    label="Location"
+                    value={props?.userLoc?.full_address || "N/A"}
                   />
                 </div>
               </CardContent>

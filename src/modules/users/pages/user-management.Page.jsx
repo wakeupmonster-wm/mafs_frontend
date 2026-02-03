@@ -5,8 +5,9 @@ import {
   IconAlertTriangle,
   IconBan,
   IconCrown,
-  IconDownload,
+  IconFileExcel,
   IconLoader,
+  IconLoader2,
   IconUserCheck,
   IconUsers,
 } from "@tabler/icons-react";
@@ -226,7 +227,7 @@ export default function UserManagementPage() {
 
   const handleExport = async () => {
     const filters = { search: globalFilter };
-    const resultAction = await dispatch(exportUsersStream(filters));
+    const resultAction = dispatch(exportUsersStream(filters));
 
     if (exportUsersStream.fulfilled.match(resultAction)) {
       const csvContent = resultAction.payload;
@@ -284,11 +285,73 @@ export default function UserManagementPage() {
     }
   };
 
+  const stats = [
+    {
+      label: "Total Members",
+      val: reduxPagination.total || 0,
+      icon: <IconUsers />,
+      color: "blue",
+      description: "Overall Total Users",
+      trend: "+12.5%", // Added trend for visual appeal
+    },
+    {
+      label: "Active Users",
+      val: items.filter((u) => u.account?.status === "active").length,
+      icon: <IconUserCheck />,
+      color: "emerald",
+      description: "Live community",
+    },
+    {
+      label: "Premium Members",
+      val: items.filter((u) => u.account?.isPremium).length,
+      icon: <IconCrown />,
+      color: "amber",
+      description: "Pro tier active",
+    },
+    {
+      label: "Banned Users",
+      val: items.filter((u) => u.account?.status === "banned").length,
+      icon: <IconBan />,
+      color: "rose",
+      description: "Safety restrictions",
+    },
+    {
+      label: "Suspended",
+      val: items.filter((u) => u.account?.status === "suspended").length,
+      icon: <IconAlertTriangle />,
+      color: "orange",
+      description: "Under review",
+    },
+  ];
+
+  const colorMap = {
+    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+    emerald:
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+    orange:
+      "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
+  };
+
+  const bgMap = {
+    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-100",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-100",
+    amber:
+      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-100",
+    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-100",
+    orange:
+      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-100",
+  };
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] p-4 sm:p-8 font-['Plus_Jakarta_Sans',sans-serif]">
-      <div className="max-w-[1600px] mx-auto space-y-8">
+    // <div className="flex flex-1 flex-col">
+    <div className="w-full min-h-screen !overflow-x-hidden bg-[#F8FAFC] p-4 sm:p-6 font-['Plus_Jakarta_Sans',sans-serif]">
+      {/* <div className="mx-auto space-y-8"> */}
+      <div className="@container/main space-y-8">
         {/* --- HEADER SECTION --- */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <header className="flex md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
               User Management
@@ -303,20 +366,40 @@ export default function UserManagementPage() {
               variant="outline"
               onClick={handleExport}
               disabled={exportLoading}
-              className="bg-white border-slate-200 text-slate-700 shadow-sm h-10 px-5"
-            >
-              {exportLoading ? (
-                <IconLoader className="mr-2 h-4 w-4 animate-spin text-indigo-500" />
-              ) : (
-                <IconDownload className="mr-2 h-4 w-4 text-slate-400" />
+              className={cn(
+                "relative h-11 px-4 shadow-md rounded-lg font-semibold transition-all duration-300",
+                "bg-green-400 hover:bg-green-100 border-green-600",
+                "text-slate-800 hover:text-green-700",
+                "shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
+                "hover:border-indigo-200 active:scale-[0.98]",
+                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100",
+                "group overflow-hidden"
               )}
-              {exportLoading ? "Preparing CSV..." : "Export CSV"}
+            >
+              {/* Subtle Inner Glow on Hover */}
+              <span className="absolute inset-0 bg-gradient-to-tr from-indigo-50/0 via-indigo-50/0 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="relative flex items-center justify-center">
+                {exportLoading ? (
+                  <IconLoader2 className="mr-2.5 h-4 w-4 animate-spin text-green-600" />
+                ) : (
+                  <IconFileExcel
+                    width={0}
+                    height={0}
+                    className="mr-2.5 !h-6 !w-6 text-slate-800 group-hover:text-green-500 transition-colors duration-300"
+                  />
+                )}
+
+                <span className="tracking-tight">
+                  {exportLoading ? "Preparing CSV..." : "Export CSV"}
+                </span>
+              </div>
             </Button>
           </div>
         </header>
 
         {/* --- STATS SUMMARY ROW --- */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {[
             {
               label: "Total Members",
@@ -387,10 +470,55 @@ export default function UserManagementPage() {
               </div>
             </div>
           ))}
+        </div> */}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+          {stats.map((stat, i) => (
+            <div
+              key={i}
+              className={cn(
+                "group relative p-6 rounded-3xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
+                "hover:shadow-[0_22px_50px_-12px_rgba(0,0,0,0.05)] hover:-translate-y-1.5",
+                bgMap[stat.color] // Applies the background and border color
+              )}
+            >
+              {/* Icon Header */}
+              <div className="flex items-start justify-center gap-4">
+                <div
+                  className={cn(
+                    "p-3 rounded-2xl bg-gradient-to-br border shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
+                    colorMap[stat.color]
+                  )}
+                >
+                  {React.cloneElement(stat.icon, { size: 22, stroke: 2 })}
+                </div>
+
+                <div className="flex-1 w-max">
+                  <p className="text-[10px] cursor-text font-black uppercase tracking-widest mb-0.5">
+                    {stat.label}
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <h4 className="text-2xl font-black text-slate-900 leading-none cursor-text">
+                      {stat.val.toLocaleString()}
+                    </h4>
+                  </div>
+                  <p className="text-[10px] font-medium mt-1 truncate cursor-text">
+                    {stat.description}
+                  </p>
+                </div>
+
+                {/* {stat.trend && (
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold">
+                    <IconTrendingUp size={12} />
+                    {stat.trend}
+                  </div>
+                )} */}
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* --- TABLE SECTION --- */}
-        {/* <main className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"> */}
         <DataTable
           columns={userColumns}
           data={items}
@@ -417,7 +545,6 @@ export default function UserManagementPage() {
           isLoading={loading}
           meta={{ onBan: (user) => handleBanClick(user) }}
         />
-        {/* </main> */}
 
         {/* --- FLOATING PROGRESS OVERLAY --- */}
         {exportLoading && (
@@ -434,7 +561,7 @@ export default function UserManagementPage() {
                   {exportProgress}%
                 </span>
               </div>
-              <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-1.5 w-full bg-slate-800 rounded-full">
                 <div
                   className="h-full bg-indigo-500 transition-all duration-300"
                   style={{ width: `${exportProgress}%` }}
