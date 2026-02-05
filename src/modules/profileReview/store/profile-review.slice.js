@@ -5,6 +5,25 @@ import {
   updateProfileStatusApi,
 } from "../services/profile-review.api";
 
+
+
+
+// export const fetchReportedProfiles = createAsyncThunk(
+//   "profileReview/fetchReportedProfiles",
+//   async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {
+//     try {
+//       const res = await getReportedProfilesApi({ page, limit });
+//       return res.data; // 🔥 THIS FIX
+//     } catch (e) {
+//       return rejectWithValue(
+//         e.response?.data?.message || "Failed to fetch reported profiles"
+//       );
+//     }
+//   }
+// );
+
+
+
 export const fetchReportedProfiles = createAsyncThunk(
   "profileReview/fetchReportedProfiles",
   async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {
@@ -28,18 +47,46 @@ export const fetchProfileForReview = createAsyncThunk(
     }
   }
 );
-
 export const performUpdateProfileStatus = createAsyncThunk(
   "profileReview/updateProfileStatus",
-  async ({ userId, action, reason, banDuration }, { rejectWithValue }) => {
+  async (
+    { userId, action, reason, banDuration, suspendDuration,replyMessage, reportId },
+    { rejectWithValue }
+  ) => {
     try {
-      const res = await updateProfileStatusApi(userId, { action, reason, banDuration });
-      return { userId, ...res };
+      const res = await updateProfileStatusApi(userId, {
+        action,
+        reason,
+        banDuration,
+        suspendDuration,
+        replyMessage,
+        reportId,
+      });
+
+      return {
+        userId,
+        message: res?.message || "Updated successfully",
+      };
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to update status");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to update status"
+      );
     }
   }
 );
+
+
+// export const performUpdateProfileStatus = createAsyncThunk(
+//   "profileReview/updateProfileStatus",
+//   async ({ userId, action, reason, banDuration }, { rejectWithValue }) => {
+//     try {
+//       const res = await updateProfileStatusApi(userId, { action, reason, banDuration });
+//       return { userId, ...res };
+//     } catch (e) {
+//       return rejectWithValue(e.response?.data?.message || "Failed to update status");
+//     }
+//   }
+// );
 
 const initialState = {
   list: [],

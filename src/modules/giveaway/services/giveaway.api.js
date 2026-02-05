@@ -15,7 +15,7 @@ export const updatePrizeApi = (id, data) => {
 };
 
 export const deletePrizeApi = (id) => {
-  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_PRIZE_BY_ID(id));
+  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_PRIZE_BY_ID(id),{});
 };
 
 /* ===== CAMPAIGN MANAGEMENT ===== */
@@ -31,12 +31,12 @@ export const bulkCreateCampaignApi = (payload) => {
   return apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_BULK, payload);
 };
 
-// export const updateCampaignApi = (id, data) => {
-// return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id), data);
-// }
+export const updateCampaignApi = (id, data) => {
+return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id), data);
+}
 
 export const deleteCampaignApi = (id) => {
-  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id));
+  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id),{});
 };
 
 export const activateCampaignApi = (id) => {

@@ -1,9 +1,9 @@
 /*===================== BASE URL =====================*/
 export const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+  import.meta.env.VITE_API_BASE_URL || "https://api.matchatfirstswipe.com.au";
 
 /*===================== GIVEAWAYS ENDPOINTS =====================*/
-const GIVEAWAY_BASE = `${BASE_URL}/api/v1/admin/giveaway`;
+const GIVEAWAY_BASE = `http://localhost:3001/api/v1/admin/giveaway`;
 
 export const GIVEAWAYS_ENDPOINTS = {
   // PRIZES
@@ -30,7 +30,7 @@ export const GIVEAWAYS_ENDPOINTS = {
   CAMPAIGN_RESEND: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/resend-prize`,
 
   // LOGISTICS / DELIVERY
-  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/deliveries/pending`,
+  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/pending-deliveries`,
   MARK_DELIVERED: `${GIVEAWAY_BASE}/mark-as-deliver`,
   DELIVERED_PRIZES: `${GIVEAWAY_BASE}/deliveries/completed`,
   CLAIMS: `${GIVEAWAY_BASE}/claims`,

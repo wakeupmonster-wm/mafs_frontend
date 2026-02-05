@@ -1,6 +1,6 @@
 /*===================== BASE URL =====================*/
 export const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+  import.meta.env.VITE_API_BASE_URL || "https://api.matchatfirstswipe.com.au";
 
 /*===================== ADMIN ENDPOINTS =====================*/
 export const PROFILE_ENDPOINTS = {
@@ -9,7 +9,7 @@ export const PROFILE_ENDPOINTS = {
     REPORTED: `${BASE_URL}/api/v1/admin/profile-review/reported`,
     DETAILS: (id) => `${BASE_URL}/api/v1/admin/profile-review/${id}`,
     UPDATE_STATUS: (id) =>
-      `${BASE_URL}/api/v1/admin/profile-review/${id}/status`,
+      `http://localhost:3001/api/v1/admin/profile-review/${id}/status`,
   },
 
   // Moderation Section

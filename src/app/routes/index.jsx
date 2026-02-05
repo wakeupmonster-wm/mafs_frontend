@@ -39,6 +39,7 @@ import PrivacyAndPolicyPage from "@/modules/cms/pages/privacy-policy.page";
 import TermAndConditionsPage from "@/modules/cms/pages/terms-conditions.page";
 import FAQEditView from "@/modules/cms/components/faqs-edit-view.page";
 import NotificationManagementPage from "@/modules/notificationManagement/pages/notificationPage";
+import AdminProfile from "@/modules/setting/AdminProfile.jsx";
 import ViewPage from "@/modules/users/pages/viewPage";
 
 export const router = createBrowserRouter([
@@ -98,6 +99,7 @@ export const router = createBrowserRouter([
               { path: "edit-profile", element: <EditProfilePage /> },
             ],
           },
+          
 
           { path: "pending-verifications", element: <PendingVerifications /> },
 
@@ -187,7 +189,8 @@ export const router = createBrowserRouter([
           { path: "terms-conditions", element: <TermAndConditionsPage /> },
         ],
       },
-      { path: "settings", element: <>Settings</> },
+      { path: "settings", element: <AdminProfile/> },
+      
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },
       { path: "accounts", element: <>Accounts</> },

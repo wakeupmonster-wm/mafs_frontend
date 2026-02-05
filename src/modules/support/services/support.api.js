@@ -11,8 +11,14 @@ export const contactSupportApi = (payload) => {
 /**
  * Retrieves tickets belonging to the authenticated user
  */
-export const getMyTicketsApi = () => {
-  return apiConnector("GET", SUPPORT_ENDPOINTS.MY_TICKETS);
+// export const getMyTicketsApi = () => {
+//   return apiConnector("GET", SUPPORT_ENDPOINTS.MY_TICKETS);
+// };
+
+export const getMyTicketsApi = (status = "all", search = "") => {
+  // Query strings attach kar rahe hain
+  const url = `${SUPPORT_ENDPOINTS.MY_TICKETS}?status=${status}&search=${search}`;
+  return apiConnector("GET", url);
 };
 
 /**

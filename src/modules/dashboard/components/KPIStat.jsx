@@ -1,6 +1,7 @@
 import React from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
 
+// eslint-disable-next-line no-unused-vars
 const KPIStat = ({ label, value, change, icon: Icon, color }) => {
   const isPositive = change.startsWith("+");
 
@@ -38,5 +39,4 @@ const KPIStat = ({ label, value, change, icon: Icon, color }) => {
     </div>
   );
 };
-
 export default KPIStat;
