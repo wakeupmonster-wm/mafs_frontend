@@ -7,10 +7,8 @@ import {
   IconMapPin,
   IconCalendar,
   IconSettings,
-  IconEdit,
   IconAlertCircle,
   IconBan,
-  IconMail,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
