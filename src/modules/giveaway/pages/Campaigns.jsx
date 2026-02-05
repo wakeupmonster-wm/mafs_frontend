@@ -1,567 +1,567 @@
-// import { useEffect, useState, useMemo, useCallback } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import {
-//   fetchCampaigns,
-//   fetchPrizes,
-//   createCampaign,
-//   pauseCampaign,
-//   disableCampaign,
-//   activateCampaign,
-//   deleteCampaign,
-//   clearGiveawayStatus,
-// } from "../store/giveaway.slice";
+// // import { useEffect, useState, useMemo, useCallback } from "react";
+// // import { useDispatch, useSelector } from "react-redux";
+// // import {
+// //   fetchCampaigns,
+// //   fetchPrizes,
+// //   createCampaign,
+// //   pauseCampaign,
+// //   disableCampaign,
+// //   activateCampaign,
+// //   deleteCampaign,
+// //   clearGiveawayStatus,
+// // } from "../store/giveaway.slice";
 
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Badge } from "@/components/ui/badge";
-// import ActionDropdown from "../components/ActionDropdown";
+// // import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// // import { Button } from "@/components/ui/button";
+// // import { Input } from "@/components/ui/input";
+// // import { Badge } from "@/components/ui/badge";
+// // import ActionDropdown from "../components/ActionDropdown";
 
-// import {
-//   Select,
-//   SelectTrigger,
-//   SelectValue,
-//   SelectContent,
-//   SelectItem,
-// } from "@/components/ui/select";
+// // import {
+// //   Select,
+// //   SelectTrigger,
+// //   SelectValue,
+// //   SelectContent,
+// //   SelectItem,
+// // } from "@/components/ui/select";
 
-// import {
-//   CalendarDays,
-//   Gift,
-//   Plus,
-//   Megaphone,
-//   Loader2,
-//   PlayCircle,
-//   PauseCircle,
-//   XCircle,
-//   CheckCircle2,
-//   ListPlus,
-//   Trophy,
-//   Inbox,
-// } from "lucide-react";
-// import { toast } from "sonner";
+// // import {
+// //   CalendarDays,
+// //   Gift,
+// //   Plus,
+// //   Megaphone,
+// //   Loader2,
+// //   PlayCircle,
+// //   PauseCircle,
+// //   XCircle,
+// //   CheckCircle2,
+// //   ListPlus,
+// //   Trophy,
+// //   Inbox,
+// // } from "lucide-react";
+// // import { toast } from "sonner";
 
-// function getCampaignStatus(c) {
-//   if (c.failureReason === "Paused by admin") {
-//     return "PAUSED";
-//   }
+// // function getCampaignStatus(c) {
+// //   if (c.failureReason === "Paused by admin") {
+// //     return "PAUSED";
+// //   }
 
-//   if (c.failureReason === "Disabled by admin") {
-//     return "DISABLED";
-//   }
+// //   if (c.failureReason === "Disabled by admin") {
+// //     return "DISABLED";
+// //   }
 
-//   if (c.isActive) {
-//     return "ACTIVE";
-//   }
+// //   if (c.isActive) {
+// //     return "ACTIVE";
+// //   }
 
-//   return "DISABLED";
-// }
+// //   return "DISABLED";
+// // }
 
-// export default function Campaigns() {
-//   const dispatch = useDispatch();
-//   const { campaigns, prizes, loading, error, successMessage } = useSelector(
-//     (s) => s.giveaway
-//   );
+// // export default function Campaigns() {
+// //   const dispatch = useDispatch();
+// //   const { campaigns, prizes, loading, error, successMessage } = useSelector(
+// //     (s) => s.giveaway
+// //   );
 
-//   const [form, setForm] = useState({
-//     date: "",
-//     prizeId: "",
-//     supportiveItems: "",
-//   });
+// //   const [form, setForm] = useState({
+// //     date: "",
+// //     prizeId: "",
+// //     supportiveItems: "",
+// //   });
 
-//   useEffect(() => {
-//     dispatch(fetchCampaigns());
-//     dispatch(fetchPrizes());
-//   }, [dispatch]);
+// //   useEffect(() => {
+// //     dispatch(fetchCampaigns());
+// //     dispatch(fetchPrizes());
+// //   }, [dispatch]);
 
-//   useEffect(() => {
-//     if (successMessage) {
-//       toast.success(successMessage);
-//       dispatch(clearGiveawayStatus());
-//     }
+// //   useEffect(() => {
+// //     if (successMessage) {
+// //       toast.success(successMessage);
+// //       dispatch(clearGiveawayStatus());
+// //     }
 
-//     if (error) {
-//       toast.error(typeof error === "string" ? error : error.message);
-//       dispatch(clearGiveawayStatus());
-//     }
-//   }, [successMessage, error, dispatch]);
+// //     if (error) {
+// //       toast.error(typeof error === "string" ? error : error.message);
+// //       dispatch(clearGiveawayStatus());
+// //     }
+// //   }, [successMessage, error, dispatch]);
 
-//   const validateForm = useCallback(() => {
-//     const trimmedDate = form.date.trim();
-//     const trimmedPrizeId = form.prizeId.trim();
-//     const trimmedItems = form.supportiveItems.trim();
+// //   const validateForm = useCallback(() => {
+// //     const trimmedDate = form.date.trim();
+// //     const trimmedPrizeId = form.prizeId.trim();
+// //     const trimmedItems = form.supportiveItems.trim();
 
-//     if (!trimmedDate) {
-//       toast.error("Campaign date is required");
-//       return false;
-//     }
+// //     if (!trimmedDate) {
+// //       toast.error("Campaign date is required");
+// //       return false;
+// //     }
 
-//     const selectedDate = new Date(trimmedDate);
-//     const today = new Date();
-//     today.setHours(0, 0, 0, 0);
+// //     const selectedDate = new Date(trimmedDate);
+// //     const today = new Date();
+// //     today.setHours(0, 0, 0, 0);
 
-//     if (selectedDate < today) {
-//       toast.error("Campaign date cannot be in the past");
-//       return false;
-//     }
+// //     if (selectedDate < today) {
+// //       toast.error("Campaign date cannot be in the past");
+// //       return false;
+// //     }
 
-//     const maxFutureDate = new Date(today);
-//     maxFutureDate.setFullYear(maxFutureDate.getFullYear() + 2);
+// //     const maxFutureDate = new Date(today);
+// //     maxFutureDate.setFullYear(maxFutureDate.getFullYear() + 2);
 
-//     if (selectedDate > maxFutureDate) {
-//       toast.error("Campaign date cannot be more than 2 years in the future");
-//       return false;
-//     }
+// //     if (selectedDate > maxFutureDate) {
+// //       toast.error("Campaign date cannot be more than 2 years in the future");
+// //       return false;
+// //     }
 
-//     const existingCampaign = campaigns.find((c) => {
-//       const campaignDate = new Date(c.date);
-//       campaignDate.setHours(0, 0, 0, 0);
-//       return campaignDate.getTime() === selectedDate.getTime();
-//     });
+// //     const existingCampaign = campaigns.find((c) => {
+// //       const campaignDate = new Date(c.date);
+// //       campaignDate.setHours(0, 0, 0, 0);
+// //       return campaignDate.getTime() === selectedDate.getTime();
+// //     });
 
-//     if (existingCampaign) {
-//       toast.error("A campaign already exists for this date");
-//       return false;
-//     }
+// //     if (existingCampaign) {
+// //       toast.error("A campaign already exists for this date");
+// //       return false;
+// //     }
 
-//     if (!trimmedPrizeId) {
-//       toast.error("Please select a prize");
-//       return false;
-//     }
+// //     if (!trimmedPrizeId) {
+// //       toast.error("Please select a prize");
+// //       return false;
+// //     }
 
-//     const selectedPrize = prizes.find((p) => p._id === trimmedPrizeId);
+// //     const selectedPrize = prizes.find((p) => p._id === trimmedPrizeId);
 
-//     if (!selectedPrize) {
-//       toast.error("Selected prize not found");
-//       return false;
-//     }
+// //     if (!selectedPrize) {
+// //       toast.error("Selected prize not found");
+// //       return false;
+// //     }
 
-//     if (!selectedPrize.isActive) {
-//       toast.error("Selected prize is inactive");
-//       return false;
-//     }
+// //     if (!selectedPrize.isActive) {
+// //       toast.error("Selected prize is inactive");
+// //       return false;
+// //     }
 
-//     if (!trimmedItems) {
-//       toast.error("Supportive items are required");
-//       return false;
-//     }
+// //     if (!trimmedItems) {
+// //       toast.error("Supportive items are required");
+// //       return false;
+// //     }
 
-//     const itemsArray = trimmedItems
-//       .split(",")
-//       .map((item) => item.trim())
-//       .filter(Boolean);
+// //     const itemsArray = trimmedItems
+// //       .split(",")
+// //       .map((item) => item.trim())
+// //       .filter(Boolean);
 
-//     if (itemsArray.length === 0) {
-//       toast.error("Supportive items cannot be empty");
-//       return false;
-//     }
+// //     if (itemsArray.length === 0) {
+// //       toast.error("Supportive items cannot be empty");
+// //       return false;
+// //     }
 
-//     if (itemsArray.length < 2) {
-//       toast.error("At least 2 supportive items are required");
-//       return false;
-//     }
+// //     if (itemsArray.length < 2) {
+// //       toast.error("At least 2 supportive items are required");
+// //       return false;
+// //     }
 
-//     if (itemsArray.length > 50) {
-//       toast.error("Maximum 50 supportive items allowed");
-//       return false;
-//     }
+// //     if (itemsArray.length > 50) {
+// //       toast.error("Maximum 50 supportive items allowed");
+// //       return false;
+// //     }
 
-//     for (let i = 0; i < itemsArray.length; i++) {
-//       if (itemsArray[i].length === 0) {
-//         toast.error("Supportive items cannot be empty");
-//         return false;
-//       }
+// //     for (let i = 0; i < itemsArray.length; i++) {
+// //       if (itemsArray[i].length === 0) {
+// //         toast.error("Supportive items cannot be empty");
+// //         return false;
+// //       }
 
-//       if (itemsArray[i].length > 100) {
-//         toast.error("Each supportive item must not exceed 100 characters");
-//         return false;
-//       }
-//     }
+// //       if (itemsArray[i].length > 100) {
+// //         toast.error("Each supportive item must not exceed 100 characters");
+// //         return false;
+// //       }
+// //     }
 
-//     const uniqueItems = new Set(itemsArray.map((item) => item.toLowerCase()));
-//     if (uniqueItems.size !== itemsArray.length) {
-//       toast.error("Duplicate supportive items are not allowed");
-//       return false;
-//     }
+// //     const uniqueItems = new Set(itemsArray.map((item) => item.toLowerCase()));
+// //     if (uniqueItems.size !== itemsArray.length) {
+// //       toast.error("Duplicate supportive items are not allowed");
+// //       return false;
+// //     }
 
-//     return true;
-//   }, [form, campaigns, prizes]);
+// //     return true;
+// //   }, [form, campaigns, prizes]);
 
-//   const submit = useCallback(() => {
-//     if (!validateForm()) {
-//       return;
-//     }
+// //   const submit = useCallback(() => {
+// //     if (!validateForm()) {
+// //       return;
+// //     }
 
-//     const itemsArray = form.supportiveItems
-//       .split(",")
-//       .map((item) => item.trim())
-//       .filter(Boolean);
+// //     const itemsArray = form.supportiveItems
+// //       .split(",")
+// //       .map((item) => item.trim())
+// //       .filter(Boolean);
 
-//     dispatch(
-//       createCampaign({
-//         date: form.date,
-//         prizeId: form.prizeId,
-//         supportiveItems: itemsArray,
-//       })
-//     );
+// //     dispatch(
+// //       createCampaign({
+// //         date: form.date,
+// //         prizeId: form.prizeId,
+// //         supportiveItems: itemsArray,
+// //       })
+// //     );
 
-//     setForm({
-//       date: "",
-//       prizeId: "",
-//       supportiveItems: "",
-//     });
-//   }, [form, validateForm, dispatch]);
+// //     setForm({
+// //       date: "",
+// //       prizeId: "",
+// //       supportiveItems: "",
+// //     });
+// //   }, [form, validateForm, dispatch]);
 
-//   const getStatusIcon = useCallback((status) => {
-//     switch (status) {
-//       case "ACTIVE":
-//         return <PlayCircle className="h-3.5 w-3.5" />;
-//       case "PAUSED":
-//         return <PauseCircle className="h-3.5 w-3.5" />;
-//       default:
-//         return <XCircle className="h-3.5 w-3.5" />;
-//     }
-//   }, []);
+// //   const getStatusIcon = useCallback((status) => {
+// //     switch (status) {
+// //       case "ACTIVE":
+// //         return <PlayCircle className="h-3.5 w-3.5" />;
+// //       case "PAUSED":
+// //         return <PauseCircle className="h-3.5 w-3.5" />;
+// //       default:
+// //         return <XCircle className="h-3.5 w-3.5" />;
+// //     }
+// //   }, []);
 
-//   const getStatusStyles = useCallback((status) => {
-//     switch (status) {
-//       case "ACTIVE":
-//         return "bg-emerald-50 text-emerald-700 border-emerald-200";
-//       case "PAUSED":
-//         return "bg-amber-50 text-amber-700 border-amber-200";
-//       default:
-//         return "bg-red-50 text-red-700 border-red-200";
-//     }
-//   }, []);
+// //   const getStatusStyles = useCallback((status) => {
+// //     switch (status) {
+// //       case "ACTIVE":
+// //         return "bg-emerald-50 text-emerald-700 border-emerald-200";
+// //       case "PAUSED":
+// //         return "bg-amber-50 text-amber-700 border-amber-200";
+// //       default:
+// //         return "bg-red-50 text-red-700 border-red-200";
+// //     }
+// //   }, []);
 
-//   const getActionsList = useCallback((campaignId, status) => {
-//     const actions = [];
+// //   const getActionsList = useCallback((campaignId, status) => {
+// //     const actions = [];
 
-//     if (status === "ACTIVE") {
-//       actions.push(
-//         {
-//           label: "Pause",
-//           onClick: () => dispatch(pauseCampaign(campaignId)),
-//         },
-//         {
-//           label: "Disable",
-//           onClick: () => dispatch(disableCampaign(campaignId)),
-//         }
-//       );
-//     }
+// //     if (status === "ACTIVE") {
+// //       actions.push(
+// //         {
+// //           label: "Pause",
+// //           onClick: () => dispatch(pauseCampaign(campaignId)),
+// //         },
+// //         {
+// //           label: "Disable",
+// //           onClick: () => dispatch(disableCampaign(campaignId)),
+// //         }
+// //       );
+// //     }
 
-//     if (status === "PAUSED") {
-//       actions.push(
-//         {
-//           label: "Activate",
-//           onClick: () => dispatch(activateCampaign(campaignId)),
-//         },
-//         {
-//           label: "Disable",
-//           onClick: () => dispatch(disableCampaign(campaignId)),
-//         }
-//       );
-//     }
+// //     if (status === "PAUSED") {
+// //       actions.push(
+// //         {
+// //           label: "Activate",
+// //           onClick: () => dispatch(activateCampaign(campaignId)),
+// //         },
+// //         {
+// //           label: "Disable",
+// //           onClick: () => dispatch(disableCampaign(campaignId)),
+// //         }
+// //       );
+// //     }
 
-//     if (status === "DISABLED") {
-//       actions.push({
-//         label: "Activate",
-//         onClick: () => dispatch(activateCampaign(campaignId)),
-//       });
-//     }
+// //     if (status === "DISABLED") {
+// //       actions.push({
+// //         label: "Activate",
+// //         onClick: () => dispatch(activateCampaign(campaignId)),
+// //       });
+// //     }
 
-//     actions.push({
-//       label: "Delete",
-//       destructive: true,
-//       onClick: () => {
-//         const campaignDate = campaigns.find((c) => c._id === campaignId);
-//         if (
-//           window.confirm(
-//             `Are you sure you want to delete the campaign for ${new Date(campaignDate.date).toDateString()}? This action cannot be undone.`
-//           )
-//         ) {
-//           dispatch(deleteCampaign(campaignId));
-//         }
-//       },
-//     });
+// //     actions.push({
+// //       label: "Delete",
+// //       destructive: true,
+// //       onClick: () => {
+// //         const campaignDate = campaigns.find((c) => c._id === campaignId);
+// //         if (
+// //           window.confirm(
+// //             `Are you sure you want to delete the campaign for ${new Date(campaignDate.date).toDateString()}? This action cannot be undone.`
+// //           )
+// //         ) {
+// //           dispatch(deleteCampaign(campaignId));
+// //         }
+// //       },
+// //     });
 
-//     return actions;
-//   }, [campaigns, dispatch]);
+// //     return actions;
+// //   }, [campaigns, dispatch]);
 
-//   const activeCampaignsCount = useMemo(
-//     () => campaigns.filter((c) => getCampaignStatus(c) === "ACTIVE").length,
-//     [campaigns]
-//   );
+// //   const activeCampaignsCount = useMemo(
+// //     () => campaigns.filter((c) => getCampaignStatus(c) === "ACTIVE").length,
+// //     [campaigns]
+// //   );
 
-//   return (
-//     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-8">
-//       <div className="mx-auto max-w-7xl space-y-6">
-//         <div className="flex items-center gap-3">
-//           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-black to-black shadow-lg">
-//             <Megaphone className="h-5 w-5 text-white" />
-//           </div>
-//           <div>
-//             <h1 className="text-2xl font-bold text-gray-900">Campaigns</h1>
-//             <p className="text-sm text-gray-500">
-//               Manage your giveaway campaigns
-//             </p>
-//           </div>
-//         </div>
+// //   return (
+// //     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-8">
+// //       <div className="mx-auto max-w-7xl space-y-6">
+// //         <div className="flex items-center gap-3">
+// //           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-black to-black shadow-lg">
+// //             <Megaphone className="h-5 w-5 text-white" />
+// //           </div>
+// //           <div>
+// //             <h1 className="text-2xl font-bold text-gray-900">Campaigns</h1>
+// //             <p className="text-sm text-gray-500">
+// //               Manage your giveaway campaigns
+// //             </p>
+// //           </div>
+// //         </div>
 
-//         <Card className="border-0 shadow-sm shadow-gray-200/50">
-//           <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-//             <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
-//               <Plus className="h-4 w-4 text-black" />
-//               Create New Campaign
-//             </CardTitle>
-//           </CardHeader>
+// //         <Card className="border-0 shadow-sm shadow-gray-200/50">
+// //           <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
+// //             <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
+// //               <Plus className="h-4 w-4 text-black" />
+// //               Create New Campaign
+// //             </CardTitle>
+// //           </CardHeader>
 
-//           <CardContent className="p-5">
-//             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-//               <div className="space-y-1.5">
-//                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-//                   <CalendarDays className="h-3.5 w-3.5" />
-//                   Campaign Date
-//                 </label>
-//                 <Input
-//                   type="date"
-//                   value={form.date}
-//                   onChange={(e) => setForm({ ...form, date: e.target.value })}
-//                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200"
-//                   min={new Date().toISOString().split("T")[0]}
-//                 />
-//               </div>
+// //           <CardContent className="p-5">
+// //             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+// //               <div className="space-y-1.5">
+// //                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+// //                   <CalendarDays className="h-3.5 w-3.5" />
+// //                   Campaign Date
+// //                 </label>
+// //                 <Input
+// //                   type="date"
+// //                   value={form.date}
+// //                   onChange={(e) => setForm({ ...form, date: e.target.value })}
+// //                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200"
+// //                   min={new Date().toISOString().split("T")[0]}
+// //                 />
+// //               </div>
 
-//               <div className="space-y-1.5">
-//                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-//                   <Trophy className="h-3.5 w-3.5" />
-//                   Select Prize
-//                 </label>
-//                 <Select
-//                   value={form.prizeId}
-//                   onValueChange={(v) => setForm({ ...form, prizeId: v })}
-//                 >
-//                   <SelectTrigger className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200">
-//                     <SelectValue placeholder="Choose a prize" />
-//                   </SelectTrigger>
-//                   <SelectContent>
-//                     {prizes.length === 0 ? (
-//                       <div className="p-2 text-sm text-gray-500">
-//                         No prizes available
-//                       </div>
-//                     ) : (
-//                       prizes.map((p) => (
-//                         <SelectItem key={p._id} value={p._id}>
-//                           <span className="flex items-center gap-2">
-//                             <Gift className="h-3.5 w-3.5 text-amber-500" />
-//                             {p.title}
-//                           </span>
-//                         </SelectItem>
-//                       ))
-//                     )}
-//                   </SelectContent>
-//                 </Select>
-//               </div>
+// //               <div className="space-y-1.5">
+// //                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+// //                   <Trophy className="h-3.5 w-3.5" />
+// //                   Select Prize
+// //                 </label>
+// //                 <Select
+// //                   value={form.prizeId}
+// //                   onValueChange={(v) => setForm({ ...form, prizeId: v })}
+// //                 >
+// //                   <SelectTrigger className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200">
+// //                     <SelectValue placeholder="Choose a prize" />
+// //                   </SelectTrigger>
+// //                   <SelectContent>
+// //                     {prizes.length === 0 ? (
+// //                       <div className="p-2 text-sm text-gray-500">
+// //                         No prizes available
+// //                       </div>
+// //                     ) : (
+// //                       prizes.map((p) => (
+// //                         <SelectItem key={p._id} value={p._id}>
+// //                           <span className="flex items-center gap-2">
+// //                             <Gift className="h-3.5 w-3.5 text-amber-500" />
+// //                             {p.title}
+// //                           </span>
+// //                         </SelectItem>
+// //                       ))
+// //                     )}
+// //                   </SelectContent>
+// //                 </Select>
+// //               </div>
 
-//               <div className="space-y-1.5">
-//                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
-//                   <ListPlus className="h-3.5 w-3.5" />
-//                   Supportive Items (Min 2)
-//                 </label>
-//                 <Input
-//                   placeholder="e.g. Item1, Item2, Item3"
-//                   value={form.supportiveItems}
-//                   onChange={(e) =>
-//                     setForm({
-//                       ...form,
-//                       supportiveItems: e.target.value,
-//                     })
-//                   }
-//                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200"
-//                 />
-//               </div>
+// //               <div className="space-y-1.5">
+// //                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+// //                   <ListPlus className="h-3.5 w-3.5" />
+// //                   Supportive Items (Min 2)
+// //                 </label>
+// //                 <Input
+// //                   placeholder="e.g. Item1, Item2, Item3"
+// //                   value={form.supportiveItems}
+// //                   onChange={(e) =>
+// //                     setForm({
+// //                       ...form,
+// //                       supportiveItems: e.target.value,
+// //                     })
+// //                   }
+// //                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200"
+// //                 />
+// //               </div>
 
-//               <div className="flex items-end">
-//                 <Button
-//                   onClick={submit}
-//                   disabled={loading}
-//                   className="h-10 w-full gap-2 bg-gradient-to-r from-black to-black font-medium shadow-md transition-all hover:shadow-lg"
-//                 >
-//                   {loading ? (
-//                     <Loader2 className="h-4 w-4 animate-spin" />
-//                   ) : (
-//                     <Plus className="h-4 w-4" />
-//                   )}
-//                   Create Campaign
-//                 </Button>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
+// //               <div className="flex items-end">
+// //                 <Button
+// //                   onClick={submit}
+// //                   disabled={loading}
+// //                   className="h-10 w-full gap-2 bg-gradient-to-r from-black to-black font-medium shadow-md transition-all hover:shadow-lg"
+// //                 >
+// //                   {loading ? (
+// //                     <Loader2 className="h-4 w-4 animate-spin" />
+// //                   ) : (
+// //                     <Plus className="h-4 w-4" />
+// //                   )}
+// //                   Create Campaign
+// //                 </Button>
+// //               </div>
+// //             </div>
+// //           </CardContent>
+// //         </Card>
 
-//         <Card className="border-0 shadow-sm shadow-gray-200/50">
-//           <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
-//             <div className="flex items-center justify-between">
-//               <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
-//                 <Megaphone className="h-4 w-4 text-black" />
-//                 All Campaigns
-//               </CardTitle>
-//               <div className="flex items-center gap-2">
-//                 <Badge variant="secondary" className="bg-black text-white">
-//                   {campaigns.length} Total
-//                 </Badge>
-//                 {activeCampaignsCount > 0 && (
-//                   <Badge className="bg-emerald-100 text-emerald-700">
-//                     {activeCampaignsCount} Active
-//                   </Badge>
-//                 )}
-//               </div>
-//             </div>
-//           </CardHeader>
+// //         <Card className="border-0 shadow-sm shadow-gray-200/50">
+// //           <CardHeader className="border-b border-gray-100 bg-gray-50/50 pb-4">
+// //             <div className="flex items-center justify-between">
+// //               <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
+// //                 <Megaphone className="h-4 w-4 text-black" />
+// //                 All Campaigns
+// //               </CardTitle>
+// //               <div className="flex items-center gap-2">
+// //                 <Badge variant="secondary" className="bg-black text-white">
+// //                   {campaigns.length} Total
+// //                 </Badge>
+// //                 {activeCampaignsCount > 0 && (
+// //                   <Badge className="bg-emerald-100 text-emerald-700">
+// //                     {activeCampaignsCount} Active
+// //                   </Badge>
+// //                 )}
+// //               </div>
+// //             </div>
+// //           </CardHeader>
 
-//           <CardContent className="p-0">
-//             {loading && campaigns.length === 0 ? (
-//               <div className="flex flex-col items-center justify-center py-16 text-gray-500">
-//                 <Loader2 className="h-8 w-8 animate-spin text-black" />
-//                 <p className="mt-3 text-sm font-medium">Loading campaigns...</p>
-//               </div>
-//             ) : campaigns.length === 0 ? (
-//               <div className="flex flex-col items-center justify-center py-16 text-gray-400">
-//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-//                   <Inbox className="h-8 w-8" />
-//                 </div>
-//                 <p className="mt-4 font-medium text-gray-600">
-//                   No campaigns yet
-//                 </p>
-//                 <p className="mt-1 text-sm">Create your first campaign above</p>
-//               </div>
-//             ) : (
-//               <>
-//                 <div className="hidden overflow-x-auto md:block">
-//                   <table className="w-full">
-//                     <thead>
-//                       <tr className="border-b border-gray-100 bg-gray-50/80 text-xs font-medium uppercase tracking-wider text-gray-500">
-//                         <th className="px-5 py-3.5 text-left">Date</th>
-//                         <th className="px-5 py-3.5 text-left">Prize</th>
-//                         <th className="px-5 py-3.5 text-left">Status</th>
-//                         <th className="px-5 py-3.5 text-left">Active</th>
-//                         <th className="px-5 py-3.5 text-right">Actions</th>
-//                       </tr>
-//                     </thead>
-//                     <tbody className="divide-y divide-gray-100">
-//                       {campaigns.map((c) => {
-//                         const prize = prizes.find(
-//                           (p) => p._id === (c.prizeId?._id || c.prizeId)
-//                         );
-//                         const status = getCampaignStatus(c);
-//                         const actions = getActionsList(c._id, status);
+// //           <CardContent className="p-0">
+// //             {loading && campaigns.length === 0 ? (
+// //               <div className="flex flex-col items-center justify-center py-16 text-gray-500">
+// //                 <Loader2 className="h-8 w-8 animate-spin text-black" />
+// //                 <p className="mt-3 text-sm font-medium">Loading campaigns...</p>
+// //               </div>
+// //             ) : campaigns.length === 0 ? (
+// //               <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+// //                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+// //                   <Inbox className="h-8 w-8" />
+// //                 </div>
+// //                 <p className="mt-4 font-medium text-gray-600">
+// //                   No campaigns yet
+// //                 </p>
+// //                 <p className="mt-1 text-sm">Create your first campaign above</p>
+// //               </div>
+// //             ) : (
+// //               <>
+// //                 <div className="hidden overflow-x-auto md:block">
+// //                   <table className="w-full">
+// //                     <thead>
+// //                       <tr className="border-b border-gray-100 bg-gray-50/80 text-xs font-medium uppercase tracking-wider text-gray-500">
+// //                         <th className="px-5 py-3.5 text-left">Date</th>
+// //                         <th className="px-5 py-3.5 text-left">Prize</th>
+// //                         <th className="px-5 py-3.5 text-left">Status</th>
+// //                         <th className="px-5 py-3.5 text-left">Active</th>
+// //                         <th className="px-5 py-3.5 text-right">Actions</th>
+// //                       </tr>
+// //                     </thead>
+// //                     <tbody className="divide-y divide-gray-100">
+// //                       {campaigns.map((c) => {
+// //                         const prize = prizes.find(
+// //                           (p) => p._id === (c.prizeId?._id || c.prizeId)
+// //                         );
+// //                         const status = getCampaignStatus(c);
+// //                         const actions = getActionsList(c._id, status);
 
-//                         return (
-//                           <tr
-//                             key={c._id}
-//                             className="transition-colors hover:bg-gray-50/50"
-//                           >
-//                             <td className="px-5 py-4">
-//                               <div className="flex items-center gap-2">
-//                                 <CalendarDays className="h-4 w-4 text-gray-400" />
-//                                 <span className="font-medium text-gray-700">
-//                                   {new Date(c.date).toDateString()}
-//                                 </span>
-//                               </div>
-//                             </td>
-//                             <td className="px-5 py-4">
-//                               <div className="flex items-center gap-2">
-//                                 <Gift className="h-4 w-4 text-black" />
-//                                 <span className="font-medium text-gray-800">
-//                                   {prize?.title || "—"}
-//                                 </span>
-//                               </div>
-//                             </td>
-//                             <td className="px-5 py-4">
-//                               <span
-//                                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
-//                                   status
-//                                 )}`}
-//                               >
-//                                 {getStatusIcon(status)}
-//                                 {status}
-//                               </span>
-//                             </td>
-//                             <td className="px-5 py-4">
-//                               {c.isActive ? (
-//                                 <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600">
-//                                   <CheckCircle2 className="h-4 w-4" />
-//                                   Yes
-//                                 </span>
-//                               ) : (
-//                                 <span className="text-sm text-gray-400">
-//                                   No
-//                                 </span>
-//                               )}
-//                             </td>
-//                             <td className="px-5 py-4 text-right">
-//                               <ActionDropdown actions={actions} />
-//                             </td>
-//                           </tr>
-//                         );
-//                       })}
-//                     </tbody>
-//                   </table>
-//                 </div>
+// //                         return (
+// //                           <tr
+// //                             key={c._id}
+// //                             className="transition-colors hover:bg-gray-50/50"
+// //                           >
+// //                             <td className="px-5 py-4">
+// //                               <div className="flex items-center gap-2">
+// //                                 <CalendarDays className="h-4 w-4 text-gray-400" />
+// //                                 <span className="font-medium text-gray-700">
+// //                                   {new Date(c.date).toDateString()}
+// //                                 </span>
+// //                               </div>
+// //                             </td>
+// //                             <td className="px-5 py-4">
+// //                               <div className="flex items-center gap-2">
+// //                                 <Gift className="h-4 w-4 text-black" />
+// //                                 <span className="font-medium text-gray-800">
+// //                                   {prize?.title || "—"}
+// //                                 </span>
+// //                               </div>
+// //                             </td>
+// //                             <td className="px-5 py-4">
+// //                               <span
+// //                                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
+// //                                   status
+// //                                 )}`}
+// //                               >
+// //                                 {getStatusIcon(status)}
+// //                                 {status}
+// //                               </span>
+// //                             </td>
+// //                             <td className="px-5 py-4">
+// //                               {c.isActive ? (
+// //                                 <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600">
+// //                                   <CheckCircle2 className="h-4 w-4" />
+// //                                   Yes
+// //                                 </span>
+// //                               ) : (
+// //                                 <span className="text-sm text-gray-400">
+// //                                   No
+// //                                 </span>
+// //                               )}
+// //                             </td>
+// //                             <td className="px-5 py-4 text-right">
+// //                               <ActionDropdown actions={actions} />
+// //                             </td>
+// //                           </tr>
+// //                         );
+// //                       })}
+// //                     </tbody>
+// //                   </table>
+// //                 </div>
 
-//                 <div className="divide-y divide-gray-100 md:hidden">
-//                   {campaigns.map((c) => {
-//                     const prize = prizes.find(
-//                       (p) => p._id === (c.prizeId?._id || c.prizeId)
-//                     );
-//                     const status = getCampaignStatus(c);
-//                     const actions = getActionsList(c._id, status);
+// //                 <div className="divide-y divide-gray-100 md:hidden">
+// //                   {campaigns.map((c) => {
+// //                     const prize = prizes.find(
+// //                       (p) => p._id === (c.prizeId?._id || c.prizeId)
+// //                     );
+// //                     const status = getCampaignStatus(c);
+// //                     const actions = getActionsList(c._id, status);
 
-//                     return (
-//                       <div key={c._id} className="p-4">
-//                         <div className="flex items-start justify-between">
-//                           <div className="space-y-2">
-//                             <div className="flex items-center gap-2">
-//                               <Gift className="h-4 w-4 text-black" />
-//                               <span className="font-semibold text-gray-800">
-//                                 {prize?.title || "—"}
-//                               </span>
-//                             </div>
-//                             <div className="flex items-center gap-2 text-sm text-gray-500">
-//                               <CalendarDays className="h-3.5 w-3.5" />
-//                               {new Date(c.date).toDateString()}
-//                             </div>
-//                           </div>
-//                           <ActionDropdown actions={actions} />
-//                         </div>
-//                         <div className="mt-3 flex items-center gap-3">
-//                           <span
-//                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
-//                               status
-//                             )}`}
-//                           >
-//                             {getStatusIcon(status)}
-//                             {status}
-//                           </span>
-//                           {c.isActive && (
-//                             <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
-//                               <CheckCircle2 className="h-3.5 w-3.5" />
-//                               Active
-//                             </span>
-//                           )}
-//                         </div>
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               </>
-//             )}
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </div>
-//   );
-// }
+// //                     return (
+// //                       <div key={c._id} className="p-4">
+// //                         <div className="flex items-start justify-between">
+// //                           <div className="space-y-2">
+// //                             <div className="flex items-center gap-2">
+// //                               <Gift className="h-4 w-4 text-black" />
+// //                               <span className="font-semibold text-gray-800">
+// //                                 {prize?.title || "—"}
+// //                               </span>
+// //                             </div>
+// //                             <div className="flex items-center gap-2 text-sm text-gray-500">
+// //                               <CalendarDays className="h-3.5 w-3.5" />
+// //                               {new Date(c.date).toDateString()}
+// //                             </div>
+// //                           </div>
+// //                           <ActionDropdown actions={actions} />
+// //                         </div>
+// //                         <div className="mt-3 flex items-center gap-3">
+// //                           <span
+// //                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium ${getStatusStyles(
+// //                               status
+// //                             )}`}
+// //                           >
+// //                             {getStatusIcon(status)}
+// //                             {status}
+// //                           </span>
+// //                           {c.isActive && (
+// //                             <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600">
+// //                               <CheckCircle2 className="h-3.5 w-3.5" />
+// //                               Active
+// //                             </span>
+// //                           )}
+// //                         </div>
+// //                       </div>
+// //                     );
+// //                   })}
+// //                 </div>
+// //               </>
+// //             )}
+// //           </CardContent>
+// //         </Card>
+// //       </div>
+// //     </div>
+// //   );
+// // }
 
 
 import { useEffect, useState, useMemo, useCallback } from "react";
@@ -671,7 +671,7 @@ export default function Campaigns() {
   const validateForm = useCallback(() => {
     const trimmedDate = form.date.trim();
     const trimmedPrizeId = form.prizeId.trim();
-    const trimmedItems = form.supportiveItems.trim();
+    // const trimmedItems = form.supportiveItems.trim();
 
     if (!trimmedDate) {
       toast.error("Campaign date is required");
@@ -726,48 +726,48 @@ export default function Campaigns() {
       return false;
     }
 
-    if (!trimmedItems) {
-      toast.error("Supportive items are required");
-      return false;
-    }
+    // if (!trimmedItems) {
+    //   toast.error("Supportive items are required");
+    //   return false;
+    // }
 
-    const itemsArray = trimmedItems
-      .split(",")
-      .map((item) => item.trim())
-      .filter(Boolean);
+    // const itemsArray = trimmedItems
+    //   .split(",")
+    //   .map((item) => item.trim())
+    //   .filter(Boolean);
 
-    if (itemsArray.length === 0) {
-      toast.error("Supportive items cannot be empty");
-      return false;
-    }
+    // if (itemsArray.length === 0) {
+    //   toast.error("Supportive items cannot be empty");
+    //   return false;
+    // }
 
-    if (itemsArray.length < 2) {
-      toast.error("At least 2 supportive items are required");
-      return false;
-    }
+    // if (itemsArray.length < 2) {
+    //   toast.error("At least 2 supportive items are required");
+    //   return false;
+    // }
 
-    if (itemsArray.length > 50) {
-      toast.error("Maximum 50 supportive items allowed");
-      return false;
-    }
+    // if (itemsArray.length > 50) {
+    //   toast.error("Maximum 50 supportive items allowed");
+    //   return false;
+    // }
 
-    for (let i = 0; i < itemsArray.length; i++) {
-      if (itemsArray[i].length === 0) {
-        toast.error("Supportive items cannot be empty");
-        return false;
-      }
+    // for (let i = 0; i < itemsArray.length; i++) {
+    //   if (itemsArray[i].length === 0) {
+    //     toast.error("Supportive items cannot be empty");
+    //     return false;
+    //   }
 
-      if (itemsArray[i].length > 100) {
-        toast.error("Each supportive item must not exceed 100 characters");
-        return false;
-      }
-    }
+    //   if (itemsArray[i].length > 100) {
+    //     toast.error("Each supportive item must not exceed 100 characters");
+    //     return false;
+    //   }
+    // }
 
-    const uniqueItems = new Set(itemsArray.map((item) => item.toLowerCase()));
-    if (uniqueItems.size !== itemsArray.length) {
-      toast.error("Duplicate supportive items are not allowed");
-      return false;
-    }
+    // const uniqueItems = new Set(itemsArray.map((item) => item.toLowerCase()));
+    // if (uniqueItems.size !== itemsArray.length) {
+    //   toast.error("Duplicate supportive items are not allowed");
+    //   return false;
+    // }
 
     return true;
   }, [form, campaigns, prizes, editMode, editingCampaignId]);
@@ -1038,7 +1038,7 @@ export default function Campaigns() {
                   </SelectContent>
                 </Select>
               </div>
-
+{/* 
               <div className="space-y-1.5">
                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
                   <ListPlus className="h-3.5 w-3.5" />
@@ -1055,7 +1055,7 @@ export default function Campaigns() {
                   }
                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200"
                 />
-              </div>
+              </div> */}
 
               <div className="flex items-end">
                 <Button
@@ -1297,3 +1297,702 @@ export default function Campaigns() {
     </div>
   );
 }
+
+
+
+
+// import { useEffect, useState, useMemo, useCallback } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+//   fetchCampaigns,
+//   fetchPrizes,
+//   createCampaign,
+//   disableCampaign,
+//   activateCampaign,
+//   deleteCampaign,
+//   clearGiveawayStatus,
+//   updateCampaign,
+// } from "../store/giveaway.slice";
+
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+// import { Badge } from "@/components/ui/badge";
+// import ActionDropdown from "../components/ActionDropdown";
+
+// import {
+//   Select,
+//   SelectTrigger,
+//   SelectValue,
+//   SelectContent,
+//   SelectItem,
+// } from "@/components/ui/select";
+
+// import {
+//   CalendarDays,
+//   Gift,
+//   Plus,
+//   Megaphone,
+//   Loader2,
+//   PlayCircle,
+//   XCircle,
+//   ListPlus,
+//   Trophy,
+//   Inbox,
+//   Search,
+//   Filter,
+//   Edit2,
+//   Award,
+//   X,
+// } from "lucide-react";
+// import { toast } from "sonner";
+
+// function getCampaignStatus(campaign) {
+//   if (campaign.winnerUserId) {
+//     return "COMPLETED";
+//   }
+
+//   if (campaign.failureReason === "Disabled by admin") {
+//     return "DISABLED";
+//   }
+
+//   if (campaign.isActive) {
+//     return "ACTIVE";
+//   }
+
+//   return "DISABLED";
+// }
+
+// export default function Campaigns() {
+//   const dispatch = useDispatch();
+//   const { campaigns, prizes, loading, error, successMessage } = useSelector(
+//     (s) => s.giveaway
+//   );
+
+//   const [form, setForm] = useState({
+//     date: "",
+//     prizeId: "",
+//     supportiveItems: "",
+//   });
+
+//   const [editMode, setEditMode] = useState(false);
+//   const [editingCampaignId, setEditingCampaignId] = useState(null);
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [statusFilter, setStatusFilter] = useState("ALL");
+
+//   useEffect(() => {
+//     dispatch(fetchCampaigns());
+//     dispatch(fetchPrizes());
+//   }, [dispatch]);
+
+//   useEffect(() => {
+//     if (successMessage) {
+//       toast.success(successMessage);
+//       dispatch(clearGiveawayStatus());
+//       dispatch(fetchCampaigns());
+//     }
+
+//     if (error) {
+//       toast.error(typeof error === "string" ? error : error.message);
+//       dispatch(clearGiveawayStatus());
+//     }
+//   }, [successMessage, error, dispatch]);
+
+//   const validateForm = useCallback(() => {
+//     const trimmedDate = form.date.trim();
+//     const trimmedPrizeId = form.prizeId.trim();
+
+//     if (!trimmedDate) {
+//       toast.error("Campaign date is required");
+//       return false;
+//     }
+
+//     const selectedDate = new Date(trimmedDate);
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0);
+
+//     if (!editMode && selectedDate < today) {
+//       toast.error("Campaign date cannot be in the past");
+//       return false;
+//     }
+
+//     const maxFutureDate = new Date(today);
+//     maxFutureDate.setFullYear(maxFutureDate.getFullYear() + 2);
+
+//     if (selectedDate > maxFutureDate) {
+//       toast.error("Campaign date cannot be more than 2 years in the future");
+//       return false;
+//     }
+
+//     const existingCampaign = campaigns.find((c) => {
+//       if (editMode && c._id === editingCampaignId) {
+//         return false;
+//       }
+//       const campaignDate = new Date(c.date);
+//       campaignDate.setHours(0, 0, 0, 0);
+//       return campaignDate.getTime() === selectedDate.getTime();
+//     });
+
+//     if (existingCampaign) {
+//       toast.error("A campaign already exists for this date");
+//       return false;
+//     }
+
+//     if (!trimmedPrizeId) {
+//       toast.error("Please select a prize");
+//       return false;
+//     }
+
+//     const selectedPrize = prizes.find((p) => p._id === trimmedPrizeId);
+
+//     if (!selectedPrize) {
+//       toast.error("Selected prize not found");
+//       return false;
+//     }
+
+//     if (!selectedPrize.isActive) {
+//       toast.error("Selected prize is inactive");
+//       return false;
+//     }
+
+//     return true;
+//   }, [form, campaigns, prizes, editMode, editingCampaignId]);
+
+//   const submit = useCallback(() => {
+//     if (!validateForm()) {
+//       return;
+//     }
+
+//     const itemsArray = form.supportiveItems
+//       .split(",")
+//       .map((item) => item.trim())
+//       .filter(Boolean);
+
+//     if (editMode) {
+//       dispatch(
+//         updateCampaign({
+//           id: editingCampaignId,
+//           payload: {
+//             date: form.date,
+//             prizeId: form.prizeId,
+//             supportiveItems: itemsArray,
+//           },
+//         })
+//       );
+//       // eslint-disable-next-line react-hooks/immutability
+//       resetForm();
+//     } else {
+//       dispatch(
+//         createCampaign({
+//           date: form.date,
+//           prizeId: form.prizeId,
+//           supportiveItems: itemsArray,
+//         })
+//       );
+//       resetForm();
+//     }
+//   }, [form, validateForm, dispatch, editMode, editingCampaignId]);
+
+//   const resetForm = useCallback(() => {
+//     setForm({
+//       date: "",
+//       prizeId: "",
+//       supportiveItems: "",
+//     });
+//     setEditMode(false);
+//     setEditingCampaignId(null);
+//   }, []);
+
+//   const handleEdit = useCallback((campaign) => {
+//     const prizeId =
+//       typeof campaign.prizeId === "object"
+//         ? campaign.prizeId._id
+//         : campaign.prizeId;
+
+//     setForm({
+//       date: new Date(campaign.date).toISOString().split("T")[0],
+//       prizeId: prizeId,
+//       supportiveItems: campaign.supportiveItems
+//         ? campaign.supportiveItems.join(", ")
+//         : "",
+//     });
+//     setEditMode(true);
+//     setEditingCampaignId(campaign._id);
+//     window.scrollTo({ top: 0, behavior: "smooth" });
+//   }, []);
+
+//   const getStatusIcon = useCallback((status) => {
+//     switch (status) {
+//       case "ACTIVE":
+//         return <PlayCircle className="h-3.5 w-3.5" />;
+//       case "COMPLETED":
+//         return <Award className="h-3.5 w-3.5" />;
+//       default:
+//         return <XCircle className="h-3.5 w-3.5" />;
+//     }
+//   }, []);
+
+//   const getStatusStyles = useCallback((status) => {
+//     switch (status) {
+//       case "ACTIVE":
+//         return "bg-emerald-50 text-emerald-700 border-emerald-200";
+//       case "COMPLETED":
+//         return "bg-blue-50 text-blue-700 border-blue-200";
+//       default:
+//         return "bg-red-50 text-red-700 border-red-200";
+//     }
+//   }, []);
+
+//   const getActionsList = useCallback(
+//     (campaignId, status) => {
+//       const actions = [];
+
+//       if (status !== "COMPLETED") {
+//         actions.push({
+//           label: "Edit",
+//           onClick: () => {
+//             const campaign = campaigns.find((c) => c._id === campaignId);
+//             if (campaign) handleEdit(campaign);
+//           },
+//         });
+//       }
+
+//       if (status === "ACTIVE") {
+//         actions.push({
+//           label: "Disable",
+//           onClick: () => dispatch(disableCampaign(campaignId)),
+//         });
+//       }
+
+//       if (status === "DISABLED") {
+//         actions.push({
+//           label: "Activate",
+//           onClick: () => dispatch(activateCampaign(campaignId)),
+//         });
+//       }
+
+//       if (status !== "COMPLETED") {
+//         actions.push({
+//           label: "Delete",
+//           destructive: true,
+//           onClick: () => {
+//             const campaign = campaigns.find((c) => c._id === campaignId);
+//             if (
+//               window.confirm(
+//                 `Are you sure you want to delete the campaign for ${new Date(
+//                   campaign.date
+//                 ).toDateString()}? This action cannot be undone.`
+//               )
+//             ) {
+//               dispatch(deleteCampaign(campaignId));
+//             }
+//           },
+//         });
+//       }
+
+//       return actions;
+//     },
+//     [campaigns, dispatch, handleEdit]
+//   );
+
+//   const filteredCampaigns = useMemo(() => {
+//     let filtered = [...campaigns];
+
+//     if (statusFilter !== "ALL") {
+//       filtered = filtered.filter((campaign) => {
+//         const status = getCampaignStatus(campaign);
+//         return status === statusFilter;
+//       });
+//     }
+
+//     if (searchQuery.trim()) {
+//       const query = searchQuery.toLowerCase().trim();
+//       filtered = filtered.filter((campaign) => {
+//         const prize = prizes.find(
+//           (p) => p._id === (campaign.prizeId?._id || campaign.prizeId)
+//         );
+//         return prize?.title?.toLowerCase().includes(query);
+//       });
+//     }
+
+//     return filtered;
+//   }, [campaigns, statusFilter, searchQuery, prizes]);
+
+//   const activeCampaignsCount = useMemo(
+//     () => campaigns.filter((c) => getCampaignStatus(c) === "ACTIVE").length,
+//     [campaigns]
+//   );
+
+//   const completedCampaignsCount = useMemo(
+//     () => campaigns.filter((c) => getCampaignStatus(c) === "COMPLETED").length,
+//     [campaigns]
+//   );
+
+//   return (
+//     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 p-4 md:p-6 lg:p-8">
+//       <div className="mx-auto max-w-7xl space-y-6">
+//         {/* Header - Animated */}
+//         <div className="flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-700">
+//           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 shadow-lg shadow-gray-900/20 animate-in zoom-in-50 duration-500">
+//             <Megaphone className="h-6 w-6 text-white animate-pulse" />
+//           </div>
+//           <div>
+//             <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+//               Campaigns
+//             </h1>
+//             <p className="text-sm text-gray-500 mt-0.5">
+//               Manage your giveaway campaigns
+//             </p>
+//           </div>
+//         </div>
+
+//         {/* Create/Edit Form - Animated */}
+//         <Card className="border-0 shadow-lg shadow-gray-200/50 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 hover:shadow-xl transition-shadow">
+//           <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white pb-4">
+//             <div className="flex items-center justify-between">
+//               <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
+//                 {editMode ? (
+//                   <div className="flex items-center gap-2 animate-in fade-in zoom-in-50 duration-300">
+//                     <Edit2 className="h-4 w-4 text-blue-600 animate-pulse" />
+//                     <span>Edit Campaign</span>
+//                   </div>
+//                 ) : (
+//                   <div className="flex items-center gap-2 animate-in fade-in zoom-in-50 duration-300">
+//                     <Plus className="h-4 w-4 text-gray-900" />
+//                     <span>Create New Campaign</span>
+//                   </div>
+//                 )}
+//               </CardTitle>
+//               {editMode && (
+//                 <Button
+//                   variant="outline"
+//                   size="sm"
+//                   onClick={resetForm}
+//                   className="gap-2 transition-all duration-200 hover:scale-105 animate-in fade-in zoom-in-50 duration-300"
+//                 >
+//                   <X className="h-3.5 w-3.5" />
+//                   Cancel Edit
+//                 </Button>
+//               )}
+//             </div>
+//           </CardHeader>
+
+//           <CardContent className="p-5 bg-white">
+//             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+//               <div className="space-y-1.5 animate-in fade-in slide-in-from-left-2 duration-500" style={{ animationDelay: '100ms' }}>
+//                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+//                   <CalendarDays className="h-3.5 w-3.5" />
+//                   Campaign Date *
+//                 </label>
+//                 <Input
+//                   type="date"
+//                   value={form.date}
+//                   onChange={(e) => setForm({ ...form, date: e.target.value })}
+//                   className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200 transition-all duration-200 hover:border-gray-300"
+//                   min={
+//                     editMode
+//                       ? undefined
+//                       : new Date().toISOString().split("T")[0]
+//                   }
+//                 />
+//               </div>
+
+//               <div className="space-y-1.5 animate-in fade-in slide-in-from-left-2 duration-500" style={{ animationDelay: '150ms' }}>
+//                 <label className="flex items-center gap-1.5 text-xs font-medium text-gray-600">
+//                   <Trophy className="h-3.5 w-3.5" />
+//                   Select Prize *
+//                 </label>
+//                 <Select
+//                   value={form.prizeId}
+//                   onValueChange={(v) => setForm({ ...form, prizeId: v })}
+//                 >
+//                   <SelectTrigger className="h-10 border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200 transition-all duration-200 hover:border-gray-300">
+//                     <SelectValue placeholder="Choose a prize" />
+//                   </SelectTrigger>
+//                   <SelectContent>
+//                     {prizes.length === 0 ? (
+//                       <div className="p-2 text-sm text-gray-500">
+//                         No prizes available
+//                       </div>
+//                     ) : (
+//                       prizes
+//                         .filter((p) => p.isActive)
+//                         .map((p) => (
+//                           <SelectItem key={p._id} value={p._id}>
+//                             <span className="flex items-center gap-2">
+//                               <Gift className="h-3.5 w-3.5 text-amber-500" />
+//                               {p.title}
+//                             </span>
+//                           </SelectItem>
+//                         ))
+//                     )}
+//                   </SelectContent>
+//                 </Select>
+//               </div>
+
+//               <div className="flex items-end lg:col-span-2 animate-in fade-in slide-in-from-right-2 duration-500" style={{ animationDelay: '200ms' }}>
+//                 <Button
+//                   onClick={submit}
+//                   disabled={loading}
+//                   className="h-10 w-full gap-2 bg-gradient-to-r from-gray-900 to-gray-800 font-medium shadow-md hover:from-gray-800 hover:to-gray-700 transition-all duration-200 hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+//                 >
+//                   {loading ? (
+//                     <Loader2 className="h-4 w-4 animate-spin" />
+//                   ) : editMode ? (
+//                     <>
+//                       <Edit2 className="h-4 w-4" />
+//                       Update Campaign
+//                     </>
+//                   ) : (
+//                     <>
+//                       <Plus className="h-4 w-4" />
+//                       Create Campaign
+//                     </>
+//                   )}
+//                 </Button>
+//               </div>
+//             </div>
+//           </CardContent>
+//         </Card>
+
+//         {/* Campaigns List - Animated */}
+//         <Card className="border-0 shadow-lg shadow-gray-200/50 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-700 hover:shadow-xl transition-shadow" style={{ animationDelay: '200ms' }}>
+//           <CardHeader className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white pb-4">
+//             <div className="flex flex-col gap-4">
+//               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+//                 <CardTitle className="flex items-center gap-2 text-base font-semibold text-gray-800">
+//                   <Megaphone className="h-4 w-4 text-gray-900 animate-pulse" />
+//                   All Campaigns
+//                 </CardTitle>
+//                 <div className="flex flex-wrap items-center gap-2">
+//                   <Badge variant="secondary" className="bg-gray-900 text-white border border-gray-800 animate-in fade-in zoom-in-50 duration-500">
+//                     {campaigns.length} Total
+//                   </Badge>
+//                   {activeCampaignsCount > 0 && (
+//                     <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-200 animate-in fade-in zoom-in-50 duration-500" style={{ animationDelay: '50ms' }}>
+//                       {activeCampaignsCount} Active
+//                     </Badge>
+//                   )}
+//                   {completedCampaignsCount > 0 && (
+//                     <Badge className="bg-blue-100 text-blue-700 border border-blue-200 animate-in fade-in zoom-in-50 duration-500" style={{ animationDelay: '100ms' }}>
+//                       {completedCampaignsCount} Completed
+//                     </Badge>
+//                   )}
+//                 </div>
+//               </div>
+
+//               {/* Search and Filter - Animated */}
+//               <div className="flex flex-col gap-3 sm:flex-row">
+//                 <div className="relative flex-1 animate-in fade-in slide-in-from-left-2 duration-500" style={{ animationDelay: '100ms' }}>
+//                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 transition-colors" />
+//                   <Input
+//                     placeholder="Search by prize name..."
+//                     value={searchQuery}
+//                     onChange={(e) => setSearchQuery(e.target.value)}
+//                     className="h-9 border-gray-200 bg-white pl-9 pr-9 focus:border-amber-300 focus:ring-amber-200 transition-all duration-200 hover:border-gray-300"
+//                   />
+//                   {searchQuery && (
+//                     <button
+//                       onClick={() => setSearchQuery("")}
+//                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-all duration-200 hover:scale-110 animate-in fade-in zoom-in-50 duration-300"
+//                     >
+//                       <X className="h-4 w-4" />
+//                     </button>
+//                   )}
+//                 </div>
+
+//                 <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-500" style={{ animationDelay: '150ms' }}>
+//                   <Filter className="h-4 w-4 text-gray-400" />
+//                   <Select value={statusFilter} onValueChange={setStatusFilter}>
+//                     <SelectTrigger className="h-9 w-full sm:w-[180px] border-gray-200 bg-white focus:border-amber-300 focus:ring-amber-200 transition-all duration-200 hover:border-gray-300">
+//                       <SelectValue placeholder="Filter by status" />
+//                     </SelectTrigger>
+//                     <SelectContent>
+//                       <SelectItem value="ALL">All Status</SelectItem>
+//                       <SelectItem value="ACTIVE">Active</SelectItem>
+//                       <SelectItem value="DISABLED">Disabled</SelectItem>
+//                       <SelectItem value="COMPLETED">Completed</SelectItem>
+//                     </SelectContent>
+//                   </Select>
+//                 </div>
+//               </div>
+//             </div>
+//           </CardHeader>
+
+//           <CardContent className="p-0">
+//             {loading && campaigns.length === 0 ? (
+//               <div className="flex flex-col items-center justify-center py-16 text-gray-500 animate-in fade-in zoom-in-50 duration-700">
+//                 <div className="relative">
+//                   <Loader2 className="h-10 w-10 animate-spin text-gray-900" />
+//                   <div className="absolute inset-0 h-10 w-10 border-2 border-gray-200 rounded-full animate-ping" />
+//                 </div>
+//                 <p className="mt-4 text-sm font-medium animate-pulse">
+//                   Loading campaigns...
+//                 </p>
+//               </div>
+//             ) : filteredCampaigns.length === 0 ? (
+//               <div className="flex flex-col items-center justify-center py-16 text-gray-400 animate-in fade-in zoom-in-50 duration-700">
+//                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 animate-bounce">
+//                   <Inbox className="h-8 w-8" />
+//                 </div>
+//                 <p className="mt-4 font-medium text-gray-600">
+//                   {campaigns.length === 0
+//                     ? "No campaigns yet"
+//                     : "No campaigns found"}
+//                 </p>
+//                 <p className="mt-1 text-sm">
+//                   {campaigns.length === 0
+//                     ? "Create your first campaign above"
+//                     : "Try adjusting your search or filters"}
+//                 </p>
+//               </div>
+//             ) : (
+//               <>
+//                 {/* Desktop Table */}
+//                 <div className="hidden overflow-x-auto md:block">
+//                   <table className="w-full">
+//                     <thead>
+//                       <tr className="border-b border-gray-100 bg-gray-50/80 text-xs font-medium uppercase tracking-wider text-gray-500">
+//                         <th className="px-5 py-3.5 text-left">Date</th>
+//                         <th className="px-5 py-3.5 text-left">Prize</th>
+//                         <th className="px-5 py-3.5 text-left">Status</th>
+//                         <th className="px-5 py-3.5 text-left">Winner</th>
+//                         <th className="px-5 py-3.5 text-right">Actions</th>
+//                       </tr>
+//                     </thead>
+//                     <tbody className="divide-y divide-gray-100">
+//                       {filteredCampaigns.map((c, index) => {
+//                         const prize = prizes.find(
+//                           (p) => p._id === (c.prizeId?._id || c.prizeId)
+//                         );
+//                         const status = getCampaignStatus(c);
+//                         const actions = getActionsList(c._id, status);
+
+//                         return (
+//                           <tr
+//                             key={c._id}
+//                             className={`transition-all duration-200 hover:bg-gray-50/80 hover:shadow-sm animate-in fade-in slide-in-from-bottom-1 ${
+//                               editMode && editingCampaignId === c._id ? 'bg-blue-50/30 shadow-sm' : ''
+//                             }`}
+//                             style={{ animationDelay: `${index * 50}ms` }}
+//                           >
+//                             <td className="px-5 py-4">
+//                               <div className="flex items-center gap-2 group">
+//                                 <CalendarDays className="h-4 w-4 text-gray-400 transition-all duration-200 group-hover:text-gray-600 group-hover:scale-110" />
+//                                 <span className="font-medium text-gray-700 transition-colors duration-200 group-hover:text-gray-900">
+//                                   {new Date(c.date).toDateString()}
+//                                 </span>
+//                               </div>
+//                             </td>
+//                             <td className="px-5 py-4">
+//                               <div className="flex items-center gap-2 group">
+//                                 <Gift className="h-4 w-4 text-gray-900 transition-all duration-200 group-hover:scale-110" />
+//                                 <span className="font-medium text-gray-800 transition-colors duration-200 group-hover:text-gray-900">
+//                                   {prize?.title || "—"}
+//                                 </span>
+//                               </div>
+//                             </td>
+//                             <td className="px-5 py-4">
+//                               <span
+//                                 className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all duration-200 hover:scale-105 ${getStatusStyles(
+//                                   status
+//                                 )}`}
+//                               >
+//                                 {getStatusIcon(status)}
+//                                 {status}
+//                               </span>
+//                             </td>
+//                             <td className="px-5 py-4">
+//                               {c.winnerUserId ? (
+//                                 <div className="flex items-center gap-2 group">
+//                                   <Award className="h-4 w-4 text-blue-600 animate-pulse" />
+//                                   <span className="text-sm font-medium text-gray-700 transition-colors duration-200 group-hover:text-gray-900">
+//                                     {typeof c.winnerUserId === "object"
+//                                       ? c.winnerUserId.email ||
+//                                         c.winnerUserId.phone ||
+//                                         "Winner"
+//                                       : "Winner Found"}
+//                                   </span>
+//                                 </div>
+//                               ) : (
+//                                 <span className="text-sm text-gray-400">
+//                                   No winner yet
+//                                 </span>
+//                               )}
+//                             </td>
+//                             <td className="px-5 py-4 text-right">
+//                               <ActionDropdown actions={actions} />
+//                             </td>
+//                           </tr>
+//                         );
+//                       })}
+//                     </tbody>
+//                   </table>
+//                 </div>
+
+//                 {/* Mobile Cards */}
+//                 <div className="divide-y divide-gray-100 md:hidden">
+//                   {filteredCampaigns.map((c, index) => {
+//                     const prize = prizes.find(
+//                       (p) => p._id === (c.prizeId?._id || c.prizeId)
+//                     );
+//                     const status = getCampaignStatus(c);
+//                     const actions = getActionsList(c._id, status);
+
+//                     return (
+//                       <div
+//                         key={c._id}
+//                         className={`p-4 transition-all duration-200 hover:bg-gray-50/80 animate-in fade-in slide-in-from-bottom-2 ${
+//                           editMode && editingCampaignId === c._id ? 'bg-blue-50/30 border-l-4 border-blue-500' : ''
+//                         }`}
+//                         style={{ animationDelay: `${index * 50}ms` }}
+//                       >
+//                         <div className="flex items-start justify-between">
+//                           <div className="space-y-2 flex-1">
+//                             <div className="flex items-center gap-2 group">
+//                               <Gift className="h-4 w-4 text-gray-900 transition-all duration-200 group-hover:scale-110" />
+//                               <span className="font-semibold text-gray-800 transition-colors duration-200 group-hover:text-gray-900">
+//                                 {prize?.title || "—"}
+//                               </span>
+//                             </div>
+//                             <div className="flex items-center gap-2 text-sm text-gray-500">
+//                               <CalendarDays className="h-3.5 w-3.5" />
+//                               {new Date(c.date).toDateString()}
+//                             </div>
+//                             {c.winnerUserId && (
+//                               <div className="flex items-center gap-2 text-sm group">
+//                                 <Award className="h-3.5 w-3.5 text-blue-600 animate-pulse" />
+//                                 <span className="font-medium text-gray-700 transition-colors duration-200 group-hover:text-gray-900">
+//                                   {typeof c.winnerUserId === "object"
+//                                     ? c.winnerUserId.email ||
+//                                       c.winnerUserId.phone ||
+//                                       "Winner"
+//                                     : "Winner Found"}
+//                                 </span>
+//                               </div>
+//                             )}
+//                           </div>
+//                           <ActionDropdown actions={actions} />
+//                         </div>
+//                         <div className="mt-3 flex items-center gap-3">
+//                           <span
+//                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-all duration-200 hover:scale-105 ${getStatusStyles(
+//                               status
+//                             )}`}
+//                           >
+//                             {getStatusIcon(status)}
+//                             {status}
+//                           </span>
+//                         </div>
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+//               </>
+//             )}
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// }

@@ -30,6 +30,7 @@ const FAQEditView = () => {
   useEffect(() => {
     if (location.state?.faq) {
       const { faq } = location.state;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTitle(faq.question);
       setContent(faq.answer);
       setCategory(faq.category);
@@ -143,34 +144,7 @@ const FAQEditView = () => {
           </CardContent>
         </Card>
 
-        {/* --- Preview Card --- */}
-        <Card className="shadow-xl border-none min-h-[500px] lg:sticky lg:top-6 bg-white">
-          <CardHeader className="bg-slate-50/50 border-b flex flex-row items-center gap-2">
-            <IconEye size={18} className="text-primary" />
-            <CardTitle className="text-[10px] font-black uppercase tracking-widest">
-              Live Preview
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-8 px-8">
-            <Badge
-              variant="secondary"
-              className="uppercase font-bold text-[10px] tracking-tight mb-4"
-            >
-              {category}
-            </Badge>
-            <h3 className="text-2xl font-extrabold text-slate-900 leading-tight">
-              {title || "Your question will appear here..."}
-            </h3>
-            <div className="h-1 w-12 bg-primary/20 rounded-full my-6" />
-            <p className="text-slate-600 leading-relaxed whitespace-pre-wrap break-words">
-              {content || (
-                <span className="text-slate-300 italic">
-                  Answer preview will load as you type...
-                </span>
-              )}
-            </p>
-          </CardContent>
-        </Card>
+   
       </div>
     </div>
   );

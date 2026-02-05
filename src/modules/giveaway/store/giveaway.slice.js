@@ -652,6 +652,7 @@ const giveawaySlice = createSlice({
         s.prizes = s.prizes.map((p) =>
           p._id === a.payload._id ? a.payload : p
         );
+         s.successMessage = "Prize edited successfully"
       })
 
       /* CAMPAIGNS */

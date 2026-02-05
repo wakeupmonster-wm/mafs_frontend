@@ -3,8 +3,8 @@ export const BASE_URL =
 
 export const USERENDPOINTS = {
 
-  GET_USERS: `${BASE_URL}/api/v1/admin/users`,
-  EXPORT_USERS: `${BASE_URL}/api/v1/admin/users/export/stream`,
+  GET_USERS: `http://localhost:3001/api/v1/admin/users`,
+  EXPORT_USERS: `http://localhost:3001/api/v1/admin/users/export/stream`,
 
   GET_PENDING_KYC: `http://localhost:3001/api/v1/admin/moderation/pending-verifications`,
 

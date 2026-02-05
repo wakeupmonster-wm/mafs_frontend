@@ -220,12 +220,12 @@ const navigationData = {
       badge: 8,
       badgeVariant: "default",
     },
-    {
-      title: "Chat Overview",
-      url: "/admin/management/chat",
-      icon: IconMessage,
-      badge: null,
-    },
+    // {
+    //   title: "Chat Overview",
+    //   url: "/admin/management/chat",
+    //   icon: IconMessage,
+    //   badge: null,
+    // },
     {
       title: "Subscriptions",
       url: "/admin/management/offer-management",
