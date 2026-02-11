@@ -17,32 +17,11 @@ export const fetchUsers = createAsyncThunk(
     { page, limit, search, accountStatus, isPremium },
     { rejectWithValue }
   ) => {
-    console.log("page: ", page);
-    console.log("limit: ", limit);
-    console.log("search: ", search);
-    console.log("accountStatus: ", accountStatus);
-    console.log("isPremium: ", isPremium);
-    try {
-      // Pass the new filters directly to your API function
-      const response = await getALLUserListApi(
-        page,
-        limit,
-        search,
-        accountStatus,
-        isPremium
-      );
-
-      console.log("response: ", response);
-
-  async (
-    { page, limit, search, accountStatus, isPremium },
-    { rejectWithValue }
-  ) => {
-    console.log("page: ", page);
-    console.log("limit: ", limit);
-    console.log("search: ", search);
-    console.log("accountStatus: ", accountStatus);
-    console.log("isPremium: ", isPremium);
+    // console.log("page: ", page);
+    // console.log("limit: ", limit);
+    // console.log("search: ", search);
+    // console.log("accountStatus: ", accountStatus);
+    // console.log("isPremium: ", isPremium);
     try {
       // Pass the new filters directly to your API function
       const response = await getALLUserListApi(
@@ -63,10 +42,6 @@ export const fetchUsers = createAsyncThunk(
             limit: response.pagination.limit,
             total: response.pagination.total,
             totalPages: response.pagination.totalPages,
-            page: response.pagination.page,
-            limit: response.pagination.limit,
-            total: response.pagination.total,
-            totalPages: response.pagination.totalPages,
           },
         };
       }
@@ -79,9 +54,9 @@ export const fetchUsers = createAsyncThunk(
 
 export const fetchPendingVerifications = createAsyncThunk(
   "users/fetchPendingVerifications",
-  async (status = "pending", { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await getAllPendingVerificationsApi(status);
+      const response = await getAllPendingVerificationsApi();
 
       if (!response.success) {
         return rejectWithValue(
@@ -209,7 +184,6 @@ export const suspendUserProfile = createAsyncThunk(
   async ({ userId, reason, durationHours }, { rejectWithValue }) => {
     try {
       console.log("call suspend: ", userId);
-      console.log("call suspend: ", userId);
       const response = await suspendUserAPI({
         userId,
         payload: { reason, durationHours },
@@ -275,7 +249,6 @@ const userSlice = createSlice({
     error: null,
     pagination: {
       page: 1,
-      limit: 10,
       limit: 10,
       total: 0,
       totalPages: 0,
@@ -343,11 +316,6 @@ const userSlice = createSlice({
         const { userId, action: status, reason } = action.payload;
 
         // 1. Remove from pending list (already doing this)
-        state.loading = false;
-
-        const { userId, action: status, reason } = action.payload;
-
-        // 1. Remove from pending list (already doing this)
         state.pendingVerifications = state.pendingVerifications.filter(
           (item) => item.userId !== userId
         );
@@ -377,60 +345,7 @@ const userSlice = createSlice({
         // Find the user in the main list
         const userIndex = state.items.findIndex(
           (u) => u._id === userId || u.id === userId
-          (item) => item.userId !== userId
         );
-
-        // 2. FIND AND UPDATE THE USER IN THE LIST
-        // This is the key for real-time UI updates
-        const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
-        );
-
-        if (userIndex !== -1) {
-          state.items[userIndex].verification = {
-            ...state.items[userIndex].verification,
-            status: status === "approve" ? "approved" : "rejected",
-            rejectionReason: reason || undefined,
-          };
-        }
-      })
-      /* UPDATE USER PROFILE LIVE */
-      .addCase(updateUserProfile.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        const { userId, profile } = action.payload;
-
-        // Find the user in the main list
-        const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
-        );
-
-        if (userIndex !== -1) {
-          // Merge the new profile data into the existing user object
-          // Immer handles the "immutable" update automatically here
-          state.items[userIndex].profile = {
-            ...state.items[userIndex].profile,
-            ...profile,
-          };
-        }
-      })
-      .addCase(updateUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      /* DELETE USER PHOTO LIVE */
-      .addCase(deleteUserPhoto.fulfilled, (state, action) => {
-        const { userId, updatedPhotos } = action.payload;
-        const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
-        );
-
-        if (userIndex !== -1) {
-          // Update the photos array with the new ordered list from the backend
-          state.items[userIndex].photos = updatedPhotos;
-        }
 
         if (userIndex !== -1) {
           // Merge the new profile data into the existing user object
@@ -465,29 +380,16 @@ const userSlice = createSlice({
       .addCase(bannedUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         // Note: Ensure your thunk payload returns 'userId', 'category', and 'reason'
-        // Note: Ensure your thunk payload returns 'userId', 'category', and 'reason'
         const { userId, category, reason } = action.payload;
 
         const user = state.items.find(
           (u) => u._id === userId || u.id === userId
         );
 
-
         if (user) {
-          // 1. Update top-level status if your UI uses it
           // 1. Update top-level status if your UI uses it
           user.accountStatus = "banned";
 
-          // 2. Update nested account object (matches your API structure)
-          if (user.account) {
-            user.account.status = "banned";
-            user.account.banDetails = {
-              isBanned: true,
-              reason: reason || "No reason provided",
-              category: category || "General",
-              bannedAt: new Date().toISOString(),
-            };
-          }
           // 2. Update nested account object (matches your API structure)
           if (user.account) {
             user.account.status = "banned";
@@ -516,15 +418,8 @@ const userSlice = createSlice({
           (u) => u._id === userId || u.id === userId
         );
 
-
         if (user) {
           user.accountStatus = "active";
-          if (user.account) {
-            user.account.status = "active";
-            user.account.banDetails = {
-              isBanned: false,
-              unbannedAt: new Date().toISOString(),
-            };
           if (user.account) {
             user.account.status = "active";
             user.account.banDetails = {

@@ -12,7 +12,6 @@ import {
   IconLockAccess,
   IconHistory,
 } from "@tabler/icons-react";
-import { DetailRow } from "../detailRow";
 import { EditSettingsDialog } from "../Dialogs/edit.Settings.Dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";

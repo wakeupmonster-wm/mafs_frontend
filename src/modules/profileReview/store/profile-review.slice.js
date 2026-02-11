@@ -5,33 +5,19 @@ import {
   updateProfileStatusApi,
 } from "../services/profile-review.api";
 
-
-
-
-// export const fetchReportedProfiles = createAsyncThunk(
-//   "profileReview/fetchReportedProfiles",
-//   async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {
-//     try {
-//       const res = await getReportedProfilesApi({ page, limit });
-//       return res.data; // 🔥 THIS FIX
-//     } catch (e) {
-//       return rejectWithValue(
-//         e.response?.data?.message || "Failed to fetch reported profiles"
-//       );
-//     }
-//   }
-// );
-
-
-
 export const fetchReportedProfiles = createAsyncThunk(
   "profileReview/fetchReportedProfiles",
-  async ({ page = 1, limit = 20 } = {}, { rejectWithValue }) => {
+  async ({ page, limit, search, status } = {}, { rejectWithValue }) => {
+    // console.log("page: ", page);
+    // console.log("limit: ", limit);
+    // console.log("search: ", search);
     try {
-      const res = await getReportedProfilesApi({ page, limit });
+      const res = await getReportedProfilesApi(page, limit, search, status);
       return res;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch reported profiles");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch reported profiles"
+      );
     }
   }
 );
@@ -43,14 +29,25 @@ export const fetchProfileForReview = createAsyncThunk(
       const res = await getProfileForReviewApi(userId);
       return res?.data;
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch profile");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch profile"
+      );
     }
   }
 );
+
 export const performUpdateProfileStatus = createAsyncThunk(
   "profileReview/updateProfileStatus",
   async (
-    { userId, action, reason, banDuration, suspendDuration,replyMessage, reportId },
+    {
+      userId,
+      action,
+      reason,
+      banDuration,
+      suspendDuration,
+      replyMessage,
+      reportId,
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -74,19 +71,6 @@ export const performUpdateProfileStatus = createAsyncThunk(
     }
   }
 );
-
-
-// export const performUpdateProfileStatus = createAsyncThunk(
-//   "profileReview/updateProfileStatus",
-//   async ({ userId, action, reason, banDuration }, { rejectWithValue }) => {
-//     try {
-//       const res = await updateProfileStatusApi(userId, { action, reason, banDuration });
-//       return { userId, ...res };
-//     } catch (e) {
-//       return rejectWithValue(e.response?.data?.message || "Failed to update status");
-//     }
-//   }
-// );
 
 const initialState = {
   list: [],
@@ -159,5 +143,6 @@ const profileReviewSlice = createSlice({
   },
 });
 
-export const { clearProfileReviewStatus, resetSelectedProfile } = profileReviewSlice.actions;
+export const { clearProfileReviewStatus, resetSelectedProfile } =
+  profileReviewSlice.actions;
 export default profileReviewSlice.reducer;

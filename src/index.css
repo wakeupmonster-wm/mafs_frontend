@@ -209,9 +209,9 @@
   stroke: #7c3aed !important;
 }
 
-
 @keyframes pulse-slow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -222,7 +222,6 @@
 .animate-pulse-slow {
   animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-
 
 /* Smooth Sidebar Scrollbar */
 [data-sidebar="content"]::-webkit-scrollbar {
@@ -249,7 +248,8 @@
 
 /* Badge pulse animation */
 @keyframes badge-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
@@ -261,4 +261,19 @@
 
 .animate-pulse {
   animation: badge-pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(0.98);
+  }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

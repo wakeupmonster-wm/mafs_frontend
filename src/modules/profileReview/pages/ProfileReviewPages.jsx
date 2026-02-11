@@ -323,7 +323,7 @@
 //                     <td className="px-6 py-4">
 //                       <div className="flex items-center gap-4">
 //                         <div className="w-12 h-12  flex items-center justify-center shadow-md shrink-0">
-                      
+
 //                           <img
 //                             src={item?.profilePhoto}
 //                             alt="Selfie"
@@ -939,7 +939,7 @@
 //                             Nickname
 //                           </p>
 //                           <p className="text-sm font-medium text-gray-900 mt-1">
-//                             {p.profile?.nickname || "N/A"}
+//                             {p.profile?.nickname || "-"}
 //                           </p>
 //                         </div>
 //                       </div>
@@ -952,8 +952,8 @@
 //                             Gender & Age
 //                           </p>
 //                           <p className="text-sm font-medium text-gray-900 mt-1">
-//                             {p.profile?.gender || "N/A"} •{" "}
-//                             {p.profile?.age || "N/A"} years
+//                             {p.profile?.gender || "-"} •{" "}
+//                             {p.profile?.age || "-"} years
 //                           </p>
 //                         </div>
 //                       </div>
@@ -1001,7 +1001,6 @@
 //                   </div>
 //                 )}
 
-
 // {p.accountStatus === "suspended" && p.suspensionDetails && (
 //   <div className="mb-6 p-5 bg-gradient-to-r from-amber-50 to-amber-100 border-2 border-amber-300 rounded-xl shadow-sm">
 //     <div className="flex items-center gap-3 mb-4">
@@ -1047,8 +1046,6 @@
 //     </div>
 //   </div>
 // )}
-
-                
 
 //                 {/* Bio - Enhanced */}
 //                 <div>
@@ -1316,7 +1313,7 @@
 //                                 </span>
 //                               </div>
 //                             </SelectItem>
-                          
+
 //                             <SelectItem value="ban">
 //                               <div className="flex items-center gap-3 py-1">
 //                                 <div className="p-1.5 bg-red-100 rounded-lg">
@@ -1407,7 +1404,6 @@
 //   </>
 // )}
 
-
 //                       {/* Reply to Reporter Section */}
 //                       {action === "reply" && (
 //                         <div className="space-y-4">
@@ -1494,8 +1490,6 @@
 //                           </div>
 //                         </div>
 //                       )}
-
-                 
 
 //                       <Button
 //                         type="submit"
@@ -1713,9 +1707,6 @@
 //   );
 // }
 
-
-
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@/components/ui/card";
@@ -1772,6 +1763,7 @@ import {
   resetSelectedProfile,
 } from "../store/profile-review.slice";
 import { Link } from "react-router";
+import { PageHeader } from "@/components/common/headSubhead";
 
 // ✅ Attractive Loading Spinner Component
 const LoadingSpinner = ({ message = "Loading..." }) => (
@@ -1793,9 +1785,18 @@ const LoadingSpinner = ({ message = "Loading..." }) => (
         {message}
       </p>
       <div className="flex gap-1 justify-center">
-        <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-        <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-        <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+        <div
+          className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+          style={{ animationDelay: "0ms" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+          style={{ animationDelay: "150ms" }}
+        ></div>
+        <div
+          className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"
+          style={{ animationDelay: "300ms" }}
+        ></div>
       </div>
     </div>
   </div>
@@ -1832,10 +1833,10 @@ const Toast = ({ type, message, onClose }) => {
   const style = config[type] || config.success;
 
   return (
-    <div className={`fixed top-4 right-4 z-50 flex items-center gap-3 p-4 rounded-xl border-2 shadow-lg ${style.bg} animate-in slide-in-from-top-5 duration-300`}>
-      <div className={`p-2 rounded-lg ${style.iconBg}`}>
-        {style.icon}
-      </div>
+    <div
+      className={`fixed top-4 right-4 z-50 flex items-center gap-3 p-4 rounded-xl border-2 shadow-lg ${style.bg} animate-in slide-in-from-top-5 duration-300`}
+    >
+      <div className={`p-2 rounded-lg ${style.iconBg}`}>{style.icon}</div>
       <span className={`text-sm font-semibold ${style.textColor} pr-8`}>
         {message}
       </span>
@@ -1876,6 +1877,8 @@ export function ReportedProfilesPage() {
         });
       });
   }, [dispatch, page]);
+
+  console.log("list: ", list);
 
   // ✅ Real-time filtering
   const filteredList = list?.filter((item) => {
@@ -1918,7 +1921,8 @@ export function ReportedProfilesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    // <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
       {/* Toast Notifications */}
       {toast && (
         <Toast
@@ -1928,11 +1932,11 @@ export function ReportedProfilesPage() {
         />
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full mx-auto">
         {/* Enhanced Header with Stats */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <div>
+            {/* <div>
               <h1 className="text-4xl font-bold text-gray-900 flex items-center gap-3">
                 <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl shadow-lg">
                   <ShieldAlert className="w-8 h-8 text-white" />
@@ -1942,7 +1946,14 @@ export function ReportedProfilesPage() {
               <p className="text-gray-600 mt-2 text-lg">
                 Review and manage user safety reports
               </p>
-            </div>
+            </div> */}
+
+            <PageHeader
+              heading="Reported Profiles"
+              icon={<ShieldAlert className="w-9 h-9 text-white" />}
+              color="bg-gradient-to-br from-red-500 to-red-600"
+              subheading="Review and manage user safety reports."
+            />
           </div>
 
           {/* Stats Grid */}
@@ -1965,9 +1976,7 @@ export function ReportedProfilesPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-red-600">New</p>
-                  <p className="text-3xl font-bold text-red-700">
-                    {stats.new}
-                  </p>
+                  <p className="text-3xl font-bold text-red-700">{stats.new}</p>
                 </div>
                 <AlertTriangle className="w-8 h-8 text-red-500 opacity-50" />
               </div>
@@ -2122,6 +2131,7 @@ export function ReportedProfilesPage() {
                         </div>
                       </div>
                     </td>
+
                     <td className="px-6 py-4">
                       <Badge className={getPriorityColor(item.reportCount)}>
                         <Flag className="w-3 h-3 mr-1" />
@@ -2129,6 +2139,7 @@ export function ReportedProfilesPage() {
                         {item.reportCount !== 1 ? "s" : ""}
                       </Badge>
                     </td>
+
                     <td className="px-6 py-4">
                       <div className="text-sm">
                         <div className="text-gray-900 font-medium">
@@ -2154,7 +2165,9 @@ export function ReportedProfilesPage() {
                     </td>
                     <td className="px-6 py-4">
                       <Badge
-                        className={`${getStatusColor(item.status)} border font-semibold`}
+                        className={`${getStatusColor(
+                          item.status
+                        )} border font-semibold`}
                       >
                         {item.status.toUpperCase()}
                       </Badge>
@@ -2178,7 +2191,9 @@ export function ReportedProfilesPage() {
                       )}
                     </td>
                     <td className="px-6 py-4">
-                      <Link to={`/admin/management/profile-review/${item.userId}`}>
+                      <Link
+                        to={`/admin/management/profile-review/${item.userId}`}
+                      >
                         <Button
                           size="sm"
                           className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
@@ -2212,7 +2227,9 @@ export function ReportedProfilesPage() {
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   No reports found
                 </h3>
-                <p className="text-gray-500">All profiles are in good standing</p>
+                <p className="text-gray-500">
+                  All profiles are in good standing
+                </p>
               </div>
             </Card>
           )}
@@ -2241,7 +2258,9 @@ export function ReportedProfilesPage() {
                       {item.nickname}
                     </h3>
                     <Badge
-                      className={`${getStatusColor(item.status)} border shrink-0`}
+                      className={`${getStatusColor(
+                        item.status
+                      )} border shrink-0`}
                     >
                       {item.status.toUpperCase()}
                     </Badge>
@@ -2322,9 +2341,7 @@ export function ReportedProfilesPage() {
       {imageModal.open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-          onClick={() =>
-            setImageModal({ open: false, src: "", title: "" })
-          }
+          onClick={() => setImageModal({ open: false, src: "", title: "" })}
         >
           <div
             className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden"
@@ -2422,7 +2439,7 @@ export function ProfileReviewDetailPage({ userId }) {
   // ✅ Improved submit handler with real-time updates
   const onSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!action) {
       setToast({ type: "warning", message: "Please select an action" });
@@ -2430,17 +2447,26 @@ export function ProfileReviewDetailPage({ userId }) {
     }
 
     if ((action === "reject" || action === "ban") && !reason.trim()) {
-      setToast({ type: "warning", message: "Reason is required for this action" });
+      setToast({
+        type: "warning",
+        message: "Reason is required for this action",
+      });
       return;
     }
 
     if (action === "suspend" && (!suspendDuration || !reason.trim())) {
-      setToast({ type: "warning", message: "Duration and reason are required for suspension" });
+      setToast({
+        type: "warning",
+        message: "Duration and reason are required for suspension",
+      });
       return;
     }
 
     if (action === "reply" && (!selectedReportId || !replyMessage.trim())) {
-      setToast({ type: "warning", message: "Please select a report and enter a reply message" });
+      setToast({
+        type: "warning",
+        message: "Please select a report and enter a reply message",
+      });
       return;
     }
 
@@ -2452,13 +2478,16 @@ export function ProfileReviewDetailPage({ userId }) {
       reason: reason.trim() || undefined,
       replyMessage: action === "reply" ? replyMessage.trim() : undefined,
       reportId: action === "reply" ? selectedReportId : undefined,
-      suspendDuration: action === "suspend" ? Number(suspendDuration) : undefined,
+      suspendDuration:
+        action === "suspend" ? Number(suspendDuration) : undefined,
     };
 
     try {
       // eslint-disable-next-line no-unused-vars
-      const result = await dispatch(performUpdateProfileStatus(payload)).unwrap();
-      
+      const result = await dispatch(
+        performUpdateProfileStatus(payload)
+      ).unwrap();
+
       // ✅ Success toast
       const actionMessages = {
         approve: "Profile approved successfully!",
@@ -2468,7 +2497,7 @@ export function ProfileReviewDetailPage({ userId }) {
         resolve: "Report resolved successfully!",
         reply: "Reply sent to reporter successfully!",
       };
-      
+
       setToast({
         type: "success",
         message: actionMessages[action] || "Action completed successfully!",
@@ -2488,7 +2517,6 @@ export function ProfileReviewDetailPage({ userId }) {
         setReplyMessage("");
         setSelectedReportId("");
       }
-
     } catch (err) {
       setToast({
         type: "error",
@@ -2651,9 +2679,7 @@ export function ProfileReviewDetailPage({ userId }) {
                       <p className="font-medium text-gray-900">{p.email}</p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500 mb-1">
-                        Phone Number
-                      </p>
+                      <p className="text-sm text-gray-500 mb-1">Phone Number</p>
                       <p className="font-medium text-gray-900">
                         {p.phone || "Not provided"}
                       </p>
@@ -2670,16 +2696,14 @@ export function ProfileReviewDetailPage({ userId }) {
                     <div className="bg-gray-50 p-4 rounded-lg">
                       <p className="text-sm text-gray-500 mb-1">Nickname</p>
                       <p className="font-medium text-gray-900">
-                        {p.profile?.nickname || "N/A"}
+                        {p.profile?.nickname || "-"}
                       </p>
                     </div>
                     <div className="bg-gray-50 p-4 rounded-lg">
-                      <p className="text-sm text-gray-500 mb-1">
-                        Gender & Age
-                      </p>
+                      <p className="text-sm text-gray-500 mb-1">Gender & Age</p>
                       <p className="font-medium text-gray-900">
-                        {p.profile?.gender || "N/A"} •{" "}
-                        {p.profile?.age || "N/A"} years
+                        {p.profile?.gender || "-"} • {p.profile?.age || "-"}{" "}
+                        years
                       </p>
                     </div>
                   </div>
@@ -2930,7 +2954,9 @@ export function ProfileReviewDetailPage({ userId }) {
                       <p className="text-sm text-gray-500 mb-1">
                         Resolution Notes
                       </p>
-                      <p className="font-medium text-gray-900">{p.resolution}</p>
+                      <p className="font-medium text-gray-900">
+                        {p.resolution}
+                      </p>
                     </div>
                   )}
 
@@ -2996,9 +3022,7 @@ export function ProfileReviewDetailPage({ userId }) {
                       action === "resolve") && (
                       <div>
                         <label className="text-sm font-bold text-gray-700 mb-2 block">
-                          {action === "resolve"
-                            ? "Resolution Notes"
-                            : "Reason"}
+                          {action === "resolve" ? "Resolution Notes" : "Reason"}
                           {action !== "resolve" && (
                             <span className="text-red-500 ml-1">*</span>
                           )}
@@ -3164,9 +3188,7 @@ export function ProfileReviewDetailPage({ userId }) {
                           {action === "reject" && (
                             <XCircle className="w-5 h-5 mr-2" />
                           )}
-                          {action === "ban" && (
-                            <Ban className="w-5 h-5 mr-2" />
-                          )}
+                          {action === "ban" && <Ban className="w-5 h-5 mr-2" />}
                           {action === "reply" && (
                             <Reply className="w-5 h-5 mr-2" />
                           )}

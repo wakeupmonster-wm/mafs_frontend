@@ -121,7 +121,7 @@
 //         },
 //       ],
 //     },
-    
+
 //   ],
 //   navSecondary: [
 //     // {
@@ -161,8 +161,6 @@
 
 // export default navigationData;
 
-
-
 import {
   IconLayoutDashboard,
   IconChartLine,
@@ -201,21 +199,21 @@ const navigationData = {
   ],
   navManagement: [
     {
-      title: "User List & Actions",
+      title: "User management",
       url: "/admin/management/users-management",
       icon: IconUsers,
       badge: null,
     },
     {
-      title: "Profile Review",
-      url: "/admin/management/profile-review",
+      title: "Profile reports",
+      url: "/admin/management/profile-reports",
       icon: IconUserCheck,
       badge: 12,
       badgeVariant: "destructive",
     },
     {
       title: "KYC Verification",
-      url: "/admin/management/pending-verifications",
+      url: "/admin/management/kyc-verifications",
       icon: IconShieldCheck,
       badge: 8,
       badgeVariant: "default",
@@ -228,7 +226,7 @@ const navigationData = {
     // },
     {
       title: "Subscriptions",
-      url: "/admin/management/offer-management",
+      url: "/admin/management/subscription-management",
       icon: IconCreditCard,
       badge: null,
     },

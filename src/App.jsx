@@ -1357,95 +1357,34 @@ export default function BenefitsSection() {
         <h2 className="text-5xl font-bold text-white">Next Section</h2>
       </div>
 
-                  <div>
-                    <Label htmlFor="forgotConfirmPassword" className="text-sm font-semibold text-slate-700">
-                      Confirm New Password
-                    </Label>
-                    <div className="relative mt-1">
-                      <Input
-                        id="forgotConfirmPassword"
-                        type={forgotPasswordForm.showConfirmPassword ? 'text' : 'password'}
-                        value={forgotPasswordForm.confirmPassword}
-                        onChange={(e) => setForgotPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value, error: '' }))}
-                        placeholder="Confirm new password"
-                        className="pr-10 border-2 focus:border-pink-500 font-medium"
-                        disabled={loading || forgotPasswordForm.isVerifying}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setForgotPasswordForm(prev => ({ ...prev, showConfirmPassword: !prev.showConfirmPassword }))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
-                      >
-                        {forgotPasswordForm.showConfirmPassword ? <IconEyeOff size={20} /> : <IconEye size={20} />}
-                      </button>
-                    </div>
-                    {forgotPasswordForm.confirmPassword && (
-                      <p className={`mt-2 text-sm font-semibold flex items-center gap-1 ${
-                        forgotPasswordForm.newPassword === forgotPasswordForm.confirmPassword ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        {forgotPasswordForm.newPassword === forgotPasswordForm.confirmPassword ? (
-                          <><IconCheck size={16} /> Passwords match</>
-                        ) : (
-                          <><IconX size={16} /> Passwords do not match</>
-                        )}
-                      </p>
-                    )}
-                  </div>
+      <style jsx>{`
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
 
-                  <Button
-                    type="submit"
-                    disabled={loading || forgotPasswordForm.isVerifying || forgotPasswordForm.otp.length !== 6}
-                    className="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-700 hover:to-rose-700 font-semibold shadow-lg text-base py-6"
-                  >
-                    {forgotPasswordForm.isVerifying ? 'Resetting Password...' : 'Reset Password'}
-                  </Button>
+        @keyframes spin-slow-reverse {
+          from {
+            transform: rotate(360deg);
+          }
+          to {
+            transform: rotate(0deg);
+          }
+        }
 
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setForgotPasswordForm(prev => ({ 
-                      ...prev, 
-                      otpSent: false, 
-                      otp: '', 
-                      newPassword: '', 
-                      confirmPassword: '',
-                      error: '' 
-                    }))}
-                    className="w-full font-semibold"
-                    disabled={loading || forgotPasswordForm.isVerifying}
-                  >
-                    ← Back to Email Entry
-                  </Button>
-                </form>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        .animate-spin-slow {
+          animation: spin-slow 8s linear infinite;
+        }
 
-        {/* Security Tips */}
-        <Card className="mt-6 border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <IconAlertCircle className="text-blue-600" size={20} />
-              </div>
-              <div>
-                <h3 className="font-bold text-blue-900 mb-2">Security Tips</h3>
-                <ul className="text-sm text-blue-800 space-y-1 font-medium">
-                  <li>• Use a unique password that you don&apos;t use for other accounts</li>
-                  <li>• Make sure your password is at least 8 characters long</li>
-                  <li>• Include a mix of uppercase, lowercase, numbers, and special characters</li>
-                  <li>• Change your password regularly for better security</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        .animate-spin-slow-reverse {
+          animation: spin-slow-reverse 10s linear infinite;
+        }
+      `}</style>
     </div>
   );
 }
 */
-
-export default AdminProfile;

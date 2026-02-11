@@ -6,8 +6,26 @@ export const createPrizeApi = (data) => {
   return apiConnector("POST", GIVEAWAYS_ENDPOINTS.ADD_PRIZES, data);
 };
 
-export const getAllPrizesApi = () => {
-  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.GET_PRIZES);
+export const getAllPrizesApi = async (page, limit, search, type) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(type && { type }),
+  };
+
+  try {
+    const response = await apiConnector(
+      "GET",
+      GIVEAWAYS_ENDPOINTS.GET_PRIZES,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const updatePrizeApi = (id, data) => {
@@ -15,12 +33,30 @@ export const updatePrizeApi = (id, data) => {
 };
 
 export const deletePrizeApi = (id) => {
-  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_PRIZE_BY_ID(id),{});
+  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_PRIZE_BY_ID(id), {});
 };
 
 /* ===== CAMPAIGN MANAGEMENT ===== */
-export const getAllCampaignsApi = () => {
-  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.ADD_CAMPAIGNS);
+export const getAllCampaignsApi = async (page, limit, search, drawStatus) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(drawStatus && { drawStatus }),
+  };
+
+  try {
+    const response = await apiConnector(
+      "GET",
+      GIVEAWAYS_ENDPOINTS.ADD_CAMPAIGNS,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const createCampaignApi = (data) => {
@@ -32,11 +68,19 @@ export const bulkCreateCampaignApi = (payload) => {
 };
 
 export const updateCampaignApi = (id, data) => {
-return apiConnector("PATCH", GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id), data);
-}
+  return apiConnector(
+    "PATCH",
+    GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id),
+    data
+  );
+};
 
 export const deleteCampaignApi = (id) => {
-  return apiConnector("DELETE", GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id),{});
+  return apiConnector(
+    "DELETE",
+    GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id),
+    {}
+  );
 };
 
 export const activateCampaignApi = (id) => {
@@ -55,16 +99,57 @@ export const pauseCampaignApi = (id) => {
 };
 
 /* ===== WINNERS & LOGISTICS ===== */
-export const getWinnerApi = (campaignId) => {
-  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER(campaignId));
+export const getWinnerApi = async (page, limit, search, status) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(status && { status }),
+  };
+
+  try {
+    const response = await apiConnector(
+      "GET",
+      GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const resendPrizeApi = (id) => {
   return apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_RESEND(id));
 };
 
-export const getPendingDeliveriesApi = () => {
-  return apiConnector("GET", GIVEAWAYS_ENDPOINTS.PENDING_DELIVERIES);
+export const getPendingDeliveriesApi = async (
+  page,
+  limit,
+  search,
+  deliveryStatus
+) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(deliveryStatus && { deliveryStatus }),
+  };
+
+  try {
+    const response = await apiConnector(
+      "GET",
+      GIVEAWAYS_ENDPOINTS.PENDING_DELIVERIES,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const markAsDeliveredApi = (winHistoryId) => {

@@ -1,8 +1,26 @@
 import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
-export const getReportedProfilesApi = () => {
-  return apiConnector("GET", PROFILE_ENDPOINTS.PROFILE.REPORTED);
+export const getReportedProfilesApi = async (page, limit, search, status) => {
+  // Construct the params object carefully
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(status && { status }),
+  };
+  try {
+    const response = await apiConnector(
+      "GET",
+      PROFILE_ENDPOINTS.PROFILE.REPORTED,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getProfileForReviewApi = (userId) => {

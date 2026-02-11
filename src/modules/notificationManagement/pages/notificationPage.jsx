@@ -1,619 +1,6 @@
-// // import { useEffect, useState } from "react";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import { Card } from "@/components/ui/card";
-// // import { Button } from "@/components/ui/button";
-// // import { Input } from "@/components/ui/input";
-// // import { Textarea } from "@/components/ui/textarea";
-// // import { Badge } from "@/components/ui/badge";
-// // import {
-// //   Select,
-// //   SelectContent,
-// //   SelectItem,
-// //   SelectTrigger,
-// //   SelectValue,
-// // } from "@/components/ui/select";
-// // import { Loader2, Bell } from "lucide-react";
-
-// // import {
-// //   broadcastNotification,
-// //   sendNotificationToPremiumUsers,
-// //   createPremiumExpiryCampaign,
-// //   notificationHistory,
-// //   clearNotificationStatus,
-// // } from "../store/notification-management.slice";
-
-// // export default function NotificationManagementPages() {
-// //   const dispatch = useDispatch();
-// //   const { loading, error, successMessage, history } = useSelector(
-// //     (s) => s.notificationManagement
-// //   );
-
-// //   const [activeTab, setActiveTab] = useState("broadcast");
-// //   const [emailCampaign, setEmailCampaign] = useState({
-// //     campaignName: "",
-// //     subject: "",
-// //     body: "",
-// //     target: "all",
-// //   });
-
-// //   const submitEmailCampaign = async (e) => {
-// //     e.preventDefault();
-
-// //     try {
-// //       const token = localStorage.getItem("access_Token");
-
-// //       const res = await fetch(
-// //         "https://api.matchatfirstswipe.com.au/api/v1/admin/notification/broadcastemail",
-// //         {
-// //           method: "POST",
-// //           headers: {
-// //             "Content-Type": "application/json",
-// //             Authorization: `Bearer ${token}`,
-// //           },
-// //           body: JSON.stringify({
-// //             campaignName: emailCampaign.campaignName,
-// //             subject: emailCampaign.subject,
-// //             body: emailCampaign.body,
-// //             target: emailCampaign.target, // all | free | premium
-// //           }),
-// //         }
-// //       );
-
-// //       const data = await res.json();
-// //       if (!data.success) {
-// //         throw new Error(data.message || "Failed to send email");
-// //       }
-
-// //       alert("Email campaign queued successfully ✅");
-
-// //       setEmailCampaign({
-// //         campaignName: "",
-// //         subject: "",
-// //         body: "",
-// //         target: "all",
-// //       });
-// //     } catch (err) {
-// //       alert(err.message || "Something went wrong");
-// //     }
-// //   };
-
-// //   useEffect(() => {
-// //     if (activeTab === "history") {
-// //       dispatch(notificationHistory());
-// //     }
-// //   }, [activeTab]);
-
-// //   // STATES
-// //   const [broadcast, setBroadcast] = useState({
-// //     campaignName: "",
-// //     title: "",
-// //     message: "",
-// //     target: "all_users",
-// //     cta: "",
-// //   });
-
-// //   const [premium, setPremium] = useState({
-// //     campaignName: "",
-// //     title: "",
-// //     message: "",
-// //     cta: "",
-// //     sendNow: true,
-// //     scheduleAt: "",
-// //   });
-
-// //   const [expiry, setExpiry] = useState({
-// //     campaignName: "",
-// //     title: "",
-// //     message: "",
-// //     cta: "",
-// //     daysBeforeExpiry: "",
-// //     auto: true,
-// //   });
-
-// //   // SUBMITS
-// //   const submitBroadcast = (e) => {
-// //     e.preventDefault();
-// //     dispatch(broadcastNotification(broadcast)).then(() =>
-// //       setTimeout(() => dispatch(clearNotificationStatus()), 2500)
-// //     );
-// //   };
-
-// //   const submitPremium = (e) => {
-// //     e.preventDefault();
-// //     dispatch(sendNotificationToPremiumUsers(premium)).then(() =>
-// //       setTimeout(() => dispatch(clearNotificationStatus()), 2500)
-// //     );
-// //   };
-
-// //   const submitExpiry = (e) => {
-// //     e.preventDefault();
-// //     dispatch(
-// //       createPremiumExpiryCampaign({
-// //         ...expiry,
-// //         daysBeforeExpiry: Number(expiry.daysBeforeExpiry),
-// //       })
-// //     ).then(() => setTimeout(() => dispatch(clearNotificationStatus()), 2500));
-// //   };
-
-// //   return (
-// //     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6">
-// //       <div className="max-w-6xl mx-auto space-y-6">
-// //         {/* HEADER */}
-// //         <div className="flex justify-between items-center">
-// //           <div className="flex gap-3 items-center">
-// //             <div className="p-2 bg-gray-900 rounded-xl">
-// //               <Bell className="text-white w-5 h-5" />
-// //             </div>
-// //             <div>
-// //               <h1 className="text-xl font-semibold">Notification Management</h1>
-// //               {/* <p className="text-sm text-gray-500">Admin panel</p> */}
-// //             </div>
-// //           </div>
-// //           {/* <Badge>Admin</Badge> */}
-// //         </div>
-
-// //         {/* TABS */}
-// //         <div className="flex gap-2 flex-wrap">
-// //           {["broadcast", "premium", "expiry", "history", "email"].map((t) => (
-// //             <Button
-// //               key={t}
-// //               size="sm"
-// //               variant={activeTab === t ? "default" : "outline"}
-// //               onClick={() => setActiveTab(t)}
-// //             >
-// //               {t.toUpperCase()}
-// //             </Button>
-// //           ))}
-// //         </div>
-
-// //         {/* BROADCAST */}
-// //         {activeTab === "broadcast" && (
-// //           <Card>
-// //             <form onSubmit={submitBroadcast} className="p-6 grid gap-4">
-// //               <Input
-// //                 placeholder="Campaign Name"
-// //                 value={broadcast.campaignName}
-// //                 onChange={(e) =>
-// //                   setBroadcast({ ...broadcast, campaignName: e.target.value })
-// //                 }
-// //               />
-// //               <Input
-// //                 placeholder="Title"
-// //                 value={broadcast.title}
-// //                 onChange={(e) =>
-// //                   setBroadcast({ ...broadcast, title: e.target.value })
-// //                 }
-// //               />
-// //               <Textarea
-// //                 rows={4}
-// //                 placeholder="Message"
-// //                 value={broadcast.message}
-// //                 onChange={(e) =>
-// //                   setBroadcast({ ...broadcast, message: e.target.value })
-// //                 }
-// //               />
-// //               <Select
-// //                 value={broadcast.target}
-// //                 onValueChange={(v) => setBroadcast({ ...broadcast, target: v })}
-// //               >
-// //                 <SelectTrigger>
-// //                   <SelectValue />
-// //                 </SelectTrigger>
-// //                 <SelectContent>
-// //                   <SelectItem value="all_users">All Users</SelectItem>
-// //                   <SelectItem value="free_users">Free Users</SelectItem>
-// //                   <SelectItem value="premium_users">Premium Users</SelectItem>
-// //                 </SelectContent>
-// //               </Select>
-// //               <Button disabled={loading}>
-// //                 {loading ? "Sending..." : "Send Broadcast"}
-// //               </Button>
-// //             </form>
-// //           </Card>
-// //         )}
-
-// //         {activeTab === "email" && (
-// //           <Card>
-// //             <form onSubmit={submitEmailCampaign} className="p-6 grid gap-4">
-// //               {/* Campaign Name */}
-// //               <Input
-// //                 placeholder="Campaign Name (e.g. Premium Renewal Reminder)"
-// //                 required
-// //                 value={emailCampaign.campaignName}
-// //                 onChange={(e) =>
-// //                   setEmailCampaign({
-// //                     ...emailCampaign,
-// //                     campaignName: e.target.value,
-// //                   })
-// //                 }
-// //               />
-
-// //               {/* Subject */}
-// //               <Input
-// //                 placeholder="Email Subject"
-// //                 required
-// //                 value={emailCampaign.subject}
-// //                 onChange={(e) =>
-// //                   setEmailCampaign({
-// //                     ...emailCampaign,
-// //                     subject: e.target.value,
-// //                   })
-// //                 }
-// //               />
-
-// //               {/* Body */}
-// //               <Textarea
-// //                 rows={8}
-// //                 placeholder="Email body (HTML or plain text)"
-// //                 required
-// //                 value={emailCampaign.body}
-// //                 onChange={(e) =>
-// //                   setEmailCampaign({
-// //                     ...emailCampaign,
-// //                     body: e.target.value,
-// //                   })
-// //                 }
-// //               />
-
-// //               {/* Target */}
-// //               <Select
-// //                 value={emailCampaign.target}
-// //                 onValueChange={(v) =>
-// //                   setEmailCampaign({
-// //                     ...emailCampaign,
-// //                     target: v,
-// //                   })
-// //                 }
-// //               >
-// //                 <SelectTrigger>
-// //                   <SelectValue />
-// //                 </SelectTrigger>
-// //                 <SelectContent>
-// //                   <SelectItem value="all">All Users</SelectItem>
-// //                   <SelectItem value="free">Free Users</SelectItem>
-// //                   <SelectItem value="premium">Premium Users</SelectItem>
-// //                 </SelectContent>
-// //               </Select>
-
-// //               <Button type="submit" disabled={loading}>
-// //                 {loading ? "Queuing..." : "Send Email Campaign"}
-// //               </Button>
-// //             </form>
-// //           </Card>
-// //         )}
-
-// //         {/* PREMIUM USERS */}
-// //         {activeTab === "premium" && (
-// //           <Card>
-// //             <form onSubmit={submitPremium} className="p-6 grid gap-4">
-// //               <Input
-// //                 placeholder="Campaign Name"
-// //                 value={premium.campaignName}
-// //                 onChange={(e) =>
-// //                   setPremium({ ...premium, campaignName: e.target.value })
-// //                 }
-// //               />
-// //               <Input
-// //                 placeholder="Title"
-// //                 value={premium.title}
-// //                 onChange={(e) =>
-// //                   setPremium({ ...premium, title: e.target.value })
-// //                 }
-// //               />
-// //               <Textarea
-// //                 rows={4}
-// //                 placeholder="Message"
-// //                 value={premium.message}
-// //                 onChange={(e) =>
-// //                   setPremium({ ...premium, message: e.target.value })
-// //                 }
-// //               />
-// //               <Input
-// //                 placeholder="CTA"
-// //                 value={premium.cta}
-// //                 onChange={(e) =>
-// //                   setPremium({ ...premium, cta: e.target.value })
-// //                 }
-// //               />
-// //               <Button disabled={loading}>
-// //                 {loading ? "Processing..." : "Send to Premium Users"}
-// //               </Button>
-// //             </form>
-// //           </Card>
-// //         )}
-
-// //         {/* PREMIUM EXPIRY */}
-// //         {activeTab === "expiry" && (
-// //           <Card>
-// //             <form onSubmit={submitExpiry} className="p-6 grid gap-4">
-// //               <Input
-// //                 placeholder="Campaign Name"
-// //                 value={expiry.campaignName}
-// //                 onChange={(e) =>
-// //                   setExpiry({ ...expiry, campaignName: e.target.value })
-// //                 }
-// //               />
-// //               <Input
-// //                 placeholder="Title"
-// //                 value={expiry.title}
-// //                 onChange={(e) =>
-// //                   setExpiry({ ...expiry, title: e.target.value })
-// //                 }
-// //               />
-// //               <Textarea
-// //                 rows={4}
-// //                 placeholder="Message"
-// //                 value={expiry.message}
-// //                 onChange={(e) =>
-// //                   setExpiry({ ...expiry, message: e.target.value })
-// //                 }
-// //               />
-// //               <Input
-// //                 type="number"
-// //                 placeholder="Days before expiry"
-// //                 value={expiry.daysBeforeExpiry}
-// //                 onChange={(e) =>
-// //                   setExpiry({ ...expiry, daysBeforeExpiry: e.target.value })
-// //                 }
-// //               />
-// //               <Button disabled={loading}>
-// //                 {loading ? "Creating..." : "Create Expiry Campaign"}
-// //               </Button>
-// //             </form>
-// //           </Card>
-// //         )}
-
-// //         {/* HISTORY */}
-// //         {activeTab === "history" && (
-// //           <Card>
-// //             <div className="p-6 space-y-4">
-// //               {loading && <Loader2 className="animate-spin mx-auto" />}
-// //               {!loading && history.length === 0 && (
-// //                 <p className="text-center text-gray-500 text-sm">
-// //                   No notification history
-// //                 </p>
-// //               )}
-// //               {history.map((n) => (
-// //                 <div key={n._id} className="border rounded-lg p-4">
-// //                   <div className="flex justify-between">
-// //                     <div>
-// //                       <h4 className="font-medium">{n.title}</h4>
-// //                       <p className="text-sm text-gray-600">{n.message}</p>
-// //                     </div>
-// //                     <Badge>{n.target}</Badge>
-// //                   </div>
-// //                   <div className="text-xs text-gray-500 mt-2 flex gap-4">
-// //                     <span>{n.campaignName}</span>
-// //                     <span>{new Date(n.createdAt).toLocaleString()}</span>
-// //                   </div>
-// //                 </div>
-// //               ))}
-// //             </div>
-// //           </Card>
-// //         )}
-
-// //         {(error || successMessage) && (
-// //           <div className="text-sm">
-// //             {error && <p className="text-red-600">{error}</p>}
-// //             {successMessage && (
-// //               <p className="text-green-600">{successMessage}</p>
-// //             )}
-// //           </div>
-// //         )}
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-
-
-// import { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { Card } from "@/components/ui/card";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Textarea } from "@/components/ui/textarea";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Bell } from "lucide-react";
-
-// import {
-//   broadcastNotification,
-//   sendNotificationToPremiumUsers,
-//   createPremiumExpiryCampaign,
-//   clearNotificationStatus,
-// } from "../store/notification-management.slice";
-
-// export default function NotificationManagementPages() {
-//   const dispatch = useDispatch();
-//   const { loading, successMessage, error } = useSelector(
-//     (s) => s.notificationManagement
-//   );
-
-//   const [form, setForm] = useState({
-//     notificationType: "broadcast",
-//     target: "all_users",
-//     campaignName: "",
-//     title: "",
-//     message: "",
-//     cta: "",
-//     daysBeforeExpiry: "",
-//   });
-
-//   const handleChange = (key, value) => {
-//     setForm((p) => ({ ...p, [key]: value }));
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-
-//     if (!form.campaignName || !form.title || !form.message) {
-//       alert("Please fill all required fields");
-//       return;
-//     }
-
-//     if (form.notificationType === "broadcast") {
-//       dispatch(
-//         broadcastNotification({
-//           campaignName: form.campaignName,
-//           title: form.title,
-//           message: form.message,
-//           target: form.target,
-//           cta: form.cta,
-//         })
-//       );
-//     }
-
-//     if (form.notificationType === "premium") {
-//       dispatch(
-//         sendNotificationToPremiumUsers({
-//           campaignName: form.campaignName,
-//           title: form.title,
-//           message: form.message,
-//           cta: form.cta,
-//         })
-//       );
-//     }
-
-//     if (form.notificationType === "expiry") {
-//       dispatch(
-//         createPremiumExpiryCampaign({
-//           campaignName: form.campaignName,
-//           title: form.title,
-//           message: form.message,
-//           cta: form.cta,
-//           daysBeforeExpiry: Number(form.daysBeforeExpiry),
-//         })
-//       );
-//     }
-
-//     setTimeout(() => dispatch(clearNotificationStatus()), 2500);
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 p-6">
-//       <div className="max-w-3xl mx-auto space-y-6">
-
-//         {/* HEADER */}
-//         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl flex gap-4 items-center">
-//           <Bell />
-//           <div>
-//             <h1 className="text-2xl font-bold">Push Notification Manager</h1>
-//             <p className="text-sm text-blue-100">
-//               Single interface for all notification types
-//             </p>
-//           </div>
-//         </div>
-
-//         {/* FORM */}
-//         <Card className="p-6">
-//           <form onSubmit={handleSubmit} className="grid gap-4">
-
-//             {/* Notification Type */}
-//             <div>
-//               <label className="text-sm font-medium">Notification Type</label>
-//               <Select
-//                 value={form.notificationType}
-//                 onValueChange={(v) => handleChange("notificationType", v)}
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   <SelectItem value="broadcast">Broadcast</SelectItem>
-//                   <SelectItem value="expiry">Expiry Alert</SelectItem>
-//                   <SelectItem value="premium">Premium Exclusive</SelectItem>
-//                 </SelectContent>
-//               </Select>
-//             </div>
-
-//             {/* Target */}
-//             <div>
-//               <label className="text-sm font-medium">Target User Category</label>
-//               <Select
-//                 value={form.target}
-//                 disabled={form.notificationType === "premium"}
-//                 onValueChange={(v) => handleChange("target", v)}
-//               >
-//                 <SelectTrigger>
-//                   <SelectValue />
-//                 </SelectTrigger>
-//                 <SelectContent>
-//                   <SelectItem value="all_users">All Users</SelectItem>
-//                   <SelectItem value="free_users">Free Users</SelectItem>
-//                   <SelectItem value="premium_users">Premium Users</SelectItem>
-//                 </SelectContent>
-//               </Select>
-//               {form.notificationType === "premium" && (
-//                 <p className="text-xs text-blue-600 mt-1">
-//                   Premium users are auto-targeted
-//                 </p>
-//               )}
-//             </div>
-
-//             <Input
-//               placeholder="Campaign Name"
-//               value={form.campaignName}
-//               onChange={(e) => handleChange("campaignName", e.target.value)}
-//             />
-
-//             <Input
-//               placeholder="Notification Title"
-//               value={form.title}
-//               onChange={(e) => handleChange("title", e.target.value)}
-//             />
-
-//             <Textarea
-//               rows={4}
-//               placeholder="Notification Message"
-//               value={form.message}
-//               onChange={(e) => handleChange("message", e.target.value)}
-//             />
-
-//             <Input
-//               placeholder="CTA URL (optional)"
-//               value={form.cta}
-//               onChange={(e) => handleChange("cta", e.target.value)}
-//             />
-
-//             {form.notificationType === "expiry" && (
-//               <Input
-//                 type="number"
-//                 placeholder="Days before expiry"
-//                 value={form.daysBeforeExpiry}
-//                 onChange={(e) =>
-//                   handleChange("daysBeforeExpiry", e.target.value)
-//                 }
-//               />
-//             )}
-
-//             <Button disabled={loading} type="submit">
-//               {loading ? "Processing..." : "Send Notification"}
-//             </Button>
-//           </form>
-//         </Card>
-
-//         {(successMessage || error) && (
-//           <div className="text-sm">
-//             {successMessage && (
-//               <p className="text-green-600">{successMessage}</p>
-//             )}
-//             {error && <p className="text-red-600">{error}</p>}
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -625,7 +12,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Bell } from "lucide-react";
+import {
+  Bell,
+  Mail,
+  Send,
+  Crown,
+  Clock,
+  Eye,
+  AlertCircle,
+  CheckCircle2,
+  ShieldCheck,
+} from "lucide-react";
 
 import {
   broadcastNotification,
@@ -633,13 +30,184 @@ import {
   createPremiumExpiryCampaign,
   clearNotificationStatus,
 } from "../store/notification-management.slice";
+import { toast } from "sonner"; // Assuming sonner for better feedback
+import { PageHeader } from "@/components/common/headSubhead";
+
+// Imagine BroadcastTab, PremiumTab, etc. follow the same pattern as EmailTab
+
+// export default function NotificationManagementPage() {
+//   const dispatch = useDispatch();
+//   const { loading, error, successMessage, history } = useSelector(
+//     (s) => s.notificationManagement
+//   );
+
+//   // --- UI States ---
+//   const [activeTab, setActiveTab] = useState("broadcast");
+//   const [isModalOpen, setIsModalOpen] = useState(false);
+//   const [pendingAction, setPendingAction] = useState(null); // { thunk: func, data: obj, label: string }
+
+//   // --- Logic: Handle Form Submission ---
+//   const triggerConfirmation = (thunk, data, label) => {
+//     setPendingAction({ thunk, data, label });
+//     setIsModalOpen(true);
+//   };
+
+//   const handleConfirm = () => {
+//     if (pendingAction) {
+//       dispatch(pendingAction.thunk(pendingAction.data));
+//       setIsModalOpen(false);
+//       setPendingAction(null);
+//     }
+//   };
+
+//   // Status Cleanup
+//   useEffect(() => {
+//     if (successMessage || error) {
+//       const timer = setTimeout(() => dispatch(clearNotificationStatus()), 4000);
+//       return () => clearTimeout(timer);
+//     }
+//   }, [successMessage, error, dispatch]);
+
+//   // Tab Auto-Fetch
+//   useEffect(() => {
+//     if (activeTab === "history") dispatch(notificationHistory());
+//   }, [activeTab, dispatch]);
+
+//   return (
+//     <div className="h-min p-6 bg-gray-50/50">
+//       <div className="max-w-7xl mx-auto space-y-6">
+//         {/* PAGE HEADER */}
+//         <header className="flex items-center gap-4">
+//           <div className="p-3 bg-primary rounded-xl text-white">
+//             <Bell size={24} />
+//           </div>
+//           <div>
+//             <h1 className="text-2xl font-bold">Campaign Center</h1>
+//             <p className="text-muted-foreground text-sm">
+//               Targeted notifications & email broadcasts
+//             </p>
+//           </div>
+//         </header>
+
+//         {/* NAVIGATION TABS */}
+//         <nav className="flex gap-2 overflow-x-auto pb-2">
+//           {[
+//             {
+//               id: "broadcast",
+//               label: "Push Broadcast",
+//               icon: <Send size={14} />,
+//             },
+//             { id: "premium", label: "Premium Blast", icon: <Gem size={14} /> },
+//             {
+//               id: "expiry",
+//               label: "Expiry Alert",
+//               icon: <AlertTriangle size={14} />,
+//             },
+//             { id: "email", label: "Email Campaign", icon: <Mail size={14} /> },
+//             { id: "history", label: "Logs", icon: <History size={14} /> },
+//           ].map((tab) => (
+//             <Button
+//               key={tab.id}
+//               variant={activeTab === tab.id ? "default" : "secondary"}
+//               onClick={() => setActiveTab(tab.id)}
+//               className="gap-2"
+//             >
+//               {tab.icon} {tab.label}
+//             </Button>
+//           ))}
+//         </nav>
+
+//         {/* CONTENT AREA */}
+//         <Card className="border-none shadow-lg overflow-hidden">
+//           {activeTab === "broadcast" && (
+//             <BroadcastTab
+//               loading={loading}
+//               onSubmit={(data) =>
+//                 triggerConfirmation(
+//                   broadcastNotification,
+//                   data,
+//                   "Push Broadcast"
+//                 )
+//               }
+//             />
+//           )}
+//           {activeTab === "premium" && (
+//             <PremiumTab
+//               loading={loading}
+//               onSubmit={(data) =>
+//                 triggerConfirmation(
+//                   sendNotificationToPremiumUsers,
+//                   data,
+//                   "Premium Blast"
+//                 )
+//               }
+//             />
+//           )}
+//           {activeTab === "expiry" && (
+//             <ExpiryTab
+//               loading={loading}
+//               onSubmit={(data) =>
+//                 triggerConfirmation(
+//                   createPremiumExpiryCampaign,
+//                   data,
+//                   "Expiry Alert"
+//                 )
+//               }
+//             />
+//           )}
+//           {activeTab === "email" && (
+//             <EmailTab
+//               loading={loading}
+//               onSubmit={(data) =>
+//                 triggerConfirmation(sendEmailCampaign, data, "Email Campaign")
+//               }
+//             />
+//           )}
+//           {activeTab === "history" && (
+//             <HistoryTab history={history} loading={loading} />
+//           )}
+//         </Card>
+
+//         {/* Global Feedback Toasts */}
+//         <div className="fixed bottom-6 right-6 space-y-2">
+//           {error && (
+//             <div className="p-4 bg-red-100 text-red-700 rounded-lg border border-red-200 animate-in fade-in slide-in-from-bottom-4">
+//               ⚠️ {error}
+//             </div>
+//           )}
+//           {successMessage && (
+//             <div className="p-4 bg-green-100 text-green-700 rounded-lg border border-green-200 animate-in fade-in slide-in-from-bottom-4">
+//               ✅ {successMessage}
+//             </div>
+//           )}
+//         </div>
+
+//         {/* THE CONFIRMATION MODAL */}
+//         <ConfirmModal
+//           isOpen={isModalOpen}
+//           onClose={() => setIsModalOpen(false)}
+//           onConfirm={handleConfirm}
+//           title={`Confirm ${pendingAction?.label}`}
+//           description={`Are you sure you want to trigger this ${pendingAction?.label?.toLowerCase()}? This action will target ${
+//             pendingAction?.data?.target || "the selected users"
+//           } and cannot be undone.`}
+//           confirmText="Yes, Send Now"
+//           variant="destructive" // Use red button for broadcasts as they are high-impact
+//         />
+//       </div>
+//     </div>
+//   );
+// }
 
 export default function NotificationManagementPages() {
   const dispatch = useDispatch();
-  const { loading, successMessage, error } = useSelector(
-    (s) => s.notificationManagement
-  );
+  const {
+    loading: reduxLoading,
+    successMessage,
+    error: reduxError,
+  } = useSelector((s) => s.notificationManagement);
 
+  const [localLoading, setLocalLoading] = useState(false);
   const [form, setForm] = useState({
     notificationType: "broadcast",
     target: "all_users",
@@ -653,34 +221,21 @@ export default function NotificationManagementPages() {
   });
 
   const update = (k, v) => setForm((p) => ({ ...p, [k]: v }));
+  const isLoading = reduxLoading || localLoading;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    /* -------- BASIC VALIDATION -------- */
-    if (!form.campaignName) {
-      alert("Campaign name is required");
-      return;
-    }
+    if (!form.campaignName) return toast.error("Campaign name is required");
 
-    /* -------- PUSH NOTIFICATIONS -------- */
-    if (form.notificationType !== "email") {
-      if (!form.title || !form.message) {
-        alert("Title and message are required");
-        return;
-      }
-    }
-
-    /* -------- EMAIL -------- */
+    // --- EMAIL CAMPAIGN LOGIC ---
     if (form.notificationType === "email") {
-      if (!form.emailSubject || !form.emailBody) {
-        alert("Email subject & body are required");
-        return;
-      }
+      if (!form.emailSubject || !form.emailBody)
+        return toast.error("Email fields are required");
 
+      setLocalLoading(true);
       try {
         const token = localStorage.getItem("access_Token");
-
         const res = await fetch(
           "https://api.matchatfirstswipe.com.au/api/v1/admin/notification/broadcastemail",
           {
@@ -702,189 +257,298 @@ export default function NotificationManagementPages() {
             }),
           }
         );
-
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
-
-        alert("Email campaign queued successfully ✅");
+        toast.success("Email campaign queued successfully");
       } catch (err) {
-        alert(err.message || "Email sending failed");
+        toast.error(err.message || "Email sending failed");
+      } finally {
+        setLocalLoading(false);
       }
-
       return;
     }
 
-    /* -------- BROADCAST -------- */
-    if (form.notificationType === "broadcast") {
-      dispatch(
-        broadcastNotification({
-          campaignName: form.campaignName,
-          title: form.title,
-          message: form.message,
-          target: form.target,
-          cta: form.cta,
-        })
-      );
-    }
+    // --- PUSH NOTIFICATION LOGIC ---
+    if (!form.title || !form.message)
+      return toast.error("Title and Message are required");
 
-    /* -------- PREMIUM -------- */
-    if (form.notificationType === "premium") {
-      dispatch(
-        sendNotificationToPremiumUsers({
-          campaignName: form.campaignName,
-          title: form.title,
-          message: form.message,
-          cta: form.cta,
-        })
-      );
-    }
-
-    /* -------- EXPIRY -------- */
-    if (form.notificationType === "expiry") {
-      if (!form.daysBeforeExpiry) {
-        alert("Days before expiry is required");
-        return;
-      }
-
-      dispatch(
-        createPremiumExpiryCampaign({
-          campaignName: form.campaignName,
-          title: form.title,
-          message: form.message,
-          cta: form.cta,
+    const actions = {
+      broadcast: () => broadcastNotification({ ...form }),
+      premium: () => sendNotificationToPremiumUsers({ ...form }),
+      expiry: () => {
+        if (!form.daysBeforeExpiry) throw new Error("Expiry days required");
+        return createPremiumExpiryCampaign({
+          ...form,
           daysBeforeExpiry: Number(form.daysBeforeExpiry),
-        })
-      );
-    }
+        });
+      },
+    };
 
-    setTimeout(() => dispatch(clearNotificationStatus()), 2500);
+    try {
+      dispatch(actions[form.notificationType]());
+      setTimeout(() => dispatch(clearNotificationStatus()), 4000);
+    } catch (err) {
+      toast.error(err.message);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-3xl mx-auto space-y-6">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+      <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* LEFT COLUMN: FORM */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2"> */}
+          <header className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <PageHeader
+              heading="Campaign Manager"
+              icon={<Bell className="w-9 h-9 text-white animate-pulse" />}
+              color="bg-brand-aqua shadow-brand-aqua/30"
+              subheading="Design and deploy multi-channel engagement."
+            />
+          </header>
 
-        {/* HEADER */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-xl flex gap-4 items-center">
-          <Bell />
-          <div>
-            <h1 className="text-2xl font-bold">Notification Manager</h1>
-            <p className="text-sm text-blue-100">
-              Push & Email campaigns in one place
-            </p>
-          </div>
+          <Card className="p-6 border-slate-200 shadow-md">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                  Campaign Configuration
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 ml-1">
+                      Channel Type
+                    </label>
+                    <Select
+                      value={form.notificationType}
+                      onValueChange={(v) => update("notificationType", v)}
+                    >
+                      <SelectTrigger className="bg-slate-50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="broadcast">
+                          <div className="flex items-center gap-2">
+                            <Send size={14} /> Push: Broadcast
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="expiry">
+                          <div className="flex items-center gap-2">
+                            <Clock size={14} /> Push: Expiry
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="premium">
+                          <div className="flex items-center gap-2">
+                            <Crown size={14} /> Push: Premium
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="email">
+                          <div className="flex items-center gap-2">
+                            <Mail size={14} /> Email Campaign
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 ml-1">
+                      Target Audience
+                    </label>
+                    <Select
+                      value={form.target}
+                      disabled={form.notificationType === "premium"}
+                      onValueChange={(v) => update("target", v)}
+                    >
+                      <SelectTrigger className="bg-slate-50">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all_users">All Community</SelectItem>
+                        <SelectItem value="free_users">
+                          Free Tier Only
+                        </SelectItem>
+                        <SelectItem value="premium_users">
+                          Premium Tier Only
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-700 ml-1">
+                    Internal Reference
+                  </label>
+                  <Input
+                    placeholder="Internal Campaign Name (e.g., Valentines_2026)"
+                    value={form.campaignName}
+                    onChange={(e) => update("campaignName", e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-slate-100">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                  Creative Content
+                </h3>
+
+                {form.notificationType === "email" ? (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-4"
+                  >
+                    <Input
+                      placeholder="Email Subject Line"
+                      className="font-semibold"
+                      value={form.emailSubject}
+                      onChange={(e) => update("emailSubject", e.target.value)}
+                    />
+                    <Textarea
+                      rows={8}
+                      placeholder="Write your email body (HTML supported)..."
+                      value={form.emailBody}
+                      onChange={(e) => update("emailBody", e.target.value)}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-4"
+                  >
+                    <Input
+                      placeholder="Notification Title"
+                      className="font-semibold"
+                      value={form.title}
+                      onChange={(e) => update("title", e.target.value)}
+                    />
+                    <Textarea
+                      rows={4}
+                      placeholder="Push message content..."
+                      value={form.message}
+                      onChange={(e) => update("message", e.target.value)}
+                    />
+                    {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
+                    <Input
+                      placeholder="Action Link (Optional)"
+                      value={form.cta}
+                      onChange={(e) => update("cta", e.target.value)}
+                    />
+                    {form.notificationType === "expiry" && (
+                      <Input
+                        type="number"
+                        placeholder="Days before expiry"
+                        value={form.daysBeforeExpiry}
+                        onChange={(e) =>
+                          update("daysBeforeExpiry", e.target.value)
+                        }
+                      />
+                    )}
+                    {/* </div> */}
+                  </motion.div>
+                )}
+              </div>
+
+              <Button
+                className="w-full border border-brand-aqua text-gray-500 bg-brand-aqua/20 hover:bg-brand-aqua/50 hover:text-gray-700 h-12 text-base font-semibold shadow-lg shadow-slate-300"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <Clock className="animate-spin" /> Deploying...
+                  </span>
+                ) : (
+                  "Launch Campaign"
+                )}
+              </Button>
+            </form>
+          </Card>
         </div>
 
-        {/* FORM */}
-        <Card className="p-6">
-          <form onSubmit={handleSubmit} className="grid gap-4">
+        {/* RIGHT COLUMN: PREVIEWS */}
+        <div className="lg:col-span-5 space-y-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+            <Eye size={16} /> Live Preview
+          </h3>
 
-            {/* TYPE */}
-            <Select
-              value={form.notificationType}
-              onValueChange={(v) => update("notificationType", v)}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="broadcast">Broadcast</SelectItem>
-                <SelectItem value="expiry">Expiry Alert</SelectItem>
-                <SelectItem value="premium">Premium Exclusive</SelectItem>
-                <SelectItem value="email">Email Campaign</SelectItem>
-              </SelectContent>
-            </Select>
+          {form.notificationType === "email" ? (
+            <Card className="p-0 overflow-hidden border-slate-200 shadow-lg min-h-[400px]">
+              <div className="bg-slate-100 p-3 border-b flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-400" />
+                <div className="w-3 h-3 rounded-full bg-amber-400" />
+                <div className="w-3 h-3 rounded-full bg-green-400" />
+              </div>
+              <div className="p-4 space-y-3">
+                <div className="text-xs text-slate-400">
+                  Subject:{" "}
+                  <span className="text-slate-900 font-medium">
+                    {form.emailSubject || "(No Subject)"}
+                  </span>
+                </div>
+                <div className="border-t pt-4 text-sm text-slate-600 whitespace-pre-wrap">
+                  {form.emailBody || "Email content will appear here..."}
+                </div>
+              </div>
+            </Card>
+          ) : (
+            <div className="relative mx-auto w-[280px] h-[580px] bg-slate-900 rounded-[3rem] border-[8px] border-slate-800 shadow-2xl p-4">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl" />
 
-            {/* TARGET */}
-            {form.notificationType !== "email" && (
-              <Select
-                value={form.target}
-                disabled={form.notificationType === "premium"}
-                onValueChange={(v) => update("target", v)}
+              <div className="mt-20">
+                <motion.div
+                  key={form.title}
+                  initial={{ y: -20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="bg-white/90 backdrop-blur p-4 rounded-2xl shadow-lg border border-white"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-5 h-5 bg-brand-aqua rounded flex items-center justify-center text-[10px] text-white">
+                      M
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                      MatchAtFirstSwipe
+                    </span>
+                    <span className="text-[10px] text-slate-400 ml-auto">
+                      Now
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-slate-900">
+                    {form.title || "Headline Here"}
+                  </h4>
+                  <p className="text-xs text-slate-600 mt-1 line-clamp-2">
+                    {form.message ||
+                      "Your notification message will be displayed like this on user devices."}
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          )}
+
+          <AnimatePresence>
+            {(successMessage || reduxError) && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className={`p-4 rounded-xl flex items-center gap-3 border ${
+                  successMessage
+                    ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                    : "bg-rose-50 border-rose-200 text-rose-800"
+                }`}
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all_users">All Users</SelectItem>
-                  <SelectItem value="free_users">Free Users</SelectItem>
-                  <SelectItem value="premium_users">Premium Users</SelectItem>
-                </SelectContent>
-              </Select>
+                {successMessage ? (
+                  <CheckCircle2 className="text-emerald-500" />
+                ) : (
+                  <AlertCircle className="text-rose-500" />
+                )}
+                <p className="text-sm font-medium">
+                  {successMessage || reduxError}
+                </p>
+              </motion.div>
             )}
-
-            <Input
-              placeholder="Campaign Name"
-              value={form.campaignName}
-              onChange={(e) => update("campaignName", e.target.value)}
-            />
-
-            {/* EMAIL FIELDS */}
-            {form.notificationType === "email" ? (
-              <>
-                <Input
-                  placeholder="Email Subject"
-                  value={form.emailSubject}
-                  onChange={(e) => update("emailSubject", e.target.value)}
-                />
-                <Textarea
-                  rows={6}
-                  placeholder="Email Body"
-                  value={form.emailBody}
-                  onChange={(e) => update("emailBody", e.target.value)}
-                />
-              </>
-            ) : (
-              <>
-                <Input
-                  placeholder="Notification Title"
-                  value={form.title}
-                  onChange={(e) => update("title", e.target.value)}
-                />
-                <Textarea
-                  rows={4}
-                  placeholder="Notification Message"
-                  value={form.message}
-                  onChange={(e) => update("message", e.target.value)}
-                />
-              </>
-            )}
-
-            {/* EXPIRY ONLY */}
-            {form.notificationType === "expiry" && (
-              <Input
-                type="number"
-                placeholder="Days before subscription expiry"
-                value={form.daysBeforeExpiry}
-                onChange={(e) =>
-                  update("daysBeforeExpiry", e.target.value)
-                }
-              />
-            )}
-
-            {/* CTA */}
-            {form.notificationType !== "email" && (
-              <Input
-                placeholder="CTA URL (optional)"
-                value={form.cta}
-                onChange={(e) => update("cta", e.target.value)}
-              />
-            )}
-
-            <Button disabled={loading} type="submit">
-              {loading ? "Processing..." : "Submit Campaign"}
-            </Button>
-          </form>
-        </Card>
-
-        {(successMessage || error) && (
-          <div className="text-sm">
-            {successMessage && (
-              <p className="text-green-600">{successMessage}</p>
-            )}
-            {error && <p className="text-red-600">{error}</p>}
-          </div>
-        )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

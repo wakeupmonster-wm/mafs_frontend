@@ -22,12 +22,29 @@ export const createSupportTicket = createAsyncThunk(
 
 export const fetchMyTickets = createAsyncThunk(
   "support/fetchMyTickets",
-  async ({ status, search } = { status: "all", search: "" }, { rejectWithValue }) => {
+  async ({ page, limit, search, status } = {}, { rejectWithValue }) => {
     try {
-      const res = await getMyTicketsApi(status, search);
-      return res?.data || [];
+      // Pass the new filters directly to your API function
+      const response = await getMyTicketsApi(page, limit, search, status);
+
+      console.log("response: ", response);
+
+      if (response && response.success) {
+        return {
+          tickets: response.data || [],
+          pagination: {
+            page: response.pagination.page,
+            limit: response.pagination.limit,
+            total: response.pagination.total,
+            totalPages: response.pagination.totalPages,
+          },
+        };
+      }
+      return rejectWithValue(response.message || "Failed to fetch users");
     } catch (e) {
-      return rejectWithValue(e.response?.data?.message || "Failed to fetch tickets");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch tickets"
+      );
     }
   }
 );
@@ -80,11 +97,17 @@ const supportSlice = createSlice({
     loading: false,
     error: null,
     successMessage: null,
+    pagination: {
+      page: 1,
+      limit: 10,
+      total: 0,
+      totalPages: 0,
+    },
   },
   reducers: {
-    clearSupportStatus: (state) => {
-      state.error = null;
-      state.successMessage = null;
+    setPagination: (state, action) => {
+      state.pagination.page = action.payload.page;
+      state.pagination.limit = action.payload.limit;
     },
   },
   extraReducers: (builder) => {
@@ -109,7 +132,8 @@ const supportSlice = createSlice({
       })
       .addCase(fetchMyTickets.fulfilled, (s, a) => {
         s.loading = false;
-        s.tickets = a.payload || [];
+        s.tickets = a.payload.tickets || [];
+        s.pagination = a.payload.pagination;
       })
       .addCase(fetchMyTickets.rejected, (s, a) => {
         s.loading = false;
@@ -145,5 +169,5 @@ const supportSlice = createSlice({
   },
 });
 
-export const { clearSupportStatus } = supportSlice.actions;
+export const { setPagination } = supportSlice.actions;
 export default supportSlice.reducer;

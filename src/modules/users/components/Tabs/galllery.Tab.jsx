@@ -20,165 +20,7 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
 import { deleteUserPhoto } from "../../store/user.slice";
 import { cn } from "@/lib/utils";
-
-// export const GallleryTab = ({ photos, userId }) => {
-//   const dispatch = useDispatch();
-//   const [isPhotoDeleteOpen, setIsPhotoDeleteOpen] = useState(false);
-//   const [selectedPhotoId, setSelectedPhotoId] = useState(null);
-//   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-//   const [previewUrl, setPreviewUrl] = useState("");
-
-//   const handleOpenPreview = (url) => {
-//     setPreviewUrl(url);
-//     setIsPreviewOpen(true);
-//   };
-
-//   const onConfirmDelete = async () => {
-//     try {
-//       await dispatch(
-//         deleteUserPhoto({ userId, publicId: selectedPhotoId })
-//       ).unwrap();
-//       toast.success("Photo removed successfully");
-//     } catch (err) {
-//       toast.error(err || "Failed to delete");
-//     } finally {
-//       setIsPhotoDeleteOpen(false);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <TabsContent value="gallery" className="mt-6">
-//         <Card className="border-none shadow-none bg-transparent">
-//           <CardHeader className="px-0">
-//             <CardTitle>User Uploads ({photos?.length || 0})</CardTitle>
-//           </CardHeader>
-//           <CardContent className="px-0">
-//             {/* Framer Motion Grid Container */}
-//             <motion.div
-//               layout
-//               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
-//             >
-//               <AnimatePresence mode="popLayout">
-//                 {photos?.map((photo, index) => (
-//                   <motion.div
-//                     key={photo.publicId || photo.url}
-//                     layout // This makes photos slide smoothly
-//                     initial={{ opacity: 0, scale: 0.8 }}
-//                     animate={{ opacity: 1, scale: 1 }}
-//                     exit={{
-//                       opacity: 0,
-//                       scale: 0.5,
-//                       transition: { duration: 0.2 },
-//                     }}
-//                     className="group relative aspect-[3/4] rounded-xl overflow-hidden border bg-muted shadow-sm cursor-pointer"
-//                   >
-//                     {/* Primary Badge */}
-//                     {index === 0 && (
-//                       <Badge className="absolute top-2 left-2 z-10 bg-yellow-400 text-black border-none text-[10px] px-2 py-0">
-//                         PRIMARY
-//                       </Badge>
-//                     )}
-
-//                     <img
-//                       src={photo.url}
-//                       className="h-full w-full object-cover"
-//                       onClick={() => handleOpenPreview(photo.url)} // Preview on Click
-//                     />
-
-//                     {/* Action Overlay */}
-//                     <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out bg-black/40 backdrop-blur-[2px]">
-//                       {/* Buttons Container with slight upward slide on hover */}
-//                       <div className="flex gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-//                         {/* Preview Button */}
-//                         <Button
-//                           variant="secondary"
-//                           size="icon"
-//                           className="h-10 w-10 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40"
-//                           onClick={() => handleOpenPreview(photo.url)}
-//                         >
-//                           <IconEye size={18} />
-//                         </Button>
-
-//                         {/* Set as Primary / Refresh Button */}
-//                         {/* <Button
-//                           variant="secondary"
-//                           size="icon"
-//                           className="h-10 w-10 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all bg-white/20 backdrop-blur-md border-white/30 text-white hover:bg-white/40"
-//                           onClick={() => {
-//                             // Add Set Primary Logic
-//                           }}
-//                         >
-//                           <IconRefresh size={18} />
-//                         </Button> */}
-
-//                         {/* Delete Button */}
-//                         <Button
-//                           variant="destructive"
-//                           size="icon"
-//                           className="h-10 w-10 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-all"
-//                           onClick={(e) => {
-//                             e.stopPropagation();
-//                             setSelectedPhotoId(photo.publicId);
-//                             setIsPhotoDeleteOpen(true);
-//                           }}
-//                         >
-//                           <IconTrash size={18} />
-//                         </Button>
-//                       </div>
-
-//                       {/* Label with Fade-in Effect */}
-//                       <div className="absolute bottom-4 transform translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 delay-150">
-//                         <span className="px-3 py-1 rounded-full bg-black/60 text-[10px] text-white font-bold uppercase tracking-widest border border-white/10 backdrop-blur-xl">
-//                           {index === 0
-//                             ? "★ Profile Cover"
-//                             : `Media Item ${index + 1}`}
-//                         </span>
-//                       </div>
-//                     </div>
-//                   </motion.div>
-//                 ))}
-//               </AnimatePresence>
-//             </motion.div>
-//           </CardContent>
-//         </Card>
-//       </TabsContent>
-
-//       {/* --- PHOTO PREVIEW MODAL --- */}
-//       <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-//         <DialogContent className="max-w-max max-h-[95vh] p-0 border-none bg-transparent shadow-none flex flex-col items-center justify-center outline-none">
-//           {/* 1. Accessibility requirement: Title hidden for sighted users */}
-//           <DialogHeader>
-//             <DialogTitle className="sr-only">Photo Preview</DialogTitle>
-//           </DialogHeader>
-
-//           {/* 2. The Image with Framer Motion */}
-//           <motion.img
-//             initial={{ opacity: 0, scale: 0.9 }}
-//             animate={{ opacity: 1, scale: 1 }}
-//             src={previewUrl}
-//             alt="User upload preview"
-//             className="max-w-full max-h-[90vh] rounded-lg shadow-2xl object-contain border-4 border-white/10"
-//           />
-
-//           {/* Optional: Add a caption below the image in the dialog */}
-//           <p className="text-white/70 text-sm font-medium bg-black/50 px-4 py-1 rounded-full backdrop-blur-md">
-//             Reviewing High Resolution Media
-//           </p>
-//         </DialogContent>
-//       </Dialog>
-
-//       {/* --- DELETE CONFIRMATION --- */}
-//       <ConfirmModal
-//         isOpen={isPhotoDeleteOpen}
-//         onClose={() => setIsPhotoDeleteOpen(false)}
-//         onConfirm={onConfirmDelete}
-//         title="Delete Photo?"
-//         message="This will remove the photo from the user's profile forever."
-//       />
-//     </>
-//   );
-// };
+import dummyImg from "@/assets/images/dummyImg.jpg";
 
 export const GallleryTab = ({ photos = [], userId }) => {
   const dispatch = useDispatch();
@@ -308,7 +150,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                       )}
 
                       <img
-                        src={photo.url}
+                        src={photo?.url || dummyImg}
                         alt="User Upload"
                         className={cn(
                           "w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105",
@@ -369,7 +211,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
             <DialogTitle>Preview</DialogTitle>
           </DialogHeader>
           <img
-            src={previewUrl}
+            src={previewUrl || dummyImg}
             className="max-w-full max-h-[90vh] object-contain"
             alt="High Res Preview"
           />

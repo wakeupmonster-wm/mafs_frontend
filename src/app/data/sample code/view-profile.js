@@ -320,7 +320,7 @@ export default function ViewProfilePage() {
                   </AvatarFallback>
                 </Avatar>
                 <h3 className="text-2xl font-bold">
-                  {profile?.nickname || "Unknown User"}, {profile?.age || "N/A"}
+                  {profile?.nickname || "Unknown User"}, {profile?.age || "-"}
                 </h3>
                 <p className="text-muted-foreground flex items-center gap-1.5 text-sm mt-1">
                   <IconMapPin size={16} className="text-orange-500" />
@@ -333,7 +333,7 @@ export default function ViewProfilePage() {
                       Height
                     </p>
                     <p className="text-sm font-semibold">
-                      {profile?.height ? `${profile.height} cm` : "N/A"}
+                      {profile?.height ? `${profile.height} cm` : "-"}
                     </p>
                   </div>
                   <div className="bg-muted/40 p-2 rounded-lg text-center">
@@ -341,7 +341,7 @@ export default function ViewProfilePage() {
                       Gender
                     </p>
                     <p className="text-sm font-semibold capitalize">
-                      {profile?.gender || "N/A"}
+                      {profile?.gender || "-"}
                     </p>
                   </div>
                 </div>
@@ -451,7 +451,7 @@ export default function ViewProfilePage() {
                     </div>
                     <div className="flex gap-3">
                       <span className="text-sm font-bold">
-                        {account?.email || "N/A"}
+                        {account?.email || "-"}
                       </span>
                       <Badge
                         variant={
@@ -469,7 +469,7 @@ export default function ViewProfilePage() {
                     </div>
                     <div className="flex gap-3">
                       <span className="text-sm font-bold">
-                        {account?.phone || "N/A"}
+                        {account?.phone || "-"}
                       </span>
                       <Badge
                         variant={
@@ -550,8 +550,8 @@ export default function ViewProfilePage() {
                   <DetailRow
                     icon={<IconBriefcase size={18} />}
                     label="Professional"
-                    value={`${profile?.jobTitle || "N/A"} at ${
-                      profile?.company || "N/A"
+                    value={`${profile?.jobTitle || "-"} at ${
+                      profile?.company || "-"
                     }`}
                   />
                   <DetailRow
@@ -619,7 +619,7 @@ export default function ViewProfilePage() {
                       value={
                         discovery?.distanceRange
                           ? `${discovery.distanceRange} km`
-                          : "N/A"
+                          : "-"
                       }
                     />
                     <AttributeBlock
@@ -627,16 +627,16 @@ export default function ViewProfilePage() {
                       value={
                         discovery?.ageRange?.min && discovery?.ageRange?.max
                           ? `${discovery.ageRange.min}-${discovery.ageRange.max} yrs`
-                          : "N/A"
+                          : "-"
                       }
                     />
                     <AttributeBlock
                       label="Interested In"
-                      value={discovery?.showMeGender?.join(", ") || "N/A"}
+                      value={discovery?.showMeGender?.join(", ") || "-"}
                     />
                     <AttributeBlock
                       label="Profile Visibility"
-                      value={discovery?.globalVisibility || "N/A"}
+                      value={discovery?.globalVisibility || "-"}
                     />
                   </div>
                   <Separator />
@@ -882,7 +882,7 @@ function DetailRow({ icon, label, value }) {
           {label}
         </span>
         <span className="text-foreground font-semibold leading-tight">
-          {value || "N/A"}
+          {value || "-"}
         </span>
       </div>
     </div>
@@ -896,7 +896,7 @@ function AttributeBlock({ label, value }) {
         {label}
       </p>
       <p className="text-sm font-bold text-foreground capitalize">
-        {value || "N/A"}
+        {value || "-"}
       </p>
     </div>
   );

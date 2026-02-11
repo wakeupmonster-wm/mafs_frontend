@@ -26,6 +26,7 @@ import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/modules/authentication/store/auth.slice";
 import { toast } from "sonner";
+import dummyImg from "@/assets/images/dummyImg.jpg";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
@@ -45,15 +46,17 @@ export function NavUser({ user }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-brand-aqua"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {dummyImg}
+                </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
+              <div className="grid flex-1 text-left text-[13px] leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
+                <span className="text-muted-foreground truncate text-[11px]">
                   {user.email}
                 </span>
               </div>
@@ -70,11 +73,13 @@ export function NavUser({ user }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {dummyImg}
+                  </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="grid flex-1 text-left text-[13px] leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
+                  <span className="text-muted-foreground truncate text-[11px]">
                     {user.email}
                   </span>
                 </div>
@@ -84,7 +89,7 @@ export function NavUser({ user }) {
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <Link to="settings">
+              <Link to="accounts">
                 <DropdownMenuItem>
                   <IconUserCircle />
                   Account

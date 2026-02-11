@@ -18,7 +18,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { IconStarFilled } from "@tabler/icons-react";
-import { IconStarFilled } from "@tabler/icons-react";
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
+import dummyImg from "@/assets/images/dummyImg.jpg";
 
 // Helper for Completion Colors
 const getCompletionColor = (val) => {
@@ -103,82 +103,7 @@ export const userColumns = [
   // S/No Column
   {
     id: "sno",
-    header: () => <div className="w-10 text-center">S.no</div>,
-    cell: ({ row, table }) => {
-      const { pageIndex, pageSize } = table.getState().pagination;
-      const serialNumber = pageIndex * pageSize + row.index + 1;
-
-      return <div className="w-10 text-center font-medium">{serialNumber}</div>;
-    },
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-  // {
-  //   id: "nickname",
-  //   accessorFn: (row) =>
-  //     `${row.profile?.nickname} ${row.account?.email} ${row.account?.phone}`,
-  //   // header: "User",
-  //   header: ({ column }) => (
-  //     <Button
-  //       variant="ghost"
-  //       size="md"
-  //       className="w-44 mx-auto"
-  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //     >
-  //       User
-  //       <ArrowUpDown className="ml-2 h-4 w-4" />
-  //     </Button>
-  //   ),
-  //   cell: ({ row }) => {
-  //     const user = row.original;
-  //     const displayName =
-  //       user.profile?.nickname || user.account?.phone || "Unknown User";
-  //     const email = user.account?.email || "No email provided";
-  //     const avatar = user.profile?.avatar || "";
-  //     return (
-  //       <div className="w-56 flex items-center gap-3">
-  //         <Avatar className="h-9 w-9">
-  //           <AvatarImage src={avatar} />
-  //           <AvatarFallback>
-  //             {displayName?.charAt(0).toUpperCase()}
-  //           </AvatarFallback>
-  //         </Avatar>
-  //         <div className="flex flex-col">
-  //           <span className="font-bold text-sm leading-none mb-0.5">
-  //             {displayName}
-  //           </span>
-  //           <span className="flex items-center gap-1 mt-0.5 text-muted-foreground text-xs">
-  //             <Mail className="w-3 h-3" />
-  //             {email}
-  //           </span>
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
-  // S/No Column
-  {
-    id: "sno",
-    header: () => <div className="w-10 text-center">S.no</div>,
+    header: () => <div className="w-10 text-center text-xs">S.no</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
@@ -189,16 +114,14 @@ export const userColumns = [
     enableHiding: false,
   },
   // USER Column
-  // USER Column
   {
-    id: "user",
-    accessorFn: (row) => row.profile?.nickname,
     id: "user",
     accessorFn: (row) => row.profile?.nickname,
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className={"text-xs"}
       >
         User
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -208,25 +131,14 @@ export const userColumns = [
       const user = row.original;
       const nickname = user.profile?.nickname || "unknown";
       // Added safety check for the photos array
-      const avatar = user?.photos?.[0]?.url || "";
-      console.log("avatar: ", avatar);
-
-      const nickname = user.profile?.nickname || "unknown";
-      // Added safety check for the photos array
-      const avatar = user?.photos?.[0]?.url || "";
-      console.log("avatar: ", avatar);
+      const avatar = user?.photos?.[0]?.url || dummyImg;
 
       return (
         <div className="flex items-center gap-3 w-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={avatar} alt={nickname} />
             <AvatarFallback>{nickname.charAt(0).toUpperCase()}</AvatarFallback>
-        <div className="flex items-center gap-3 w-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={avatar} alt={nickname} />
-            <AvatarFallback>{nickname.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
-          <span className="font-bold text-[11px] truncate">{nickname}</span>
           <span className="font-bold text-[11px] truncate">{nickname}</span>
         </div>
       );
@@ -250,74 +162,7 @@ export const userColumns = [
     cell: ({ row }) => (
       <div className="flex items-center gap-2 text-foreground text-[11px]">
         <Mail className="w-3.5 h-3.5" />
-        {row.original.account?.email || "N/A"}
-      </div>
-    ),
-  },
-  // {
-  //   id: "auth",
-  //   header: "Auth",
-  //   cell: ({ row }) => {
-  //     const method = row.original.account?.authMethod;
-
-  //     const iconMap = {
-  //       email: { icon: <IconMail size={18} />, label: "Email" },
-  //       phone: { icon: <IconDeviceMobile size={18} />, label: "Phone" },
-  //       google: {
-  //         icon: <IconBrandGoogle size={18} className="text-blue-500" />,
-  //         label: "Google",
-  //       },
-  //       apple: { icon: <IconBrandApple size={18} />, label: "Apple" },
-  //     };
-
-  //     // Find the icon or use a fallback
-  //     const config = iconMap[method] || {
-  //       icon: <IconQuestionMark size={18} className="text-muted-foreground" />,
-  //       label: method || "Unknown",
-  //     };
-
-  //     return (
-  //       <TooltipProvider>
-  //         <Tooltip>
-  //           <TooltipTrigger asChild>
-  //             <div className="flex w-full items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-  //               {config.icon}
-  //             </div>
-  //           </TooltipTrigger>
-  //           <TooltipContent>
-  //             <p className="capitalize">{config.label} Auth</p>
-  //           </TooltipContent>
-  //         </Tooltip>
-  //       </TooltipProvider>
-  //     );
-  //   },
-  // },
-  // {
-  //   id: "role",
-  //   accessorKey: "role",
-  //   header: "Role",
-  //   cell: ({ row }) => <Badge variant="secondary">{row.original.role}</Badge>,
-  // },
-  // Age Column
-  // Phone Column
-  {
-    accessorKey: "account.phone",
-    header: "Phone",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2 w-full text-[11px] text-foreground">
-        <Phone className="w-3.5 h-3.5" />
-        {row.original.account?.phone || "—"}
-      </div>
-    ),
-  },
-  // Email Columnn
-  {
-    accessorKey: "account.email",
-    header: "Email",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2 text-foreground text-[11px]">
-        <Mail className="w-3.5 h-3.5" />
-        {row.original.account?.email || "N/A"}
+        {row.original.account?.email || "-"}
       </div>
     ),
   },
@@ -370,28 +215,23 @@ export const userColumns = [
     id: "age",
     header: "Age",
     cell: ({ row }) => (
-      <span className="text-xs">{row.original.profile?.age || "N/A"}</span>
-      <span className="text-xs">{row.original.profile?.age || "N/A"}</span>
+      <span className="text-xs">{row.original.profile?.age || "-"}</span>
     ),
   },
-  // Gender Column
   // Gender Column
   {
     id: "gender",
     header: "Gender",
     cell: ({ row }) => (
-      <span className="text-xs">{row.original.profile.gender || "N/A"}</span>
-      <span className="text-xs">{row.original.profile.gender || "N/A"}</span>
+      <span className="text-xs">{row.original.profile.gender || "-"}</span>
     ),
   },
-  // Completion Column
   // Completion Column
   {
     id: "completion",
     header: "Completion",
     cell: ({ row }) => (
       <div className="w-[100px] flex flex-col gap-1">
-        <span className="text-[11px] font-base">
         <span className="text-[11px] font-base">
           {row.original.profile.totalCompletion}%
         </span>
@@ -404,7 +244,6 @@ export const userColumns = [
       </div>
     ),
   },
-  // Status Column
   // Status Column
   {
     id: "status",
@@ -419,7 +258,6 @@ export const userColumns = [
           <Badge
             variant={status === "active" ? "default" : "destructive"}
             className="capitalize px-1.5"
-            className="capitalize px-1.5"
           >
             {status}
           </Badge>
@@ -427,7 +265,6 @@ export const userColumns = [
       );
     },
   },
-  // Plan Column
   // Plan Column
   {
     id: "premium",
@@ -438,7 +275,6 @@ export const userColumns = [
 
       return isPremium ? (
         <Badge variant="premium" className="gap-1 px-1.5 text-[11px]">
-        <Badge variant="premium" className="gap-1 px-1.5 text-[11px]">
           <IconStarFilled size={10} /> PRO
         </Badge>
       ) : (
@@ -446,7 +282,6 @@ export const userColumns = [
       );
     },
   },
-  // Verificaton Column
   // Verificaton Column
   {
     id: "verification", // Manually set ID
@@ -464,14 +299,12 @@ export const userColumns = [
         <Badge
           variant="outline"
           className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
-          className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
         >
           {status.replace("_", " ")}
         </Badge>
       );
     },
   },
-  // Location Column
   // Location Column
   {
     id: "city", // Manually set ID
@@ -485,19 +318,14 @@ export const userColumns = [
           <span className="text-muted-foreground italic px-1.5 text-[11px]">
             Not set
           </span>
-          <span className="text-muted-foreground italic px-1.5 text-[11px]">
-            Not set
-          </span>
         );
       return (
-        <span className="capitalize px-1.5 text-[11px]">{`${city || ""}${
         <span className="capitalize px-1.5 text-[11px]">{`${city || ""}${
           city && country ? ", " : ""
         }${country || ""}`}</span>
       );
     },
   },
-  // Joined Column
   // Joined Column
   {
     id: "createdAt", // Manually set ID
@@ -516,20 +344,16 @@ export const userColumns = [
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
       return <div className="text-[10px]">{date.toLocaleDateString()}</div>;
-      return <div className="text-[10px]">{date.toLocaleDateString()}</div>;
     },
   },
-  // Actions Column
   // Actions Column
   {
     id: "actions",
     header: "Actions",
     cell: ({ row, table }) => {
       const user = row.original;
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       const navigate = useNavigate();
       // Access the ban handler from table meta
-      // eslint-disable-next-line no-unused-vars
       const onBan = table.options.meta?.onBan;
       return (
         <DropdownMenu>
@@ -540,12 +364,10 @@ export const userColumns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {/* <DropdownMenuItem
-            {/* <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(user._id)}
             >
               Copy User ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator /> */}
             <DropdownMenuSeparator /> */}
             <DropdownMenuItem
               onClick={() =>
@@ -566,14 +388,12 @@ export const userColumns = [
               Edit Details
             </DropdownMenuItem>
             {/* <DropdownMenuItem
-            {/* <DropdownMenuItem
               className="text-destructive"
               onClick={() => {
                 onBan(user); // Call the function passed via meta
               }}
             >
               Ban Account
-            </DropdownMenuItem> */}
             </DropdownMenuItem> */}
           </DropdownMenuContent>
         </DropdownMenu>
