@@ -3,7 +3,6 @@ import {
   Image,
   Sun,
   Search,
-  
   Activity,
   CircleDollarSign,
   Settings,

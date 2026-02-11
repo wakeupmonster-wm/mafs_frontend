@@ -1,9 +1,8 @@
-/*===================== BASE URL =====================*/
-export const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://api.matchatfirstswipe.com.au";
+/*===================== NOTE: MAKE SURE TO HAVE TO IMPORT BASE_URL FROM "base.url.js" FILE =====================*/
+import { BASE_URL } from "./base.url";
 
 /*===================== GIVEAWAYS ENDPOINTS =====================*/
-const GIVEAWAY_BASE = `http://localhost:3001/api/v1/admin/giveaway`;
+const GIVEAWAY_BASE = `${BASE_URL}/api/v1/admin/giveaway`;
 
 export const GIVEAWAYS_ENDPOINTS = {
   // PRIZES
@@ -26,11 +25,11 @@ export const GIVEAWAYS_ENDPOINTS = {
   CAMPAIGN_DISABLE: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/disable`,
   CAMPAIGN_PAUSE: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/pause`,
 
-  CAMPAIGN_WINNER: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/winner`,
+  CAMPAIGN_WINNER: `${GIVEAWAY_BASE}/campaigns/winner`,
   CAMPAIGN_RESEND: (id) => `${GIVEAWAY_BASE}/campaigns/${id}/resend-prize`,
 
   // LOGISTICS / DELIVERY
-  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/pending-deliveries`,
+  PENDING_DELIVERIES: `${GIVEAWAY_BASE}/deliveries/pending`,
   MARK_DELIVERED: `${GIVEAWAY_BASE}/mark-as-deliver`,
   DELIVERED_PRIZES: `${GIVEAWAY_BASE}/deliveries/completed`,
   CLAIMS: `${GIVEAWAY_BASE}/claims`,

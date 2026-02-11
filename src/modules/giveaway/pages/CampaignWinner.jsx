@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* eslint-disable no-unused-vars */
 // /* eslint-disable no-unused-vars */
 // // // // // // import { useEffect } from "react";
@@ -1172,6 +1173,9 @@
 // CampaignWinner.jsx
 
 import { useEffect, useCallback, useState, useRef } from "react";
+=======
+import { useEffect, useMemo, useState } from "react";
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllWinners } from "../store/giveaway.slice";
 import { Card } from "@/components/ui/card";
@@ -1198,6 +1202,7 @@ import {
 
 export default function CampaignWinner() {
   const dispatch = useDispatch();
+<<<<<<< HEAD
   const {
     winners,
     winnersPagination,
@@ -1210,6 +1215,12 @@ export default function CampaignWinner() {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const debounceRef = useRef(null);
+=======
+  const { campaigns, winner, loading, error } = useSelector((s) => s.giveaway);
+
+  const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
 
   // Fetch winners with current params
   const loadWinners = useCallback(
@@ -1337,12 +1348,23 @@ export default function CampaignWinner() {
               </div>
 
               {/* Stats Badges */}
+<<<<<<< HEAD
               <div className="flex flex-wrap items-center gap-2">
+=======
+              <div
+                className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-right-2 duration-500"
+                style={{ animationDelay: "100ms" }}
+              >
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
                 <Badge
                   variant="secondary"
                   className="bg-gray-900 text-white border border-gray-800"
                 >
+<<<<<<< HEAD
                   {winnersStats?.totalCampaigns || 0} Total
+=======
+                  {filteredWinners.length} Total
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
                 </Badge>
                 {winnersStats?.completed > 0 && (
                   <Badge className="bg-emerald-100 text-emerald-700 border border-emerald-200">
@@ -1362,6 +1384,7 @@ export default function CampaignWinner() {
               </div>
             </div>
 
+<<<<<<< HEAD
             {/* Search + Filters */}
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               {/* Search */}
@@ -1377,6 +1400,27 @@ export default function CampaignWinner() {
                   <button
                     onClick={clearSearch}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+=======
+            {/* Filters */}
+            <div
+              className="mt-4 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-500"
+              style={{ animationDelay: "150ms" }}
+            >
+              <Filter className="h-4 w-4 text-gray-400" />
+              <div className="flex flex-wrap gap-2">
+                {["ALL", "COMPLETED", "PENDING"].map((f, idx) => (
+                  <Button
+                    key={f}
+                    size="sm"
+                    variant={filter === f ? "default" : "outline"}
+                    onClick={() => setFilter(f)}
+                    className={`transition-all duration-200 hover:scale-105 ${
+                      filter === f
+                        ? "bg-gray-900 hover:bg-gray-800 shadow-md"
+                        : "border-gray-300 hover:bg-gray-50"
+                    }`}
+                    style={{ animationDelay: `${idx * 50}ms` }}
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -1551,7 +1595,14 @@ export default function CampaignWinner() {
                         </div>
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <Calendar className="h-3.5 w-3.5 text-gray-400" />
+<<<<<<< HEAD
                           {w.date ? new Date(w.date).toDateString() : "—"}
+=======
+                          <span>
+                            Campaign:{" "}
+                            {w.date ? new Date(w.date).toDateString() : "—"}
+                          </span>
+>>>>>>> e52549495f8ecc0a0c448b2647e41acfa5d8b2c0
                         </div>
                         {w.winner && (
                           <div className="flex items-center gap-2 text-sm">

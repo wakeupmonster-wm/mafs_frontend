@@ -1,223 +1,7 @@
-// import React, { useEffect, useState } from "react";
-// import { useSelector, useDispatch } from "react-redux";
-// import { Button } from "@/components/ui/button";
-// import { IconDownload, IconLoader } from "@tabler/icons-react";
-// import { toast } from "sonner";
-// import { userColumns } from "@/components/common/userColumns";
-// import { DataTable } from "@/components/common/data-table";
-// import {
-//   bannedUserProfile,
-//   exportUsersStream,
-//   fetchUsers,
-// } from "@/modules/users/store/user.slice";
-// import { BanUserModal } from "../components/ban-user-modal";
-
-// export default function UserManagementPage() {
-//   const dispatch = useDispatch();
-//   const {
-//     items,
-//     loading,
-//     pagination: reduxPagination,
-//     exportLoading,
-//     exportProgress,
-//   } = useSelector((state) => state.users);
-//   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
-//   const [selectedUserForBan, setSelectedUserForBan] = useState(null);
-
-//   // 1. New Filter States
-//   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
-//   const [globalFilter, setGlobalFilter] = useState("");
-//   const [accountStatus, setAccountStatus] = useState(""); // Default selected
-//   const [isPremium, setIsPremium] = useState(undefined); // undefined means 'All'
-
-//   const handleExport = async () => {
-//     const filters = { search: globalFilter };
-
-//     const resultAction = await dispatch(exportUsersStream(filters));
-
-//     if (exportUsersStream.fulfilled.match(resultAction)) {
-//       const csvContent = resultAction.payload;
-
-//       // Create download link
-//       const blob = new Blob([csvContent], { type: "text/csv" });
-//       const url = window.URL.createObjectURL(blob);
-//       const link = document.createElement("a");
-
-//       link.href = url;
-//       link.setAttribute("download", `MAFS_Export_${Date.now()}.csv`);
-//       document.body.appendChild(link);
-//       link.click();
-
-//       // Cleanup
-//       document.body.removeChild(link);
-//       window.URL.revokeObjectURL(url);
-//       toast.success("Users exported successfully!");
-//     } else {
-//       toast.error(resultAction.payload || "Export failed");
-//     }
-//   };
-
-//   // 2. Fetch data whenever any filter changes
-//   useEffect(() => {
-//     const delayDebounceFn = setTimeout(() => {
-//       dispatch(
-//         fetchUsers({
-//           page: pagination.pageIndex + 1,
-//           limit: pagination.pageSize,
-//           search: globalFilter,
-//           accountStatus: accountStatus, // Added to API call
-//           isPremium: isPremium, // Added to API call
-//         })
-//       );
-//     }, 500);
-
-//     return () => clearTimeout(delayDebounceFn);
-//   }, [
-//     dispatch,
-//     pagination.pageIndex,
-//     pagination.pageSize,
-//     globalFilter,
-//     accountStatus,
-//     isPremium,
-//   ]);
-
-//   // console.log("items: ", items);
-
-//   const handleBanClick = (user) => {
-//     setSelectedUserForBan(user);
-//     setIsBanModalOpen(true);
-//   };
-
-//   const handleBanConfirm = async (category, reason) => {
-//     try {
-//       await dispatch(
-//         bannedUserProfile({
-//           userId: selectedUserForBan._id,
-//           category,
-//           reason,
-//         })
-//       ).unwrap();
-
-//       toast.success("User banned successfully");
-//       setIsBanModalOpen(false);
-//     } catch (error) {
-//       toast.error(error || "Failed to ban user");
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen relative">
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
-//           <p className="text-[#606060] font-medium">
-//             Manage community members.
-//           </p>
-//         </div>
-
-//         <div className="flex gap-2">
-//           <Button
-//             // variant="outline"
-//             size="sm"
-//             onClick={handleExport}
-//             disabled={exportLoading} // Use Redux state
-//           >
-//             {exportLoading ? (
-//               <>
-//                 <IconLoader className="mr-2 h-4 w-4 animate-spin" />{" "}
-//                 Exporting...
-//               </>
-//             ) : (
-//               <>
-//                 <IconDownload className="mr-2 h-4 w-4" /> Export
-//               </>
-//             )}
-//           </Button>
-//           {/* <Button size="sm">Add New User</Button> */}
-//         </div>
-//       </div>
-
-//       {/* <DataTable
-//         columns={userColumns}
-//         data={items}
-//         rowCount={reduxPagination.total} // Total count from DB
-//         pagination={pagination}
-//         onPaginationChange={setPagination} // Set local state on click
-//         globalFilter={globalFilter}
-//         setGlobalFilter={(val) => {
-//           setGlobalFilter(val);
-//           setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to page 1 on search
-//         }}
-//         isLoading={loading}
-//         meta={{
-//           onBan: (user) => handleBanClick(user),
-//         }}
-//       /> */}
-
-//       <DataTable
-//         columns={userColumns}
-//         data={items}
-//         rowCount={reduxPagination.total}
-//         pagination={pagination}
-//         onPaginationChange={setPagination}
-//         globalFilter={globalFilter}
-//         setGlobalFilter={(val) => {
-//           setGlobalFilter(val);
-//           setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//         }}
-//         // 3. Pass Filter States to DataTable
-//         filters={{
-//           accountStatus,
-//           setAccountStatus: (val) => {
-//             setAccountStatus(val);
-//             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//           },
-//           isPremium,
-//           setIsPremium: (val) => {
-//             setIsPremium(val);
-//             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//           },
-//         }}
-//         isLoading={loading}
-//         meta={{ onBan: (user) => handleBanClick(user) }}
-//       />
-
-//       {/* --- FLOATING PROGRESS BAR (Controlled by Redux) --- */}
-//       {exportLoading && (
-//         <div className="fixed bottom-6 right-6 w-80 bg-white p-5 rounded-xl shadow-2xl border border-blue-100 z-[9999] animate-in fade-in slide-in-from-bottom-4">
-//           <div className="flex items-center justify-between mb-2">
-//             <span className="text-sm font-bold text-slate-700">
-//               Downloading Report...
-//             </span>
-//             <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-//               {exportProgress}%
-//             </span>
-//           </div>
-//           <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-//             <div
-//               className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
-//               style={{ width: `${exportProgress}%` }}
-//             />
-//           </div>
-//         </div>
-//       )}
-
-//       {/* ADD THE MODAL HERE */}
-//       <BanUserModal
-//         isOpen={isBanModalOpen}
-//         onClose={() => setIsBanModalOpen(false)}
-//         onConfirm={handleBanConfirm}
-//         userName={selectedUserForBan?.profile?.nickname || "this user"}
-//       />
-//     </div>
-//   );
-// }
-
-
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import {
   IconAlertTriangle,
   IconBan,
@@ -228,205 +12,56 @@ import {
   IconUserCheck,
   IconUsers,
 } from "@tabler/icons-react";
-import { toast } from "sonner";
+import { useLocation } from "react-router";
+
 import { userColumns } from "@/components/common/userColumns";
-import { DataTable } from "@/components/common/data-table";
+import UserDataTables from "@/components/shared/data-tables/user.data.tables";
+import { cn } from "@/lib/utils";
 import {
   bannedUserProfile,
   exportUsersStream,
   fetchUsers,
-} from "@/modules/users/store/user.slice";
+} from "../store/user.slice";
 import { BanUserModal } from "../components/ban-user-modal";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/common/headSubhead";
 
-// export default function UserManagementPage() {
-//   const dispatch = useDispatch();
-//   const {
-//     items,
-//     loading,
-//     pagination: reduxPagination,
-//     exportLoading,
-//     exportProgress,
-//   } = useSelector((state) => state.users);
-//   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
-//   const [selectedUserForBan, setSelectedUserForBan] = useState(null);
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      // Controls the speed of the "wave" between cards
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
 
-//   // 1. New Filter States
-//   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-//   const [globalFilter, setGlobalFilter] = useState("");
-//   const [accountStatus, setAccountStatus] = useState(""); // Default selected
-//   const [isPremium, setIsPremium] = useState(undefined); // undefined means 'All'
-
-//   const handleExport = async () => {
-//     const filters = { search: globalFilter };
-
-//     const resultAction = await dispatch(exportUsersStream(filters));
-
-//     if (exportUsersStream.fulfilled.match(resultAction)) {
-//       const csvContent = resultAction.payload;
-
-//       // Create download link
-//       const blob = new Blob([csvContent], { type: "text/csv" });
-//       const url = window.URL.createObjectURL(blob);
-//       const link = document.createElement("a");
-
-//       link.href = url;
-//       link.setAttribute("download", `MAFS_Export_${Date.now()}.csv`);
-//       document.body.appendChild(link);
-//       link.click();
-
-//       // Cleanup
-//       document.body.removeChild(link);
-//       window.URL.revokeObjectURL(url);
-//       toast.success("Users exported successfully!");
-//     } else {
-//       toast.error(resultAction.payload || "Export failed");
-//     }
-//   };
-
-//   // 2. Fetch data whenever any filter changes
-//   useEffect(() => {
-//     const delayDebounceFn = setTimeout(() => {
-//       dispatch(
-//         fetchUsers({
-//           page: pagination.pageIndex + 1,
-//           limit: pagination.pageSize,
-//           search: globalFilter,
-//           accountStatus: accountStatus, // Added to API call
-//           isPremium: isPremium, // Added to API call
-//         })
-//       );
-//     }, 500);
-
-//     return () => clearTimeout(delayDebounceFn);
-//   }, [
-//     dispatch,
-//     pagination.pageIndex,
-//     pagination.pageSize,
-//     globalFilter,
-//     accountStatus,
-//     isPremium,
-//   ]);
-
-//   // console.log("items: ", items);
-
-//   const handleBanClick = (user) => {
-//     setSelectedUserForBan(user);
-//     setIsBanModalOpen(true);
-//   };
-
-//   const handleBanConfirm = async (category, reason) => {
-//     try {
-//       await dispatch(
-//         bannedUserProfile({
-//           userId: selectedUserForBan._id,
-//           category,
-//           reason,
-//         })
-//       ).unwrap();
-
-//       toast.success("User banned successfully");
-//       setIsBanModalOpen(false);
-//     } catch (error) {
-//       toast.error(error || "Failed to ban user");
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 space-y-6 font-['Plus_Jakarta_Sans',sans-serif] bg-[#F8FDFF] min-h-screen relative">
-//       <div className="flex items-center justify-between">
-//         <div>
-//           <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
-//           <p className="text-[#606060] font-medium">
-//             Manage community members.
-//           </p>
-//         </div>
-
-//         <div className="flex gap-2">
-//           <Button
-//             // variant="outline"
-//             size="sm"
-//             onClick={handleExport}
-//             disabled={exportLoading} // Use Redux state
-//           >
-//             {exportLoading ? (
-//               <>
-//                 <IconLoader className="mr-2 h-4 w-4 animate-spin" />{" "}
-//                 Exporting...
-//               </>
-//             ) : (
-//               <>
-//                 <IconDownload className="mr-2 h-4 w-4" /> Export
-//               </>
-//             )}
-//           </Button>
-//           {/* <Button size="sm">Add New User</Button> */}
-//         </div>
-//       </div>
-
-//       <DataTable
-//         columns={userColumns}
-//         data={items}
-//         rowCount={reduxPagination.total}
-//         pagination={pagination}
-//         onPaginationChange={setPagination}
-//         globalFilter={globalFilter}
-//         setGlobalFilter={(val) => {
-//           setGlobalFilter(val);
-//           setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//         }}
-//         // 3. Pass Filter States to DataTable
-//         filters={{
-//           accountStatus,
-//           setAccountStatus: (val) => {
-//             setAccountStatus(val);
-//             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//           },
-//           isPremium,
-//           setIsPremium: (val) => {
-//             setIsPremium(val);
-//             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//           },
-//         }}
-//         isLoading={loading}
-//         meta={{ onBan: (user) => handleBanClick(user) }}
-//       />
-
-//       {/* --- FLOATING PROGRESS BAR (Controlled by Redux) --- */}
-//       {exportLoading && (
-//         <div className="fixed bottom-6 right-6 w-80 bg-white p-5 rounded-xl shadow-2xl border border-blue-100 z-[9999] animate-in fade-in slide-in-from-bottom-4">
-//           <div className="flex items-center justify-between mb-2">
-//             <span className="text-sm font-bold text-slate-700">
-//               Downloading Report...
-//             </span>
-//             <span className="text-xs font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-//               {exportProgress}%
-//             </span>
-//           </div>
-//           <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-//             <div
-//               className="bg-blue-600 h-full rounded-full transition-all duration-500 ease-out"
-//               style={{ width: `${exportProgress}%` }}
-//             />
-//           </div>
-//         </div>
-//       )}
-
-//       {/* ADD THE MODAL HERE */}
-//       <BanUserModal
-//         isOpen={isBanModalOpen}
-//         onClose={() => setIsBanModalOpen(false)}
-//         onConfirm={handleBanConfirm}
-//         userName={selectedUserForBan?.profile?.nickname || "this user"}
-//       />
-//     </div>
-//   );
-// }
+const itemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 25, // Start lower for a more pronounced "wave" up
+    scale: 0.95,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15, // Lower damping = more "wave" bounce
+      mass: 1,
+    },
+  },
+};
 
 export default function UserManagementPage() {
   const dispatch = useDispatch();
+  const location = useLocation();
   const {
-    items,
+    items = [],
     loading,
     pagination: reduxPagination,
     exportLoading,
@@ -442,26 +77,185 @@ export default function UserManagementPage() {
   const [accountStatus, setAccountStatus] = useState("");
   const [isPremium, setIsPremium] = useState(undefined);
 
-  const handleExport = async () => {
-    const filters = { search: globalFilter };
-    const resultAction = dispatch(exportUsersStream(filters));
+  // --- Optimized Stats Calculation ---
+  const stats = useMemo(() => {
+    return [
+      {
+        label: "Total Members",
+        val: reduxPagination?.total || 0,
+        icon: <IconUsers size={22} />,
+        color: "blue",
+        description: "Overall Total Users",
+      },
+      {
+        label: "Active Users",
+        val: items.filter((u) => u.account?.status === "active").length,
+        icon: <IconUserCheck size={22} />,
+        color: "emerald",
+        description: "Live community",
+      },
+      {
+        label: "Premium Members",
+        val: items.filter((u) => u.account?.isPremium).length,
+        icon: <IconCrown size={22} />,
+        color: "amber",
+        description: "Pro tier active",
+      },
+      {
+        label: "Banned Users",
+        val: items.filter((u) => u.account?.status === "banned").length,
+        icon: <IconBan size={22} />,
+        color: "rose",
+        description: "Safety restrictions",
+      },
+      {
+        label: "Suspended",
+        val: items.filter((u) => u.account?.status === "suspended").length,
+        icon: <IconAlertTriangle size={22} />,
+        color: "orange",
+        description: "Under review",
+      },
+    ];
+  }, [items, reduxPagination?.total]);
 
-    if (exportUsersStream.fulfilled.match(resultAction)) {
-      const csvContent = resultAction.payload;
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `MAFS_Users_${Date.now()}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-      toast.success("Export completed successfully");
-    } else {
-      toast.error(resultAction.payload || "Export failed");
+  // --- Handlers ---
+  // const handleExport = async () => {
+  //   try {
+  //     const filters = { search: globalFilter, accountStatus, isPremium };
+  //     const resultAction = await dispatch(exportUsersStream(filters));
+
+  //     if (exportUsersStream.fulfilled.match(resultAction)) {
+  //       const csvContent = resultAction.payload;
+  //       if (!csvContent) return toast.error("No data received");
+
+  //       const blob = new Blob([csvContent], {
+  //         type: "text/csv;charset=utf-8;",
+  //       });
+  //       const url = window.URL.createObjectURL(blob);
+  //       const link = document.createElement("a");
+  //       link.href = url;
+  //       link.setAttribute("download", `MAFS_Users_${Date.now()}.csv`);
+  //       document.body.appendChild(link);
+  //       link.click();
+  //       document.body.removeChild(link);
+  //       window.URL.revokeObjectURL(url);
+  //       toast.success("Export completed successfully");
+  //     }
+  //   } catch (err) {
+  //     console.error("Export Error:", err);
+  //     toast.error("An unexpected error occurred during export");
+  //   }
+  // };
+
+  const handleExport = async () => {
+    try {
+      const filters = {
+        search: globalFilter,
+        accountStatus: accountStatus, // Added these to match your current table state
+        isPremium: isPremium,
+      };
+
+      // 1. You MUST await the dispatch
+      const resultAction = await dispatch(exportUsersStream(filters));
+
+      // 2. Check the result after the promise settles
+      if (exportUsersStream.fulfilled.match(resultAction)) {
+        const csvContent = resultAction.payload;
+
+        // Safety check: ensure csvContent exists
+        if (!csvContent) {
+          toast.error("No data received from server");
+          return;
+        }
+
+        const blob = new Blob([csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", `MAFS_Users_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        toast.success("Export completed successfully");
+      } else {
+        // Handle the rejection
+        const errorMessage =
+          resultAction.payload ||
+          resultAction.error?.message ||
+          "Export failed";
+        toast.error(errorMessage);
+      }
+    } catch (err) {
+      console.error("Export Error:", err);
+      toast.error("An unexpected error occurred during export");
     }
   };
+
+  // const initialFilter = location?.state;
+
+  // console.log("initialFilter: ", initialFilter);
+
+  // // 1. Effect to handle the filter passed from the Dashboard/KPI
+  // useEffect(() => {
+  //   if (!initialFilter) return;
+
+  //   // Reset pagination when a new filter is applied from outside
+  //   setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+
+  //   if (initialFilter === "Restricted") {
+  //     setAccountStatus("banned");
+  //     // setIsPremium(undefined);
+  //   } else if (initialFilter === "Active") {
+  //     setAccountStatus("active");
+  //     // setIsPremium(undefined);
+  //   } else if (initialFilter === "Revenue") {
+  //     setIsPremium(true);
+  //     // setAccountStatus("");
+  //   }
+  // }, [initialFilter]);
+
+  // useEffect(() => {
+  //   const delayDebounceFn = setTimeout(() => {
+  //     dispatch(
+  //       fetchUsers({
+  //         page: pagination.pageIndex + 1,
+  //         limit: pagination.pageSize,
+  //         search: globalFilter,
+  //         accountStatus: accountStatus,
+  //         isPremium: isPremium,
+  //       })
+  //     );
+  //   }, 500);
+
+  //   return () => clearTimeout(delayDebounceFn);
+  // }, [
+  //   dispatch,
+  //   pagination.pageIndex,
+  //   pagination.pageSize,
+  //   globalFilter,
+  //   accountStatus,
+  //   isPremium,
+  // ]);
+
+  // --- Effects ---
+
+  useEffect(() => {
+    const initialFilter = location?.state;
+    if (!initialFilter) return;
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    if (initialFilter === "Restricted") setAccountStatus("banned");
+    else if (initialFilter === "Active") setAccountStatus("active");
+    else if (initialFilter === "Revenue") setIsPremium(true);
+  }, [location?.state]);
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -470,20 +264,13 @@ export default function UserManagementPage() {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           search: globalFilter,
-          accountStatus: accountStatus,
-          isPremium: isPremium,
+          accountStatus,
+          isPremium,
         })
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [
-    dispatch,
-    pagination.pageIndex,
-    pagination.pageSize,
-    globalFilter,
-    accountStatus,
-    isPremium,
-  ]);
+  }, [dispatch, pagination, globalFilter, accountStatus, isPremium]);
 
   const handleBanClick = (user) => {
     setSelectedUserForBan(user);
@@ -493,53 +280,54 @@ export default function UserManagementPage() {
   const handleBanConfirm = async (category, reason) => {
     try {
       await dispatch(
-        bannedUserProfile({ userId: selectedUserForBan._id, category, reason })
+        bannedUserProfile({ userId: selectedUserForBan?._id, category, reason })
       ).unwrap();
       toast.success("User has been restricted");
+
       setIsBanModalOpen(false);
     } catch (error) {
-      toast.error(error || "Failed to restrict user");
+      toast.error(error || "Action failed");
     }
   };
 
-  const stats = [
-    {
-      label: "Total Members",
-      val: reduxPagination.total || 0,
-      icon: <IconUsers />,
-      color: "blue",
-      description: "Overall Total Users",
-      trend: "+12.5%", // Added trend for visual appeal
-    },
-    {
-      label: "Active Users",
-      val: items.filter((u) => u.account?.status === "active").length,
-      icon: <IconUserCheck />,
-      color: "emerald",
-      description: "Live community",
-    },
-    {
-      label: "Premium Members",
-      val: items.filter((u) => u.account?.isPremium).length,
-      icon: <IconCrown />,
-      color: "amber",
-      description: "Pro tier active",
-    },
-    {
-      label: "Banned Users",
-      val: items.filter((u) => u.account?.status === "banned").length,
-      icon: <IconBan />,
-      color: "rose",
-      description: "Safety restrictions",
-    },
-    {
-      label: "Suspended",
-      val: items.filter((u) => u.account?.status === "suspended").length,
-      icon: <IconAlertTriangle />,
-      color: "orange",
-      description: "Under review",
-    },
-  ];
+  // const stats = [
+  //   {
+  //     label: "Total Members",
+  //     val: reduxPagination.total || 0,
+  //     icon: <IconUsers />,
+  //     color: "blue",
+  //     description: "Overall Total Users",
+  //     trend: "+12.5%", // Added trend for visual appeal
+  //   },
+  //   {
+  //     label: "Active Users",
+  //     val: items.filter((u) => u.account?.status === "active").length,
+  //     icon: <IconUserCheck />,
+  //     color: "emerald",
+  //     description: "Live community",
+  //   },
+  //   {
+  //     label: "Premium Members",
+  //     val: items.filter((u) => u.account?.isPremium).length,
+  //     icon: <IconCrown />,
+  //     color: "amber",
+  //     description: "Pro tier active",
+  //   },
+  //   {
+  //     label: "Banned Users",
+  //     val: items.filter((u) => u.account?.status === "banned").length,
+  //     icon: <IconBan />,
+  //     color: "rose",
+  //     description: "Safety restrictions",
+  //   },
+  //   {
+  //     label: "Suspended",
+  //     val: items.filter((u) => u.account?.status === "suspended").length,
+  //     icon: <IconAlertTriangle />,
+  //     color: "orange",
+  //     description: "Under review",
+  //   },
+  // ];
 
   const colorMap = {
     blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
@@ -563,34 +351,39 @@ export default function UserManagementPage() {
   };
 
   return (
-    // <div className="flex flex-1 flex-col">
-    <div className="w-full min-h-screen !overflow-x-hidden bg-[#F8FAFC] p-4 sm:p-6 font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* <div className="mx-auto space-y-8"> */}
-      <div className="@container/main space-y-8">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+      <motion.div
+        className="@container/main space-y-6"
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+      >
         {/* --- HEADER SECTION --- */}
-        <header className="flex md:items-center justify-between gap-4">
-          <div>
+        <header className="flex flex-col gap-4">
+          {/* <div className="flex flex-col gap-2">
             <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
               User Management
             </h1>
             <p className="text-slate-500 font-medium text-sm">
               Monitor community activity and manage member accounts.
             </p>
-          </div>
+          </div> */}
 
-          <div className="flex items-center gap-3">
+          <div className="flex md:items-center justify-between gap-4">
+            <PageHeader
+              heading="User Management"
+              subheading="Monitor community activity and manage member accounts."
+            />
             <Button
               variant="outline"
               onClick={handleExport}
               disabled={exportLoading}
               className={cn(
                 "relative h-11 px-4 shadow-md rounded-lg font-semibold transition-all duration-300",
-                "bg-green-400 hover:bg-green-100 border-green-600",
-                "text-slate-800 hover:text-green-700",
-                "shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
+                "bg-green-200 hover:bg-green-100 border-green-500",
+                "text-slate-800 hover:text-green-700 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
                 "hover:border-indigo-200 active:scale-[0.98]",
-                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100",
-                "group overflow-hidden"
+                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden"
               )}
             >
               {/* Subtle Inner Glow on Hover */}
@@ -615,131 +408,52 @@ export default function UserManagementPage() {
           </div>
         </header>
 
-        {/* --- STATS SUMMARY ROW --- */}
-        {/* <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {[
-            {
-              label: "Total Members",
-              val: reduxPagination.total || 0,
-              icon: <IconUsers />,
-              color: "blue",
-              description: "Overall Total Users",
-            },
-            {
-              label: "Active Users",
-              // Use the total from your pagination meta if available, e.g., reduxPagination.activeTotal
-              val: items.filter((u) => u.account?.status === "active").length,
-              icon: <IconUserCheck />,
-              color: "emerald",
-              description: "Live community",
-            },
-            {
-              label: "Premium Members",
-              val: items.filter((u) => u.account?.isPremium).length,
-              icon: <IconCrown />,
-              color: "amber",
-              description: "Pro tier active",
-            },
-            {
-              label: "Banned Users",
-              val: items.filter((u) => u.account?.status === "banned").length,
-              icon: <IconBan />,
-              color: "rose",
-              description: "Safety restrictions",
-            },
-            {
-              label: "Suspended",
-              val: items.filter((u) => u.account?.status === "suspended")
-                .length,
-              icon: <IconAlertTriangle />, // Imported from tabler-icons
-              color: "orange",
-              description: "Under review",
-            },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className="group bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4 transition-all hover:shadow-md hover:border-indigo-100"
-            >
-              <div
-                className={cn(
-                  "p-3 rounded-xl transition-colors",
-                  // Map colors to background tints
-                  stat.color === "emerald" && "bg-emerald-50 text-emerald-600",
-                  stat.color === "amber" && "bg-amber-50 text-amber-600",
-                  stat.color === "rose" && "bg-rose-50 text-rose-600",
-                  stat.color === "orange" && "bg-orange-50 text-orange-600"
-                )}
-              >
-                {React.cloneElement(stat.icon, { size: 24, stroke: 2 })}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-0.5">
-                  {stat.label}
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <h4 className="text-2xl font-black text-slate-900 leading-none">
-                    {stat.val.toLocaleString()}
-                  </h4>
-                </div>
-                <p className="text-[10px] font-medium text-slate-400 mt-1 truncate">
-                  {stat.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div> */}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        {/* --- STATS GRID (Staggered) --- */}
+        <motion.div
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
+        >
           {stats.map((stat, i) => (
-            <div
+            <motion.div
               key={i}
+              variants={itemVariants}
+              whileHover={{ y: -5, transition: { duration: 0.2 } }}
               className={cn(
                 "group relative p-6 rounded-3xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
-                "hover:shadow-[0_22px_50px_-12px_rgba(0,0,0,0.05)] hover:-translate-y-1.5",
-                bgMap[stat.color] // Applies the background and border color
+                bgMap[stat.color]
               )}
             >
-              {/* Icon Header */}
+              {/* Stat content remains the same */}
               <div className="flex items-start justify-center gap-4">
                 <div
                   className={cn(
-                    "p-3 rounded-2xl bg-gradient-to-br border shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3",
+                    "p-3 rounded-2xl bg-gradient-to-br border shadow-sm",
                     colorMap[stat.color]
                   )}
                 >
                   {React.cloneElement(stat.icon, { size: 22, stroke: 2 })}
                 </div>
-
                 <div className="flex-1 w-max">
-                  <p className="text-[10px] cursor-text font-black uppercase tracking-widest mb-0.5">
+                  <p className="text-[10px] font-black uppercase tracking-widest mb-0.5">
                     {stat.label}
                   </p>
-                  <div className="flex items-baseline gap-2">
-                    <h4 className="text-2xl font-black text-slate-900 leading-none cursor-text">
-                      {stat.val.toLocaleString()}
-                    </h4>
-                  </div>
-                  <p className="text-[10px] font-medium mt-1 truncate cursor-text">
+                  <h4 className="text-2xl font-black text-slate-900 leading-none">
+                    {stat.val.toLocaleString()}
+                  </h4>
+                  <p className="text-[10px] font-medium mt-1 truncate text-slate-500">
                     {stat.description}
                   </p>
                 </div>
-
-                {/* {stat.trend && (
-                  <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 text-[10px] font-bold">
-                    <IconTrendingUp size={12} />
-                    {stat.trend}
-                  </div>
-                )} */}
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* --- TABLE SECTION --- */}
-        <DataTable
+        <UserDataTables
           columns={userColumns}
-          data={items}
-          rowCount={reduxPagination.total}
+          data={items || []}
+          rowCount={reduxPagination?.total || 0}
           pagination={pagination}
           onPaginationChange={setPagination}
           globalFilter={globalFilter}
@@ -763,33 +477,38 @@ export default function UserManagementPage() {
           meta={{ onBan: (user) => handleBanClick(user) }}
         />
 
-        {/* --- FLOATING PROGRESS OVERLAY --- */}
-        {exportLoading && (
-          <div className="fixed bottom-8 right-8 z-[100]">
-            <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-2xl border border-slate-800 w-72 space-y-3 animate-in fade-in slide-in-from-right-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <IconLoader className="animate-spin h-4 w-4 text-indigo-400" />
-                  <span className="text-xs font-bold uppercase tracking-tight">
-                    Exporting Data
+        {/* --- FLOATING PROGRESS OVERLAY (With AnimatePresence) --- */}
+        <AnimatePresence>
+          {exportLoading && (
+            <motion.div
+              initial={{ opacity: 0, x: 50, scale: 0.9 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.95 }}
+              className="fixed bottom-8 right-8 z-[100]"
+            >
+              <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-2xl border border-slate-800 w-72 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <IconLoader className="animate-spin h-4 w-4 text-indigo-400" />
+                    <span className="text-xs font-bold uppercase tracking-tight">
+                      Exporting Data
+                    </span>
+                  </div>
+                  <span className="text-xs font-mono text-indigo-400">
+                    {exportProgress}%
                   </span>
                 </div>
-                <span className="text-xs font-mono text-indigo-400">
-                  {exportProgress}%
-                </span>
+                <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${exportProgress}%` }}
+                    className="h-full bg-indigo-500"
+                  />
+                </div>
               </div>
-              <div className="h-1.5 w-full bg-slate-800 rounded-full">
-                <div
-                  className="h-full bg-indigo-500 transition-all duration-300"
-                  style={{ width: `${exportProgress}%` }}
-                />
-              </div>
-              <p className="text-[10px] text-slate-400 italic">
-                Please do not close the browser tab
-              </p>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <BanUserModal
           isOpen={isBanModalOpen}
@@ -797,7 +516,7 @@ export default function UserManagementPage() {
           onConfirm={handleBanConfirm}
           userName={selectedUserForBan?.profile?.nickname || "User"}
         />
-      </div>
+      </motion.div>
     </div>
   );
 }

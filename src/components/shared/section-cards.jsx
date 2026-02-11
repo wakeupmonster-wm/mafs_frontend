@@ -1,257 +1,4 @@
-// import { useEffect} from "react";
-// import { IconTrendingUp } from "@tabler/icons-react";
-// import { Badge } from "@/components/ui/badge";
-// import {
-//   Card,
-//   CardAction,
-//   CardDescription,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import { useNavigate } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
-
-// export function SectionCards() {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-
-//   const { stats, loading, error } = useSelector((state) => state.dashboard);
-
-//   useEffect(() => {
-//     // Only fetch if data doesn't exist (optional caching logic)
-//     if (!stats) {
-//       dispatch(fetchDashboardKPIs());
-//     }
-//   }, [dispatch, stats]);
-
-//   if (loading) {
-//     return (
-//       <div className="px-4 text-sm text-muted-foreground">Loading KPIs...</div>
-//     );
-//   }
-
-//   // Safety check: kpis.totalUsers is required before rendering
-//   if (error || !stats?.totalUsers) {
-//     return (
-//       <div className="px-4 text-sm text-red-500">
-//         {error || "Failed to load dashboard data"}
-//       </div>
-//     );
-//   }
-
-//   return (
-//     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-4 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-//       {/* Total Users */}
-//       <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/users-management")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Total Users</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.totalUsers.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Live
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           All registered users
-//         </CardFooter>
-//       </Card>
-
-//       {/* Active Users (24h) */}
-//       <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/users-management")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Active Users (24h)</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.activeUsers24h.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Last 24h
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Users active in last 24 hours
-//         </CardFooter>
-//       </Card>
-
-//       {/* Paid Users */}
-//       <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/users-management")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Paid Users</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.paidUsers.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Revenue
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Users with active subscriptions
-//         </CardFooter>
-//       </Card>
-//       <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/users-management")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Ban Users</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.TotalBanUsers.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Banned
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Banned Users
-//         </CardFooter>
-//       </Card>
-
-//       {/* <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/users-management")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Suspend Users</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//              {stats.TotalSuspendedUsers.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Suspended
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Suspended Users
-//         </CardFooter>
-//       </Card> */}
-
-//       {/* Total Tickets */}
-
-//       <Card
-//         className="@container/card"
-//         onClick={() => navigate("/admin/management/support")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Total Tickets</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.TotalTickets.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Ticket
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Users query
-//         </CardFooter>
-//       </Card>
-
-//       <Card className="@container/card"  onClick={() => navigate("/admin/management/giveaway")}>
-//         <CardHeader>
-//           <CardDescription>Total Claimed Prizes</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.ClaimedPrize.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge variant="outline">
-//               <IconTrendingUp />
-//               Claimed prizes
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Claimed Prizes
-//         </CardFooter>
-//       </Card>
-
-
-//   <Card
-//         className="@container/card cursor"
-//         onClick={() => navigate("/admin/management/profile-review")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Total Reports</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.openReports.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge
-//               variant={
-//                 stats.openReports.actionable
-//                   ? "destructive"
-//                   : "outline"
-//               }
-//             >
-//               Action Needed
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Reports
-//         </CardFooter>
-//       </Card>
-
-
-//       {/* Pending Verifications */}
-//       <Card
-//         className="@container/card cursor"
-//         onClick={() => navigate("/admin/management/pending-verifications")}
-//       >
-//         <CardHeader>
-//           <CardDescription>Pending Verifications</CardDescription>
-//           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-//             {stats.pendingVerifications.value}
-//           </CardTitle>
-//           <CardAction>
-//             <Badge
-//               variant={
-//                 stats.pendingVerifications.actionable
-//                   ? "destructive"
-//                   : "outline"
-//               }
-//             >
-//               Action Needed
-//             </Badge>
-//           </CardAction>
-//         </CardHeader>
-//         <CardFooter className="text-muted-foreground text-sm">
-//           Profiles awaiting approval
-//         </CardFooter>
-//       </Card>
-//     </div>
-//   );
-// }
-
-
-
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import {
   IconTrendingUp,
   IconUsers,
@@ -264,6 +11,7 @@ import {
   IconShieldCheck,
 } from "@tabler/icons-react";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 import {
   Card,
   CardAction,
@@ -277,16 +25,257 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 import { cn } from "@/lib/utils";
 
+// export function SectionCards() {
+//   const dispatch = useDispatch();
+//   const navigate = useNavigate();
+
+//   const { stats, loading, error } = useSelector((state) => state.dashboard);
+//   console.log("stats: ", stats);
+
+//   useEffect(() => {
+//     if (!stats) {
+//       dispatch(fetchDashboardKPIs());
+//     }
+//   }, [dispatch, stats]);
+
+//   if (loading) {
+//     return (
+//       <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
+//         {[...Array(8)].map((_, i) => (
+//           <Card key={i} className="animate-pulse">
+//             <CardHeader>
+//               <div className="h-4 w-24 rounded bg-muted"></div>
+//               <div className="mt-2 h-8 w-20 rounded bg-muted"></div>
+//             </CardHeader>
+//           </Card>
+//         ))}
+//       </div>
+//     );
+//   }
+
+//   if (error || !stats?.totalUsers) {
+//     return (
+//       <div className="mx-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 lg:mx-6">
+//         <div className="flex items-center gap-2">
+//           <IconAlertTriangle className="h-5 w-5" />
+//           {error || "Failed to load dashboard data"}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const cardData = [
+//     {
+//       title: "Total Users",
+//       value: stats.totalUsers.value,
+//       description: "All registered users",
+//       icon: IconUsers,
+//       gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
+//       iconColor: "text-blue-600",
+//       iconBg: "bg-blue-100",
+//       badge: "Live",
+//       badgeVariant: "default",
+//       route: "/admin/management/users-management",
+//     },
+//     {
+//       title: "Active Users (24h)",
+//       value: stats.activeUsers24h.value,
+//       description: "Users active in last 24 hours",
+//       icon: IconUserCheck,
+//       gradient: "from-green-500/10 via-green-500/5 to-transparent",
+//       iconColor: "text-green-600",
+//       iconBg: "bg-green-100",
+//       badge: "Last 24h",
+//       badgeVariant: "outline",
+//       route: "/admin/management/users-management",
+//     },
+//     {
+//       title: "Paid Users",
+//       value: stats.paidUsers.value,
+//       description: "Active subscriptions",
+//       icon: IconCrown,
+//       gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
+//       iconColor: "text-amber-600",
+//       iconBg: "bg-amber-100",
+//       badge: "Revenue",
+//       badgeVariant: "outline",
+//       route: "/admin/management/users-management",
+//     },
+//     {
+//       title: "Banned Users",
+//       value: stats.TotalBanUsers.value,
+//       description: "Permanently banned accounts",
+//       icon: IconUserX,
+//       gradient: "from-red-500/10 via-red-500/5 to-transparent",
+//       iconColor: "text-red-600",
+//       iconBg: "bg-red-100",
+//       badge: "Banned",
+//       badgeVariant: "outline",
+//       route: "/admin/management/users-management",
+//     },
+//     {
+//       title: "Support Tickets",
+//       value: stats.TotalTickets.value,
+//       description: "Open support requests",
+//       icon: IconTicket,
+//       gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
+//       iconColor: "text-purple-600",
+//       iconBg: "bg-purple-100",
+//       badge: "Support",
+//       badgeVariant: "outline",
+//       route: "/admin/management/support",
+//     },
+//     {
+//       title: "Claimed Prizes",
+//       value: stats.ClaimedPrize.value,
+//       description: "Giveaway rewards claimed",
+//       icon: IconGift,
+//       gradient: "from-pink-500/10 via-pink-500/5 to-transparent",
+//       iconColor: "text-pink-600",
+//       iconBg: "bg-pink-100",
+//       badge: "Rewards",
+//       badgeVariant: "outline",
+//       route: "/admin/management/giveaway",
+//     },
+//     {
+//       title: "Open Reports",
+//       value: stats.openReports.value,
+//       description: "Pending moderation reports",
+//       icon: IconAlertTriangle,
+//       gradient: "from-orange-500/10 via-orange-500/5 to-transparent",
+//       iconColor: "text-orange-600",
+//       iconBg: "bg-orange-100",
+//       badge: stats.openReports.actionable ? "Action Needed" : "Normal",
+//       badgeVariant: stats.openReports.actionable ? "destructive" : "outline",
+//       route: "/admin/management/profile-review",
+//       pulse: stats.openReports.actionable,
+//     },
+//     {
+//       title: "Pending Verifications",
+//       value: stats.pendingVerifications.value,
+//       description: "Profiles awaiting approval",
+//       icon: IconShieldCheck,
+//       gradient: "from-cyan-500/10 via-cyan-500/5 to-transparent",
+//       iconColor: "text-cyan-600",
+//       iconBg: "bg-cyan-100",
+//       badge: stats.pendingVerifications.actionable ? "Action Needed" : "Normal",
+//       badgeVariant: stats.pendingVerifications.actionable
+//         ? "destructive"
+//         : "outline",
+//       route: "/admin/management/pending-verifications",
+//       pulse: stats.pendingVerifications.actionable,
+//     },
+//   ];
+
+//   // Format number with K, M suffixes
+//   const formatNumber = (num) => {
+//     if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
+//     if (num >= 1000) return (num / 1000).toFixed(1) + "K";
+//     return num.toLocaleString();
+//   };
+
+//   return (
+//     <div className="grid grid-cols-1 gap-4 px-2 sm:grid-cols-2 lg:grid-cols-4 lg:px-4">
+//       {cardData.map((card, index) => {
+//         const Icon = card.icon;
+//         return (
+//           <Card
+//             key={index}
+//             className={cn(
+//               "group relative cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+//               card.pulse && "animate-pulse-slow"
+//             )}
+//             onClick={() => navigate(card.route)}
+//           >
+//             {/* Gradient Background */}
+//             <div
+//               className={cn(
+//                 "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity duration-300 group-hover:opacity-100",
+//                 card.gradient
+//               )}
+//             />
+
+//             {/* Decorative Circle */}
+//             <div
+//               className={cn(
+//                 "absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-10 transition-transform duration-300 group-hover:scale-110",
+//                 card.iconBg
+//               )}
+//             />
+
+//             <CardHeader className="relative space-y-4">
+//               {/* Icon and Badge Row */}
+//               <div className="flex items-start justify-between">
+//                 <div
+//                   className={cn(
+//                     "rounded-xl p-3 transition-transform duration-300 group-hover:scale-110",
+//                     card.iconBg
+//                   )}
+//                 >
+//                   <Icon className={cn("h-6 w-6", card.iconColor)} />
+//                 </div>
+//                 <CardAction>
+//                   <Badge variant={card.badgeVariant} className="shadow-sm">
+//                     {card.badge}
+//                   </Badge>
+//                 </CardAction>
+//               </div>
+
+//               {/* Title */}
+//               <CardDescription className="text-sm font-medium">
+//                 {card.title}
+//               </CardDescription>
+
+//               {/* Value with Animation */}
+//               <CardTitle className="text-4xl font-bold tabular-nums tracking-tight">
+//                 <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+//                   {formatNumber(card.value)}
+//                 </span>
+//               </CardTitle>
+//             </CardHeader>
+
+//             <CardFooter className="relative">
+//               <div className="flex items-center justify-between w-full">
+//                 <span className="text-xs text-muted-foreground">
+//                   {card.description}
+//                 </span>
+//                 <IconTrendingUp className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+//               </div>
+//             </CardFooter>
+//           </Card>
+//         );
+//       })}
+//     </div>
+//   );
+// }
+
+// Animation Variants for the "Wavy" effect
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { type: "spring", stiffness: 100, damping: 15 },
+  },
+};
+
 export function SectionCards() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { stats, loading, error } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
-    if (!stats) {
-      dispatch(fetchDashboardKPIs());
-    }
+    if (!stats) dispatch(fetchDashboardKPIs());
   }, [dispatch, stats]);
 
   if (loading) {
@@ -319,183 +308,164 @@ export function SectionCards() {
     {
       title: "Total Users",
       value: stats.totalUsers.value,
-      description: "All registered users",
       icon: IconUsers,
-      gradient: "from-blue-500/10 via-blue-500/5 to-transparent",
-      iconColor: "text-blue-600",
-      iconBg: "bg-blue-100",
+      color: "blue",
       badge: "Live",
-      badgeVariant: "default",
-      route: "/admin/management/users-management",
     },
     {
-      title: "Active Users (24h)",
+      title: "Active (24h)",
       value: stats.activeUsers24h.value,
-      description: "Users active in last 24 hours",
       icon: IconUserCheck,
-      gradient: "from-green-500/10 via-green-500/5 to-transparent",
-      iconColor: "text-green-600",
-      iconBg: "bg-green-100",
-      badge: "Last 24h",
-      badgeVariant: "outline",
-      route: "/admin/management/users-management",
+      color: "emerald",
+      badge: "Active",
     },
     {
-      title: "Paid Users",
+      title: "Premium",
       value: stats.paidUsers.value,
-      description: "Active subscriptions",
       icon: IconCrown,
-      gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
-      iconColor: "text-amber-600",
-      iconBg: "bg-amber-100",
+      color: "amber",
       badge: "Revenue",
-      badgeVariant: "outline",
-      route: "/admin/management/users-management",
     },
     {
-      title: "Banned Users",
+      title: "Banned",
       value: stats.TotalBanUsers.value,
-      description: "Permanently banned accounts",
       icon: IconUserX,
-      gradient: "from-red-500/10 via-red-500/5 to-transparent",
-      iconColor: "text-red-600",
-      iconBg: "bg-red-100",
-      badge: "Banned",
-      badgeVariant: "outline",
-      route: "/admin/management/users-management",
+      color: "rose",
+      badge: "Restricted",
     },
     {
-      title: "Support Tickets",
+      title: "Support",
       value: stats.TotalTickets.value,
-      description: "Open support requests",
       icon: IconTicket,
-      gradient: "from-purple-500/10 via-purple-500/5 to-transparent",
-      iconColor: "text-purple-600",
-      iconBg: "bg-purple-100",
-      badge: "Support",
-      badgeVariant: "outline",
+      color: "indigo",
+      badge: "Tickets",
       route: "/admin/management/support",
     },
     {
       title: "Claimed Prizes",
       value: stats.ClaimedPrize.value,
-      description: "Giveaway rewards claimed",
       icon: IconGift,
-      gradient: "from-pink-500/10 via-pink-500/5 to-transparent",
-      iconColor: "text-pink-600",
-      iconBg: "bg-pink-100",
-      badge: "Rewards",
-      badgeVariant: "outline",
+      color: "pink",
+      badge: "Claimed",
       route: "/admin/management/giveaway",
     },
     {
-      title: "Open Reports",
+      title: "Reports",
       value: stats.openReports.value,
-      description: "Pending moderation reports",
       icon: IconAlertTriangle,
-      gradient: "from-orange-500/10 via-orange-500/5 to-transparent",
-      iconColor: "text-orange-600",
-      iconBg: "bg-orange-100",
-      badge: stats.openReports.actionable ? "Action Needed" : "Normal",
-      badgeVariant: stats.openReports.actionable ? "destructive" : "outline",
-      route: "/admin/management/profile-review",
+      color: "orange",
+      badge: stats.openReports.actionable ? "Urgent" : "Clean",
       pulse: stats.openReports.actionable,
+      route: "/admin/management/profile-review",
     },
     {
-      title: "Pending Verifications",
+      title: "Verifications",
       value: stats.pendingVerifications.value,
-      description: "Profiles awaiting approval",
       icon: IconShieldCheck,
-      gradient: "from-cyan-500/10 via-cyan-500/5 to-transparent",
-      iconColor: "text-cyan-600",
-      iconBg: "bg-cyan-100",
-      badge: stats.pendingVerifications.actionable ? "Action Needed" : "Normal",
-      badgeVariant: stats.pendingVerifications.actionable
-        ? "destructive"
-        : "outline",
-      route: "/admin/management/pending-verifications",
+      color: "cyan",
+      badge: "Pending",
       pulse: stats.pendingVerifications.actionable,
+      route: "/admin/management/kyc-verifications",
     },
   ];
 
-  // Format number with K, M suffixes
-  const formatNumber = (num) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
-    if (num >= 1000) return (num / 1000).toFixed(1) + "K";
-    return num.toLocaleString();
+  const colorMap = {
+    blue: "from-blue-800 to-transparent text-blue-600 bg-blue-100 border-blue-400",
+    emerald:
+      "from-emerald-800 to-transparent text-emerald-600 bg-emerald-100 border-emerald-100400",
+    amber:
+      "from-amber-800 to-transparent text-amber-600 bg-amber-100 border-amber-400",
+    rose: "from-rose-800 to-transparent text-rose-600 bg-rose-100 border-rose-400",
+    indigo:
+      "from-indigo-800 to-transparent text-indigo-600 bg-indigo-100 border-indigo-400",
+    pink: "from-pink-800 to-transparent text-pink-600 bg-pink-100 border-pink-400",
+    orange:
+      "from-orange-800 to-transparent text-orange-600 bg-orange-100 border-orange-400",
+    cyan: "from-cyan-800 to-transparent text-cyan-600 bg-cyan-100 border-cyan-400",
+  };
+
+  const bgMap = {
+    blue: "from-blue-200/20 to-transparent text-blue-600 border-blue-400",
+    emerald:
+      "from-emerald-200/20 to-transparent text-emerald-600 border-emerald-400",
+    amber: "from-amber-200/20 to-transparent text-amber-600 border-amber-400",
+    rose: "from-rose-200/20 to-transparent text-rose-600 border-rose-400",
+    indigo:
+      "from-indigo-200/20 to-transparent text-indigo-600 border-indigo-400",
+    pink: "from-pink-200/20 to-transparent text-pink-600 border-pink-400",
+    orange:
+      "from-orange-200/20 to-transparent text-orange-600 border-orange-100",
+    cyan: "from-cyan-200/20 to-transparent text-cyan-600 border-cyan-400",
   };
 
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 lg:px-6">
-      {cardData.map((card, index) => {
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 cursor-pointer"
+    >
+      {cardData.map((card, i) => {
         const Icon = card.icon;
         return (
-          <Card
-            key={index}
-            className={cn(
-              "group relative cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
-              card.pulse && "animate-pulse-slow"
-            )}
-            onClick={() => navigate(card.route)}
-          >
-            {/* Gradient Background */}
-            <div
+          <motion.div key={i} variants={cardVariants}>
+            <Card
               className={cn(
-                "absolute inset-0 bg-gradient-to-br opacity-50 transition-opacity duration-300 group-hover:opacity-100",
-                card.gradient
+                "group relative overflow-hidden p-4 py-6 rounded-2xl border transition-all duration-300",
+                card.pulse &&
+                  "ring-2 ring-rose-500 ring-offset-2 animate-pulse-slow",
+                bgMap[card.color],
+                "hover:border-slate-400 shadow-sm hover:shadow-xl" // Added elevation on hover
               )}
-            />
-
-            {/* Decorative Circle */}
-            <div
-              className={cn(
-                "absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-10 transition-transform duration-300 group-hover:scale-110",
-                card.iconBg
-              )}
-            />
-
-            <CardHeader className="relative space-y-4">
-              {/* Icon and Badge Row */}
-              <div className="flex items-start justify-between">
+              onClick={() =>
+                navigate(card.route || "/admin/management/users-management", {
+                  state: card.badge,
+                })
+              }
+            >
+              <div className="relative flex items-start justify-center gap-3">
                 <div
                   className={cn(
-                    "rounded-xl p-3 transition-transform duration-300 group-hover:scale-110",
-                    card.iconBg
+                    "p-3 rounded-2xl bg-gradient-to-br border shadow-sm",
+                    colorMap[card.color]
                   )}
                 >
-                  <Icon className={cn("h-6 w-6", card.iconColor)} />
+                  <Icon size={22} stroke={2} />
                 </div>
-                <CardAction>
-                  <Badge variant={card.badgeVariant} className="shadow-sm">
+
+                <div className="flex-1 w-full space-y-2 px-2">
+                  <p className="text-[10px] font-black uppercase tracking-widest mb-0.5">
+                    {card.title}
+                  </p>
+                  <h4 className="text-2xl font-black text-slate-900 leading-none">
+                    {card.value.toLocaleString()}
+                  </h4>
+
+                  {/* <div className="flex items-center justify-between border-t border-slate-100 pt-3"> */}
+                  <div className="flex items-center gap-6 font-medium mt-1 truncate text-slate-500">
+                    <span className="text-[10px] font-medium text-slate-400">
+                      Updated just now
+                    </span>
+                    <IconTrendingUp
+                      size={20}
+                      className="text-slate-300 group-hover:text-slate-900 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="absolute -top-4 right-0">
+                  <Badge
+                    variant={card.pulse ? "destructive" : "outline"}
+                    className="text-[10px] font-bold uppercase tracking-wider border"
+                  >
                     {card.badge}
                   </Badge>
-                </CardAction>
+                </div>
               </div>
-
-              {/* Title */}
-              <CardDescription className="text-sm font-medium">
-                {card.title}
-              </CardDescription>
-
-              {/* Value with Animation */}
-              <CardTitle className="text-4xl font-bold tabular-nums tracking-tight">
-                <span className="bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-                  {formatNumber(card.value)}
-                </span>
-              </CardTitle>
-            </CardHeader>
-
-            <CardFooter className="relative">
-              <div className="flex items-center justify-between w-full">
-                <span className="text-xs text-muted-foreground">
-                  {card.description}
-                </span>
-                <IconTrendingUp className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-              </div>
-            </CardFooter>
-          </Card>
+            </Card>
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }

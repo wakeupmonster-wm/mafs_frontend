@@ -18,7 +18,7 @@ export default function RootLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Public Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-md sticky top-0 z-50">
+      <nav className="border-b border-slate-300 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             {/* Logo */}
@@ -80,7 +80,7 @@ export default function RootLayout() {
       </main>
 
       {/* Simple Footer */}
-      <footer className="bg-gray-50 border-t py-8">
+      <footer className="bg-gray-50 border-t border-slate-200 py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-sm text-gray-500">
             © 2026 MAFS Dating App. All rights reserved.

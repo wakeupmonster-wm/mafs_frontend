@@ -15,10 +15,25 @@ export const contactSupportApi = (payload) => {
 //   return apiConnector("GET", SUPPORT_ENDPOINTS.MY_TICKETS);
 // };
 
-export const getMyTicketsApi = (status = "all", search = "") => {
-  // Query strings attach kar rahe hain
-  const url = `${SUPPORT_ENDPOINTS.MY_TICKETS}?status=${status}&search=${search}`;
-  return apiConnector("GET", url);
+export const getMyTicketsApi = async (page, limit, search, status) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+    ...(status && { status }),
+  };
+  try {
+    const response = await apiConnector(
+      "GET",
+      SUPPORT_ENDPOINTS.MY_TICKETS,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
 };
 
 /**

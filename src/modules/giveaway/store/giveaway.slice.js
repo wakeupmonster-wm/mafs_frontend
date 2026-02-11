@@ -115,7 +115,10 @@ export const fetchWinner = createAsyncThunk(
       return await getWinnerApi(campaignId);
     } catch (err) {
       // If no winner found, return null instead of rejecting
-      if (err.response?.status === 404 || err.response?.data?.message?.includes("not found")) {
+      if (
+        err.response?.status === 404 ||
+        err.response?.data?.message?.includes("not found")
+      ) {
         return { data: null, campaignId };
       }
       return rejectWithValue(
@@ -267,6 +270,12 @@ const giveawaySlice = createSlice({
     successMessage: null,
     bulkCampaignLoading: false,
     markDeliveredLoading: false,
+    pagination: {
+      page: 1,
+      limit: 10,
+      total: 0,
+      totalPages: 0,
+    },
   },
   reducers: {
     clearGiveawayStatus: (s) => {
@@ -312,7 +321,7 @@ const giveawaySlice = createSlice({
         s.prizes = s.prizes.map((p) =>
           p._id === a.payload._id ? a.payload : p
         );
-         s.successMessage = "Prize edited successfully"
+        s.successMessage = "Prize edited successfully";
       })
 
       /* CAMPAIGNS */
@@ -475,9 +484,9 @@ const giveawaySlice = createSlice({
       })
       .addCase(bulkCreateCampaign.fulfilled, (state, action) => {
         state.bulkCampaignLoading = false;
-        
+
         const { summary, skippedDates } = action.payload;
-        
+
         // Store summary data
         state.bulkCampaignSummary = {
           created: summary?.created || 0,

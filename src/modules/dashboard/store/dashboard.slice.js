@@ -12,9 +12,11 @@ export const fetchDashboardKPIs = createAsyncThunk(
       // console.log("res: ", res);
 
       if (res.success) {
-        // console.log("res.data.kpis: ", res.data.kpis);
         return res.data.kpis;
       }
+
+      console.log("res.data.kpis: ", res.data.kpis);
+
       return rejectWithValue("Failed to fetch KPIs");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server Error");

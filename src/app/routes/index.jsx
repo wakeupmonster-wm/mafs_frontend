@@ -1,50 +1,155 @@
 // src/app/routes/index.js
+import { Suspense, lazy } from "react"; // Added Suspense and lazy
 import { createBrowserRouter, useParams } from "react-router-dom";
 import PrivateRoute from "./privateRoute";
+
+// 1. Layouts (Keep these standard or lazy load them too)
 import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
-import Dashboard from "@/modules/dashboard/pages/Dashboard";
-import App from "@/App";
-import NotFoundPage from "@/modules/not-found/Pages/not-found.page";
-import PendingVerifications from "@/modules/users/pages/PendingVerifications";
-import PendingDeliveries from "@/modules/giveaway/pages/PendingDeliveries";
-import BulkCampaigns from "@/modules/giveaway/pages/BulkCampaigns";
-import CampaignWinner from "@/modules/giveaway/pages/CampaignWinner";
-import Campaigns from "@/modules/giveaway/pages/Campaigns";
-import CreatePrize from "@/modules/giveaway/pages/Prizes";
-import GiveawayManagement from "@/modules/giveaway/pages/GiveawayManagement";
-import {
-  ContactSupportPage,
-  MyTicketsPage,
-  TicketDetailPage,
-} from "@/modules/support/pages/SupportPages";
-import {
-  ReportedProfilesPage,
-  ProfileReviewDetailPage,
-} from "@/modules/profileReview/pages/ProfileReviewPages";
-import ChatReportedList from "@/modules/chatManagement/pages/ChatReportedList";
-import ChatReviewDetail from "@/modules/chatManagement/pages/ChatReviewDetail";
-import NotificationManagementPages from "@/modules/notificationManagement/pages/NotificationManagementPages";
-import ForgotPasswordPage from "@/modules/authentication/pages/forgot-password.page";
-import LoginPage from "@/modules/authentication/pages/login.page";
 import AuthLayout from "../layouts/AuthLayout";
-import RequestResetEmailForm from "@/modules/authentication/components/request-resetEmail";
-import VerifyEmailOtp from "@/modules/authentication/components/verify-emailOTP";
-import ForgotPasswordForm from "@/modules/authentication/components/forgotPasswordForm";
-import ViewProfilePage from "@/modules/users/pages/view-profile.Page";
-import EditProfilePage from "@/modules/users/pages/edit-profile.Page";
-import UserManagementPage from "@/modules/users/pages/user-management.Page";
-import FAQSPage from "@/modules/cms/pages/faqs.page";
-import PrivacyAndPolicyPage from "@/modules/cms/pages/privacy-policy.page";
-import TermAndConditionsPage from "@/modules/cms/pages/terms-conditions.page";
-import FAQEditView from "@/modules/cms/components/faqs-edit-view.page";
-import NotificationManagementPage from "@/modules/notificationManagement/pages/notificationPage";
-import AdminProfile from "@/modules/setting/AdminProfile.jsx";
+
+// 2. LAZY LOAD COMPONENTS
+const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
+const App = lazy(() => import("@/App"));
+const NotFoundPage = lazy(() =>
+  import("@/modules/not-found/Pages/not-found.page")
+);
+const PendingVerifications = lazy(() =>
+  import("@/modules/users/pages/PendingVerifications")
+);
+const UserManagementPage = lazy(() =>
+  import("@/modules/users/pages/user-management.Page")
+);
+const ViewProfilePage = lazy(() =>
+  import("@/modules/users/pages/view-profile.Page")
+);
+const EditProfilePage = lazy(() =>
+  import("@/modules/users/pages/edit-profile.Page")
+);
+const ViewPage = lazy(() => import("@/modules/users/pages/viewPage"));
+
+// Giveaway Modules
+const GiveawayManagement = lazy(() =>
+  import("@/modules/giveaway/pages/GiveawayManagement")
+);
+const CreatePrize = lazy(() => import("@/modules/giveaway/pages/Prizes"));
+const Campaigns = lazy(() => import("@/modules/giveaway/pages/Campaigns"));
+const BulkCampaigns = lazy(() =>
+  import("@/modules/giveaway/pages/BulkCampaigns")
+);
+const CampaignWinner = lazy(() =>
+  import("@/modules/giveaway/pages/CampaignWinner")
+);
+const PendingDeliveries = lazy(() =>
+  import("@/modules/giveaway/pages/PendingDeliveries")
+);
+
+// Support & Reviews
+const MyTicketsPage = lazy(() =>
+  import("@/modules/support/pages/SupportPages").then((module) => ({
+    default: module.MyTicketsPage,
+  }))
+);
+const ContactSupportPage = lazy(() =>
+  import("@/modules/support/pages/SupportPages").then((module) => ({
+    default: module.ContactSupportPage,
+  }))
+);
+const TicketDetailPage = lazy(() =>
+  import("@/modules/support/pages/SupportPages").then((module) => ({
+    default: module.TicketDetailPage,
+  }))
+);
+
+const ReportedProfilesPage = lazy(() =>
+  import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
+    default: module.ReportedProfilesPage,
+  }))
+);
+const ProfileReviewDetailPage = lazy(() =>
+  import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
+    default: module.ProfileReviewDetailPage,
+  }))
+);
+
+const ChatReportedList = lazy(() =>
+  import("@/modules/chatManagement/pages/ChatReportedList")
+);
+const ChatReviewDetail = lazy(() =>
+  import("@/modules/chatManagement/pages/ChatReviewDetail")
+);
+
+// Auth
+const LoginPage = lazy(() =>
+  import("@/modules/authentication/pages/login.page")
+);
+const ForgotPasswordPage = lazy(() =>
+  import("@/modules/authentication/pages/forgot-password.page")
+);
+const RequestResetEmailForm = lazy(() =>
+  import("@/modules/authentication/components/request-resetEmail")
+);
+const VerifyEmailOtp = lazy(() =>
+  import("@/modules/authentication/components/verify-emailOTP")
+);
+const ForgotPasswordForm = lazy(() =>
+  import("@/modules/authentication/components/forgotPasswordForm")
+);
+
+// CMS & Others
+const FAQSPage = lazy(() => import("@/modules/cms/pages/faqs.page"));
+const FAQEditView = lazy(() =>
+  import("@/modules/cms/components/faqs-edit-view.page")
+);
+const PrivacyAndPolicyPage = lazy(() =>
+  import("@/modules/cms/pages/privacy-policy.page")
+);
+const TermAndConditionsPage = lazy(() =>
+  import("@/modules/cms/pages/terms-conditions.page")
+);
+const AdminProfile = lazy(() => import("@/modules/setting/AdminProfile.jsx"));
+const NotificationManagementPages = lazy(() =>
+  import("@/modules/notificationManagement/pages/NotificationManagementPages")
+);
+const NotificationManagementPage = lazy(() =>
+  import("@/modules/notificationManagement/pages/notificationPage")
+);
+const ReportsProfilesPage = lazy(() =>
+  import("@/modules/profileReview/pages/reports.profiles.page")
+);
+const ProfileReviewPage = lazy(() =>
+  import("@/modules/profileReview/pages/profile.review.page")
+);
+
+const KYCVerificationPage = lazy(() =>
+  import("@/modules/verification/pages/kyc.verification.page")
+);
+
+const SupportTicketsPage = lazy(() =>
+  import("@/modules/support/pages/supports.page")
+);
+
+const ViewTicketDetails = lazy(() =>
+  import("@/modules/support/pages/view.ticket.details")
+);
+const SubscriptionsPage = lazy(() =>
+  import("@/modules/membership/pages/subscriptions.page")
+);
+
+const EntitlementPage = lazy(() =>
+  import("@/modules/membership/pages/entitlements.page")
+);
+
+import { PreLoader } from "../loader/preloader";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RootLayout />,
+    element: (
+      <Suspense fallback={<PreLoader />}>
+        <RootLayout />
+      </Suspense>
+    ),
     children: [
       { index: true, element: <App /> }, // Now renders landing page your stylized hero
       {
@@ -60,8 +165,10 @@ export const router = createBrowserRouter([
               { index: true, element: <RequestResetEmailForm /> }, // The initial "Enter Email" step
               { path: "verify-email", element: <VerifyEmailOtp /> }, // The "Enter Code" step
               { path: "new-password", element: <ForgotPasswordForm /> }, // The "Set New Password" step
+              { path: "*", element: <NotFoundPage /> },
             ],
           },
+          { path: "*", element: <NotFoundPage /> },
         ],
       },
     ],
@@ -70,13 +177,22 @@ export const router = createBrowserRouter([
     path: "admin",
     element: (
       <PrivateRoute>
-        <AdminLayout />
+        <Suspense fallback={<PreLoader />}>
+          <AdminLayout />
+        </Suspense>
       </PrivateRoute>
     ),
     children: [
       { index: true, element: <NotFoundPage /> },
 
-      { path: "dashboard", element: <Dashboard /> },
+      {
+        path: "dashboard",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <Dashboard />
+          </Suspense>
+        ),
+      },
 
       { path: "analytics", element: <>Analytics</> },
 
@@ -87,50 +203,206 @@ export const router = createBrowserRouter([
       {
         path: "management",
         children: [
-          { index: true, element: <NotFoundPage /> },
-
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <NotFoundPage />
+              </Suspense>
+            ),
+          },
           {
             path: "users-management",
             children: [
-              { index: true, element: <UserManagementPage /> },
-              { path: "view-profile", element: <ViewProfilePage /> },
-              { path: "edit-profile", element: <EditProfilePage /> },
-            ],
-          },
-          
-
-          { path: "pending-verifications", element: <PendingVerifications /> },
-
-          {
-            path: "giveaway",
-            children: [
-              { index: true, element: <GiveawayManagement /> },
-
-              { path: "prizes", element: <CreatePrize /> },
-              { path: "campaigns", element: <Campaigns /> },
-              { path: "bulk-campaigns", element: <BulkCampaigns /> },
-              { path: "winner", element: <CampaignWinner /> },
               {
-                path: "pending-deliveries",
-                element: <PendingDeliveries />,
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <UserManagementPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-profile",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewProfilePage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-page",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "edit-profile",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <EditProfilePage />
+                  </Suspense>
+                ),
               },
             ],
           },
           {
-            path: "support",
-            children: [
-              { index: true, element: <MyTicketsPage /> },
-              { path: "contact", element: <ContactSupportPage /> },
-              { path: "ticket/:ticketId", element: <TicketWrapper /> },
-            ],
+            path: "pending-verifications",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <PendingVerifications />
+              </Suspense>
+            ),
+          },
+
+          // ======================================================
+          {
+            path: "kyc-verifications",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <KYCVerificationPage />
+              </Suspense>
+            ),
           },
           {
-            path: "profile-review",
+            path: "entitlements",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <EntitlementPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "giveaway",
             children: [
-              { index: true, element: <ReportedProfilesPage /> },
-              { path: ":userId", element: <ProfileReviewWrapper /> },
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <GiveawayManagement />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "prizes",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <CreatePrize />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "campaigns",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <Campaigns />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "bulk-campaigns",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <BulkCampaigns />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "winner",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <CampaignWinner />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "pending-deliveries",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <PendingDeliveries />
+                  </Suspense>
+                ),
+              },
             ],
           },
+          // {
+          //   path: "support",
+          //   children: [
+          //     { index: true, element: <MyTicketsPage /> },
+          //     {
+          //       path: "contact",
+          //       element: (
+          //         <Suspense fallback={<PreLoader />}>
+          //           <ContactSupportPage />
+          //         </Suspense>
+          //       ),
+          //     },
+          //     {
+          //       path: "ticket/:ticketId",
+          //       element: (
+          //         <Suspense fallback={<PreLoader />}>
+          //           <TicketWrapper />
+          //         </Suspense>
+          //       ),
+          //     },
+          //   ],
+          // },
+
+          // ==============================^
+          {
+            path: "support",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SupportTicketsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-ticket/:ticketId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewTicketDetails />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          // ==============================^
+          // {
+          //   path: "profile-review",
+          //   children: [
+          //     { index: true, element: <ReportedProfilesPage /> },
+          //     { path: ":userId", element: <ProfileReviewWrapper /> },
+          //   ],
+          // },
+          // ==============================^
+          {
+            path: "profile-reports",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ReportsProfilesPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "review/:userId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ProfileReviewPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          // ==============================^
           {
             path: "chat",
             children: [
@@ -139,13 +411,15 @@ export const router = createBrowserRouter([
             ],
           },
           { path: "notifications", element: <NotificationManagementPages /> },
-
           {
             path: "all-notifications",
             element: <NotificationManagementPage />,
           },
-
-          { path: "offer-management", element: <>Offer Management</> },
+          {
+            path: "subscription-management",
+            element: <SubscriptionsPage />,
+          },
+          { path: "*", element: <NotFoundPage /> },
         ],
       },
 
@@ -153,24 +427,23 @@ export const router = createBrowserRouter([
         path: "membership",
         children: [
           { index: true, element: <NotFoundPage /> },
-
           { path: "billing", element: <>Billings</> },
-
           { path: "subscriptions", element: <>View Subscriptions</> },
-
-          { path: "entitlements", element: <>Manual Entitlements & Trials</> },
-
           { path: "pricing", element: <>Configure SKUs & Pricing</> },
+          { path: "*", element: <NotFoundPage /> },
         ],
       },
+
       {
         path: "report-moderation",
         children: [
           { index: true, element: <NotFoundPage /> },
           { path: "report-queue", element: <>Report Queue</> },
           { path: "block-banned-users", element: <>Blocked & Banned Users</> },
+          { path: "*", element: <NotFoundPage /> },
         ],
       },
+
       {
         path: "cms",
         children: [
@@ -185,15 +458,23 @@ export const router = createBrowserRouter([
           },
           { path: "privacy-policy", element: <PrivacyAndPolicyPage /> },
           { path: "terms-conditions", element: <TermAndConditionsPage /> },
+          { path: "*", element: <NotFoundPage /> },
         ],
       },
-      { path: "settings", element: <AdminProfile/> },
-      
+
+      { path: "settings", element: <AdminProfile /> },
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },
-      { path: "accounts", element: <>Accounts</> },
+      // {
+      //   path: "accounts",
+      //   element: (
+      //     <Suspense fallback={<PreLoader />}>
+      //       <AccountsPage />
+      //     </Suspense>
+      //   ),
+      // },
 
-      // { path: "", element: <Navigate to="dashboard" replace /> },
+      { path: "*", element: <NotFoundPage /> },
     ],
   },
   { path: "*", element: <NotFoundPage /> },

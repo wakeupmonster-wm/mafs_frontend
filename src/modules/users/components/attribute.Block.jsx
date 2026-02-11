@@ -7,7 +7,7 @@ export const AttributeBlock = ({ label, value }) => {
         {label}
       </p>
       <p className="text-sm font-bold text-foreground capitalize">
-        {value || "N/A"}
+        {value || "-"}
       </p>
     </div>
   );

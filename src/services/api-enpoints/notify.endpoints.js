@@ -1,6 +1,5 @@
-/*===================== BASE URL =====================*/
-export const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://api.matchatfirstswipe.com.au";
+/*===================== NOTE: MAKE SURE TO HAVE TO IMPORT BASE_URL FROM "base.url.js" FILE =====================*/
+import { BASE_URL } from "./base.url";
 
 /*===================== ADMIN ENDPOINTS =====================*/
 export const NOTIFY_ENDPOINTS = {

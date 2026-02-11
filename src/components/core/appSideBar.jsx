@@ -1,84 +1,6 @@
-// /* eslint-disable react-hooks/set-state-in-effect */
-// import * as React from "react";
-// import { useEffect, useState } from "react";
-// import { IconInnerShadowTop } from "@tabler/icons-react";
-// import { NavDocuments } from "@/components/core/navigations/navDocuments";
-// import { NavMain } from "@/components/core/navigations/nav-main";
-// import { NavSecondary } from "@/components/core/navigations/nav-secondary";
-// import { NavUser } from "@/components/core/navigations/nav-user";
-// import {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarFooter,
-//   SidebarHeader,
-//   SidebarMenu,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-//   SidebarRail,
-// } from "@/components/ui/sidebar";
-// import { NavPlateform } from "./navigations/nav-plateform";
-// import { NavManagements } from "./navigations/nav-managements";
-// import navigationData from "@/app/data/navigation";
-// import { Link } from "react-router";
-
-// export function AppSidebar({ ...props }) {
-//     const [navUser, setNavUser] = useState({
-//     name: "Admin",
-//     email: "",
-//     avatar: "",
-//   });
-
-//   useEffect(() => {
-//     const data = localStorage.getItem("userData");
-//     if (data) {
-//       const user = JSON.parse(data);
-//       setNavUser({
-//         name: user.fullName || user.nickname || "Admin",
-//         email: user.email || "",
-//         avatar: user.photos?.[0] || "",
-//       });
-//     }
-//   }, []);
-//   return (
-//     <Sidebar collapsible="icon" {...props}>
-//       {/* SideBar Top */}
-//       <SidebarHeader>
-//         <SidebarMenu>
-//           <SidebarMenuItem>
-//             <SidebarMenuButton
-//               asChild
-//               className="data-[slot=sidebar-menu-button]:!p-1.5"
-//             >
-//               <Link to="/admin/dashboard">
-//                 <IconInnerShadowTop className="!size-5" />
-//                 <span className="text-base font-semibold">MAFS</span>
-//               </Link>
-//             </SidebarMenuButton>
-//           </SidebarMenuItem>
-//         </SidebarMenu>
-//       </SidebarHeader>
-
-//       {/* SideBar Middle: Content, Tabs */}
-//       <SidebarContent className="gap-0">
-//         <NavMain items={navigationData.navMain} />
-//         <NavManagements items={navigationData.navManagement} />
-//         <NavPlateform items={navigationData.navPlateform} />
-//       </SidebarContent>
-
-//       <SidebarFooter>
-//         <NavUser user={navUser} />
-//       </SidebarFooter>
-//       <SidebarRail />
-//     </Sidebar>
-//   );
-// }
-
-
 /* eslint-disable react-hooks/set-state-in-effect */
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { IconInnerShadowTop, IconSparkles } from "@tabler/icons-react";
-import { NavDocuments } from "@/components/core/navigations/navDocuments";
 import { NavMain } from "@/components/core/navigations/nav-main";
 import { NavSecondary } from "@/components/core/navigations/nav-secondary";
 import { NavUser } from "@/components/core/navigations/nav-user";
@@ -97,47 +19,61 @@ import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
 import { Link } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
+import { Separator } from "../ui/separator";
+import dummyImg from "@/assets/images/dummyImg.jpg";
 
 export function AppSidebar({ ...props }) {
   const [navUser, setNavUser] = useState({
-    name: "Admin",
+    name: "",
     email: "",
     avatar: "",
   });
 
   useEffect(() => {
-    const data = localStorage.getItem("userData");
+    const data = localStorage.getItem("auth_user");
     if (data) {
       const user = JSON.parse(data);
       setNavUser({
         name: user.fullName || user.nickname || "Admin",
         email: user.email || "",
-        avatar: user.photos?.[0] || "",
+        avatar: user.photos?.[0] || dummyImg,
       });
     }
   }, []);
 
+  // Utility for section headers to keep the JSX clean
+  const SectionHeader = ({ title }) => (
+    <div className="px-4 mb-2 mt-4">
+      <h2 className="text-[11px] font-bold tracking-[0.15em] text-slate-400/80 uppercase">
+        {title}
+      </h2>
+    </div>
+  );
+
   return (
-    <Sidebar collapsible="icon" {...props}>
-      {/* Enhanced SideBar Header with Gradient Logo */}
-      <SidebarHeader className="border-b border-sidebar-border bg-gradient-to-b from-sidebar to-sidebar/95">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-slate-300/50 bg-white/80 backdrop-blur-xl pt-2 justify-center"
+      {...props}
+    >
+      {/* --- HEADER: Logo & Branding --- */}
+      <SidebarHeader className="h-16 border-b border-slate-100 bg-white/40">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
               size="lg"
-              className="group hover:bg-sidebar-accent/50 transition-all duration-200"
+              asChild
+              className="hover:bg-transparent p-1"
             >
-              <Link to="/admin/dashboard">
-                <div className="flex aspect-square size-10 items-center justify-center rounded-xl  shadow-lg shadow-blue-500/30 transition-all duration-300 group-hover:shadow-blue-500/50 group-hover:scale-105">
+              <Link to="/admin/dashboard" className="flex items-center gap-3">
+                <div className="border text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-lg">
                   <img src="/Favicon2.png" alt="" className="size-5" />
                 </div>
                 <div className="grid flex-1 text-left leading-tight">
-                  <span className="truncate font-bold text-lg tracking-tight">
+                  <span className="truncate text-sm font-extrabold">
                     MAFS Admin
                   </span>
-                  <span className="truncate text-xs text-muted-foreground">
+                  <span className="truncate font-semibold text-[9px]">
                     Control Panel
                   </span>
                 </div>
@@ -147,71 +83,90 @@ export function AppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* Enhanced SideBar Content with Sections */}
-      <SidebarContent className="gap-0 px-2 py-4">
-        {/* Main Navigation Section */}
+      {/* --- CONTENT: Navigation Sections --- */}
+      <SidebarContent className="scrollbar-none">
+        {/* Overview Section */}
         {navigationData.navMain && (
-          <div className="mb-4">
-            <div className="px-3 mb-2">
-              <h2 className="px-2 text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
-                Overview
-              </h2>
-            </div>
+          <>
+            {/* <SectionHeader title="Overview" /> */}
             <NavMain items={navigationData.navMain} />
-          </div>
+          </>
         )}
 
-        <SidebarSeparator className="mx-3 my-2" />
+        <Separator />
 
         {/* Management Section */}
         {navigationData.navManagement && (
-          <div className="mb-4">
-            <div className="px-3 mb-2">
-              <h2 className="px-2 text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
-                Management
-              </h2>
-            </div>
+          <>
+            {/* <SectionHeader title="Management" /> */}
             <NavManagements items={navigationData.navManagement} />
-          </div>
+          </>
         )}
-
-        <SidebarSeparator className="mx-3 my-2" />
 
         {/* Platform Section */}
         {navigationData.navPlateform && (
-          <div className="mb-4">
-            <div className="px-3 mb-2">
-              <h2 className="px-2 text-[10px] font-bold tracking-wider text-muted-foreground/70 uppercase">
-                Platform
-              </h2>
-            </div>
+          <>
+            {/* <SectionHeader title="Platform" /> */}
             <NavPlateform items={navigationData.navPlateform} />
-          </div>
+          </>
         )}
 
-        {/* Documents Section */}
-        {navigationData.documents && navigationData.documents.length > 0 && (
-          <div className="mb-4">
-            <NavDocuments items={navigationData.documents} />
-          </div>
-        )}
-
-        {/* Secondary Navigation at bottom */}
-        {navigationData.navSecondary && navigationData.navSecondary.length > 0 && (
-          <div className="mt-auto pt-4">
-            <SidebarSeparator className="mx-3 mb-4" />
+        {/* Secondary Navigation (Pinned to bottom if content is short) */}
+        {navigationData.navSecondary && (
+          <>
+            <SidebarSeparator className="mx-4 my-4 opacity-50" />
             <NavSecondary items={navigationData.navSecondary} />
-          </div>
+          </>
         )}
       </SidebarContent>
 
-      {/* Enhanced SideBar Footer */}
-      <SidebarFooter className="border-t border-sidebar-border bg-gradient-to-t from-sidebar/50 to-sidebar">
-        <NavUser user={navUser} />
+      {/* --- FOOTER: User Profile --- */}
+      <SidebarFooter className="border border-slate-100 bg-slate-50/50 p-2">
+        <div className="rounded-lg border border-slate-400/60 bg-white shadow-sm transition-all hover:shadow-md">
+          <NavUser user={navUser} />
+        </div>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );
-}
 
-export default AppSidebar;
+  // return (
+  //   <Sidebar
+  //     collapsible="icon"
+  //     className="border-r border-slate-200 bg-white py-2"
+  //     {...props}
+  //   >
+  //     <SidebarHeader className="h-14 border-b border-slate-100 px-4 flex flex-row items-center">
+  //       {/* Logo Container is fixed-size to ensure centering in collapsed mode */}
+  //       <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-slate-900 shadow-lg">
+  //         <img
+  //           src="/Favicon2.png"
+  //           alt="M"
+  //           className="size-4 brightness-0 invert"
+  //         />
+  //       </div>
+  //       <div className="ml-3 flex flex-col group-data-[collapsible=icon]:hidden">
+  //         <span className="text-sm font-bold text-slate-900 leading-none">
+  //           MAFS Admin
+  //         </span>
+  //         <span className="text-[10px] font-medium text-slate-400">
+  //           System Control
+  //         </span>
+  //       </div>
+  //     </SidebarHeader>
+
+  //     <SidebarContent className="px-2 py-3 group-data-[collapsible=icon]:px-0">
+  //       {/* Navigation groups go here */}
+  //       <NavMain items={navigationData.navMain} />
+  //       <NavManagements items={navigationData.navManagement} />
+  //     </SidebarContent>
+
+  //     <SidebarFooter className="p-2 border-t border-slate-100">
+  //       <div className="group-data-[collapsible=icon]:justify-center flex">
+  //         <NavUser user={navUser} />
+  //       </div>
+  //     </SidebarFooter>
+  //   </Sidebar>
+  // );
+}
