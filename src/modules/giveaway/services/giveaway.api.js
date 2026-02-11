@@ -59,6 +59,29 @@ export const getWinnerApi = (campaignId) => {
   return apiConnector("GET", GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER(campaignId));
 };
 
+// export const getAllWinnersApi = () =>{
+//   // api.get(`/giveaway/campaigns/winners`);
+// return apiConnector("GET",`http://localhost:3001/api/v1/admin/giveaway/campaigns/winners`)
+// }
+
+// services/giveaway.api.js
+
+export const getAllWinnersApi = (params = {}) => {
+  const query = new URLSearchParams();
+
+  if (params.page) query.append("page", params.page);
+  if (params.limit) query.append("limit", params.limit);
+  if (params.search) query.append("search", params.search);
+  if (params.status) query.append("status", params.status);
+  if (params.sortBy) query.append("sortBy", params.sortBy);
+  if (params.order) query.append("order", params.order);
+
+  const queryString = query.toString();
+  const url = `${`http://localhost:3001/api/v1/admin/giveaway/campaigns/winners`}${queryString ? `?${queryString}` : ""}`;
+
+  return apiConnector("GET", url);
+};
+
 export const resendPrizeApi = (id) => {
   return apiConnector("POST", GIVEAWAYS_ENDPOINTS.CAMPAIGN_RESEND(id));
 };
