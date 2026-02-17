@@ -17,6 +17,7 @@ import bulkReducer from "@/modules/giveaway/store/bulk.slice";
 import deliveryReducer from "@/modules/giveaway/store/delivery.slice";
 import winnerReducer from "@/modules/giveaway/store/winner.slice";
 import accountReducer from "@/modules/accounts/store/account.slice";
+import subscriptionReducer from "@/modules/subsciptions/store/subcription.slices";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -31,6 +32,7 @@ export const rootReducer = combineReducers({
   delivery: deliveryReducer,
   winner: winnerReducer,
   support: supportReducer,
+  subscription: subscriptionReducer,
   profileReview: profileReviewReducer,
   chatManagement: chatManagementReducer,
   notificationManagement: notificationManagementReducer,

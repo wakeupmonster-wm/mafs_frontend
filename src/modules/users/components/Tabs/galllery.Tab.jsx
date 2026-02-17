@@ -38,10 +38,13 @@ export const GallleryTab = ({ photos = [], userId }) => {
   };
 
   const onConfirmDelete = async () => {
+    console.log("call confirm");
     try {
       // Logic for bulk or single delete
       const idsToDelete =
         selectedPhotos.length > 0 ? selectedPhotos : [selectedPhotos[0]];
+
+      console.log("idsToDelete: ", idsToDelete);
 
       for (const publicId of idsToDelete) {
         await dispatch(deleteUserPhoto({ userId, publicId })).unwrap();

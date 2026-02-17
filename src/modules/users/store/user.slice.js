@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   bannedUserAPI,
+  deletePhotoApi,
   exportUsersApi,
   getALLUserListApi,
   getAllPendingVerificationsApi,
@@ -14,7 +15,7 @@ import {
 export const fetchUsers = createAsyncThunk(
   "users/fetchAll",
   async (
-    { page, limit, search, accountStatus, isPremium },
+    { page, limit, search, accountStatus, isPremium, last24Hours },
     { rejectWithValue }
   ) => {
     // console.log("page: ", page);
@@ -29,7 +30,8 @@ export const fetchUsers = createAsyncThunk(
         limit,
         search,
         accountStatus,
-        isPremium
+        isPremium,
+        last24Hours
       );
 
       console.log("response: ", response);

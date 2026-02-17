@@ -15,6 +15,7 @@ import CampaignDialog from "../components/Dialogs/CampaignDialog";
 import { fetchPrizes } from "../store/prizes.slice";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
+import { format, isValid, parseISO } from "date-fns";
 
 export default function CampaignsPage() {
   const dispatch = useDispatch();
@@ -105,25 +106,36 @@ export default function CampaignsPage() {
       setIsDialogOpen(false);
       resetForm();
     } catch (err) {
-      console.error("Submission failed:", err);
-      // Toast error is usually handled in slice or unwrap catch
+      // console.error("Submission failed:", err);
+      toast.error(err);
+      setIsDialogOpen(false);
     }
   };
 
   const handleDeleteClick = (id, date) => {
+    const dateObj = typeof date === "string" ? parseISO(date) : new Date(date);
+
+    const displayDate = isValid(dateObj)
+      ? format(dateObj, "MMM dd, yyyy")
+      : "Unknown Date";
+
     setConfirmDelete({
       isOpen: true,
       id,
-      title: new Date(date).toDateString(),
+      title: displayDate,
     });
   };
 
   const handleConfirmDelete = async () => {
     try {
-      const res = await dispatch(deleteCampaign(confirmDelete.id)).unwrap();
+      console.log("confirmDelete.id: ", confirmDelete?.id);
+      const res = await dispatch(deleteCampaign(confirmDelete?.id)).unwrap();
+      setConfirmDelete({ isOpen: false, id: null, title: "" });
+
       toast.success(res.message || "Campaign deleted successfully");
-      setConfirmDelete((prev) => ({ ...prev, isOpen: false }));
+      // toast.success("Campaign deleted successfully");
     } catch (err) {
+      console.error("error: ", err);
       toast.error(err || "Failed to delete campaign");
     }
   };
@@ -134,6 +146,7 @@ export default function CampaignsPage() {
       const res = await dispatch(disableCampaign(id)).unwrap();
       toast.success(res.message || "Campaign disabled successfully");
     } catch (err) {
+      console.error("error: ", err);
       toast.error(err || "Failed to disable campaign");
     }
   };
@@ -141,14 +154,15 @@ export default function CampaignsPage() {
   // 3. Update useMemo to include the new handler
   const columns = useMemo(
     () => campaignColumns(handleEdit, handleDeleteClick, handleDisableClick),
-    [handleEdit] // handleDisableClick is stable if not using useCallback, but handleEdit is in deps
+
+    [handleEdit, handleDeleteClick, handleDisableClick] // handleDisableClick is stable if not using useCallback, but handleEdit is in deps
   );
 
   return (
     <div className="p-4 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-900 p-3 rounded-xl shadow-lg">
+          <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
             <Megaphone className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -163,7 +177,7 @@ export default function CampaignsPage() {
             resetForm();
             setIsDialogOpen(true);
           }}
-          className="gap-2"
+          className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
         >
           <Plus className="h-4 w-4" /> Create New Campaign
         </Button>

@@ -70,7 +70,7 @@ export default function BulkCampaignsPage() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="pt-2 pb-0 space-y-6">
           {/* Feedback Messages */}
           {successMessage && (
             <div className="flex items-center gap-2 p-3 text-sm bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg">

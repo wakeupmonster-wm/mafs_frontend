@@ -95,7 +95,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
     },
   ];
 
-  console.log("verification: ", verification);
+  // console.log("verification: ", verification);
 
   return (
     <>

@@ -48,7 +48,33 @@ export const getAllCampaignsApi = async (page, limit, search, drawStatus) => {
   try {
     const response = await apiConnector(
       "GET",
-      GIVEAWAYS_ENDPOINTS.ADD_CAMPAIGNS,
+      GIVEAWAYS_ENDPOINTS.GET_CAMPAIGNS,
+      null,
+      {},
+      queryParams
+    );
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllParticipantsAPI = async (
+  campaignId,
+  page,
+  limit,
+  search
+) => {
+  const queryParams = {
+    page,
+    limit,
+    ...(search && { search }),
+  };
+
+  try {
+    const response = await apiConnector(
+      "GET",
+      GIVEAWAYS_ENDPOINTS.GET_PARTICIPANTS(campaignId),
       null,
       {},
       queryParams
@@ -60,7 +86,7 @@ export const getAllCampaignsApi = async (page, limit, search, drawStatus) => {
 };
 
 export const createCampaignApi = (data) => {
-  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.GET_CAMPAIGNS, data);
+  return apiConnector("POST", GIVEAWAYS_ENDPOINTS.ADD_CAMPAIGNS, data);
 };
 
 export const bulkCreateCampaignApi = (payload) => {

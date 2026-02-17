@@ -9,3 +9,8 @@ export const AUTHENDPOINTS = {
   FORGETPASSWORD_API: `${BASE_URL}/api/v1/admin/auth/forgot-password`,
   RESETPASSWORD_API: `${BASE_URL}/api/v1/admin/auth/reset-password`,
 };
+
+export const ACCOUNTENDPOINTS = {
+  GET_ACCOUNT: `${BASE_URL}/api/v1/admin/account`,
+  PATCH_ACCOUNT: `${BASE_URL}/api/v1/admin/account/update`,
+};

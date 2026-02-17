@@ -121,6 +121,17 @@
   }
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* ::-webkit-scrollbar {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background-color: #0e0e0e; /* or add it to the track
+} */
+
 /* Fix Preview Typography (The standard Tailwind reset fix) */
 .preview-content {
   color: #334155; /* slate-700 */

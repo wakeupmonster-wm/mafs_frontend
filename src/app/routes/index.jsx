@@ -133,14 +133,40 @@ const ViewTicketDetails = lazy(() =>
   import("@/modules/support/pages/view.ticket.details")
 );
 const SubscriptionsPage = lazy(() =>
-  import("@/modules/membership/pages/subscriptions.page")
+  import("@/modules/subsciptions/pages/subscription.page")
 );
 
 const EntitlementPage = lazy(() =>
   import("@/modules/membership/pages/entitlements.page")
 );
 
+const ViewSubscriptionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/view.subscriptions.page")
+);
+const AnalyticsPage = lazy(() =>
+  import("@/modules/dashboard/pages/analytics.page")
+);
+
 import { PreLoader } from "../loader/preloader";
+import ViewSubPage from "@/modules/subsciptions/pages/view.sub.page";
+
+const AccountsPage = lazy(() =>
+  import("@/modules/accounts/page/accounts.page")
+);
+
+const PrizePage = lazy(() => import("@/modules/giveaway/pages/prizes.page"));
+const CampaignsPage = lazy(() =>
+  import("@/modules/giveaway/pages/campaigns.page")
+);
+const BulkCampaignsPage = lazy(() =>
+  import("@/modules/giveaway/pages/bulk.campaign.page")
+);
+const PendingDeliveriesPage = lazy(() =>
+  import("@/modules/giveaway/pages/pending.deliveries.page")
+);
+const ParticipantsPage = lazy(() =>
+  import("@/modules/giveaway/pages/participants.page")
+);
 
 export const router = createBrowserRouter([
   {
@@ -194,7 +220,7 @@ export const router = createBrowserRouter([
         ),
       },
 
-      { path: "analytics", element: <>Analytics</> },
+      { path: "analytics", element: <AnalyticsPage /> },
 
       { path: "kpi", element: <>KPI's</> },
 
@@ -289,7 +315,7 @@ export const router = createBrowserRouter([
                 path: "prizes",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <CreatePrize />
+                    <PrizePage />
                   </Suspense>
                 ),
               },
@@ -297,7 +323,7 @@ export const router = createBrowserRouter([
                 path: "campaigns",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <Campaigns />
+                    <CampaignsPage />
                   </Suspense>
                 ),
               },
@@ -305,7 +331,7 @@ export const router = createBrowserRouter([
                 path: "bulk-campaigns",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <BulkCampaigns />
+                    <BulkCampaignsPage />
                   </Suspense>
                 ),
               },
@@ -313,7 +339,7 @@ export const router = createBrowserRouter([
                 path: "winner",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <CampaignWinner />
+                    <PendingDeliveriesPage />
                   </Suspense>
                 ),
               },
@@ -321,7 +347,15 @@ export const router = createBrowserRouter([
                 path: "pending-deliveries",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <PendingDeliveries />
+                    <PendingDeliveriesPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "participants",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ParticipantsPage />
                   </Suspense>
                 ),
               },
@@ -413,11 +447,40 @@ export const router = createBrowserRouter([
           { path: "notifications", element: <NotificationManagementPages /> },
           {
             path: "all-notifications",
-            element: <NotificationManagementPage />,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <NotificationManagementPage />
+              </Suspense>
+            ),
           },
           {
             path: "subscription-management",
-            element: <SubscriptionsPage />,
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-subscription/:userId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewSubscriptionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-sub/:userId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewSubPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           { path: "*", element: <NotFoundPage /> },
         ],
@@ -451,13 +514,34 @@ export const router = createBrowserRouter([
           {
             path: "faqs",
             children: [
-              { index: true, element: <FAQSPage /> },
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <FAQSPage />
+                  </Suspense>
+                ),
+              },
               { path: "edit", element: <FAQEditView /> },
               { path: "edit/:id", element: <FAQEditView /> },
             ],
           },
-          { path: "privacy-policy", element: <PrivacyAndPolicyPage /> },
-          { path: "terms-conditions", element: <TermAndConditionsPage /> },
+          {
+            path: "privacy-policy",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <PrivacyAndPolicyPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "terms-conditions",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <TermAndConditionsPage />
+              </Suspense>
+            ),
+          },
           { path: "*", element: <NotFoundPage /> },
         ],
       },
@@ -465,14 +549,14 @@ export const router = createBrowserRouter([
       { path: "settings", element: <AdminProfile /> },
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },
-      // {
-      //   path: "accounts",
-      //   element: (
-      //     <Suspense fallback={<PreLoader />}>
-      //       <AccountsPage />
-      //     </Suspense>
-      //   ),
-      // },
+      {
+        path: "accounts",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <AccountsPage />
+          </Suspense>
+        ),
+      },
 
       { path: "*", element: <NotFoundPage /> },
     ],

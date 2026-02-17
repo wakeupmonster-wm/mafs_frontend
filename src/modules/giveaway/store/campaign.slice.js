@@ -7,6 +7,7 @@ import {
   activateCampaignApi,
   updateCampaignApi,
   deleteCampaignApi,
+  getAllParticipantsAPI,
 } from "../services/giveaway.api";
 
 export const fetchCampaigns = createAsyncThunk(
@@ -34,6 +35,39 @@ export const fetchCampaigns = createAsyncThunk(
         };
       }
 
+      return rejectWithValue(
+        response.message || "Failed to fetch pending campaigns"
+      );
+    } catch (err) {
+      return rejectWithValue("Failed to fetch campaigns");
+    }
+  }
+);
+
+export const participantsCampaign = createAsyncThunk(
+  "participants/fetchAll",
+  async ({ campaignId, page, limit, search } = {}, { rejectWithValue }) => {
+    try {
+      const response = await getAllParticipantsAPI(
+        campaignId,
+        page,
+        limit,
+        search
+      );
+
+      console.log("response: ", response);
+
+      if (response && response.success) {
+        return {
+          partipants: response.data || [],
+          pagination: {
+            page: response.pagination.page,
+            limit: response.pagination.limit,
+            total: response.pagination.totalItems,
+            totalPages: response.pagination.totalPages,
+          },
+        };
+      }
       return rejectWithValue(
         response.message || "Failed to fetch pending campaigns"
       );
@@ -134,6 +168,7 @@ const campaignSlice = createSlice({
   name: "campaign",
   initialState: {
     campaigns: [],
+    partipants: [],
     loading: false,
     error: null,
     pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },
@@ -162,11 +197,28 @@ const campaignSlice = createSlice({
         s.loading = false;
         s.error = a.payload;
       })
+      .addCase(participantsCampaign.pending, (s) => {
+        s.loading = true;
+        s.error = null;
+      })
+      .addCase(participantsCampaign.fulfilled, (s, a) => {
+        s.loading = false;
+        s.partipants = a.payload.partipants;
+
+        if (a.payload.pagination) {
+          s.pagination = a.payload.pagination;
+        }
+      })
+      .addCase(participantsCampaign.rejected, (s, a) => {
+        s.loading = false;
+        s.error = a.payload;
+      })
       .addCase(createCampaign.pending, (s) => {
         s.loading = true;
         s.error = null;
       })
       .addCase(createCampaign.fulfilled, (s, a) => {
+        s.loading = false;
         s.campaigns.unshift(a.payload);
       })
       .addCase(createCampaign.rejected, (s, a) => {
@@ -220,14 +272,15 @@ const campaignSlice = createSlice({
         }
       })
       .addCase(deleteCampaign.fulfilled, (state, action) => {
+        state.loading = false;
         state.campaigns = state.campaigns.filter(
           (c) => c._id !== action.payload
         );
 
-        // Also remove winner data for deleted campaign
-        state.winner = state.winner.filter(
-          (w) => w.campaignId !== action.payload
-        );
+        // // Also remove winner data for deleted campaign
+        // state.winner = state.winner.filter(
+        //   (w) => w.campaignId !== action.payload
+        // );
       });
   },
 });

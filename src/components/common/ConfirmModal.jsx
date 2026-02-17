@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { AlertTriangle, X } from "lucide-react";
 
 const ConfirmModal = ({
@@ -10,11 +10,35 @@ const ConfirmModal = ({
   confirmText = "Delete",
   type = "danger", // danger or warning
 }) => {
+  const modalRef = useRef(); // 1. Correctly name the ref
+
+  useEffect(() => {
+    // 2. Define the click handler
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    // 3. Only add the listener if the modal is open
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    // 4. Cleanup the listener when component unmounts or closes
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]); // Dependencies
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed -inset-56 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div
+        ref={modalRef}
+        className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+      >
         <div className="relative p-6 text-center">
           {/* Close Button */}
           <button

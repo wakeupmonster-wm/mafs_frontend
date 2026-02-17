@@ -180,6 +180,8 @@ export default function ViewProfilePage() {
     verification,
     stats,
     recentMatches,
+    transactions,
+    subscription,
   } = userData;
 
   console.log("userData: ", userData);
@@ -405,7 +407,11 @@ export default function ViewProfilePage() {
               <LifeStyleTab userData={userData} attributes={attributes} />
               <DiscoveryTab discovery={discovery} attributes={attributes} />
               <ActivityTab stats={stats} recentMatches={recentMatches} />
-              <FinancialsTab account={account} />
+              <FinancialsTab
+                account={account}
+                transactions={transactions}
+                subscription={subscription}
+              />
               <SettingsTab userData={userData} account={account} />
             </div>
           </Tabs>

@@ -47,6 +47,7 @@ export default function BulkForm({
       .map((i) => i.trim())
       .filter(Boolean);
     onSubmit({ ...form, supportiveItems: items });
+
     setForm({ startDate: "", endDate: "", prizeId: "", supportiveItems: "" });
   };
 
@@ -117,7 +118,11 @@ export default function BulkForm({
         />
       </div>
 
-      <Button className="w-full" onClick={handleAction} disabled={isSubmitting}>
+      <Button
+        className="w-full mt-2 bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
+        onClick={handleAction}
+        disabled={isSubmitting}
+      >
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 animate-spin" /> Processing...

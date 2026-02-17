@@ -13,7 +13,6 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import { useLocation } from "react-router";
-
 import { userColumns } from "@/components/common/userColumns";
 import UserDataTables from "@/components/shared/data-tables/user.data.tables";
 import { cn } from "@/lib/utils";
@@ -25,6 +24,7 @@ import {
 import { BanUserModal } from "../components/ban-user-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/headSubhead";
+import StatsGrid from "@/components/common/stats.grid";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -76,6 +76,7 @@ export default function UserManagementPage() {
   const [globalFilter, setGlobalFilter] = useState("");
   const [accountStatus, setAccountStatus] = useState("");
   const [isPremium, setIsPremium] = useState(undefined);
+  const [last24HR, setLast24HR] = useState(undefined);
 
   // --- Optimized Stats Calculation ---
   const stats = useMemo(() => {
@@ -117,35 +118,6 @@ export default function UserManagementPage() {
       },
     ];
   }, [items, reduxPagination?.total]);
-
-  // --- Handlers ---
-  // const handleExport = async () => {
-  //   try {
-  //     const filters = { search: globalFilter, accountStatus, isPremium };
-  //     const resultAction = await dispatch(exportUsersStream(filters));
-
-  //     if (exportUsersStream.fulfilled.match(resultAction)) {
-  //       const csvContent = resultAction.payload;
-  //       if (!csvContent) return toast.error("No data received");
-
-  //       const blob = new Blob([csvContent], {
-  //         type: "text/csv;charset=utf-8;",
-  //       });
-  //       const url = window.URL.createObjectURL(blob);
-  //       const link = document.createElement("a");
-  //       link.href = url;
-  //       link.setAttribute("download", `MAFS_Users_${Date.now()}.csv`);
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       document.body.removeChild(link);
-  //       window.URL.revokeObjectURL(url);
-  //       toast.success("Export completed successfully");
-  //     }
-  //   } catch (err) {
-  //     console.error("Export Error:", err);
-  //     toast.error("An unexpected error occurred during export");
-  //   }
-  // };
 
   const handleExport = async () => {
     try {
@@ -199,61 +171,13 @@ export default function UserManagementPage() {
     }
   };
 
-  // const initialFilter = location?.state;
-
-  // console.log("initialFilter: ", initialFilter);
-
-  // // 1. Effect to handle the filter passed from the Dashboard/KPI
-  // useEffect(() => {
-  //   if (!initialFilter) return;
-
-  //   // Reset pagination when a new filter is applied from outside
-  //   setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-
-  //   if (initialFilter === "Restricted") {
-  //     setAccountStatus("banned");
-  //     // setIsPremium(undefined);
-  //   } else if (initialFilter === "Active") {
-  //     setAccountStatus("active");
-  //     // setIsPremium(undefined);
-  //   } else if (initialFilter === "Revenue") {
-  //     setIsPremium(true);
-  //     // setAccountStatus("");
-  //   }
-  // }, [initialFilter]);
-
-  // useEffect(() => {
-  //   const delayDebounceFn = setTimeout(() => {
-  //     dispatch(
-  //       fetchUsers({
-  //         page: pagination.pageIndex + 1,
-  //         limit: pagination.pageSize,
-  //         search: globalFilter,
-  //         accountStatus: accountStatus,
-  //         isPremium: isPremium,
-  //       })
-  //     );
-  //   }, 500);
-
-  //   return () => clearTimeout(delayDebounceFn);
-  // }, [
-  //   dispatch,
-  //   pagination.pageIndex,
-  //   pagination.pageSize,
-  //   globalFilter,
-  //   accountStatus,
-  //   isPremium,
-  // ]);
-
-  // --- Effects ---
-
   useEffect(() => {
     const initialFilter = location?.state;
     if (!initialFilter) return;
 
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     if (initialFilter === "Restricted") setAccountStatus("banned");
-    else if (initialFilter === "Active") setAccountStatus("active");
+    else if (initialFilter === "Active") setLast24HR(true);
     else if (initialFilter === "Revenue") setIsPremium(true);
   }, [location?.state]);
 
@@ -266,11 +190,12 @@ export default function UserManagementPage() {
           search: globalFilter,
           accountStatus,
           isPremium,
+          last24Hours: last24HR,
         })
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [dispatch, pagination, globalFilter, accountStatus, isPremium]);
+  }, [dispatch, pagination, globalFilter, accountStatus, isPremium, last24HR]);
 
   const handleBanClick = (user) => {
     setSelectedUserForBan(user);
@@ -290,45 +215,6 @@ export default function UserManagementPage() {
     }
   };
 
-  // const stats = [
-  //   {
-  //     label: "Total Members",
-  //     val: reduxPagination.total || 0,
-  //     icon: <IconUsers />,
-  //     color: "blue",
-  //     description: "Overall Total Users",
-  //     trend: "+12.5%", // Added trend for visual appeal
-  //   },
-  //   {
-  //     label: "Active Users",
-  //     val: items.filter((u) => u.account?.status === "active").length,
-  //     icon: <IconUserCheck />,
-  //     color: "emerald",
-  //     description: "Live community",
-  //   },
-  //   {
-  //     label: "Premium Members",
-  //     val: items.filter((u) => u.account?.isPremium).length,
-  //     icon: <IconCrown />,
-  //     color: "amber",
-  //     description: "Pro tier active",
-  //   },
-  //   {
-  //     label: "Banned Users",
-  //     val: items.filter((u) => u.account?.status === "banned").length,
-  //     icon: <IconBan />,
-  //     color: "rose",
-  //     description: "Safety restrictions",
-  //   },
-  //   {
-  //     label: "Suspended",
-  //     val: items.filter((u) => u.account?.status === "suspended").length,
-  //     icon: <IconAlertTriangle />,
-  //     color: "orange",
-  //     description: "Under review",
-  //   },
-  // ];
-
   const colorMap = {
     blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
     emerald:
@@ -340,14 +226,14 @@ export default function UserManagementPage() {
   };
 
   const bgMap = {
-    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-100",
+    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
     emerald:
-      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-100",
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
     amber:
-      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-100",
-    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-100",
+      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
     orange:
-      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-100",
+      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
   };
 
   return (
@@ -360,15 +246,6 @@ export default function UserManagementPage() {
       >
         {/* --- HEADER SECTION --- */}
         <header className="flex flex-col gap-4">
-          {/* <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-              User Management
-            </h1>
-            <p className="text-slate-500 font-medium text-sm">
-              Monitor community activity and manage member accounts.
-            </p>
-          </div> */}
-
           <div className="flex md:items-center justify-between gap-4">
             <PageHeader
               heading="User Management"
@@ -413,40 +290,7 @@ export default function UserManagementPage() {
           variants={containerVariants}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
         >
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              variants={itemVariants}
-              whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              className={cn(
-                "group relative p-6 rounded-3xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
-                bgMap[stat.color]
-              )}
-            >
-              {/* Stat content remains the same */}
-              <div className="flex items-start justify-center gap-4">
-                <div
-                  className={cn(
-                    "p-3 rounded-2xl bg-gradient-to-br border shadow-sm",
-                    colorMap[stat.color]
-                  )}
-                >
-                  {React.cloneElement(stat.icon, { size: 22, stroke: 2 })}
-                </div>
-                <div className="flex-1 w-max">
-                  <p className="text-[10px] font-black uppercase tracking-widest mb-0.5">
-                    {stat.label}
-                  </p>
-                  <h4 className="text-2xl font-black text-slate-900 leading-none">
-                    {stat.val.toLocaleString()}
-                  </h4>
-                  <p className="text-[10px] font-medium mt-1 truncate text-slate-500">
-                    {stat.description}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
         </motion.div>
 
         {/* --- TABLE SECTION --- */}
@@ -470,6 +314,11 @@ export default function UserManagementPage() {
             isPremium,
             setIsPremium: (val) => {
               setIsPremium(val);
+              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+            },
+            last24HR,
+            setLast24HR: (val) => {
+              setLast24HR(val);
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             },
           }}

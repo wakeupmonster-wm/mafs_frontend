@@ -80,7 +80,7 @@ export default function CampaignWinnerPage() {
     <div className="p-4 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-900 p-3 rounded-xl shadow-lg">
+          <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
             <Award className="h-5 w-5 text-white animate-pulse" />
           </div>
           <div>

@@ -36,7 +36,7 @@ export default function EntitlementPage() {
             subheading="Manually grant or revoke premium access and free trials to specific users."
           />
 
-          <Button className="bg-slate-900 hover:bg-slate-800 gap-2 h-11 px-6 shadow-lg shadow-slate-200">
+          <Button className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400">
             <Plus className="w-4 h-4" /> Grant New Access
           </Button>
         </header>

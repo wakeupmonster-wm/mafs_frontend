@@ -152,7 +152,7 @@ export default function PrizePage() {
     <div className="p-4 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-gray-900 p-3 rounded-xl shadow-lg">
+          <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
             <Trophy className="text-white h-6 w-6" />
           </div>
           <div>
@@ -165,7 +165,7 @@ export default function PrizePage() {
             resetForm();
             setIsDialogOpen(true);
           }}
-          className="gap-2"
+          className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
         >
           <Plus className="h-4 w-4" /> Create New Prize
         </Button>

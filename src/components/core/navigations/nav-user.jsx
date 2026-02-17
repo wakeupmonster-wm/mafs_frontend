@@ -48,13 +48,13 @@ export function NavUser({ user }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-brand-aqua"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-9 w-9 rounded-full">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback className="rounded-lg">
                   {dummyImg}
                 </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-[13px] leading-tight">
+              <div className="grid flex-1 text-left text-[12px] leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="text-muted-foreground truncate text-[11px]">
                   {user.email}

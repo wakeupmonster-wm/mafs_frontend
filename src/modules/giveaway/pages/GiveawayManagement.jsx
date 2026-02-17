@@ -11,6 +11,7 @@ import {
   Package,
   Award,
   Megaphone,
+  Users,
 } from "lucide-react";
 
 import { PageHeader } from "@/components/common/headSubhead";
@@ -25,6 +26,7 @@ import BulkCampaignsPage from "./bulk.campaign.page";
 import CampaignWinnerPage from "./campaign.winner.page";
 import PendingDeliveriesPage from "./pending.deliveries.page";
 import { useSelector } from "react-redux";
+import ParticipantsPage from "./participants.page";
 
 const TABS = [
   { key: "prizes", label: "Prizes", icon: GiftIcon },
@@ -32,6 +34,7 @@ const TABS = [
   { key: "bulk", label: "Bulk", icon: Layers },
   { key: "deliveries", label: "Deliveries", icon: Truck },
   { key: "winner", label: "Winners", icon: Crown },
+  { key: "participants", label: "Participants", icon: Users },
 ];
 
 export default function GiveawayManagement() {
@@ -49,37 +52,53 @@ export default function GiveawayManagement() {
         return {
           count: prizes?.length || 0,
           label: "Total Prizes",
-          icon: <Trophy className="w-4 h-4" />,
+          icon: (
+            <Trophy className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
+          ),
         };
       case "campaigns":
         return {
           count: campaigns?.length || 0,
           label: "Total Campaigns",
-          icon: <Megaphone className="w-4 h-4" />,
+          icon: (
+            <Megaphone className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
+          ),
         };
       case "bulk":
         return {
           count: campaigns?.length || 0,
           label: "Total Campaigns",
-          icon: <Megaphone className="w-4 h-4" />,
+          icon: (
+            <Megaphone className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
+          ),
         };
       case "deliveries":
         return {
           count: deliveries?.length || 0,
           label: "Pending Deliveries",
-          icon: <Package className="w-4 h-4" />,
+          icon: (
+            <Package className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
+          ),
         };
       case "winner":
         return {
           count: winner?.length || 0,
           label: "Total Winners",
-          icon: <Award className="w-4 h-4" />,
+          icon: <Award className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
+        };
+      case "participants":
+        return {
+          count: winner?.length || 0,
+          label: "Total Winners",
+          icon: <Award className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
         };
       default:
         return {
           count: 0,
           label: "Items",
-          icon: <Trophy className="w-4 h-4" />,
+          icon: (
+            <Trophy className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
+          ),
         };
     }
   };
@@ -98,7 +117,7 @@ export default function GiveawayManagement() {
           <PageHeader
             heading="Giveaway Management"
             icon={<GiftIcon className="w-9 h-9 text-white animate-pulse" />}
-            color="bg-gradient-to-br from-indigo-600 to-violet-700 shadow-indigo-200"
+            color="bg-brand-aqua shadow-brand-aqua/40"
             subheading="Manage prizes, campaigns, winners and deliveries from one centralized admin panel."
           />
 
@@ -108,16 +127,14 @@ export default function GiveawayManagement() {
               key={tab} // Changing key triggers the animation
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3 min-w-[140px]"
+              className="bg-brand-aqua/20 p-2 rounded-xl border border-brand-aqua shadow-sm flex items-center gap-3 min-w-[140px]"
             >
-              <div className="p-2 bg-emerald-50 rounded-lg text-emerald-600">
-                {currentStat.icon}
-              </div>
+              <div className="p-2 rounded-lg">{currentStat.icon}</div>
               <div>
-                <p className="text-[10px] text-slate-400 font-bold uppercase leading-tight">
+                <p className="text-[12px] text-slate-600 font-bold uppercase leading-tight">
                   {currentStat.label}
                 </p>
-                <p className="text-sm font-bold text-slate-800">
+                <p className="text-[11px] font-bold text-slate-800">
                   {currentStat.count} {tab === "winner" ? "Records" : "Items"}
                 </p>
               </div>
@@ -137,14 +154,14 @@ export default function GiveawayManagement() {
                   className={cn(
                     "relative flex items-center gap-2 px-5 py-2.5 text-sm font-semibold transition-all duration-300 rounded-xl",
                     isActive
-                      ? "text-indigo-700"
+                      ? "text-brand-aqua"
                       : "text-slate-500 hover:text-slate-700 hover:bg-slate-300/30"
                   )}
                 >
                   <t.icon
                     className={cn(
                       "w-4 h-4",
-                      isActive ? "text-indigo-600" : "text-slate-400"
+                      isActive ? "text-brand-aqua" : "text-slate-400"
                     )}
                   />
                   {t.label}
@@ -185,6 +202,7 @@ export default function GiveawayManagement() {
               {tab === "deliveries" && <PendingDeliveriesPage />}
               {/* {tab === "winner" && <CampaignWinner />} */}
               {tab === "winner" && <CampaignWinnerPage />}
+              {tab === "participants" && <ParticipantsPage />}
             </main>
           </motion.div>
         </AnimatePresence>

@@ -186,17 +186,18 @@ export default function KYCVerificationDataTable({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 transition-all whitespace-nowrap",
-                      (filters.statusFilter || filters.sortBy) &&
+                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                      hasActiveFilters &&
                         "border-brand-aqua ring-1 ring-brand-aqua"
                     )}
                   >
                     <IconFilter
+                      strokeWidth={2.5}
                       className={cn(
-                        "h-4 w-4 mr-2",
-                        filters.statusFilter || filters.sortBy
+                        "h-6 w-6",
+                        hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/50"
+                          : "text-brand-aqua/60"
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">

@@ -1,53 +1,91 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { adminService } from "../services/account.service";
+import {
+  getAdminAccountAPI,
+  patchAdminAccountAPI,
+} from "../services/account.service";
 
 export const fetchProfile = createAsyncThunk(
   "account/fetchProfile",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await adminService.getProfile();
-      return res.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.data.message);
+      const response = await getAdminAccountAPI();
+      console.log("response: ", response);
+
+      if (response && response.success) {
+        return { account: response.data || [] };
+      }
+      return rejectWithValue(response.message || "Failed to fetch account");
+    } catch (e) {
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to fetch account"
+      );
     }
   }
 );
 
-export const updateAdminName = createAsyncThunk(
-  "account/updateName",
-  async (name, { rejectWithValue }) => {
+export const updateAdminAccount = createAsyncThunk(
+  "account/updateAdminAccount",
+  async (formData, { rejectWithValue }) => {
     try {
-      const res = await adminService.updateName(name);
-      return res.data.data;
+      // formData is the FormData object containing nickname, about, and avatar
+      const res = await patchAdminAccountAPI(formData);
+
+      if (res.success) {
+        return res.data; // This is the structured response data
+      }
+      return rejectWithValue(res.message || "Update failed");
     } catch (err) {
-      return rejectWithValue(err.response.data.message);
+      return rejectWithValue(err.response?.data?.message || "Update failed");
     }
   }
 );
 
 const accountSlice = createSlice({
   name: "account",
-  initialState: { profile: null, loading: false, error: null },
+  initialState: {
+    account: null,
+    loading: false,
+    updating: false, // Separate loading state for updates
+    error: null,
+  },
+  reducers: {
+    // You can add a clearError reducer here if needed
+    clearAccountError: (state) => {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProfile.fulfilled, (state, action) => {
-        state.profile = action.payload;
-        state.loading = false;
+      // Fetch Profile Logic
+      .addCase(fetchProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addMatcher(
-        (action) => action.type.endsWith("/pending"),
-        (state) => {
-          state.loading = true;
-        }
-      )
-      .addMatcher(
-        (action) => action.type.endsWith("/rejected"),
-        (state, action) => {
-          state.loading = false;
-          state.error = action.payload;
-        }
-      );
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.account = action.payload.account;
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Update Account Logic
+      .addCase(updateAdminAccount.pending, (state) => {
+        state.updating = true;
+        state.error = null;
+      })
+      .addCase(updateAdminAccount.fulfilled, (state, action) => {
+        state.updating = false;
+        // Directly update the account state with the new data from server
+        state.account = action.payload;
+      })
+      .addCase(updateAdminAccount.rejected, (state, action) => {
+        state.updating = false;
+        state.error = action.payload;
+      });
   },
 });
 
+export const { clearAccountError } = accountSlice.actions;
 export default accountSlice.reducer;

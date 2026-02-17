@@ -3,9 +3,13 @@ import { motion } from "framer-motion";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Inbox } from "lucide-react";
 import SupportTicketsDataTables from "@/components/shared/data-tables/support.ticket.data.table";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMyTickets } from "../store/support.slice";
+import {
+  adminReplyToTicket,
+  clearSupportStatus,
+  fetchMyTickets,
+} from "../store/support.slice";
 import { supportColumns } from "@/components/columns/support.columns";
 import { TicketAction } from "../components/dialogs/tickets.action";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -34,13 +38,8 @@ const itemVariants = {
 export default function SupportTicketsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
-  // 1. Redux State
-  //   const {
-  //     list,
-  //     pagination: reduxPagination,
-  //     loading,
-  //   } = useSelector((s) => s.profileReview);
   const {
     tickets,
     pagination: reduxPagination,
@@ -59,7 +58,6 @@ export default function SupportTicketsPage() {
     isOpen: false,
     ticketId: null,
     nickname: "",
-    action: "", // 'approve', 'reject', or 'delete'
   });
 
   useEffect(() => {
@@ -83,6 +81,14 @@ export default function SupportTicketsPage() {
   ]);
 
   useEffect(() => {
+    const initialFilter = location?.state;
+    if (!initialFilter) return;
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    if (initialFilter === "Tickets") setStatusFilter("open");
+  }, [location?.state]);
+
+  useEffect(() => {
     if (selectedTicket) {
       setStatusUpdate(selectedTicket.status);
       setReply(""); // Clear previous reply
@@ -92,18 +98,36 @@ export default function SupportTicketsPage() {
   const columns = useMemo(() => supportColumns(navigate), [navigate]);
 
   const handleActionSubmit = async () => {
-    // Your API call logic here
-    console.log("Updating ticket:", selectedTicket._id, statusUpdate, reply);
-    // After success:
-    setSelectedTicket(null);
+    if (!reply.trim()) return;
+
+    try {
+      const resultAction = await dispatch(
+        adminReplyToTicket({
+          ticketId: selectedTicket._id,
+          reply: reply,
+          status: statusUpdate,
+        })
+      );
+
+      if (adminReplyToTicket.fulfilled.match(resultAction)) {
+        setReply("");
+        setSelectedTicket(null);
+
+        dispatch(
+          fetchMyTickets({ page: pagination.page, limit: pagination.limit })
+        );
+
+        setTimeout(() => dispatch(clearSupportStatus()), 3000);
+      }
+    } catch (error) {
+      console.error("Failed to update ticket:", error);
+    }
   };
 
   const handleConfirmAction = async () => {
-    if (confirmConfig.action === "delete") {
-      console.log("Deleting ticket:", confirmConfig.ticketId);
-      // Dispatch your delete action here:
-      // await dispatch(deleteTicket(confirmConfig.ticketId));
-    }
+    console.log("Deleting ticket:", confirmConfig.ticketId);
+    // Dispatch your delete action here:
+    // await dispatch(deleteTicket(confirmConfig.ticketId));
     // Close modal after action
     setConfirmConfig({ ...confirmConfig, isOpen: false });
   };
@@ -168,32 +192,10 @@ export default function SupportTicketsPage() {
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
         onConfirm={handleConfirmAction}
-        title={
-          confirmConfig.action === "delete"
-            ? "Delete Ticket?"
-            : confirmConfig.action === "approve"
-            ? "Approve KYC?"
-            : "Reject KYC?"
-        }
-        message={
-          confirmConfig.action === "delete"
-            ? `Are you sure you want to delete the ticket from ${confirmConfig.nickname}? This action is permanent and cannot be undone.`
-            : confirmConfig.action === "approve"
-            ? `Are you sure you want to approve ${confirmConfig.nickname}?`
-            : `Are you sure you want to reject ${confirmConfig.nickname}?`
-        }
-        confirmText={
-          confirmConfig.action === "delete"
-            ? "Delete Permanently"
-            : confirmConfig.action === "approve"
-            ? "Approve User"
-            : "Reject User"
-        }
-        type={
-          confirmConfig.action === "delete" || confirmConfig.action === "reject"
-            ? "danger"
-            : "success"
-        }
+        title={"Delete Ticket?"}
+        message={`Are you sure you want to delete the ticket from ${confirmConfig.nickname}? This action is permanent and cannot be undone.`}
+        confirmText={"Delete Permanently"}
+        type={"danger"}
       />
     </div>
   );

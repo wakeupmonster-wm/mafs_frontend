@@ -637,7 +637,6 @@ export function ContactSupportPage() {
 //           </div>
 //         )}
 //         </Card>
-         
 
 //         {/* Mobile View remains similar but uses the same filtered data */}
 
@@ -654,10 +653,10 @@ export function ContactSupportPage() {
 //         <div className="flex justify-between items-start mb-3">
 //           <div className="flex items-center gap-3">
 //             <div className="h-10 w-10 rounded-full bg-gray-100 border overflow-hidden">
-//               <img 
-//                 src={t.user?.avatar || "/api/placeholder/40/40"} 
-//                 alt="U" 
-//                 className="h-full w-full object-cover" 
+//               <img
+//                 src={t.user?.avatar || "/api/placeholder/40/40"}
+//                 alt="U"
+//                 className="h-full w-full object-cover"
 //               />
 //             </div>
 //             <div className="flex flex-col">
@@ -688,8 +687,8 @@ export function ContactSupportPage() {
 //                 <Phone className="w-3 h-3" /> {t.user?.phone}
 //              </div>
 //           </div>
-          
-//           <a 
+
+//           <a
 //             href={`/admin/management/support/ticket/${t._id}`}
 //             className="flex items-center gap-1 text-blue-600 font-bold text-xs bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-colors"
 //           >
@@ -705,12 +704,13 @@ export function ContactSupportPage() {
 //   );
 // }
 
-
-
-
-
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {  Search, Filter} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Search, Filter } from "lucide-react";
 import { toast } from "sonner";
 
 export function MyTicketsPage() {
@@ -719,7 +719,11 @@ export function MyTicketsPage() {
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
-  const [imageModal, setImageModal] = useState({ open: false, src: "", title: "" });
+  const [imageModal, setImageModal] = useState({
+    open: false,
+    src: "",
+    title: "",
+  });
 
   // --- Nayi States Dialog ke liye ---
   const [selectedTicket, setSelectedTicket] = useState(null);
@@ -735,12 +739,14 @@ export function MyTicketsPage() {
 
   const handleActionSubmit = async () => {
     if (!reply.trim()) return toast.error("Please enter a reply");
-    
-    const res = await dispatch(adminReplyToTicket({ 
-      ticketId: selectedTicket._id, 
-      reply: reply, 
-      status: statusUpdate 
-    }));
+
+    const res = await dispatch(
+      adminReplyToTicket({
+        ticketId: selectedTicket._id,
+        reply: reply,
+        status: statusUpdate,
+      })
+    );
 
     if (res.meta.requestStatus === "fulfilled") {
       toast.success("Action updated successfully");
@@ -769,11 +775,17 @@ export function MyTicketsPage() {
               <Inbox className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Support Management</h1>
-              <p className="text-xs text-gray-500">Track and manage customer queries</p>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+                Support Management
+              </h1>
+              <p className="text-xs text-gray-500">
+                Track and manage customer queries
+              </p>
             </div>
           </div>
-          <Badge variant="secondary" className="w-fit">{tickets?.length} Total Tickets</Badge>
+          <Badge variant="secondary" className="w-fit">
+            {tickets?.length} Total Tickets
+          </Badge>
         </div>
 
         {/* Filters Bar */}
@@ -821,39 +833,87 @@ export function MyTicketsPage() {
             </thead>
             <tbody className="divide-y divide-gray-50">
               {loading ? (
-                <tr><td colSpan={8} className="py-20 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" /></td></tr>
+                <tr>
+                  <td colSpan={8} className="py-20 text-center">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
+                  </td>
+                </tr>
               ) : tickets?.length === 0 ? (
-                <tr><td colSpan={8} className="py-20 text-center text-gray-500">No tickets found.</td></tr>
+                <tr>
+                  <td colSpan={8} className="py-20 text-center text-gray-500">
+                    No tickets found.
+                  </td>
+                </tr>
               ) : (
                 tickets.map((t) => (
-                  <tr key={t._id} className="hover:bg-gray-50/80 transition-colors">
+                  <tr
+                    key={t._id}
+                    className="hover:bg-gray-50/80 transition-colors"
+                  >
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-full bg-gray-100 overflow-hidden border">
                           <img
                             src={t.user?.avatar}
                             alt="Selfie"
-                            onClick={() => setImageModal({ open: true, src: t.user?.avatar, title: "User Selfie" })}
+                            onClick={() =>
+                              setImageModal({
+                                open: true,
+                                src: t.user?.avatar,
+                                title: "User Selfie",
+                              })
+                            }
                             className="w-10 h-10 rounded-full object-cover cursor-pointer hover:scale-105 transition"
                           />
                         </div>
-                        <span className="font-bold text-gray-900 text-xs">{t.user?.nickname || "No Nickname"}</span>
+                        <span className="font-bold text-gray-900 text-xs">
+                          {t.user?.nickname || "No Nickname"}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4"><span className="flex items-center gap-1"><Phone className="w-2.5 h-2.5" /> {t.user?.phone}</span></td>
-                    <td className="px-2 py-4"><span className="flex items-center gap-1"><Mail className="w-2.5 h-2.5" /> {t.user?.email}</span></td>
                     <td className="px-6 py-4">
-                      <div className="font-semibold text-gray-900">{t.subject}</div>
-                      <div className="text-[11px] text-gray-400 uppercase">ID: {t._id.slice(-6)}</div>
+                      <span className="flex items-center gap-1">
+                        <Phone className="w-2.5 h-2.5" /> {t.user?.phone}
+                      </span>
                     </td>
-                    <td className="px-6 py-4"><span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md text-[11px] font-medium italic">#{t.category}</span></td>
+                    <td className="px-2 py-4">
+                      <span className="flex items-center gap-1">
+                        <Mail className="w-2.5 h-2.5" /> {t.user?.email}
+                      </span>
+                    </td>
                     <td className="px-6 py-4">
-                      <Badge variant="outline" className={`${getStatusStyle(t.status)} font-medium capitalize`}>{t.status.replace("_", " ")}</Badge>
+                      <div className="font-semibold text-gray-900">
+                        {t.subject}
+                      </div>
+                      <div className="text-[11px] text-gray-400 uppercase">
+                        ID: {t._id.slice(-6)}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 text-gray-500 text-xs">{new Date(t.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">
+                      <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-md text-[11px] font-medium italic">
+                        #{t.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge
+                        variant="outline"
+                        className={`${getStatusStyle(
+                          t.status
+                        )} font-medium capitalize`}
+                      >
+                        {t.status.replace("_", " ")}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500 text-xs">
+                      {new Date(t.createdAt).toLocaleDateString()}
+                    </td>
                     <td className="px-6 py-4 text-right">
                       <button
-                        onClick={() => { setSelectedTicket(t); setReply(t.adminReply || ""); setStatusUpdate(t.status); }}
+                        onClick={() => {
+                          setSelectedTicket(t);
+                          setReply(t.adminReply || "");
+                          setStatusUpdate(t.status);
+                        }}
                         className="text-blue-600 hover:text-blue-800 font-medium flex items-center justify-end gap-1 ml-auto"
                       >
                         <Eye className="w-4 h-4" /> Action
@@ -869,35 +929,68 @@ export function MyTicketsPage() {
         {/* --- Mobile View (Cards) --- */}
         <div className="md:hidden space-y-4">
           {loading ? (
-            <div className="py-10 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" /></div>
+            <div className="py-10 text-center">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
+            </div>
           ) : tickets?.length === 0 ? (
-            <div className="py-10 text-center text-gray-500 bg-white rounded-lg border">No tickets found.</div>
+            <div className="py-10 text-center text-gray-500 bg-white rounded-lg border">
+              No tickets found.
+            </div>
           ) : (
             tickets.map((t) => (
-              <Card key={t._id} className="p-4 border-gray-200 shadow-sm bg-white hover:border-blue-300 transition-all">
+              <Card
+                key={t._id}
+                className="p-4 border-gray-200 shadow-sm bg-white hover:border-blue-300 transition-all"
+              >
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-gray-100 border overflow-hidden">
-                      <img src={t.user?.avatar || "/api/placeholder/40/40"} alt="U" className="h-full w-full object-cover" />
+                      <img
+                        src={t.user?.avatar || "/api/placeholder/40/40"}
+                        alt="U"
+                        className="h-full w-full object-cover"
+                      />
                     </div>
                     <div className="flex flex-col">
-                      <span className="font-bold text-gray-900 text-sm">{t.user?.nickname || "No Name"}</span>
-                      <span className="text-[10px] text-gray-500 uppercase font-mono italic">#{t._id.slice(-6)}</span>
+                      <span className="font-bold text-gray-900 text-sm">
+                        {t.user?.nickname || "No Name"}
+                      </span>
+                      <span className="text-[10px] text-gray-500 uppercase font-mono italic">
+                        #{t._id.slice(-6)}
+                      </span>
                     </div>
                   </div>
-                  <Badge className={`${getStatusStyle(t.status)} text-[10px] px-2 py-0 h-5`}>{t.status}</Badge>
+                  <Badge
+                    className={`${getStatusStyle(
+                      t.status
+                    )} text-[10px] px-2 py-0 h-5`}
+                  >
+                    {t.status}
+                  </Badge>
                 </div>
                 <div className="space-y-1 mb-4">
-                  <p className="text-xs font-semibold text-gray-800 line-clamp-1">{t.subject}</p>
-                  <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">#{t.category}</span>
+                  <p className="text-xs font-semibold text-gray-800 line-clamp-1">
+                    {t.subject}
+                  </p>
+                  <span className="text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded">
+                    #{t.category}
+                  </span>
                 </div>
                 <div className="pt-3 border-t flex items-center justify-between border-gray-100">
                   <div className="flex flex-col gap-0.5 text-[10px] text-gray-500">
-                    <span className="flex items-center gap-1.5"><Mail className="w-3 h-3" /> {t.user?.email}</span>
-                    <span className="flex items-center gap-1.5"><Phone className="w-3 h-3" /> {t.user?.phone}</span>
+                    <span className="flex items-center gap-1.5">
+                      <Mail className="w-3 h-3" /> {t.user?.email}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-3 h-3" /> {t.user?.phone}
+                    </span>
                   </div>
-                  <button 
-                    onClick={() => { setSelectedTicket(t); setReply(t.adminReply || ""); setStatusUpdate(t.status); }}
+                  <button
+                    onClick={() => {
+                      setSelectedTicket(t);
+                      setReply(t.adminReply || "");
+                      setStatusUpdate(t.status);
+                    }}
                     className="flex items-center gap-1 text-blue-600 font-bold text-xs bg-blue-50 px-3 py-1.5 rounded-lg"
                   >
                     <Eye className="w-3.5 h-3.5" /> Action
@@ -909,20 +1002,31 @@ export function MyTicketsPage() {
         </div>
 
         {/* --- ACTION DIALOG --- */}
-        <Dialog open={!!selectedTicket} onOpenChange={() => setSelectedTicket(null)}>
+        <Dialog
+          open={!!selectedTicket}
+          onOpenChange={() => setSelectedTicket(null)}
+        >
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-lg font-bold">Ticket Action</DialogTitle>
+              <DialogTitle className="text-lg font-bold">
+                Ticket Action
+              </DialogTitle>
             </DialogHeader>
             <div className="space-y-4 py-2">
               <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 space-y-1">
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">User's Message</p>
-                <p className="text-sm text-gray-700 italic">"{selectedTicket?.subject}"</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                  User's Message
+                </p>
+                <p className="text-sm text-gray-700 italic">
+                  "{selectedTicket?.subject}"
+                </p>
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-semibold">Update Status</label>
                 <Select value={statusUpdate} onValueChange={setStatusUpdate}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="open">Open</SelectItem>
                     <SelectItem value="in_progress">In Progress</SelectItem>
@@ -933,8 +1037,8 @@ export function MyTicketsPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-semibold">Admin Reply</label>
-                <Textarea 
-                  placeholder="Type your reply here..." 
+                <Textarea
+                  placeholder="Type your reply here..."
                   className="min-h-[100px] text-sm"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
@@ -942,9 +1046,11 @@ export function MyTicketsPage() {
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-4">
-              <Button variant="outline" onClick={() => setSelectedTicket(null)}>Cancel</Button>
-              <Button 
-                onClick={handleActionSubmit} 
+              <Button variant="outline" onClick={() => setSelectedTicket(null)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleActionSubmit}
                 className="bg-gray-900 text-white hover:bg-black"
                 disabled={loading}
               >
@@ -960,9 +1066,20 @@ export function MyTicketsPage() {
             <div className="relative bg-white rounded-xl w-full max-w-md shadow-xl p-4">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-semibold">{imageModal.title}</h3>
-                <button onClick={() => setImageModal({ open: false, src: "", title: "" })} className="text-gray-500">✕</button>
+                <button
+                  onClick={() =>
+                    setImageModal({ open: false, src: "", title: "" })
+                  }
+                  className="text-gray-500"
+                >
+                  ✕
+                </button>
               </div>
-              <img src={imageModal.src} alt="Preview" className="max-h-[70vh] w-full rounded-lg object-contain" />
+              <img
+                src={imageModal.src}
+                alt="Preview"
+                className="max-h-[70vh] w-full rounded-lg object-contain"
+              />
             </div>
           </div>
         )}
@@ -973,7 +1090,7 @@ export function MyTicketsPage() {
 export function TicketDetailPage({ ticketId }) {
   const dispatch = useDispatch();
   const { selectedTicket, loading, error, successMessage } = useSelector(
-    (s) => s.support,
+    (s) => s.support
   );
 
   const [reply, setReply] = useState("");
@@ -994,7 +1111,7 @@ export function TicketDetailPage({ ticketId }) {
         ticketId,
         reply,
         status,
-      }),
+      })
     ).then(() => {
       setReply("");
       setTimeout(() => dispatch(clearSupportStatus()), 2000);
@@ -1019,11 +1136,9 @@ export function TicketDetailPage({ ticketId }) {
           <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
           <span className="text-sm text-gray-500">Loading ticket...</span>
         </div>
-        
       </div>
     );
   }
-  
 
   if (error) {
     return (
@@ -1049,14 +1164,12 @@ export function TicketDetailPage({ ticketId }) {
             <p className="text-gray-500">Ticket not found</p>
           </Card>
         </div>
-        
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-8">
-      
       <div className="max-w-3xl mx-auto space-y-4">
         {/* Back Button */}
         <a
@@ -1117,7 +1230,6 @@ export function TicketDetailPage({ ticketId }) {
                 {ticket.message}
               </p>
             </div>
-            
 
             {/* Admin Reply */}
             {ticket.adminReply && (
@@ -1205,7 +1317,6 @@ export function TicketDetailPage({ ticketId }) {
           </form>
         </Card>
       </div>
-      
     </div>
   );
 }

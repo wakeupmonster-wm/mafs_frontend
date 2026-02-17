@@ -8,81 +8,29 @@ import {
   IconCrown,
   IconHistory,
   IconArrowUpRight,
+  IconBrandApple,
+  IconBrandAndroid,
+  IconDeviceMobile,
+  IconCircleCheck,
+  IconCircleX,
 } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
-// export const FinancialsTab = ({ account }) => {
-//   return (
-//     // --- TAB 6: FINANCIALS ---
-//     <TabsContent
-//       value="financials"
-//       className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6"
-//     >
-//       <Card className="md:col-span-4 bg-primary/5 border-primary/20">
-//         <CardHeader>
-//           <CardTitle className="text-lg flex items-center gap-2">
-//             <IconCreditCard /> Current Plan
-//           </CardTitle>
-//         </CardHeader>
-//         <CardContent className="space-y-4">
-//           <div className="flex justify-between items-center">
-//             <span className="text-sm font-medium">Subscription Type</span>
-//             <Badge variant={account.isPremium ? "premium" : "outline"}>
-//               {account.isPremium ? "Premium Pro" : "Free Tier"}
-//             </Badge>
-//           </div>
-//           <div className="flex justify-between items-center">
-//             <span className="text-sm font-medium">Expiry Date</span>
-//             <span className="text-sm">Jan 24, 2027</span>
-//           </div>
-//           <Separator />
-//           <Button className="w-full" variant="outline" size="sm">
-//             Manage Subscription
-//           </Button>
-//         </CardContent>
-//       </Card>
-//       <Card className="md:col-span-8">
-//         <CardHeader>
-//           <CardTitle>Transaction History</CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           <table className="w-full text-sm text-left">
-//             <thead>
-//               <tr className="border-b text-muted-foreground">
-//                 <th className="pb-3">Date</th>
-//                 <th>Transaction ID</th>
-//                 <th>Amount</th>
-//                 <th>Status</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               <tr className="border-b">
-//                 <td className="py-3">12 Jan 2026</td>
-//                 <td>#TRX-00123</td>
-//                 <td>$14.99</td>
-//                 <td>
-//                   <Badge variant="success">Paid</Badge>
-//                 </td>
-//               </tr>
-//               <tr className="border-b">
-//                 <td className="py-3">12 Dec 2025</td>
-//                 <td>#TRX-88210</td>
-//                 <td>$14.99</td>
-//                 <td>
-//                   <Badge variant="success">Paid</Badge>
-//                 </td>
-//               </tr>
-//             </tbody>
-//           </table>
-//         </CardContent>
-//       </Card>
-//     </TabsContent>
-//   );
-// };
+export const FinancialsTab = ({ account, transactions, subscription }) => {
+  // Helper to format plan names: "monthly" -> "Premium Monthly"
+  const getPlanName = () => {
+    if (!subscription?.planType) return "Free Plan";
+    return `Premium ${
+      subscription.planType.charAt(0).toUpperCase() +
+      subscription.planType.slice(1)
+    }`;
+  };
 
-export const FinancialsTab = ({ account }) => {
+  const isPremiumActive = subscription?.isCurrentlyActive || account.isPremium;
+
   return (
     <TabsContent
       value="financials"
@@ -91,180 +39,249 @@ export const FinancialsTab = ({ account }) => {
       {/* 1. SUBSCRIPTION OVERVIEW (4/12) */}
       <Card
         className={cn(
-          "lg:col-span-4 border-none shadow-lg overflow-hidden relative",
-          account.isPremium
-            ? "bg-slate-900 text-white"
-            : "bg-white text-slate-900 border border-slate-200"
+          "lg:col-span-4 border shadow-md overflow-hidden relative transition-all duration-300",
+          isPremiumActive
+            ? "bg-slate-900 text-white shadow-brand-aqua"
+            : "bg-brand-aqua/5 text-slate-900 border-brand-aqua"
         )}
       >
         {/* Background Decorative Icon */}
         <IconCrown
           className={cn(
             "absolute -right-6 -top-6 h-32 w-32 opacity-10",
-            account.isPremium ? "text-amber-400" : "text-slate-400"
+            isPremiumActive ? "text-amber-400" : "text-slate-700"
           )}
         />
 
         <CardHeader className="relative z-10 pb-2">
           <CardTitle className="text-sm font-bold uppercase tracking-widest opacity-70 flex items-center gap-2">
-            <IconCreditCard size={18} /> Active Subscription
+            <IconCreditCard size={18} /> Membership Status
           </CardTitle>
         </CardHeader>
 
         <CardContent className="relative z-10 space-y-6">
           <div className="py-2">
-            <h3 className="text-3xl font-black">
-              {account.isPremium ? "Premium Pro" : "Free Plan"}
+            <h3 className="text-3xl font-black flex items-center gap-2">
+              {getPlanName()}
+              {isPremiumActive && (
+                <IconCircleCheck className="text-amber-400" size={24} />
+              )}
             </h3>
             <p
               className={cn(
                 "text-xs font-medium mt-1",
-                account.isPremium ? "text-amber-400" : "text-slate-500"
+                isPremiumActive ? "text-amber-400" : "text-slate-500"
               )}
             >
-              {account.isPremium
-                ? "All features unlocked"
-                : "Standard user access"}
+              {isPremiumActive
+                ? `Billed via ${
+                    subscription?.platform?.toUpperCase() || "System"
+                  }`
+                : "Limited access to premium features"}
             </p>
           </div>
 
           <div className="space-y-4">
-            <div className="flex justify-between items-center bg-white/5 p-3 rounded-xl border border-white/10">
+            <div
+              className={`flex justify-between items-center p-3 rounded-xl border 
+                ${
+                  isPremiumActive
+                    ? "bg-white/5 border-white/20"
+                    : "bg-gray-100 border-slate-400"
+                }
+                `}
+            >
               <div className="flex items-center gap-2 text-sm font-medium">
                 <IconCalendarEvent size={16} /> Status
               </div>
               <Badge
                 className={cn(
-                  "border-none",
-                  account.isPremium
+                  "border-none font-bold",
+                  subscription?.status === "ACTIVE"
                     ? "bg-emerald-500 text-white"
-                    : "bg-slate-200 text-slate-700"
+                    : "bg-amber-500 text-white"
                 )}
               >
-                {account.isPremium ? "Active" : "Trial"}
+                {subscription?.status || "INACTIVE"}
               </Badge>
             </div>
 
+            <div className="space-y-3 pt-2">
+              {subscription?.startedAt && (
+                <div className="flex justify-between items-center p-1 px-3">
+                  <span className="text-sm opacity-70">Start Billing Date</span>
+                  <span className="text-sm font-bold">
+                    {format(new Date(subscription.startedAt), "MMM dd, yyyy")}
+                  </span>
+                </div>
+              )}
+
+              {subscription?.expiresAt && (
+                <div className="flex justify-between items-center p-1 px-3">
+                  <span className="text-sm opacity-70">
+                    {subscription.status === "ACTIVE"
+                      ? "Next Billing Date"
+                      : "Expired On"}
+                  </span>
+                  <span className="text-sm font-bold">
+                    {format(new Date(subscription.expiresAt), "MMM dd, yyyy")}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <Separator
+              className={isPremiumActive ? "bg-white/10" : "bg-slate-400"}
+            />
+
             <div className="flex justify-between items-center p-1 px-3">
-              <span className="text-sm opacity-70">Next Billing Date</span>
-              <span className="text-sm font-bold">Jan 24, 2027</span>
+              <span className="text-sm opacity-70">Member Since</span>
+              <span className="text-sm font-bold">
+                {format(new Date(account.createdAt), "MMM dd, yyyy")}
+              </span>
             </div>
           </div>
 
-          <Separator
-            className={account.isPremium ? "bg-white/10" : "bg-slate-100"}
-          />
+          {/* <Separator
+            className={isPremiumActive ? "bg-white/10" : "bg-slate-100"}
+          /> */}
 
-          <div className="flex flex-col gap-2 pt-2">
+          {/* <div className="flex flex-col gap-2 pt-2">
             <Button
               className={cn(
-                "w-full font-bold h-11",
-                account.isPremium
+                "w-full font-bold h-11 shadow-sm",
+                isPremiumActive
                   ? "bg-white text-black hover:bg-slate-100"
-                  : "bg-slate-900 text-white"
+                  : "bg-indigo-600 text-white hover:bg-indigo-700"
               )}
             >
-              Upgrade Plan
+              {isPremiumActive ? "Manage Subscription" : "Upgrade to Pro"}
             </Button>
-            <Button
-              variant="ghost"
-              className="text-xs opacity-60 hover:opacity-100 h-8"
-            >
-              Cancel Subscription
-            </Button>
-          </div>
+            {isPremiumActive && (
+              <Button
+                variant="ghost"
+                className="text-xs opacity-60 hover:opacity-100 h-8 text-rose-400 hover:text-rose-500"
+              >
+                Cancel Subscription
+              </Button>
+            )}
+          </div> */}
         </CardContent>
       </Card>
 
       {/* 2. TRANSACTION HISTORY (8/12) */}
-      <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden">
+      <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 border-b border-slate-100 py-4 px-6">
           <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
             <IconHistory size={18} className="text-indigo-500" /> Payment
             Records
           </CardTitle>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-8 bg-white text-[11px] font-bold"
-          >
-            Download All (PDF)
-          </Button>
+          <div className="flex gap-2">
+            <Badge
+              variant="outline"
+              className="bg-white text-slate-500 border-slate-200"
+            >
+              {transactions.length} Total
+            </Badge>
+          </div>
         </CardHeader>
 
-        <CardContent className="p-0">
+        <CardContent className="p-0 flex-grow">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/30">
-                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase tracking-tighter text-[10px]">
+                <tr className="border-b border-slate-100 bg-slate-50/50">
+                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase text-[10px] tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase tracking-tighter text-[10px]">
-                    Invoice ID
+                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase text-[10px] tracking-wider">
+                    Transaction ID
                   </th>
-                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase tracking-tighter text-[10px]">
+                  <th className="px-6 py-4 text-left font-bold text-slate-400 uppercase text-[10px] tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-4 text-right font-bold text-slate-400 uppercase tracking-tighter text-[10px]">
-                    Status
+                  <th className="px-6 py-4 text-center font-bold text-slate-400 uppercase text-[10px] tracking-wider">
+                    Platform
+                  </th>
+                  <th className="px-6 py-4 text-right font-bold text-slate-400 uppercase text-[10px] tracking-wider">
+                    Event
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {[
-                  {
-                    date: "12 Jan 2026",
-                    id: "#TRX-00123",
-                    amount: "$14.99",
-                    status: "Paid",
-                  },
-                  {
-                    date: "12 Dec 2025",
-                    id: "#TRX-88210",
-                    amount: "$14.99",
-                    status: "Paid",
-                  },
-                  {
-                    date: "12 Nov 2025",
-                    id: "#TRX-77641",
-                    amount: "$14.99",
-                    status: "Failed",
-                  },
-                ].map((row, i) => (
-                  <tr
-                    key={i}
-                    className="group hover:bg-slate-50 transition-colors"
-                  >
-                    <td className="px-6 py-4 font-medium text-slate-600">
-                      {row.date}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-1 text-slate-900 font-bold group-hover:text-indigo-600 transition-colors">
-                        {row.id}{" "}
-                        <IconArrowUpRight
-                          size={12}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity"
-                        />
+                {transactions.length > 0 ? (
+                  transactions.map((txn) => (
+                    <tr
+                      key={txn._id}
+                      className="group hover:bg-slate-50/80 transition-colors"
+                    >
+                      <td className="px-6 py-4 font-medium text-slate-600">
+                        {format(new Date(txn.occurredAt), "dd MMM yyyy")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-1 text-slate-900 font-mono text-xs font-bold group-hover:text-indigo-600 transition-colors">
+                          {txn.transactionId || "N/A"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-black text-slate-900">
+                        ${txn.amount.toFixed(2)}{" "}
+                        <span className="text-[10px] text-slate-400">
+                          {txn.currency}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center">
+                          {txn.platform === "ios" ? (
+                            <div
+                              className="flex items-center gap-1.5 p-1 px-2 rounded-lg bg-slate-100 text-slate-700"
+                              title="Apple App Store"
+                            >
+                              <IconBrandApple
+                                size={14}
+                                className="fill-current"
+                              />
+                              <span className="text-[10px] font-black uppercase">
+                                iOS
+                              </span>
+                            </div>
+                          ) : (
+                            <div
+                              className="flex items-center gap-1.5 p-1 px-2 rounded-lg bg-emerald-50 text-emerald-700"
+                              title="Google Play Store"
+                            >
+                              <IconBrandAndroid size={14} />
+                              <span className="text-[10px] font-black uppercase">
+                                Android
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Badge
+                          className={cn(
+                            "border-none px-3 capitalize text-[10px] font-bold",
+                            txn.eventType === "PURCHASE" ||
+                              txn.eventType === "RENEW"
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-amber-100 text-amber-700"
+                          )}
+                        >
+                          {txn.eventType.toLowerCase()}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-10 text-center">
+                      <div className="flex flex-col items-center gap-2 opacity-20">
+                        <IconCreditCard size={48} />
+                        <p className="font-medium">No payment records found</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-black text-slate-900">
-                      {row.amount}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Badge
-                        className={cn(
-                          "border-none px-3",
-                          row.status === "Paid"
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-rose-100 text-rose-700"
-                        )}
-                      >
-                        {row.status}
-                      </Badge>
-                    </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

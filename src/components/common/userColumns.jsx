@@ -1,10 +1,10 @@
 import {
-  ArrowDown,
-  ArrowUp,
   ArrowUpDown,
   Mail,
   MoreHorizontal,
   Phone,
+  Calendar,
+  Clock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,26 +12,20 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { IconStarFilled } from "@tabler/icons-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useNavigate } from "react-router";
 import dummyImg from "@/assets/images/dummyImg.jpg";
+import { format, formatDate, formatDistanceToNow } from "date-fns";
 
 // Helper for Completion Colors
 const getCompletionColor = (val) => {
-  if (val < 50) return "bg-red-500";
-  if (val <= 80) return "bg-yellow-500";
-  return "bg-green-500";
+  if (val < 50) return "bg-slate-400/40";
+  if (val <= 80) return "bg-slate-400/40";
+  return "bg-slate-400/40";
 };
 
 export const userColumns = [
@@ -210,6 +204,46 @@ export const userColumns = [
   //   header: "Role",
   //   cell: ({ row }) => <Badge variant="secondary">{row.original.role}</Badge>,
   // },
+  // {
+  //   accessorKey: "lastLoginAt",
+  //   header: ({ column }) => (
+  //     <button
+  //       className="text-[11px] w-max font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition-colors"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //     >
+  //       Last Active
+  //     </button>
+  //   ),
+  //   cell: ({ row }) => {
+  //     const loginValue = row.original?.lastLoginAt;
+  //     if (!loginValue) return <span className="text-xs text-slate-300">—</span>;
+
+  //     const date = new Date(loginValue);
+  //     const isOnline = new Date().getTime() - date.getTime() < 5 * 60 * 1000;
+
+  //     return (
+  //       <div className="flex items-center gap-1">
+  //         {/* Subtle Status Dot */}
+  //         <div
+  //           className={`h-1.5 w-1.5 rounded-full ${
+  //             isOnline
+  //               ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"
+  //               : "bg-slate-300"
+  //           }`}
+  //         />
+
+  //         <div className="flex flex-col w-max">
+  //           <span className="text-xs font-medium text-slate-700 leading-none">
+  //             {formatDate(date, "MMM d, p")}
+  //           </span>
+  //           {/* <span className="text-[10px] text-slate-400 mt-1">
+  //             {format(date, "MMM d, p")}
+  //           </span> */}
+  //         </div>
+  //       </div>
+  //     );
+  //   },
+  // },
   // Age Column
   {
     id: "age",
@@ -237,9 +271,7 @@ export const userColumns = [
         </span>
         <Progress
           value={row.original.profile.totalCompletion}
-          className={`h-1.5 ${getCompletionColor(
-            row.original.profile.totalCompletion
-          )}`}
+          className={`h-1.5 bg-slate-300 shadow-inner border border-gray-200`}
         />
       </div>
     ),
@@ -378,7 +410,7 @@ export const userColumns = [
             >
               View Profile
             </DropdownMenuItem>
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               onClick={() =>
                 navigate(`./edit-profile`, {
                   state: { userData: user },
@@ -386,7 +418,7 @@ export const userColumns = [
               }
             >
               Edit Details
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
             {/* <DropdownMenuItem
               className="text-destructive"
               onClick={() => {

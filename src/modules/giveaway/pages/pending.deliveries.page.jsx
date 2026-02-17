@@ -74,10 +74,10 @@ export default function PendingDeliveriesPage() {
   );
 
   return (
-    <div className="p-4 md:p-8 space-y-6 max-w-[1600px] mx-auto">
+    <div className="p-4 space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-slate-900 p-3 rounded-xl shadow-lg">
+          <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
             <Package className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -91,7 +91,7 @@ export default function PendingDeliveriesPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+      <div className="overflow-hidden">
         <PendingDeliveriesDataTables
           columns={columns}
           data={deliveries || []}

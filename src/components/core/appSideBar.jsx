@@ -21,25 +21,17 @@ import navigationData from "@/app/data/navigation";
 import { Link } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import dummyImg from "@/assets/images/dummyImg.jpg";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProfile } from "@/modules/accounts/store/account.slice";
+import { useMemo } from "react";
 
 export function AppSidebar({ ...props }) {
-  const [navUser, setNavUser] = useState({
-    name: "",
-    email: "",
-    avatar: "",
-  });
+  const dispatch = useDispatch();
+  const { account } = useSelector((state) => state.account);
 
   useEffect(() => {
-    const data = localStorage.getItem("auth_user");
-    if (data) {
-      const user = JSON.parse(data);
-      setNavUser({
-        name: user.fullName || user.nickname || "Admin",
-        email: user.email || "",
-        avatar: user.photos?.[0] || dummyImg,
-      });
-    }
-  }, []);
+    dispatch(fetchProfile());
+  }, [dispatch]);
 
   // Utility for section headers to keep the JSX clean
   const SectionHeader = ({ title }) => (
@@ -48,6 +40,15 @@ export function AppSidebar({ ...props }) {
         {title}
       </h2>
     </div>
+  );
+
+  const navUser = useMemo(
+    () => ({
+      name: account?.nickname || "Admin",
+      email: account?.email || "admin@mafs.com",
+      avatar: account?.avatar?.url || dummyImg,
+    }),
+    [account]
   );
 
   return (
@@ -122,7 +123,7 @@ export function AppSidebar({ ...props }) {
 
       {/* --- FOOTER: User Profile --- */}
       <SidebarFooter className="border border-slate-100 bg-slate-50/50 p-2">
-        <div className="rounded-lg border border-slate-400/60 bg-white shadow-sm transition-all hover:shadow-md">
+        <div className="rounded-lg border border-brand-aqua bg-white shadow-sm transition-all hover:shadow-md">
           <NavUser user={navUser} />
         </div>
       </SidebarFooter>
