@@ -2,12 +2,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   TrendingUp,
-  Users,
   CreditCard,
   AlertTriangle,
   ArrowUpRight,
-  Download,
-  Filter,
+  TrendingDown,
+  LayoutDashboard,
+  ReceiptText,
+  ShieldAlert,
 } from "lucide-react";
 
 import {
@@ -30,6 +31,7 @@ import PlatformPieChart from "../components/PlatformPieChart";
 import PlanBarChart from "../components/PlanBarChart";
 import TransactionTable from "../components/TransactionTable";
 import { EmptyState } from "../components/EmptyState";
+import RadialStatCard from "../components/radial.stat.card";
 
 // export default function AnalyticsPage() {
 //   const dispatch = useDispatch();
@@ -121,7 +123,7 @@ export default function AnalyticsPage() {
   const { revenue, daily, byPlan, byPlatform, period } = revenueAnalytic;
 
   return (
-    <div className="flex flex-col gap-6 p-8 bg-[#f8fafc] min-h-screen">
+    <div className="flex flex-col gap-6 p-4 min-h-screen">
       {/* Top Navigation / Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -136,44 +138,100 @@ export default function AnalyticsPage() {
       </div>
 
       {/* KPI Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
           title="Total Revenue"
           value={`$${revenue?.total}`}
           icon={<CreditCard />}
-          trend="+4.5%"
+          subtitle={`${revenue?.purchases?.count} purchases`}
+          trendValue="+4.5%"
+          trend="up"
         />
         <KpiCard
           title="Net Profit"
           value={`$${revenue?.net}`}
           icon={<TrendingUp />}
-          trend="+2.1%"
+          subtitle={`${revenue?.renewals?.count} renewals`}
+          trendValue="+2.1%"
+          trend="up"
         />
         <KpiCard
           title="Risk Users"
           value={riskUsers?.length || 0}
           icon={<AlertTriangle />}
+          subtitle={`${riskUsers?.length} risk users`}
           color="text-amber-600"
         />
         <KpiCard
           title="Refunds"
           value={`$${revenue?.refunds?.amount}`}
           icon={<ArrowUpRight />}
+          subtitle={`${revenue?.refunds?.count} refunds`}
           color="text-rose-600"
         />
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full max-w-[500px] grid-cols-3 bg-slate-200/50">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="transactions">Transactions</TabsTrigger>
-          <TabsTrigger value="risk">Risk & Cancellation</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between">
+          <TabsList className="h-12 p-1 bg-slate-200/50 backdrop-blur-md rounded-2xl w-full max-w-max grid grid-cols-3">
+            <TabsTrigger
+              value="overview"
+              className="rounded-xl px-5 py-2.5 flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-brand-aqua transition-all duration-300"
+            >
+              <LayoutDashboard size={16} />
+              <span className="font-semibold">Overview</span>
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="transactions"
+              className="rounded-lg py-2 flex items-center gap-2 data-[state=active]:bg-slate-100 data-[state=active]:shadow-sm data-[state=active]:text-brand-aqua transition-all"
+            >
+              <ReceiptText size={16} />
+              <span className="font-semibold">Transactions</span>
+            </TabsTrigger>
+
+            <TabsTrigger
+              value="risk"
+              className="rounded-lg py-2 flex items-center gap-2 data-[state=active]:bg-slate-100 data-[state=active]:shadow-sm data-[state=active]:text-brand-aqua transition-all"
+            >
+              <ShieldAlert size={16} />
+              <span className="font-semibold">Risk & Cancellation</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Radial Charts */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <RadialStatCard
+              title="Total Revenue"
+              total={revenue?.total}
+              color="hsl(151 72% 46%)"
+              startAngle={225}
+            />
+            <RadialStatCard
+              title="Net Revenue"
+              total={revenue?.net}
+              color="hsl(45 98% 54%)"
+              startAngle={225}
+            />
+            <RadialStatCard
+              title="Risk Users"
+              total={0}
+              color="hsl(38, 92%, 60%)"
+              startAngle={225}
+            />
+            <RadialStatCard
+              title="Refunds"
+              total={revenue?.refunds?.amount}
+              color="hsl(38, 92%, 60%)"
+              startAngle={225}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
             {/* Main Trend Chart */}
-            <Card className="lg:col-span-1 border-none shadow-sm ring-1 ring-slate-200">
+            <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-slate-200">
               <CardHeader>
                 <CardTitle className="text-lg">Revenue Timeline</CardTitle>
                 <CardDescription>
@@ -186,7 +244,7 @@ export default function AnalyticsPage() {
             </Card>
 
             {/* Distribution Charts */}
-            <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 gap-5">
               <Card className="border-none shadow-sm ring-1 ring-slate-200">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-semibold">
@@ -198,13 +256,16 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-sm ring-1 ring-slate-200">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-semibold">
-                    By Plan Type
-                  </CardTitle>
+              <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-white">
+                <CardHeader className="pb-0 flex flex-row items-center justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="text-sm font-bold text-slate-500 uppercase tracking-wider">
+                      By Plan Type
+                    </CardTitle>
+                  </div>
+                  <div className="h-2 w-2 rounded-full bg-brand-aqua animate-pulse" />
                 </CardHeader>
-                <CardContent className="w-max h-[180px]">
+                <CardContent className="w-full h-[180px] pt-4">
                   <PlanBarChart data={byPlan} />
                 </CardContent>
               </Card>
@@ -271,9 +332,17 @@ export default function AnalyticsPage() {
   );
 }
 
-function KpiCard({ title, value, icon, trend, color = "text-slate-900" }) {
+function KpiCard({
+  title,
+  value,
+  icon,
+  trend = "neutral",
+  trendValue,
+  subtitle,
+  color = "text-slate-900",
+}) {
   return (
-    <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden relative">
+    <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden relative gap-2">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-xs font-medium text-slate-500 uppercase tracking-wider">
           {title}
@@ -283,13 +352,32 @@ function KpiCard({ title, value, icon, trend, color = "text-slate-900" }) {
         </div>
       </CardHeader>
       <CardContent>
-        <div className={`text-2xl font-bold ${color}`}>{value}</div>
-        {trend && (
-          <div className="mt-1 flex items-center text-xs font-medium text-emerald-600">
-            <ArrowUpRight className="w-3 h-3 mr-1" />
-            {trend}{" "}
-            <span className="text-slate-400 ml-1 font-normal text-[10px]">
-              vs last month
+        <div className={`text-3xl font-bold ${color}`}>{value || 0}</div>
+        {subtitle && (
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
+        )}
+
+        {trendValue && (
+          <div className="flex items-center gap-1.5 mt-3">
+            {trend === "up" && (
+              <TrendingUp className="w-4 h-4 text-alerts-success" />
+            )}
+            {trend === "down" && (
+              <TrendingDown className="w-4 h-4 text-alerts-error" />
+            )}
+            <span
+              className={`text-sm font-medium ${
+                trend === "up"
+                  ? "text-alerts-success"
+                  : trend === "down"
+                  ? "text-alerts-error"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {trendValue}{" "}
+              <span className="text-slate-400 ml-1 font-normal text-[10px]">
+                vs last month
+              </span>
             </span>
           </div>
         )}

@@ -55,7 +55,7 @@ export default function AccountsPage() {
     .slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-1 lg:px-2 py-4 space-y-8">
         {/* Hero Profile Header */}
         <div className="glass-card glow-border p-8 animate-fade-in shadow-lg rounded-2xl">

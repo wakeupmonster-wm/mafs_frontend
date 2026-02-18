@@ -284,7 +284,6 @@
 //   );
 // }
 
-
 import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
@@ -310,6 +309,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useDispatch } from "react-redux";
+import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 
 export const description = "Real-time visitor analytics";
 
@@ -327,13 +328,10 @@ const chartConfig = {
   },
 };
 
-export function ChartAreaInteractive() {
+export function ChartAreaInteractive(kpiData, loading, error) {
+  const dispatch = useDispatch();
   const isMobile = useIsMobile();
   const [timeRange, setTimeRange] = React.useState("90d");
-  const [chartData, setChartData] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
-  const [kpiData, setKpiData] = React.useState(null);
 
   React.useEffect(() => {
     if (isMobile) {
@@ -341,101 +339,68 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile]);
 
-  React.useEffect(() => {
-    fetchVisitorData();
-    // Auto refresh every 5 minutes
-    const interval = setInterval(fetchVisitorData, 5 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchVisitorData = async () => {
-    try {
-      const token = localStorage.getItem('access_Token');
-      
-      if (!token) {
-        setError('Authentication required');
-        setLoading(false);
-        return;
-      }
-
-      const response = await fetch('http://localhost:3001/api/v1/admin/dashboard/stats/kpi', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
-      const result = await response.json();
-      
-      if (result.success) {
-        setKpiData(result.data.kpis);
-        
-        // Generate chart data for the last 90 days
-        const generatedData = generateChartData(result.data.kpis);
-        setChartData(generatedData);
-        setError(null);
-      }
-    } catch (err) {
-      console.error('Error fetching visitor data:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generateChartData = (kpis) => {
-    const data = [];
+  const generateChartData = (data) => {
+    const result = [];
     const today = new Date();
-    
-    // Generate data for last 90 days
+
+    // Use the values from the kpiData object passed from props
+    const baseActive = data?.activeUsers24h?.value || 0;
+    const baseTotal = data?.totalUsers?.value || 0;
+
     for (let i = 89; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      
-      // Simulate historical data with some variance
-      // In production, you'd fetch actual historical data
-      const baseActive = kpis.activeUsers24h.value;
-      const baseTotal = kpis.totalUsers.value;
-      
-      // Add realistic variance (±20%)
+
       const variance = 0.8 + Math.random() * 0.4;
-      const dayVariance = Math.sin(i / 7) * 0.1 + 1; // Weekly pattern
-      
-      data.push({
-        date: date.toISOString().split('T')[0],
-        activeUsers: Math.round(baseActive * variance * dayVariance),
+      result.push({
+        date: date.toISOString().split("T")[0],
+        activeUsers: Math.round(baseActive * variance),
         totalUsers: Math.round(baseTotal * (0.95 + Math.random() * 0.1)),
       });
     }
-    
-    // Set today's data to actual values
-    data[data.length - 1].activeUsers = kpis.activeUsers24h.value;
-    data[data.length - 1].totalUsers = kpis.totalUsers.value;
-    
-    return data;
+    return result;
   };
 
-  const filteredData = chartData.filter((item) => {
-    if (!item.date) return false;
-    const date = new Date(item.date);
+  const fetchVisitorData = React.useCallback(async () => {
+    dispatch(fetchDashboardKPIs());
+  }, [dispatch]); // Dependency array ensures it only changes if dispatch changes
+
+  React.useEffect(() => {
+    fetchVisitorData();
+
+    const interval = setInterval(fetchVisitorData, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchVisitorData]); // effect runs once, or if fetchVisitorData changes
+
+  // 1. Memoize the generated chart data so it doesn't recalculate every render
+  const chartData = React.useMemo(() => {
+    if (!kpiData || typeof kpiData !== "object") return [];
+
+    // This helper needs to exist (you have it in your code,
+    // just make sure it uses kpiData instead of a global 'kpis' variable)
+    return generateChartData(kpiData);
+  }, [kpiData]);
+
+  // 2. Filter the generated array
+  const filteredData = React.useMemo(() => {
+    if (!chartData.length) return [];
+
     const referenceDate = new Date();
-    let daysToSubtract = 90;
-    
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
-    }
-    
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
-  });
+    let daysToSubtract = timeRange === "30d" ? 30 : timeRange === "7d" ? 7 : 90;
+
+    const startDate = new Date();
+    startDate.setDate(referenceDate.getDate() - daysToSubtract);
+
+    return chartData.filter((item) => {
+      const date = new Date(item.date);
+      return date >= startDate;
+    });
+  }, [chartData, timeRange]);
+
+  // 3. Update your "No Data" guard
+  if (!loading && (!kpiData || Object.keys(kpiData).length === 0)) {
+    return <div>No data available</div>;
+  }
 
   if (loading) {
     return (
@@ -483,13 +448,18 @@ export function ChartAreaInteractive() {
           <span className="hidden @[540px]/card:block">
             {kpiData && (
               <>
-                Active: <strong>{kpiData.activeUsers24h.value.toLocaleString()}</strong> | 
-                Total: <strong>{kpiData.totalUsers.value.toLocaleString()}</strong>
+                Active:{" "}
+                <strong>
+                  {kpiData?.activeUsers24h?.value.toLocaleString()}
+                </strong>{" "}
+                | Total:{" "}
+                <strong>{kpiData?.totalUsers?.value.toLocaleString()}</strong>
               </>
             )}
           </span>
           <span className="@[540px]/card:hidden">
-            {kpiData && `${kpiData.activeUsers24h.value.toLocaleString()} active`}
+            {kpiData &&
+              `${kpiData?.activeUsers24h?.value.toLocaleString()} active`}
           </span>
         </CardDescription>
         <CardAction>

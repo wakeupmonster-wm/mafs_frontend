@@ -138,6 +138,8 @@
   line-height: 1.6;
   font-size: 1rem;
 
+  background: #000000;
+
   /* This forces the text to wrap even if there are no spaces */
   overflow-wrap: break-word;
   word-wrap: break-word;

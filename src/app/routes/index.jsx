@@ -107,7 +107,6 @@ const PrivacyAndPolicyPage = lazy(() =>
 const TermAndConditionsPage = lazy(() =>
   import("@/modules/cms/pages/terms-conditions.page")
 );
-const AdminProfile = lazy(() => import("@/modules/setting/AdminProfile.jsx"));
 const NotificationManagementPages = lazy(() =>
   import("@/modules/notificationManagement/pages/NotificationManagementPages")
 );
@@ -150,11 +149,16 @@ const AnalyticsPage = lazy(() =>
 import { PreLoader } from "../loader/preloader";
 import ViewSubPage from "@/modules/subsciptions/pages/view.sub.page";
 
+const SettingsPage = lazy(() =>
+  import("@/modules/settings/pages/settings.page")
+);
+
 const AccountsPage = lazy(() =>
   import("@/modules/accounts/page/accounts.page")
 );
 
 const PrizePage = lazy(() => import("@/modules/giveaway/pages/prizes.page"));
+
 const CampaignsPage = lazy(() =>
   import("@/modules/giveaway/pages/campaigns.page")
 );
@@ -545,8 +549,14 @@ export const router = createBrowserRouter([
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-
-      { path: "settings", element: <AdminProfile /> },
+      {
+        path: "settings",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <SettingsPage />
+          </Suspense>
+        ),
+      },
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },
       {

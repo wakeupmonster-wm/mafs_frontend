@@ -13,4 +13,5 @@ export const AUTHENDPOINTS = {
 export const ACCOUNTENDPOINTS = {
   GET_ACCOUNT: `${BASE_URL}/api/v1/admin/account`,
   PATCH_ACCOUNT: `${BASE_URL}/api/v1/admin/account/update`,
+  POST_PASSWORD: `${BASE_URL}/api/v1/admin/auth/reset-password`,
 };

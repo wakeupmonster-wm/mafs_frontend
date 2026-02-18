@@ -1,4 +1,3 @@
-import { useEffect, useMemo } from "react";
 import {
   IconTrendingUp,
   IconUsers,
@@ -14,8 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { Card, CardHeader } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
 import { cn } from "@/lib/utils";
 
 const containerVariants = {
@@ -36,14 +33,8 @@ const cardVariants = {
   },
 };
 
-export function SectionCards() {
-  const dispatch = useDispatch();
+export function SectionCards({ stats, loading, error }) {
   const navigate = useNavigate();
-  const { stats, loading, error } = useSelector((state) => state.dashboard);
-
-  useEffect(() => {
-    if (!stats) dispatch(fetchDashboardKPIs());
-  }, [dispatch, stats]);
 
   if (loading) {
     return (

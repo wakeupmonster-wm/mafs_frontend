@@ -1,10 +1,15 @@
 import {
-  PieChart,
-  Pie,
+  Bar,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
-  Legend,
+  XAxis,
+  YAxis,
 } from "recharts";
 import { EmptyState } from "./EmptyState";
 
@@ -49,6 +54,41 @@ export default function PlatformPieChart({ data }) {
         />
         <Legend verticalAlign="bottom" height={36} iconType="circle" />
       </PieChart>
+      {/* <BarChart
+        data={formatted}
+        margin={{ top: 5, right: 10, left: 0, bottom: 0 }}
+      >
+        <defs>
+          <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="hsl(262, 60%, 60%)" stopOpacity={1} />
+            <stop
+              offset="100%"
+              stopColor="hsl(262, 60%, 60%)"
+              stopOpacity={0.4}
+            />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 20%, 16%)" />
+        <XAxis
+          dataKey="plan"
+          tick={{ fill: "hsl(215, 20%, 55%)", fontSize: 12 }}
+          axisLine={{ stroke: "hsl(222, 20%, 16%)" }}
+          tickLine={false}
+        />
+        <YAxis
+          tick={{ fill: "hsl(215, 20%, 55%)", fontSize: 12 }}
+          axisLine={false}
+          tickLine={false}
+          tickFormatter={(v) => `$${v}`}
+        />
+        <Tooltip content={<CustomTooltip />} />
+        <Bar
+          dataKey="revenue"
+          fill="url(#barGrad)"
+          radius={[6, 6, 0, 0]}
+          maxBarSize={60}
+        />
+      </BarChart> */}
     </ResponsiveContainer>
   );
 }

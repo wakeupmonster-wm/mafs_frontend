@@ -8,3 +8,7 @@ export const getAdminAccountAPI = (payload) => {
 export const patchAdminAccountAPI = (payload) => {
   return apiConnector("PATCH", ACCOUNTENDPOINTS.PATCH_ACCOUNT, payload);
 };
+
+export const postChangeAdminPasswordAPI = (payload) => {
+  return apiConnector("POST", ACCOUNTENDPOINTS.POST_PASSWORD, payload);
+};
