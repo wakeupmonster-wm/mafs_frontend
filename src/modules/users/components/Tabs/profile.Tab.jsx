@@ -246,7 +246,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     <div
                       className="absolute top-0 left-0 h-full bg-indigo-600 transition-all duration-1000 ease-out"
                       style={{
-                        width: `${props?.profile?.totalCompletion || 0}%`,
+                        width: `${props?.profile?.totalCompletion ?? 0}%`,
                       }}
                     />
                   </div>

@@ -116,7 +116,7 @@ export default function CampaignWinnerPage() {
         <WinnerDataTables
           columns={columns}
           data={winner || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

@@ -98,7 +98,7 @@ export const TicketAction = ({
                   onChange={(e) => setReply(e.target.value)}
                 />
                 <div className="absolute bottom-3 right-3 text-[10px] text-gray-400">
-                  {reply?.length || 0} characters
+                  {reply?.length ?? 0} characters
                 </div>
               </div>
             </div>

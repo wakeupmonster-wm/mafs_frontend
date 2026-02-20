@@ -237,7 +237,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
               variant="outline"
               className="bg-white text-[10px] font-bold text-slate-400 border-slate-200"
             >
-              {recentMatches?.length || 0} Matches
+              {recentMatches?.length ?? 0} Matches
             </Badge>
           </CardHeader>
           <CardContent className="p-0">

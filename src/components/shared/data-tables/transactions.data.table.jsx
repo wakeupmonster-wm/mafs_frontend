@@ -30,7 +30,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconFilter,
-  IconInbox,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
@@ -42,12 +41,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SimpleLoader } from "@/components/ui/loading-overlay";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { TableLoader } from "@/app/loader/table.loader";
+import { DataNotFound } from "@/modules/not-found/components/data.not-found";
+import { IoLogoApple } from "react-icons/io5";
+import { AiFillAndroid } from "react-icons/ai";
 
-export default function UserDataTables({
+export default function TransactionDataTables({
   columns,
   data,
   rowCount,
@@ -78,10 +80,8 @@ export default function UserDataTables({
     meta: meta,
   });
 
-  const hasActiveFilters =
-    filters.accountStatus ||
-    filters.isPremium !== undefined ||
-    filters.last24HR !== undefined;
+  // 2. Updated to match your actual filter key "drawStatus"
+  const hasActiveFilters = filters.drawStatus;
 
   return (
     <div className="w-full space-y-4">
@@ -117,7 +117,7 @@ export default function UserDataTables({
             {/* Desktop Chips (Hidden on Mobile) */}
             <div className="hidden sm:flex flex-1 items-center justify-end gap-2 overflow-x-hidden min-w-0">
               <AnimatePresence mode="popLayout">
-                {filters.accountStatus && (
+                {hasActiveFilters && (
                   <motion.div
                     key="status-chip"
                     initial={{ opacity: 0, x: 10 }}
@@ -133,64 +133,10 @@ export default function UserDataTables({
                         Status:
                       </span>
                       <span className="capitalize text-xs">
-                        {filters.accountStatus}
+                        {filters.drawStatus}
                       </span>
                       <button
-                        onClick={() => filters.setAccountStatus("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
-                      >
-                        <IconX size={12} />
-                      </button>
-                    </Badge>
-                  </motion.div>
-                )}
-
-                {filters.isPremium !== undefined && (
-                  <motion.div
-                    key="premium-chip"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="shrink-0"
-                  >
-                    <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-amber-100 border-dashed border-amber-400 text-amber-700 shadow-sm whitespace-nowrap"
-                    >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
-                        Plan:
-                      </span>
-                      <span className="text-xs">
-                        {filters.isPremium ? "Premium" : "Free"}
-                      </span>
-                      <button
-                        onClick={() => filters.setIsPremium(undefined)}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
-                      >
-                        <IconX size={12} />
-                      </button>
-                    </Badge>
-                  </motion.div>
-                )}
-
-                {filters.last24HR !== undefined && (
-                  <motion.div
-                    key="premium-chip"
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.95 }}
-                    className="shrink-0"
-                  >
-                    <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-amber-100 border-dashed border-amber-400 text-amber-700 shadow-sm whitespace-nowrap"
-                    >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
-                        Login:
-                      </span>
-                      <span className="text-xs">Last 24 Hours</span>
-                      <button
-                        onClick={() => filters.setLast24HR(undefined)}
+                        onClick={() => filters.setDrawStatus("")}
                         className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
                       >
                         <IconX size={12} />
@@ -206,97 +152,111 @@ export default function UserDataTables({
               <div className="hidden sm:block w-0.5 h-6 bg-slate-200 shrink-0" />
             )}
 
-            {/* Filter Trigger Button */}
-            <div className="shrink-0">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
-                      hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
-                    )}
-                  >
-                    <IconFilter
-                      strokeWidth={2.5}
-                      className={cn(
-                        "h-6 w-6",
-                        hasActiveFilters
-                          ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
-                      )}
-                    />
-                    <span className="text-sm font-medium text-slate-700">
-                      Filters
-                    </span>
-                    {hasActiveFilters && (
-                      <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
-                        {Number(!!filters.accountStatus) +
-                          Number(filters.isPremium !== undefined) +
-                          Number(filters.last24HR !== undefined)}
-                      </span>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent
-                  align="end"
-                  className="w-56 p-2 shadow-xl border-slate-200"
-                >
-                  <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-                    Account Status
-                  </DropdownMenuLabel>
-                  {["active", "banned", "suspended"].map((status) => (
-                    <DropdownMenuCheckboxItem
-                      key={status}
-                      className="capitalize"
-                      checked={filters.accountStatus === status}
-                      onCheckedChange={() => filters.setAccountStatus(status)}
-                    >
-                      {status}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                  <DropdownMenuCheckboxItem
-                    checked={filters.last24HR === true}
-                    onCheckedChange={() => filters.setLast24HR(true)}
-                  >
-                    Last 24 Hours
-                  </DropdownMenuCheckboxItem>
-
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-                    Plan Type
-                  </DropdownMenuLabel>
-                  <DropdownMenuCheckboxItem
-                    checked={filters.isPremium === true}
-                    onCheckedChange={() => filters.setIsPremium(true)}
-                  >
-                    Premium Only
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem
-                    checked={filters.isPremium === false}
-                    onCheckedChange={() => filters.setIsPremium(false)}
-                  >
-                    Free Only
-                  </DropdownMenuCheckboxItem>
-
-                  {hasActiveFilters && (
-                    <>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        className="text-red-600 justify-center font-medium focus:bg-red-50 focus:text-red-700 cursor-pointer"
-                        onClick={() => {
-                          filters.setAccountStatus("");
-                          filters.setIsPremium(undefined);
-                        }}
-                      >
-                        Clear All Filters
-                      </DropdownMenuItem>
-                    </>
+            {/* Filter Dropdowns */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Status Select */}
+              {/* <Select value={filters.status} onValueChange={filters.setStatus}>
+                <SelectTrigger
+                  className={cn(
+                    "h-10 w-max bg-white",
+                    filters.status && "border-indigo-500 ring-1 ring-indigo-500"
                   )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                >
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["ACTIVE", "EXPIRED", "CANCELLED", "PENDING"].map((s) => (
+                    <SelectItem key={s} value={s}>
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select> */}
+
+              {/* Plan Select */}
+              {/* <Select value={filters.plan} onValueChange={filters.setPlan}>
+                <SelectTrigger
+                  className={cn(
+                    "h-10 w-max bg-white",
+                    filters.plan && "border-amber-500 ring-1 ring-amber-500"
+                  )}
+                >
+                  <SelectValue placeholder="Plan" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["weekly", "monthly", "yearly", "lifetime"].map((p) => (
+                    <SelectItem key={p} value={p} className="capitalize">
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select> */}
+
+              {/* Platform Select */}
+              <Select
+                value={filters.platform}
+                onValueChange={filters.setPlatform}
+              >
+                <SelectTrigger
+                  className={cn(
+                    "h-10 w-max bg-white border-slate-200 transition-all",
+                    filters.platform &&
+                      "border-brand-aqua ring-1 ring-brand-aqua bg-brand-aqua/10"
+                  )}
+                >
+                  <SelectValue placeholder="Platform" />
+                </SelectTrigger>
+
+                {/*     <SelectTrigger
+                        className={cn(
+                          "h-10 w-[110px] bg-white",
+                          filters.platform && "border-cyan-500 ring-1 ring-cyan-500"
+                        )}
+                      > */}
+
+                <SelectContent>
+                  <SelectItem value="ios">
+                    <div className="flex items-center gap-2">
+                      <IoLogoApple className="w-4 h-4" />
+                      <span>IOS</span>
+                    </div>
+                  </SelectItem>
+
+                  <SelectItem value="android">
+                    <div className="flex items-center gap-2">
+                      <AiFillAndroid className="w-4 h-4 text-emerald-600" />
+                      <span>Android</span>
+                    </div>
+                  </SelectItem>
+
+                  {filters.platform && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        filters.setPlatform("");
+                      }}
+                      className="w-full px-2 py-1.5 text-xs text-red-500 hover:bg-red-50 font-bold border-t mt-1"
+                    >
+                      Clear Platform
+                    </button>
+                  )}
+                </SelectContent>
+              </Select>
+
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    filters.setStatus("");
+                    filters.setPlan("");
+                    filters.setPlatform("");
+                  }}
+                  className="h-10 w-10 text-slate-400 hover:text-red-500 hover:bg-red-50"
+                >
+                  <IconX size={18} />
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -311,34 +271,17 @@ export default function UserDataTables({
                 exit={{ opacity: 0, y: -10 }}
                 className="flex flex-wrap items-center gap-2"
               >
-                {filters.accountStatus && (
+                {filters.drawStatus && (
                   <Badge
                     variant="secondary"
                     className="bg-indigo-50 text-indigo-700 border-indigo-100 py-1"
                   >
-                    Status:{" "}
+                    Status:
                     <span className="capitalize ml-1">
-                      {filters.accountStatus}
+                      {filters.drawStatus}
                     </span>
                     <button
-                      onClick={() => filters.setAccountStatus("")}
-                      className="ml-1"
-                    >
-                      <IconX size={12} />
-                    </button>
-                  </Badge>
-                )}
-                {filters.isPremium !== undefined && (
-                  <Badge
-                    variant="secondary"
-                    className="bg-amber-50 text-amber-700 border-amber-100 py-1"
-                  >
-                    Plan:{" "}
-                    <span className="ml-1">
-                      {filters.isPremium ? "Premium" : "Free"}
-                    </span>
-                    <button
-                      onClick={() => filters.setIsPremium(undefined)}
+                      onClick={() => filters.setDrawStatus("")}
                       className="ml-1"
                     >
                       <IconX size={12} />
@@ -360,7 +303,7 @@ export default function UserDataTables({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-slate-700 font-semibold h-10 bg-slate-100 text-xs"
+                    className="text-slate-700 w-max pl-10 font-semibold h-10 bg-slate-100 text-xs"
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -380,7 +323,7 @@ export default function UserDataTables({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell key={cell.id} className="py-3 pl-10">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -396,19 +339,13 @@ export default function UserDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <SimpleLoader text="Fetching data..." />
+                    <TableLoader text="Fetching Campaigns..." />
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-slate-400 space-y-2">
-                      <IconInbox size={48} stroke={1} />
-                      <p className="text-sm font-medium">
-                        No results found for your search
-                      </p>
-                    </div>
+                    <DataNotFound message="No campaigns found" />
                   )}
                 </TableCell>
               </TableRow>
             )}
-            {/*  ))} */}
           </TableBody>
         </Table>
       </div>

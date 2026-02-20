@@ -175,7 +175,7 @@ export default function PrizePage() {
         <PrizesDataTable
           columns={columns}
           data={prizes || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

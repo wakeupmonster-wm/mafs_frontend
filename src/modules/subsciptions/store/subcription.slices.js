@@ -150,7 +150,7 @@ export const fetchCancellationAnalytics = createAsyncThunk(
   "sub/fetchCancelAnalytics",
   async ({ period } = {}, { rejectWithValue }) => {
     try {
-      const response = await getCancellationAnalyticsAPI({ period });
+      const response = await getCancellationAnalyticsAPI(period);
       console.log("response cancelAnalytics: ", response);
 
       if (response && response.success) {

@@ -49,7 +49,7 @@ const StatusBreakdown = ({ stats }) => {
             <span className="text-[11px] font-bold uppercase">
               {item.label}
             </span>
-            <span className="font-bold">{item.val || 0}</span>
+            <span className="font-bold">{item.val ?? 0}</span>
           </div>
         ))}
       </div>

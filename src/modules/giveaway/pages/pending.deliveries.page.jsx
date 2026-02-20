@@ -95,7 +95,7 @@ export default function PendingDeliveriesPage() {
         <PendingDeliveriesDataTables
           columns={columns}
           data={deliveries || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

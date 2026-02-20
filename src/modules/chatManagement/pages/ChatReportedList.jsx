@@ -35,7 +35,7 @@ export default function ChatReportedList() {
             variant="secondary"
             className="bg-red-50 text-red-700 border-red-200"
           >
-            {queue?.length || 0} Pending
+            {queue?.length ?? 0} Pending
           </Badge>
         </div>
 

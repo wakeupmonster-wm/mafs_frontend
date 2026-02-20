@@ -215,21 +215,22 @@ export const getKYCColumns = (onAction, onPreview) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 p-2 shadow-lg">
             <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-              Verification Actions
+              KYC Actions
             </DropdownMenuLabel>
 
             {/* 1. VIEW DETAILS */}
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               className="cursor-pointer gap-2 py-2"
               onClick={() => {
-                /* Open detail modal logic */
+                /* Open detail modal logic
               }}
             >
               <Eye className="h-4 w-4 text-slate-500" />
               <span>View Profile Details</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> 
 
             <DropdownMenuSeparator />
+            */}
 
             {/* 2. APPROVE */}
             <DropdownMenuItem

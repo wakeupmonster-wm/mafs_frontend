@@ -541,7 +541,7 @@
 //             <span>pages</span>
 //             <span className="text-gray-400">•</span>
 //             <span className="font-medium text-gray-900">
-//               {pagination?.total || 0}
+//               {pagination?.total ?? 0}
 //             </span>
 //             <span>total reports</span>
 //           </div>
@@ -836,7 +836,7 @@
 //                     <ImageIcon className="w-5 h-5 text-blue-600" />
 //                   </div>
 //                   <p className="text-2xl font-bold text-gray-900">
-//                     {p.profile?.photos?.length || 0}
+//                     {p.profile?.photos?.length ?? 0}
 //                   </p>
 //                   <p className="text-xs text-gray-500 mt-1">Photos</p>
 //                 </div>

@@ -1,1 +1,0 @@
-import{c as o}from"./index-Cah9GgNi.js";const e=[["path",{d:"M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0",key:"svg-0"}],["path",{d:"M9 10l.01 0",key:"svg-1"}],["path",{d:"M15 10l.01 0",key:"svg-2"}],["path",{d:"M9.5 15a3.5 3.5 0 0 0 5 0",key:"svg-3"}]],a=o("outline","mood-smile","MoodSmile",e);export{a as I};

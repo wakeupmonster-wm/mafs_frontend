@@ -187,7 +187,7 @@ export default function CampaignsPage() {
         <CampaignsDataTables
           columns={columns}
           data={campaigns || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

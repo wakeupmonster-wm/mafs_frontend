@@ -1,1 +1,0 @@
-import{c as o}from"./index-Cah9GgNi.js";const e=[["path",{d:"M3 10a7 7 0 1 0 14 0a7 7 0 1 0 -14 0",key:"svg-0"}],["path",{d:"M21 21l-6 -6",key:"svg-1"}]],c=o("outline","search","Search",e);const a=[["path",{d:"M18 6l-12 12",key:"svg-0"}],["path",{d:"M6 6l12 12",key:"svg-1"}]],n=o("outline","x","X",a);export{c as I,n as a};

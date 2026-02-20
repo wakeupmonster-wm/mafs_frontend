@@ -152,7 +152,7 @@ export default function SupportTicketsPage() {
         <SupportTicketsDataTables
           columns={columns}
           data={tickets || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

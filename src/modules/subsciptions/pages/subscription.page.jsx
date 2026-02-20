@@ -174,7 +174,7 @@ export default function SubscriptionsPage() {
         <SubscriptionsDataTables
           columns={subscriptionColumns}
           data={subscriptions || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           pagination={pagination}
           onPaginationChange={setPagination}
           // Filter Props

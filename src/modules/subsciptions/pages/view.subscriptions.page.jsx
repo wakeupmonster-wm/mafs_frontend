@@ -42,20 +42,13 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { IoLogoApple } from "react-icons/io5";
 import { AiFillAndroid } from "react-icons/ai";
-import { IconMaximize } from "@tabler/icons-react";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function ViewSubscriptionsPage() {
   const { userId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData, loading } = useSelector((state) => state.subscription);
-
-  useEffect(() => {
-    if (userId) dispatch(fetchUserDetails(userId));
-    return () => dispatch(clearSelectedUser());
-  }, [dispatch, userId]);
-
-  // console.log("userData: ", userData);
 
   const { transactions, events, summary, user } = userData || {};
 
@@ -79,6 +72,16 @@ export default function ViewSubscriptionsPage() {
 
   const PlatformIcon =
     userData?.platform === "ios" ? IoLogoApple : AiFillAndroid;
+
+  useEffect(() => {
+    if (userId) dispatch(fetchUserDetails(userId));
+    return () => dispatch(clearSelectedUser());
+  }, [dispatch, userId]);
+
+  // ✅ CRITICAL: You must RETURN the component
+  if (loading) {
+    return <PreLoader />;
+  }
 
   return (
     <div className="p-4 bg-[#f8fafc] min-h-screen pb-20">

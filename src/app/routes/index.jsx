@@ -146,9 +146,6 @@ const AnalyticsPage = lazy(() =>
   import("@/modules/dashboard/pages/analytics.page")
 );
 
-import { PreLoader } from "../loader/preloader";
-import ViewSubPage from "@/modules/subsciptions/pages/view.sub.page";
-
 const SettingsPage = lazy(() =>
   import("@/modules/settings/pages/settings.page")
 );
@@ -171,6 +168,8 @@ const PendingDeliveriesPage = lazy(() =>
 const ParticipantsPage = lazy(() =>
   import("@/modules/giveaway/pages/participants.page")
 );
+
+import { PreLoader } from "../loader/preloader";
 
 export const router = createBrowserRouter([
   {
@@ -473,14 +472,6 @@ export const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<PreLoader />}>
                     <ViewSubscriptionsPage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "view-sub/:userId",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ViewSubPage />
                   </Suspense>
                 ),
               },

@@ -1,85 +1,76 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Apple, PlayCircle, Mail } from "lucide-react";
+import TransactionDataTables from "@/components/shared/data-tables/transactions.data.table";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { transactionColumns } from "@/components/columns/all.transaction.columns";
+import { fetchAllTransactions } from "@/modules/subsciptions/store/subcription.slices";
+import { motion } from "framer-motion";
 
 export default function TransactionTable({ data }) {
+  const dispatch = useDispatch();
+
+  const {
+    allTransactions,
+    loading,
+    pagination: reduxPagination,
+  } = useSelector((state) => state.subscription);
+
+  // Filter States
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
+  const [filters, setFilters] = useState({
+    search: "",
+    status: "",
+    plan: "",
+    platform: "",
+  });
+
+  // Debounced API Call
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      dispatch(
+        fetchAllTransactions({
+          page: pagination.pageIndex + 1,
+          limit: pagination.pageSize,
+          ...filters,
+        })
+      );
+    }, 500);
+    return () => clearTimeout(delayDebounceFn);
+  }, [dispatch, pagination, filters]);
+
+  // Helper to update filters and reset to page 1
+  const handleFilterChange = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+  };
+
   return (
-    <div className="rounded-md border bg-white">
-      <Table>
-        <TableHeader className="bg-slate-50">
-          <TableRow>
-            <TableHead className="w-[150px]">Transaction ID</TableHead>
-            <TableHead>User Information</TableHead>
-            <TableHead>Platform</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Event</TableHead>
-            <TableHead className="text-right">Date</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.map((txn) => (
-            <TableRow key={txn._id} className="hover:bg-slate-50/50">
-              <TableCell className="font-mono text-xs text-indigo-600">
-                {txn.transactionId}
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">
-                    {txn.userId?.email}
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    {txn.userId?.phone}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>
-                {txn.platform === "ios" ? (
-                  <Badge
-                    variant="outline"
-                    className="flex w-fit items-center gap-1 border-slate-300"
-                  >
-                    <Apple className="w-3 h-3" /> iOS
-                  </Badge>
-                ) : (
-                  <Badge
-                    variant="outline"
-                    className="flex w-fit items-center gap-1"
-                  >
-                    <PlayCircle className="w-3 h-3" /> Android
-                  </Badge>
-                )}
-              </TableCell>
-              <TableCell className="font-semibold">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: txn.currency,
-                }).format(txn.amount)}
-              </TableCell>
-              <TableCell>
-                <Badge
-                  className={
-                    txn.eventType === "PURCHASE"
-                      ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none"
-                      : "bg-blue-100 text-blue-700"
-                  }
-                >
-                  {txn.eventType}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right text-xs text-slate-500 font-medium">
-                {new Date(txn.occurredAt).toLocaleDateString()}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="flex flex-1 flex-col pb-8">
+      <motion.div
+        className="max-w-7xl mx-auto w-full space-y-8"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        {/* --- TABLE SECTION --- */}
+        <TransactionDataTables
+          columns={transactionColumns}
+          data={allTransactions || []}
+          rowCount={reduxPagination?.total ?? 0}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          // Filter Props
+          globalFilter={filters.search}
+          setGlobalFilter={(val) => handleFilterChange("search", val)}
+          filters={{
+            status: filters.status,
+            setStatus: (val) => handleFilterChange("status", val),
+            plan: filters.plan,
+            setPlan: (val) => handleFilterChange("plan", val),
+            platform: filters.platform,
+            setPlatform: (val) => handleFilterChange("platform", val),
+          }}
+          isLoading={loading}
+        />
+      </motion.div>
     </div>
   );
 }

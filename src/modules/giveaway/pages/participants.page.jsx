@@ -149,7 +149,7 @@ export default function ParticipantsPage() {
         <ParticipantsDataTables
           columns={columns}
           data={partipants || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

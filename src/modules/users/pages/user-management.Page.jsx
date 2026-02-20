@@ -297,7 +297,7 @@ export default function UserManagementPage() {
         <UserDataTables
           columns={userColumns}
           data={items || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           pagination={pagination}
           onPaginationChange={setPagination}
           globalFilter={globalFilter}

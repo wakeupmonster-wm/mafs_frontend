@@ -356,7 +356,7 @@ export default function ViewProfilePage() {
                     variant="secondary"
                     className="rounded-full h-5 w-5 p-0 flex items-center justify-center"
                   >
-                    {photos?.length || 0}
+                    {photos?.length ?? 0}
                   </Badge>
                 </h4>
               </CardHeader>
@@ -505,14 +505,14 @@ export default function ViewProfilePage() {
                 <CardContent className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-black text-primary">
-                      {profile?.totalCompletion || 0}%
+                      {profile?.totalCompletion ?? 0}%
                     </span>
                     <IconChartBar className="text-muted-foreground" />
                   </div>
                   <div className="w-full bg-muted h-2.5 rounded-full overflow-hidden">
                     <div
                       className="bg-primary h-full transition-all duration-500"
-                      style={{ width: `${profile?.totalCompletion || 0}%` }}
+                      style={{ width: `${profile?.totalCompletion ?? 0}%` }}
                     />
                   </div>
                 </CardContent>

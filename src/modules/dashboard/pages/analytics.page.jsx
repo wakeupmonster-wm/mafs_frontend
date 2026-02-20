@@ -33,76 +33,6 @@ import TransactionTable from "../components/TransactionTable";
 import { EmptyState } from "../components/EmptyState";
 import RadialStatCard from "../components/radial.stat.card";
 
-// export default function AnalyticsPage() {
-//   const dispatch = useDispatch();
-//   const {
-//     revenueAnalytic,
-//     riskUsers,
-//     cancelAnalytics,
-//     allTransactions,
-//     pagination: reduxPagination,
-//     loading,
-//   } = useSelector((state) => state.subscription);
-
-//   // Filter States
-//   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-
-//   useEffect(() => {
-//     dispatch(fetchRevenueAnalytics());
-//     dispatch(fetchCancellationAnalytics({ period }));
-//     dispatch(fetchAllTransactions());
-//     dispatch(fetchRiskUsers());
-//   }, [dispatch]);
-
-//   const { revenue, daily, byPlan, byPlatform, period } = revenueAnalytic;
-//   console.log("revenueAnalytic: ", revenueAnalytic);
-//   console.log("riskUsers: ", riskUsers);
-//   console.log("cancelAnalytics: ", cancelAnalytics);
-//   console.log("allTransactions: ", allTransactions);
-
-//   return (
-//     <div className="p-6 space-y-8">
-//       {/* Header */}
-//       <div>
-//         <h1 className="text-3xl font-bold">Subscription Analytics</h1>
-//         <p className="text-gray-500">
-//           Period: {new Date(period?.start).toLocaleDateString()}
-//           {" - "}
-//           {new Date(period?.end).toLocaleDateString()}
-//         </p>
-//       </div>
-
-//       {/* Summary Cards */}
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-//         <ChartRadialShape
-//           period={period}
-//           title={"Total Revenue"}
-//           total={revenue?.total}
-//         />
-
-//         <ChartRadialShape
-//           period={period}
-//           title={"Net Revenue"}
-//           total={revenue?.net}
-//         />
-
-//         <ChartRadialShape
-//           period={period}
-//           title={"Refunds"}
-//           total={revenue?.refunds?.amount}
-//         />
-//       </div>
-
-//       {/* Charts */}
-//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-//         <DailyRevenueChart data={daily} />
-//         <PlatformPieChart data={byPlatform} />
-//         <PlanBarChart data={byPlan} />
-//       </div>
-//     </div>
-//   );
-// }
-
 export default function AnalyticsPage() {
   const dispatch = useDispatch();
   const {
@@ -119,6 +49,8 @@ export default function AnalyticsPage() {
     dispatch(fetchAllTransactions());
     dispatch(fetchRiskUsers());
   }, [dispatch]);
+
+  console.log("cancelAnalytics: ", cancelAnalytics);
 
   const { revenue, daily, byPlan, byPlatform, period } = revenueAnalytic;
 
@@ -141,32 +73,32 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <KpiCard
           title="Total Revenue"
-          value={`$${revenue?.total}`}
+          value={`$${revenue?.total ?? 0}`}
           icon={<CreditCard />}
-          subtitle={`${revenue?.purchases?.count} purchases`}
+          subtitle={`${revenue?.purchases?.count ?? 0} purchases`}
           trendValue="+4.5%"
           trend="up"
         />
         <KpiCard
           title="Net Profit"
-          value={`$${revenue?.net}`}
+          value={`$${revenue?.net ?? 0}`}
           icon={<TrendingUp />}
-          subtitle={`${revenue?.renewals?.count} renewals`}
+          subtitle={`${revenue?.renewals?.count ?? 0} renewals`}
           trendValue="+2.1%"
           trend="up"
         />
         <KpiCard
           title="Risk Users"
-          value={riskUsers?.length || 0}
+          value={riskUsers?.length ?? 0}
           icon={<AlertTriangle />}
           subtitle={`${riskUsers?.length} risk users`}
           color="text-amber-600"
         />
         <KpiCard
           title="Refunds"
-          value={`$${revenue?.refunds?.amount}`}
+          value={`$${revenue?.refunds?.amount ?? 0}`}
           icon={<ArrowUpRight />}
-          subtitle={`${revenue?.refunds?.count} refunds`}
+          subtitle={`${revenue?.refunds?.count ?? 0} refunds`}
           color="text-rose-600"
         />
       </div>
@@ -231,7 +163,7 @@ export default function AnalyticsPage() {
 
           <div className="grid grid-cols-1 gap-6">
             {/* Main Trend Chart */}
-            <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-slate-200">
+            <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
               <CardHeader>
                 <CardTitle className="text-lg">Revenue Timeline</CardTitle>
                 <CardDescription>
@@ -245,7 +177,7 @@ export default function AnalyticsPage() {
 
             {/* Distribution Charts */}
             <div className="grid grid-cols-2 gap-5">
-              <Card className="border-none shadow-sm ring-1 ring-slate-200">
+              <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-semibold">
                     By Platform
@@ -256,7 +188,7 @@ export default function AnalyticsPage() {
                 </CardContent>
               </Card>
 
-              <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-white">
+              <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
                 <CardHeader className="pb-0 flex flex-row items-center justify-between">
                   <div className="space-y-1">
                     <CardTitle className="text-sm font-bold text-slate-500 uppercase tracking-wider">
@@ -274,7 +206,7 @@ export default function AnalyticsPage() {
         </TabsContent>
 
         <TabsContent value="transactions">
-          <Card className="border-none shadow-sm ring-1 ring-slate-200">
+          <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
             <CardHeader>
               <CardTitle>Recent Transactions</CardTitle>
               <CardDescription>
@@ -289,26 +221,28 @@ export default function AnalyticsPage() {
 
         <TabsContent value="risk">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="min-h-[400px]">
+            <Card className="min-h-[400px] bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
               <CardHeader>
-                <CardTitle>Cancellation Trends</CardTitle>
+                <CardTitle className="text-lg font-semibold text-foreground">
+                  Cancellations Trends
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {cancelAnalytics?.total === 0 ? (
                   <EmptyState
                     title="Clean Slate"
-                    description="No subscription cancellations recorded in this billing cycle."
+                    description="🎉 No subscription cancellations recorded in this billing cycle."
                   />
                 ) : (
                   <DailyRevenueChart
-                    data={cancelAnalytics.daily}
+                    data={cancelAnalytics?.daily}
                     color="#f43f5e"
                   />
                 )}
               </CardContent>
             </Card>
 
-            <Card className="min-h-[400px]">
+            <Card className="min-h-[400px] bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
               <CardHeader>
                 <CardTitle>At-Risk Users</CardTitle>
               </CardHeader>
@@ -342,7 +276,7 @@ function KpiCard({
   color = "text-slate-900",
 }) {
   return (
-    <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden relative gap-2">
+    <Card className="border-none shadow-sm ring-1 ring-slate-200 overflow-hidden relative gap-2 bg-gradient-to-br from-gray-50 via-blue-60 to-gray-100">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <CardTitle className="text-xs font-medium text-slate-500 uppercase tracking-wider">
           {title}
@@ -352,7 +286,7 @@ function KpiCard({
         </div>
       </CardHeader>
       <CardContent>
-        <div className={`text-3xl font-bold ${color}`}>{value || 0}</div>
+        <div className={`text-3xl font-bold ${color}`}>{value ?? 0}</div>
         {subtitle && (
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         )}
