@@ -39,7 +39,7 @@ const TABS = [
 
 export default function GiveawayManagement() {
   const { prizes } = useSelector((s) => s.prize);
-  const { campaigns } = useSelector((s) => s.campaign);
+  const { campaigns, partipants } = useSelector((s) => s.campaign);
   const { deliveries } = useSelector((s) => s.delivery);
   const { winner } = useSelector((s) => s.winner);
 
@@ -88,8 +88,8 @@ export default function GiveawayManagement() {
         };
       case "participants":
         return {
-          count: winner?.length || 0,
-          label: "Total Winners",
+          count: partipants?.length || 0,
+          label: "Total Participants",
           icon: <Award className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
         };
       default:

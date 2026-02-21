@@ -117,7 +117,7 @@ export default function ParticipantsDataTables({
                 <Button
                   variant={"outline"}
                   className={cn(
-                    "w-[240px] justify-start text-left font-normal border-brand-aqua/50 shadow-sm",
+                    "w-max justify-start text-left font-normal border-brand-aqua/50 shadow-sm",
                     !filters.date && "text-muted-foreground"
                   )}
                 >

@@ -1,12 +1,12 @@
 import { ChartAreaInteractive } from "@/components/shared/chart-area-interactive";
 import { DataTable } from "@/components/shared/data-table";
-import { SectionCards } from "@/components/shared/section-cards";
+import SectionCards from "@/components/shared/section-cards";
 import data from "@/app/data/data.json";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboardKPIs } from "../store/dashboard.slice";
 import { useEffect } from "react";
 
-const Dashboard = () => {
+export default function Dashboard() {
   const dispatch = useDispatch();
   // const { token } = useSelector((state) => state.auth);
   const { stats, loading, error } = useSelector((state) => state.dashboard);
@@ -36,6 +36,4 @@ const Dashboard = () => {
       </div>
     </>
   );
-};
-
-export default Dashboard;
+}

@@ -29,8 +29,8 @@ import {
   sendNotificationToPremiumUsers,
   createPremiumExpiryCampaign,
   clearNotificationStatus,
+  sendEmailCampaign,
 } from "../store/notification-management.slice";
-import { toast } from "sonner"; // Assuming sonner for better feedback
 import { PageHeader } from "@/components/common/headSubhead";
 
 export default function NotificationManagementPages() {
@@ -141,8 +141,17 @@ export default function NotificationManagementPages() {
   };
 
   const handleSubmit = (e) => {
+    console.log("call 1");
     e.preventDefault();
-    if (!form.campaignName || !form.title || !form.message) return;
+    // Basic validation
+    if (!form.campaignName) return;
+
+    // Email ke liye alag validation, Push ke liye alag
+    if (form.notificationType === "email") {
+      if (!form.emailSubject || !form.emailBody) return;
+    } else {
+      if (!form.title || !form.message) return;
+    }
 
     const actions = {
       broadcast: () => broadcastNotification({ ...form }),
@@ -152,9 +161,13 @@ export default function NotificationManagementPages() {
           ...form,
           daysBeforeExpiry: Number(form.daysBeforeExpiry),
         }),
+      email: () => sendEmailCampaign(form),
     };
 
+    console.log("call 2");
     dispatch(actions[form.notificationType]());
+    console.log("call 1");
+
     setTimeout(() => dispatch(clearNotificationStatus()), 4000);
   };
 

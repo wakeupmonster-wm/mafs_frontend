@@ -32,40 +32,13 @@ const ViewPage = lazy(() => import("@/modules/users/pages/viewPage"));
 const GiveawayManagement = lazy(() =>
   import("@/modules/giveaway/pages/GiveawayManagement")
 );
-const CreatePrize = lazy(() => import("@/modules/giveaway/pages/Prizes"));
-const Campaigns = lazy(() => import("@/modules/giveaway/pages/Campaigns"));
-const BulkCampaigns = lazy(() =>
-  import("@/modules/giveaway/pages/BulkCampaigns")
-);
-const CampaignWinner = lazy(() =>
-  import("@/modules/giveaway/pages/CampaignWinner")
-);
-const PendingDeliveries = lazy(() =>
-  import("@/modules/giveaway/pages/PendingDeliveries")
-);
 
-// Support & Reviews
-const MyTicketsPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then((module) => ({
-    default: module.MyTicketsPage,
-  }))
-);
-const ContactSupportPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then((module) => ({
-    default: module.ContactSupportPage,
-  }))
-);
 const TicketDetailPage = lazy(() =>
   import("@/modules/support/pages/SupportPages").then((module) => ({
     default: module.TicketDetailPage,
   }))
 );
 
-const ReportedProfilesPage = lazy(() =>
-  import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
-    default: module.ReportedProfilesPage,
-  }))
-);
 const ProfileReviewDetailPage = lazy(() =>
   import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
     default: module.ProfileReviewDetailPage,

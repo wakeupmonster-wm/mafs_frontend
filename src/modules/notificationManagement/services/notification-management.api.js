@@ -33,7 +33,16 @@ export const notificationHistoryApi = (params) => {
  * Full-scale email marketing broadcast
  */
 export const sendEmailCampaignApi = (payload) => {
-  return apiConnector("POST", NOTIFY_ENDPOINTS.EMAIL_CAMPAIGN, payload);
+  const url = NOTIFY_ENDPOINTS.EMAIL_CAMPAIGN;
+  const body = {
+    campaignName: payload.campaignName,
+    subject: payload.emailSubject,
+    body: payload.emailBody,
+    target: payload.target,
+  };
+  console.log("body: ", body);
+
+  return apiConnector("POST", url, body);
 };
 
 /**

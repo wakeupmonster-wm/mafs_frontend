@@ -33,7 +33,7 @@ const cardVariants = {
   },
 };
 
-export function SectionCards({ stats, loading, error }) {
+export default function SectionCards({ stats, loading, error }) {
   const navigate = useNavigate();
 
   if (loading) {
@@ -114,7 +114,7 @@ export function SectionCards({ stats, loading, error }) {
       color: "orange",
       badge: stats.openReports.actionable ? "Urgent" : "Clean",
       pulse: stats.openReports.actionable,
-      route: "/admin/management/profile-review",
+      route: "/admin/management/profile-reports",
     },
     {
       title: "Verifications",

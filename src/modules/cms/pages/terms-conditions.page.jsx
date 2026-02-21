@@ -11,6 +11,7 @@ import {
   fetchTermsAndCondition,
   updateTermsAndCondition,
 } from "../store/t&c.slice";
+import { PageHeader } from "@/components/common/headSubhead";
 
 export default function TermAndConditionsPage() {
   const dispatch = useDispatch();
@@ -63,9 +64,9 @@ export default function TermAndConditionsPage() {
       {/* Header Section - Sticky for better UX */}
       <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-4 sm:px-8">
         <div className="w-full mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 rounded-lg">
-              <ReceiptText className="w-6 h-6 text-indigo-600" />
+          {/* <div className="flex items-center gap-3">
+            <div className="p-2 bg-brand-aqua/20 rounded-lg">
+              <ReceiptText className="w-6 h-6 text-brand-aqua" />
             </div>
             <div>
               <h2 className="text-xl font-bold text-slate-900 leading-tight">
@@ -75,12 +76,19 @@ export default function TermAndConditionsPage() {
                 Manage legal policies and user agreements
               </p>
             </div>
-          </div>
+          </div> */}
+
+          <PageHeader
+            heading="Terms & Conditions"
+            icon={<ReceiptText className="w-6 h-6 text-white" />}
+            color="bg-brand-aqua shadow-xl shadow-cyan-100"
+            subheading="Manage legal policies and user agreements."
+          />
 
           <Button
             onClick={handleUpdate}
             disabled={isUpdating || loading}
-            className="w-full sm:w-auto bg-brand-aqua hover:bg-brand-aqua/80 text-white px-6 h-11 rounded-lg shadow-md transition-all active:scale-95"
+            className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-10 px-4 shadow-sm shadow-neutral-400"
           >
             {isUpdating ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -92,9 +100,9 @@ export default function TermAndConditionsPage() {
         </div>
       </header>
 
-      <main className="p-4 sm:p-8 mx-auto">
-        <Card className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white">
-          <CardContent className="p-4 sm:p-8 space-y-8">
+      <main className="p-4 mx-auto">
+        <Card className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white py-4">
+          <CardContent className="px-6 space-y-8">
             {/* Page Title Input */}
             <div className="grid gap-2">
               <label className="text-sm font-semibold text-slate-700 ml-1">

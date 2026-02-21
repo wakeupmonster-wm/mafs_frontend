@@ -1,12 +1,10 @@
 import { React, useState } from "react";
-
 import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,7 +28,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconFilter,
-  IconInbox,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
@@ -42,10 +39,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SimpleLoader } from "@/components/ui/loading-overlay";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { TableLoader } from "@/app/loader/table.loader";
+import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 
 export default function UserDataTables({
   columns,
@@ -396,19 +394,13 @@ export default function UserDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <SimpleLoader text="Fetching data..." />
+                    <TableLoader text="Fetching Users..." />
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-slate-400 space-y-2">
-                      <IconInbox size={48} stroke={1} />
-                      <p className="text-sm font-medium">
-                        No results found for your search
-                      </p>
-                    </div>
+                    <DataNotFound message="No users found" />
                   )}
                 </TableCell>
               </TableRow>
             )}
-            {/*  ))} */}
           </TableBody>
         </Table>
       </div>

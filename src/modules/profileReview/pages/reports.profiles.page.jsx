@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReportedProfiles } from "../store/profile-review.slice";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { reportColumns } from "@/components/columns/reportColumns";
 import ReportsDataTables from "@/components/shared/data-tables/reports.data.tables";
 
@@ -40,6 +40,7 @@ const itemVariants = {
 export default function ReportsProfilesPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   // 1. Redux State
   const {
@@ -73,6 +74,14 @@ export default function ReportsProfilesPage() {
     globalFilter,
     statusFilter,
   ]);
+
+  useEffect(() => {
+    const initialFilter = location?.state;
+    if (!initialFilter) return;
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    if (initialFilter === "Urgent") setStatusFilter("pending");
+  }, [location?.state]);
 
   const columns = useMemo(() => reportColumns(navigate), [navigate]);
 
