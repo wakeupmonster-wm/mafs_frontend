@@ -20,10 +20,12 @@ import {
   ShieldCheck,
   User,
 } from "lucide-react";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function AccountsPage() {
   const dispatch = useDispatch();
   const { account, loading } = useSelector((state) => state.account);
+  console.log("account: ", account);
 
   useEffect(() => {
     dispatch(fetchProfile());
@@ -31,20 +33,23 @@ export default function AccountsPage() {
 
   if (loading) {
     return (
-      <div className="flex h-96 items-center justify-center">
-        <div className="animate-pulse text-indigo-600 font-bold">
-          Loading Profile...
-        </div>
-      </div>
+      // <div className="flex h-96 items-center justify-center">
+      //   <div className="animate-pulse text-indigo-600 font-bold">
+      //     Loading Profile...
+      //   </div>
+      // </div>
+      <PreLoader />
     );
   }
 
   const formatDateSafe = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
+
     return isNaN(date.getTime())
       ? "Invalid Date"
-      : format(date, "MMMM dd, yyyy");
+      : // h:mm a adds hour:minute and AM/PM
+        format(date, "MMMM dd, yyyy - h:mm a");
   };
 
   const initials = account?.nickname
@@ -108,7 +113,7 @@ export default function AccountsPage() {
                     className="w-4 h-4 text-brand-aqua"
                     strokeWidth={2.5}
                   />
-                  Last login {formatDateSafe(account?.lastLogin)}
+                  Last login {formatDateSafe(account?.lastLoginAt)}
                 </span>
               </div>
             </div>
@@ -204,7 +209,7 @@ export default function AccountsPage() {
                   />
                 }
                 label="Last Login"
-                value={formatDateSafe(account?.lastLogin)}
+                value={formatDateSafe(account?.lastLoginAt)}
               />
               <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50">
                 <div className="p-2 rounded-lg bg-primary/10 text-primary">
