@@ -54,7 +54,7 @@ export const getKYCColumns = (onAction, onPreview) => [
 
       if (!phone)
         return (
-          <span className="text-slate-400 text-xs italic">Not provided</span>
+          <span className="text-slate-400 text-xs italic">-</span>
         );
 
       const copyToClipboard = () => {
@@ -83,7 +83,7 @@ export const getKYCColumns = (onAction, onPreview) => [
       const email = row.original.user?.email;
 
       if (!email)
-        return <span className="text-slate-400 text-xs italic">No email</span>;
+        return <span className="text-slate-400 text-xs italic">-</span>;
 
       return (
         <Badge className="lowercase font-normal bg-gray-100 text-gray-700 border border-gray-200 transition-all duration-200 hover:bg-gray-200 hover:scale-105">

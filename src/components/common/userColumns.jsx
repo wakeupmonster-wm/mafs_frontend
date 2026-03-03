@@ -315,28 +315,28 @@ export const userColumns = [
     },
   },
   // Verificaton Column
-  {
-    id: "verification", // Manually set ID
-    accessorKey: "verification.status",
-    header: "Verification",
-    cell: ({ row }) => {
-      const status = row.original.verification?.status || "not_started";
-      const variants = {
-        approved: "bg-green-100 text-green-700 hover:bg-green-100",
-        rejected: "bg-red-100 text-red-700 hover:bg-red-100",
-        not_started: "bg-gray-100 text-gray-700 hover:bg-gray-100",
-      };
+  // {
+  //   id: "verification", // Manually set ID
+  //   accessorKey: "verification.status",
+  //   header: "Verification",
+  //   cell: ({ row }) => {
+  //     const status = row.original.verification?.status || "not_started";
+  //     const variants = {
+  //       approved: "bg-green-100 text-green-700 hover:bg-green-100",
+  //       rejected: "bg-red-100 text-red-700 hover:bg-red-100",
+  //       not_started: "bg-gray-100 text-gray-700 hover:bg-gray-100",
+  //     };
 
-      return (
-        <Badge
-          variant="outline"
-          className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
-        >
-          {status.replace("_", " ")}
-        </Badge>
-      );
-    },
-  },
+  //     return (
+  //       <Badge
+  //         variant="outline"
+  //         className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
+  //       >
+  //         {status.replace("_", " ")}
+  //       </Badge>
+  //     );
+  //   },
+  // },
   // Location Column
   {
     id: "city", // Manually set ID
@@ -352,7 +352,7 @@ export const userColumns = [
           </span>
         );
       return (
-        <span className="capitalize px-1.5 text-[11px]">{`${city || ""}${
+        <span className="w-max flex capitalize text-[11px]">{`${city || ""}${
           city && country ? ", " : ""
         }${country || ""}`}</span>
       );

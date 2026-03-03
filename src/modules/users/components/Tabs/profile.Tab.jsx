@@ -27,11 +27,12 @@ import { EditProfileDialog } from "../Dialogs/edit.profile.Dialog";
 import { Separator } from "@/components/ui/separator";
 import { DetailRow } from "../detailRow";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { VerifyUserModal } from "../VerifyUserModal";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyUserProfile } from "../../store/user.slice";
 import { toast } from "sonner";
+import VerificationCard from "../verification.card";
+import { FaCheckCircle } from "react-icons/fa";
 
 export const ProfileTab = ({ userData: initialUserData, ...props }) => {
   const dispatch = useDispatch();
@@ -95,7 +96,32 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
     },
   ];
 
-  // console.log("verification: ", verification);
+  const handleApprove = async (status) => {
+    setIsVerifying(true);
+    await new Promise((r) => setTimeout(r, 800));
+    await dispatch(
+      verifyUserProfile({
+        userId: userData._id,
+        action: status === "approved" ? "approve" : "reject",
+      })
+    ).unwrap();
+    toast.success(`Identity ${status} successfully`);
+    setIsVerifying(false);
+  };
+
+  const handleReject = async (reason, status) => {
+    setIsVerifying(true);
+    await new Promise((r) => setTimeout(r, 800));
+    await dispatch(
+      verifyUserProfile({
+        userId: userData._id,
+        action: status === "approved" ? "approve" : "reject",
+        reason: status === "rejected" ? reason : undefined,
+      })
+    ).unwrap();
+    toast.success(`Identity ${status} successfully`);
+    setIsVerifying(false);
+  };
 
   return (
     <>
@@ -212,7 +238,20 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                                 : "text-slate-400"
                             )}
                           >
-                            {item.verified ? "Verified" : "Unverified"}
+                            <div className="flex items-center gap-1">
+                              {item.verified ? (
+                                <>
+                                  {/* <BadgeCheck
+                                    size={16}
+                                    className="text-blue-500"
+                                  /> */}
+                                  <FaCheckCircle />
+                                  <span>Verified</span>
+                                </>
+                              ) : (
+                                "Unverified"
+                              )}
+                            </div>
                           </Badge>
                         ) : (
                           <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-bold px-2 py-0 h-6">
@@ -255,7 +294,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
             </div>
 
             {/* BIO SECTION */}
-            <Card className="overflow-hidden shadow-sm border-slate-200 bg-white rounded-3xl py-1 pb-5 gap-2">
+            <Card className="overflow-hidden shadow-sm border-slate-200 bg-white rounded-xl py-1 pb-5 gap-2">
               {/* HEADER: Clean & Minimal */}
               <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-5 px-6 bg-slate-50/30">
                 <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-2.5">
@@ -303,7 +342,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     <div
                       key={idx}
                       className={cn(
-                        "p-4 rounded-2xl border transition-all hover:shadow-md hover:border-indigo-100",
+                        "p-4 rounded-lg border transition-all hover:shadow-md hover:border-indigo-100",
                         attr.highlight
                           ? "bg-indigo-50/30 border-indigo-100"
                           : "bg-white border-slate-100"
@@ -363,120 +402,24 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
             </Card>
 
             {/* VERIFICATION ACTION CARD */}
-            <Card
-              className={cn(
-                "shadow-sm transition-all border-2",
-                verification?.status === "approved"
-                  ? "border-emerald-100 bg-emerald-50/10"
-                  : "border-amber-100 bg-amber-50/10"
-              )}
-            >
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="flex items-center gap-4 text-center md:text-left flex-col md:flex-row">
-                    <div
-                      className={cn(
-                        "p-3 rounded-xl",
-                        verification?.status === "approved"
-                          ? "bg-emerald-100 text-emerald-600"
-                          : "bg-amber-100 text-amber-600"
-                      )}
-                    >
-                      <IconShieldCheck size={28} />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-slate-900">
-                        Identity Verification
-                      </h4>
-                      <p className="text-xs text-slate-500 font-medium">
-                        Verify documents against profile selfie
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 w-full md:w-auto">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white flex-1 md:flex-none border-slate-200"
-                      onClick={() => window.open(verification?.selfieUrl)}
-                    >
-                      <IconExternalLink size={14} className="mr-2" /> Selfie
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="bg-white flex-1 md:flex-none border-slate-200"
-                      onClick={() => window.open(verification?.docUrl)}
-                    >
-                      <IconExternalLink size={14} className="mr-2" /> ID Card
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between p-4 bg-white rounded-xl border border-slate-200 gap-4">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    Moderator Review Action
-                  </span>
-                  <div className="flex gap-2 w-full sm:w-auto">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-rose-600 hover:bg-rose-50 flex-1 sm:flex-none"
-                      onClick={() => {
-                        setVerifyActionType("rejected");
-                        setIsVerifyModalOpen(true);
-                      }}
-                    >
-                      <IconX size={16} className="mr-1" /> Reject
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="bg-emerald-600 hover:bg-emerald-700 flex-1 sm:flex-none px-6"
-                      onClick={() => {
-                        setVerifyActionType("approved");
-                        setIsVerifyModalOpen(true);
-                      }}
-                      disabled={
-                        isVerifying || verification?.status === "approved"
-                      }
-                    >
-                      {isVerifying ? (
-                        "Processing..."
-                      ) : (
-                        <>
-                          <IconCheck size={16} className="mr-1" /> Approve
-                          Identity
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-
-                {verification?.status === "rejected" && (
-                  <div className="mt-4 p-3 bg-rose-50 border border-rose-100 rounded-lg flex items-start gap-2">
-                    <IconAlertTriangle
-                      className="text-rose-500 shrink-0 mt-0.5"
-                      size={16}
-                    />
-                    <p className="text-[11px] text-rose-700 font-medium">
-                      <span className="font-bold mr-1 uppercase">Reason:</span>
-                      {verification.rejectionReason}
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <VerificationCard
+              verification={userData.verification}
+              isVerifying={isVerifying}
+              onApprove={handleApprove}
+              onReject={handleReject}
+              userName={userData.nickname}
+            />
           </div>
         </div>
       </TabsContent>
 
-      <VerifyUserModal
+      {/* <VerifyUserModal
         isOpen={isVerifyModalOpen}
         actionType={verifyActionType}
         onClose={() => setIsVerifyModalOpen(false)}
         onConfirm={handleVerifyConfirm}
         userName={props?.profile?.nickname}
-      />
+      /> */}
     </>
   );
 };

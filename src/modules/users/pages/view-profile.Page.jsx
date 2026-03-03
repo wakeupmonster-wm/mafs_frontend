@@ -41,6 +41,7 @@ import {
   suspendUserProfile,
   unbanUserProfile,
 } from "../store/user.slice";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function ViewProfilePage() {
   const navigate = useNavigate();

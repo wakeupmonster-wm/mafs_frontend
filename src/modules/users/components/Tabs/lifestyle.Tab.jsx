@@ -39,7 +39,7 @@ export const LifeStyleTab = ({ userData, attributes }) => {
             </div>
             Lifestyle & Preferences
           </CardTitle>
-          <EditLifeStyleDialoag userData={userData} />
+          {/* <EditLifeStyleDialoag userData={userData} /> */}
         </CardHeader>
 
         <CardContent className="p-4 md:p-6">

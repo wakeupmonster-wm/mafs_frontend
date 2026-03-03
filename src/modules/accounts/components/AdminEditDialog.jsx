@@ -27,35 +27,51 @@ export default function AdminEditDialog({ children, currentData }) {
   const [formData, setFormData] = useState({
     nickname: currentData?.nickname || "",
     about: currentData?.about || "",
+    phone: currentData?.phone || "",
   });
 
-  // Handle File Selection
+  // Handle File Selection with Client-Side Validation
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Client-side validation for immediate feedback
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        return toast.error(
+          "Invalid file type. Please upload JPEG, PNG, or WebP."
+        );
+      }
       setSelectedFile(file);
-      setPreview(URL.createObjectURL(file)); // Local preview
+      setPreview(URL.createObjectURL(file));
     }
   };
 
   const handleUpdate = async () => {
     if (!formData.nickname.trim()) return toast.error("Nickname is required");
+    if (!formData.about.trim()) return toast.error("Bio is required");
+    if (!formData.about.trim()) return toast.error("Bio is required");
+    if (!formData.phone.trim()) return toast.error("Phone is required");
 
     setLoading(true);
     const data = new FormData();
     data.append("nickname", formData.nickname);
     data.append("about", formData.about);
+    data.append("phone", formData.phone);
 
     if (selectedFile) {
       data.append("avatar", selectedFile);
     }
 
     try {
+      // Using .unwrap() is critical to catch the rejectWithValue from Redux
+      console.log("data: ", data);
       await dispatch(updateAdminAccount(data)).unwrap();
       toast.success("Profile updated successfully!");
-      setOpen(false); // Close the dialog
+      setOpen(false);
     } catch (err) {
-      toast.error(err?.message || "Failed to update profile");
+      // This will now catch the "Invalid file type" message from your backend
+      console.log("error: ", err);
+      toast.error(err || "Failed to update profile");
     } finally {
       setLoading(false);
     }
@@ -72,7 +88,6 @@ export default function AdminEditDialog({ children, currentData }) {
         </DialogHeader>
 
         <div className="flex flex-col items-center gap-4 py-4">
-          {/* Avatar Upload */}
           <div
             className="relative group cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
@@ -86,19 +101,24 @@ export default function AdminEditDialog({ children, currentData }) {
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-background/40 rounded-full">
               <Camera className="text-foreground w-6 h-6" />
             </div>
+            {/* Added explicit accept attribute for filtering */}
             <input
               type="file"
               ref={fileInputRef}
               hidden
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.webp"
               onChange={handleFileChange}
             />
           </div>
-          <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
-            Click photo to change
-          </p>
+          <div className="text-center">
+            <p className="text-[12px] text-muted-foreground uppercase font-bold tracking-wider">
+              Click photo to change
+            </p>
+            <p className="text-[9px] text-slate-600 font-semibold mt-0.5">
+              Supports: JPG, PNG, WebP (Max 5MB)
+            </p>
+          </div>
 
-          {/* Form Fields */}
           <div className="w-full space-y-4">
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
@@ -108,6 +128,18 @@ export default function AdminEditDialog({ children, currentData }) {
                 value={formData.nickname}
                 onChange={(e) =>
                   setFormData({ ...formData, nickname: e.target.value })
+                }
+                className={"border-brand-aqua/50"}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
+                Phone
+              </Label>
+              <Input
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
                 }
                 className={"border-brand-aqua/50"}
               />

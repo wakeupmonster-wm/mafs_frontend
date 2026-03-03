@@ -72,22 +72,23 @@ export default function AccountsPage() {
                 <AvatarImage
                   src={account?.avatar?.url}
                   alt={account?.nickname}
+                  className="object-cover"
                 />
                 <AvatarFallback className="bg-secondary text-primary text-3xl font-bold">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <div className="absolute -bottom-1 right-2">
+              {/* <div className="absolute -bottom-1 right-2">
                 <Badge className="bg-alerts-success text-success-foreground border border-background text-[10px] font-bold uppercase px-2">
                   {account?.status}
                 </Badge>
-              </div>
+              </div> */}
             </div>
 
             {/* Info */}
             <div className="flex-1 text-center md:text-left space-y-3">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-3">
-                <h1 className="text-3xl font-bold gradient-text">
+                <h1 className="text-3xl font-bold text-black">
                   {account?.nickname}
                 </h1>
                 <Badge
