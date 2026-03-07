@@ -734,6 +734,7 @@ export function MyTicketsPage() {
   }, [dispatch, statusFilter, searchTerm]);
 
   const handleActionSubmit = async () => {
+    
     if (!reply.trim()) return toast.error("Please enter a reply");
     
     const res = await dispatch(adminReplyToTicket({ 

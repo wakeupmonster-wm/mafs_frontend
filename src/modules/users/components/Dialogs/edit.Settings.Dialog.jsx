@@ -25,124 +25,101 @@ import {
   IconShieldCheck,
   IconLock,
   IconClockPause,
+  IconGavel,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import {
   bannedUserProfile,
   unbanUserProfile,
   suspendUserProfile,
+   unsuspendUserProfile, 
 } from "../../store/user.slice";
 import { Textarea } from "@/components/ui/textarea";
-
-// export const EditSettingsDialog = () => {
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>
-//         <Button variant="ghost" size="sm">
-//           <IconEdit size={16} />
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent>
-//         <DialogHeader>
-//           <DialogTitle>Administrative Control</DialogTitle>
-//         </DialogHeader>
-//         <div className="space-y-4 py-4">
-//           <Input
-//             placeholder="Account Status"
-//             defaultValue={userData.account.status}
-//           />
-//           <div className="flex gap-4">
-//             <Button className="flex-1" variant="outline">
-//               Reset Password
-//             </Button>
-//             <Button className="flex-1" variant="destructive">
-//               Force Logout
-//             </Button>
-//           </div>
-//         </div>
-//         <DialogFooter>
-//           <Button onClick={() => toast.success("Settings saved")}>
-//             Confirm Changes
-//           </Button>
-//         </DialogFooter>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
+import { Badge } from "@/components/ui/badge";
 
 export const EditSettingsDialog = ({ userData }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [reason, setReason] = useState(""); // Track reason for logs
+  const [reason, setReason] = useState("");
 
   const currentStatus = userData.account.status;
-  const [status, setStatus] = useState(currentStatus);
 
-  // Sync state if userData changes while dialog is open
+  // ✅ FIX: Start with empty string (no selection) instead of current status
+  const [status, setStatus] = useState("");
+
+  // ✅ Reset everything when dialog opens/closes
   useEffect(() => {
-    setStatus(currentStatus);
-  }, [currentStatus]);
-
-  console.log("userData: ", userData);
-
-  console.log("currentStatus: ", currentStatus);
+    if (isOpen) {
+      setStatus("");       // Reset to empty = placeholder visible
+      setReason("");
+    }
+  }, [isOpen]);
 
   const handleSave = async () => {
+    // ✅ Guard: Nothing selected
+    if (!status) {
+      toast.error("Please select an action first");
+      return;
+    }
+
     setLoading(true);
     const nickname = userData?.profile?.nickname || "User";
-
-    try {
-      console.log("call: ");
-
-      if ((currentStatus === "banned" || "suspended") && status === "active") {
+ try {
+    // ✅ FIX: Alag-alag action based on CURRENT status
+    if (status === "active") {
+      // Restore karna hai - check kahan se aa raha hai
+      if (currentStatus === "banned") {
+        // ✅ Banned → Active = Unban API
         await dispatch(unbanUserProfile(userData._id)).unwrap();
-        toast.success("Account Restored", {
+        toast.success("Account Unbanned", {
+          description: `${nickname} ban has been lifted.`,
+        });
+      } else if (currentStatus === "suspended") {
+        // ✅ Suspended → Active = Unsuspend API
+        await dispatch(unsuspendUserProfile(userData._id)).unwrap();
+        toast.success("Suspension Lifted", {
           description: `${nickname} can now access their profile.`,
         });
-
-        console.log("call 1: ");
-      } else if (status === "banned") {
-        await dispatch(
-          bannedUserProfile({
-            userId: userData._id,
-            category: "Administrative",
-            reason: reason || "Manual ban by admin",
-          })
-        ).unwrap();
-        toast.success("User Banned", {
-          description: `${nickname} is now restricted.`,
-        });
-
-        console.log("call 2: ");
-      } else if (status === "suspended") {
-        const hours = 24; // You could make this a state variable too
-        await dispatch(
-          suspendUserProfile({
-            userId: userData._id,
-            reason: reason || "Temporary suspension",
-            durationHours: hours,
-          })
-        ).unwrap();
-
-        toast.success("User Suspended", {
-          description: `Access restricted for ${hours} hours.`,
-        });
-
-        console.log("call 3: ");
       }
-
-      console.log("call 4: ");
-      setIsOpen(false);
-      setReason(""); // Reset reason
-    } catch (err) {
-      toast.error(err || "Update failed");
-    } finally {
-      setLoading(false);
+    } else if (status === "banned") {
+      // ✅ Ban karna hai
+      await dispatch(
+        bannedUserProfile({
+          userId: userData._id,
+          category: "Administrative",
+          reason: reason || "Manual ban by admin",
+        })
+      ).unwrap();
+      toast.success("User Banned", {
+        description: `${nickname} is now restricted.`,
+      });
+    } else if (status === "suspended") {
+      // ✅ Suspend karna hai
+      const hours = 24;
+      await dispatch(
+        suspendUserProfile({
+          userId: userData._id,
+          reason: reason || "Temporary suspension",
+          durationHours: hours,
+        })
+      ).unwrap();
+      toast.success("User Suspended", {
+        description: `Access restricted for ${hours} hours.`,
+      });
     }
-  };
 
-  // Helper to get status-specific UI colors
+    setIsOpen(false);
+    setReason("");
+  } catch (err) {
+    toast.error(err || "Update failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  // Status config helper
   const getStatusConfig = (val) => {
     switch (val) {
       case "active":
@@ -168,15 +145,17 @@ export const EditSettingsDialog = ({ userData }) => {
         };
       default:
         return {
-          color: "text-muted-foreground",
-          bg: "bg-muted/50",
-          border: "border-muted",
-          icon: <IconAlertCircle />,
+          color: "text-slate-500",
+          bg: "bg-slate-50",
+          border: "border-slate-200",
+          icon: <IconGavel />,
         };
     }
   };
 
-  const config = getStatusConfig(status);
+  // ✅ Use selected status config, or default when nothing selected
+  const config = getStatusConfig(status || null);
+  const currentConfig = getStatusConfig(currentStatus);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -208,14 +187,43 @@ export const EditSettingsDialog = ({ userData }) => {
         </DialogHeader>
 
         <div className="p-6 pt-2 space-y-6">
+          {/* ✅ NEW: Current Status Indicator - Always visible at top */}
+          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                Current Status
+              </span>
+            </div>
+            <Badge
+              variant="outline"
+              className={cn(
+                "font-bold text-xs capitalize px-3 py-1",
+                currentConfig.color,
+                currentConfig.bg,
+                currentConfig.border
+              )}
+            >
+              {React.cloneElement(currentConfig.icon, {
+                size: 14,
+                className: "mr-1",
+              })}
+              {currentStatus}
+            </Badge>
+          </div>
+
           <div className="space-y-3">
             <Label className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
               Account Governance
             </Label>
 
             <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="h-12 w-full border-2 transition-all focus:ring-offset-0">
-                <SelectValue placeholder="Select Action" />
+              <SelectTrigger
+                className={cn(
+                  "h-12 w-full border-2 transition-all focus:ring-offset-0",
+                  !status && "text-muted-foreground"  // ✅ Dim when placeholder
+                )}
+              >
+                <SelectValue placeholder="Choose an action to perform..." />
               </SelectTrigger>
               <SelectContent>
                 {currentStatus === "banned" ? (
@@ -261,83 +269,86 @@ export const EditSettingsDialog = ({ userData }) => {
                     </SelectItem>
                   </>
                 )}
-                {/* <SelectItem
-                  value="deactivated"
-                  className="text-muted-foreground italic border-t mt-1"
-                >
-                  Mark as Deactivated
-                </SelectItem> */}
               </SelectContent>
             </Select>
 
-            {/* Dynamic Status Description */}
-            <div
-              className={cn(
-                "p-3 rounded-lg border flex items-start gap-3 transition-colors",
-                config.bg,
-                config.border
-              )}
-            >
-              <IconAlertCircle
-                className={cn("shrink-0 mt-0.5", config.color)}
-                size={16}
-              />
-              <div className="space-y-1">
-                <p
-                  className={cn(
-                    "text-xs font-bold leading-none capitalize",
-                    config.color
-                  )}
-                >
-                  Targeting: {status}
-                </p>
-                <p className="text-[11px] text-muted-foreground leading-snug">
-                  {status === "active" &&
-                    "Restores all login privileges. The user will be able to swipe, match, and chat immediately."}
-                  {status === "banned" &&
-                    "Revokes all access. User's profile will be hidden and they will be force-logged out."}
-                  {status === "suspended" &&
-                    "Temporary restriction. User remains in database but cannot perform matches or chats."}
-                  {status === "deactivated" &&
-                    "Account remains but is inactive. Can be reactivated by the user manually."}
-                </p>
+            {/* ✅ CONDITIONAL: Show placeholder OR status description */}
+            {!status ? (
+              // ===== PLACEHOLDER STATE: When nothing is selected =====
+              <div
+                className={cn(
+                  "p-4 rounded-lg border-2 border-dashed border-slate-200",
+                  "bg-slate-50/50 flex flex-col items-center justify-center",
+                  "text-center gap-2 py-6"
+                )}
+              >
+                <div className="p-2.5 bg-white rounded-full border border-slate-200 shadow-sm">
+                  <IconInfoCircle size={22} className="text-slate-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-500">
+                    Select an action above
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1 max-w-[250px] leading-relaxed">
+                    Choose to suspend or ban this account. The impact details
+                    will appear here once you make a selection.
+                  </p>
+                </div>
               </div>
-            </div>
+            ) : (
+              // ===== ACTIVE STATE: When something is selected =====
+              <div
+                className={cn(
+                  "p-3 rounded-lg border flex items-start gap-3 transition-all",
+                  "animate-in fade-in slide-in-from-top-2 duration-300",
+                  config.bg,
+                  config.border
+                )}
+              >
+                <IconAlertCircle
+                  className={cn("shrink-0 mt-0.5", config.color)}
+                  size={16}
+                />
+                <div className="space-y-1">
+                  <p
+                    className={cn(
+                      "text-xs font-bold leading-none capitalize",
+                      config.color
+                    )}
+                  >
+                    Action: {status}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground leading-snug">
+                    {status === "active" &&
+                      "Restores all login privileges. The user will be able to swipe, match, and chat immediately."}
+                    {status === "banned" &&
+                      "Revokes all access. User's profile will be hidden and they will be force-logged out."}
+                    {status === "suspended" &&
+                      "Temporary restriction. User remains in database but cannot perform matches or chats."}
+                  </p>
+                </div>
+              </div>
+            )}
 
+            {/* Reason textarea - only when ban/suspend selected */}
             {(status === "banned" || status === "suspended") && (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                 <Label className="text-[10px] uppercase font-bold text-muted-foreground">
-                  Reason for {status}
+                  Reason for {status === "banned" ? "ban" : "suspension"}
                 </Label>
                 <Textarea
-                  placeholder="Enter reason for this action..."
-                  className="text-xs resize-none"
+                  placeholder={
+                    status === "banned"
+                      ? "e.g., Repeated policy violations, fake profile..."
+                      : "e.g., Reported by multiple users, under investigation..."
+                  }
+                  className="text-xs resize-none min-h-[80px]"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 />
               </div>
             )}
           </div>
-
-          {/* <div className="space-y-3">
-            <Label className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
-              Session Management
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="h-10 text-xs font-semibold hover:bg-muted"
-              >
-                Reset Password
-              </Button>
-              <Button
-                variant="secondary"
-                className="h-10 text-xs font-semibold hover:bg-red-50 hover:text-red-600 transition-colors"
-              >
-                Force Logout
-              </Button>
-            </div>
-          </div> */}
         </div>
 
         <DialogFooter className="bg-muted/30 p-6 flex-row gap-2">
@@ -345,15 +356,18 @@ export const EditSettingsDialog = ({ userData }) => {
             variant="ghost"
             onClick={() => setIsOpen(false)}
             className="flex-1"
+            disabled={loading}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={loading || status === currentStatus}
+            disabled={loading || !status}  // ✅ Disabled when nothing selected
             className={cn(
               "flex-[2] font-bold shadow-sm transition-all",
-              status === "banned"
+              !status
+                ? "bg-slate-400"
+                : status === "banned"
                 ? "bg-red-600 hover:bg-red-700"
                 : status === "active"
                 ? "bg-green-600 hover:bg-green-700"
@@ -364,6 +378,8 @@ export const EditSettingsDialog = ({ userData }) => {
           >
             {loading ? (
               <IconLoader2 className="animate-spin" />
+            ) : !status ? (
+              "Select an Action"
             ) : (
               "Apply Changes"
             )}

@@ -39,6 +39,7 @@ export function VerifyUserModal({
   // Reset state when modal opens/closes
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setReason("");
       setLoading(false);
     }
@@ -55,7 +56,7 @@ export function VerifyUserModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {isReject ? (

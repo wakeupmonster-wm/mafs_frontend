@@ -17,5 +17,7 @@ export const PROFILE_ENDPOINTS = {
     UNBAN_USER: (id) => `${BASE_URL}/api/v1/admin/moderation/users/${id}/unban`,
     SUSPEND_USER: (id) =>
       `${BASE_URL}/api/v1/admin/moderation/users/${id}/suspend`,
+    UNSUSPEND_USER: (userId) =>
+    `${BASE_URL}/api/v1/admin/moderation/users/${userId}/unsuspend`,
   },
 };

@@ -1,7 +1,9 @@
+/* eslint-disable no-useless-catch */
 // src/services/adminAuth.api.js
 import { apiConnector } from "@/services/axios/axios.connector";
 import { USERENDPOINTS } from "@/services/api-enpoints/users-management.endpoints";
 import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
+import axios from "axios";
 
 /*================= ADMIN LOGIN API OPERATION =====================*/
 export const getALLUserListApi = async (
@@ -124,4 +126,8 @@ export const unBannedUserAPI = async (userId) => {
 export const suspendUserAPI = async ({ userId, payload }) => {
   const url = PROFILE_ENDPOINTS.MODERATION.SUSPEND_USER(userId);
   return apiConnector("POST", url, payload);
+};
+export const unsuspendUserAPI = async (userId) => {
+  const url = PROFILE_ENDPOINTS.MODERATION.UNSUSPEND_USER(userId);
+  return apiConnector("POST", url,{});
 };

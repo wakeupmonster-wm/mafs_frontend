@@ -8,7 +8,26 @@ import {
   unBannedUserAPI,
   updateUserProfileApi,
   verifyUserProfileApi,
+  deletePhotoApi,
+  unsuspendUserAPI
 } from "../services/user-management.operation";
+
+
+export const unsuspendUserProfile = createAsyncThunk(
+  "users/unsuspendUserProfile",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await unsuspendUserAPI(userId);
+      console.log(response, "response")
+      if (!response.success) return rejectWithValue(response.message);
+      return { userId };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unsuspend failed"
+      );
+    }
+  }
+);
 
 //  Pending This Fetch Users list API/.
 export const fetchUsers = createAsyncThunk(
@@ -373,6 +392,7 @@ const userSlice = createSlice({
         }
       })
       /* BANNED USER SUCCESS */
+
       .addCase(bannedUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -380,26 +400,26 @@ const userSlice = createSlice({
       .addCase(bannedUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         // Note: Ensure your thunk payload returns 'userId', 'category', and 'reason'
-        const { userId, category, reason } = action.payload;
+        const { userId, reason } = action.payload;
 
         const user = state.items.find(
           (u) => u._id === userId || u.id === userId
         );
 
         if (user) {
-          // 1. Update top-level status if your UI uses it
           user.accountStatus = "banned";
-
-          // 2. Update nested account object (matches your API structure)
-          if (user.account) {
-            user.account.status = "banned";
-            user.account.banDetails = {
-              isBanned: true,
-              reason: reason || "No reason provided",
-              category: category || "General",
-              bannedAt: new Date().toISOString(),
-            };
-          }
+          user.banDetails = {
+            isBanned: true,
+            reason: reason || "No reason provided",
+            bannedAt: new Date().toISOString(),
+          };
+          user.suspensionDetails = {
+            isSuspended: false,
+            reason: null,
+            suspendedBy: null,
+            suspendedAt: null,
+            suspendUntil: null,
+          };
         }
       })
       .addCase(bannedUserProfile.rejected, (state, action) => {
@@ -427,6 +447,14 @@ const userSlice = createSlice({
               unbannedAt: new Date().toISOString(),
             };
           }
+          user.suspensionDetails = {
+            isSuspended: false,
+            reason: null,
+            suspendedBy: null,
+            suspendedAt: null,
+            suspendUntil: null
+
+          }
         }
       })
       .addCase(unbanUserProfile.rejected, (state, action) => {
@@ -447,6 +475,13 @@ const userSlice = createSlice({
         if (user) {
           user.accountStatus = "suspended";
           if (user.account) user.account.status = "suspended";
+
+          user.account.banDetails = {
+            isBanned: false,
+            reason: null,
+            category: null,
+            bannedAt: null,
+          };
 
           const suspendUntil = new Date(
             Date.now() + durationHours * 60 * 60 * 1000
@@ -475,7 +510,38 @@ const userSlice = createSlice({
       })
       .addCase(exportUsersStream.rejected, (state) => {
         state.exportLoading = false;
-      });
+      })
+      .addCase(unsuspendUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(unsuspendUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId } = action.payload;
+
+        const user = state.items.find(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (user) {
+          user.accountStatus = "active";
+
+          if (user.account) {
+            user.account.status = "active";
+          }
+
+          // ✅ Sirf suspension details clear
+          user.suspensionDetails = {
+            isSuspended: false,
+            reason: null,
+            suspendedAt: null,
+            suspendUntil: null,
+          };
+        }
+      })
+      .addCase(unsuspendUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 

@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 
 export const supportColumns = (onAction, onPreview) => [
   {
