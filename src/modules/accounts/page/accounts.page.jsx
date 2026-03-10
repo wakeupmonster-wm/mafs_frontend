@@ -25,7 +25,6 @@ import { PreLoader } from "@/app/loader/preloader";
 export default function AccountsPage() {
   const dispatch = useDispatch();
   const { account, loading } = useSelector((state) => state.account);
-  console.log("account: ", account);
 
   useEffect(() => {
     dispatch(fetchProfile());

@@ -16,7 +16,6 @@ export const fetchSubscriptionStats = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getALLStatsAPI();
-      console.log("response: ", response);
 
       if (response && response.success) {
         return response.statsKPI || [];
@@ -24,10 +23,10 @@ export const fetchSubscriptionStats = createAsyncThunk(
       return rejectWithValue(response.message || "Failed to fetch users");
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch stats"
+        error.response?.data?.message || "Failed to fetch stats",
       );
     }
-  }
+  },
 );
 
 // Async Thunk for getting the list
@@ -35,7 +34,7 @@ export const fetchSubscriptionList = createAsyncThunk(
   "subscription/fetchList",
   async (
     { page, limit, search, status, plan, platform, sortBy, sortOrder } = {},
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await getSubscriptionListAPI(
@@ -46,9 +45,8 @@ export const fetchSubscriptionList = createAsyncThunk(
         plan,
         platform,
         sortBy,
-        sortOrder
+        sortOrder,
       );
-      //   console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -62,14 +60,14 @@ export const fetchSubscriptionList = createAsyncThunk(
         };
       }
       return rejectWithValue(
-        response.message || "Failed to fetch subscriptions"
+        response.message || "Failed to fetch subscriptions",
       );
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch subscriptions"
+        error.response?.data?.message || "Failed to fetch subscriptions",
       );
     }
-  }
+  },
 );
 
 // --- Async Thunk ---
@@ -80,7 +78,6 @@ export const fetchUserDetails = createAsyncThunk(
       if (!userId) throw new Error("User ID is required");
 
       const response = await getSingleUserDetailsAPI(userId);
-      // console.log("response: ", response);
 
       if (response && response.success) {
         return response.data || [];
@@ -93,7 +90,7 @@ export const fetchUserDetails = createAsyncThunk(
         "Failed to fetch user details";
       return rejectWithValue(message);
     }
-  }
+  },
 );
 
 export const fetchRevenueAnalytics = createAsyncThunk(
@@ -101,21 +98,20 @@ export const fetchRevenueAnalytics = createAsyncThunk(
   async ({ period, startDate, endDate } = {}, { rejectWithValue }) => {
     try {
       const response = await getRevenueAnalyticsAPI(period, startDate, endDate);
-      // console.log("Res: ", response);
 
       if (response && response.success) {
         return response.data || [];
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch revenue analytics."
+        response.message || "Failed to fetch revenue analytics.",
       );
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch revenue analytics."
+        error.response?.data?.message || "Failed to fetch revenue analytics.",
       );
     }
-  }
+  },
 );
 
 export const fetchRiskUsers = createAsyncThunk(
@@ -123,7 +119,6 @@ export const fetchRiskUsers = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     try {
       const response = await getRiskUsersAPI(params);
-      console.log("response riskUsers: ", response);
 
       if (response && response.success) {
         return {
@@ -140,10 +135,10 @@ export const fetchRiskUsers = createAsyncThunk(
       return rejectWithValue(response.message || "Failed to fetch risk user.");
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch risk user."
+        error.response?.data?.message || "Failed to fetch risk user.",
       );
     }
-  }
+  },
 );
 
 export const fetchCancellationAnalytics = createAsyncThunk(
@@ -151,7 +146,6 @@ export const fetchCancellationAnalytics = createAsyncThunk(
   async ({ period } = {}, { rejectWithValue }) => {
     try {
       const response = await getCancellationAnalyticsAPI(period);
-      console.log("response cancelAnalytics: ", response);
 
       if (response && response.success) {
         return {
@@ -166,22 +160,22 @@ export const fetchCancellationAnalytics = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch cancellation analytics."
+        response.message || "Failed to fetch cancellation analytics.",
       );
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-          "Failed to fetch cancellation analytics."
+          "Failed to fetch cancellation analytics.",
       );
     }
-  }
+  },
 );
 
 export const fetchAllTransactions = createAsyncThunk(
   "sub/fetchAllTransactions",
   async (
     { page, limit, eventType, platform, startDate, endDate } = {},
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await getAllTransactionsAPI(
@@ -190,9 +184,8 @@ export const fetchAllTransactions = createAsyncThunk(
         eventType,
         platform,
         startDate,
-        endDate
+        endDate,
       );
-      console.log("response allTransactions: ", response);
 
       if (response && response.success) {
         return {
@@ -207,15 +200,15 @@ export const fetchAllTransactions = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch transactions analytics."
+        response.message || "Failed to fetch transactions analytics.",
       );
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message ||
-          "Failed to fetch transactions analytics."
+          "Failed to fetch transactions analytics.",
       );
     }
-  }
+  },
 );
 
 const subscriptionSlice = createSlice({

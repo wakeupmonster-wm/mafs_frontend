@@ -26,10 +26,8 @@ export default function RequestResetEmailForm() {
     try {
       // Ensure 'data.email' is what your API expects
       const response = await dispatch(
-        requestOtpThunk({ email: data.email })
+        requestOtpThunk({ email: data.email }),
       ).unwrap();
-
-      // console.log("Requesting email response:", response);
 
       // Pass the email to the next route
       navigate(response.screen || "/auth/forgot-password", {

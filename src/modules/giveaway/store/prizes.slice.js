@@ -11,7 +11,6 @@ export const fetchPrizes = createAsyncThunk(
   async ({ page, limit, search, type } = {}, { rejectWithValue }) => {
     try {
       const response = await getAllPrizesApi(page, limit, search, type);
-      //   console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -26,14 +25,14 @@ export const fetchPrizes = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch pending prize"
+        response.message || "Failed to fetch pending prize",
       );
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch prizes"
+        err.response?.data?.message || "Failed to fetch prizes",
       );
     }
-  }
+  },
 );
 
 export const createPrize = createAsyncThunk(
@@ -44,10 +43,10 @@ export const createPrize = createAsyncThunk(
       return res;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to create prize"
+        err.response?.data?.message || "Failed to create prize",
       );
     }
-  }
+  },
 );
 
 export const updatePrize = createAsyncThunk(
@@ -58,10 +57,10 @@ export const updatePrize = createAsyncThunk(
       return res;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to update prize"
+        err.response?.data?.message || "Failed to update prize",
       );
     }
-  }
+  },
 );
 
 // Change this in prizes.slice.js
@@ -74,7 +73,7 @@ export const deletePrize = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to delete");
     }
-  }
+  },
 );
 const prizeSlice = createSlice({
   name: "prize",
@@ -115,7 +114,7 @@ const prizeSlice = createSlice({
       .addCase(updatePrize.fulfilled, (s, a) => {
         s.loading = false;
         s.prizes = s.prizes.map((p) =>
-          p._id === a.payload.data._id ? a.payload.data : p
+          p._id === a.payload.data._id ? a.payload.data : p,
         );
       })
       .addCase(deletePrize.fulfilled, (s, a) => {

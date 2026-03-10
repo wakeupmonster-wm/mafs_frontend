@@ -33,18 +33,15 @@ export const GallleryTab = ({ photos = [], userId }) => {
     setSelectedPhotos((prev) =>
       prev.includes(publicId)
         ? prev.filter((id) => id !== publicId)
-        : [...prev, publicId]
+        : [...prev, publicId],
     );
   };
 
   const onConfirmDelete = async () => {
-    console.log("call confirm");
     try {
       // Logic for bulk or single delete
       const idsToDelete =
         selectedPhotos.length > 0 ? selectedPhotos : [selectedPhotos[0]];
-
-      console.log("idsToDelete: ", idsToDelete);
 
       for (const publicId of idsToDelete) {
         await dispatch(deleteUserPhoto({ userId, publicId })).unwrap();
@@ -128,7 +125,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                       "group relative break-inside-avoid rounded-2xl overflow-hidden border-2 transition-all duration-300",
                       isSelected
                         ? "border-indigo-600 ring-4 ring-indigo-50"
-                        : "border-transparent hover:border-slate-300 shadow-sm"
+                        : "border-transparent hover:border-slate-300 shadow-sm",
                     )}
                   >
                     {/* SELECTION CHECKMARK */}
@@ -138,7 +135,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                         "absolute top-3 right-3 z-30 h-6 w-6 rounded-full flex items-center justify-center border-2 transition-all",
                         isSelected
                           ? "bg-indigo-600 border-indigo-600 text-white"
-                          : "bg-white/20 backdrop-blur-md border-white/50 text-transparent group-hover:text-white/50"
+                          : "bg-white/20 backdrop-blur-md border-white/50 text-transparent group-hover:text-white/50",
                       )}
                     >
                       <IconCheck size={14} stroke={3} />
@@ -157,7 +154,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                         alt="User Upload"
                         className={cn(
                           "w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105",
-                          isSelected && "opacity-80"
+                          isSelected && "opacity-80",
                         )}
                         onClick={() => {
                           if (selectedPhotos.length > 0)

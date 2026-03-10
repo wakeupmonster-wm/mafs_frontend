@@ -18,192 +18,6 @@ import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-// export const SettingsTab = ({ userData, account }) => {
-//   // Handler for account deletion (should trigger a specialized modal)
-//   const handleDeleteAccount = () => {
-//     // You should use a ConfirmModal here like we did for photos
-//     console.log("Initiating account deletion for:", userData._id);
-//   };
-
-//   return (
-//     <TabsContent
-//       value="settings"
-//       className="mt-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300"
-//     >
-//       {/* Header Section */}
-//       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-muted/30 p-6 rounded-2xl border border-border/50">
-//         <div className="flex items-center gap-4">
-//           <div className="p-3 bg-primary/10 rounded-xl text-primary shadow-sm">
-//             <IconSettings size={28} />
-//           </div>
-//           <div>
-//             <h3 className="text-xl font-bold tracking-tight">
-//               Administrative Controls
-//             </h3>
-//             <p className="text-sm text-muted-foreground">
-//               Manage account security, status, and system-level permissions.
-//             </p>
-//           </div>
-//         </div>
-//         <EditSettingsDialog userData={userData} />
-//       </div>
-
-//       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-//         {/* Account Governance Card */}
-//         <Card className="overflow-hidden border-none shadow-md bg-gradient-to-br from-background to-muted/20">
-//           <CardHeader className="border-b bg-muted/10">
-//             <div className="flex items-center gap-2">
-//               <IconUserShield className="text-blue-500" size={20} />
-//               <CardTitle className="text-base">Account Governance</CardTitle>
-//             </div>
-//           </CardHeader>
-//           <CardContent className="pt-6 space-y-4">
-//             <div className="flex justify-between items-center p-3 rounded-lg bg-background border">
-//               <span className="text-sm font-medium text-muted-foreground">
-//                 Current Status
-//               </span>
-//               <Badge
-//                 variant={
-//                   account.status === "active" ? "success" : "destructive"
-//                 }
-//                 className="capitalize px-3"
-//               >
-//                 <span
-//                   className={`mr-1.5 h-2 w-2 rounded-full animate-pulse ${
-//                     account.status === "active" ? "bg-white" : "bg-white"
-//                   }`}
-//                 />
-//                 {account.status}
-//               </Badge>
-//             </div>
-
-//             <div className="flex justify-between items-center p-3 rounded-lg bg-background border">
-//               <span className="text-sm font-medium text-muted-foreground">
-//                 Membership Tier
-//               </span>
-//               <Badge
-//                 variant="outline"
-//                 className={
-//                   account.isPremium
-//                     ? "border-amber-200 bg-amber-50 text-amber-700"
-//                     : ""
-//                 }
-//               >
-//                 {account.isPremium ? "⭐ Premium Member" : "Standard User"}
-//               </Badge>
-//             </div>
-
-//             <Separator className="my-2" />
-//             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
-//               System Logs
-//             </p>
-//             <DetailRow
-//               label="Account ID"
-//               value={userData._id}
-//               className="font-mono text-[10px]"
-//             />
-//           </CardContent>
-//         </Card>
-
-//         {/* Security & Trust Card */}
-//         <Card className="overflow-hidden border-none shadow-md bg-gradient-to-br from-background to-muted/20">
-//           <CardHeader className="border-b bg-muted/10">
-//             <div className="flex items-center gap-2">
-//               <IconShieldLock className="text-green-500" size={20} />
-//               <CardTitle className="text-base">Trust & Verification</CardTitle>
-//             </div>
-//           </CardHeader>
-//           <CardContent className="pt-6 space-y-4">
-//             <VerificationRow
-//               label="Email Address"
-//               subLabel={account.email}
-//               isVerified={userData.isEmailVerified}
-//             />
-//             <VerificationRow
-//               label="Phone Number"
-//               subLabel={account.phone || "Not Provided"}
-//               isVerified={userData.isPhoneVerified}
-//             />
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       {/* --- DANGER ZONE --- */}
-//       <div className="mt-12">
-//         <div className="flex items-center gap-2 mb-4 px-2">
-//           <IconAlertTriangle className="text-destructive" size={20} />
-//           <h4 className="text-sm font-bold uppercase tracking-wider text-destructive">
-//             Danger Zone
-//           </h4>
-//         </div>
-
-//         <Card className="border-destructive/20 bg-destructive/[0.02] overflow-hidden">
-//           <CardContent className="p-0">
-//             <div className="flex flex-col md:flex-row items-center justify-between p-6 gap-6">
-//               <div className="space-y-1 text-center md:text-left">
-//                 <p className="font-bold text-base text-foreground">
-//                   Delete User Account
-//                 </p>
-//                 <p className="text-sm text-muted-foreground max-w-md">
-//                   Permanently remove this user, their profile, matches, and all
-//                   associated media.
-//                   <span className="font-semibold text-destructive">
-//                     {" "}
-//                     This action is irreversible.
-//                   </span>
-//                 </p>
-//               </div>
-
-//               <Button
-//                 variant="destructive"
-//                 className="w-full md:w-auto px-8 py-6 h-auto shadow-lg shadow-destructive/20 hover:shadow-destructive/40 transition-all flex flex-col gap-1"
-//                 onClick={handleDeleteAccount}
-//               >
-//                 <div className="flex items-center gap-2">
-//                   <IconTrash size={18} />
-//                   <span className="font-bold">Terminate Account</span>
-//                 </div>
-//                 <span className="text-[10px] opacity-80 font-normal">
-//                   UID: {userData._id}
-//                 </span>
-//               </Button>
-//             </div>
-
-//             {/* Subtle Warning Footer */}
-//             <div className="bg-destructive/10 px-6 py-2 border-t border-destructive/10">
-//               <p className="text-[10px] text-destructive font-bold text-center md:text-left">
-//                 PROCEED WITH EXTREME CAUTION: ALL DATA WILL BE WIPED FROM THE
-//                 DATABASE.
-//               </p>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </TabsContent>
-//   );
-// };
-
-// // Helper component for cleaner code
-// const VerificationRow = ({ label, subLabel, isVerified }) => (
-//   <div className="flex items-center justify-between p-4 rounded-xl border bg-background group hover:border-primary/30 transition-colors">
-//     <div className="space-y-0.5">
-//       <p className="text-sm font-bold">{label}</p>
-//       <p className="text-xs text-muted-foreground">{subLabel}</p>
-//     </div>
-//     <div className="flex items-center gap-2">
-//       {isVerified ? (
-//         <Badge className="bg-green-500/10 text-green-600 border-green-200 gap-1 px-2">
-//           <IconCircleCheck size={14} /> Verified
-//         </Badge>
-//       ) : (
-//         <Badge variant="outline" className="text-muted-foreground gap-1 px-2">
-//           <IconCircleX size={14} /> Pending
-//         </Badge>
-//       )}
-//     </div>
-//   </div>
-// );
-
 export const SettingsTab = ({ userData, account }) => {
   const handleDeleteAccount = () => {
     // In a real app, trigger a ConfirmModal here
@@ -254,7 +68,7 @@ export const SettingsTab = ({ userData, account }) => {
                     "h-7 px-3 border-none shadow-sm",
                     account.status === "active"
                       ? "bg-emerald-500 text-white"
-                      : "bg-rose-500 text-white"
+                      : "bg-rose-500 text-white",
                   )}
                 >
                   <span className="mr-2 h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
@@ -276,7 +90,7 @@ export const SettingsTab = ({ userData, account }) => {
                   className={cn(
                     "h-7 px-3 border-slate-200",
                     account.isPremium &&
-                      "bg-amber-50 border-amber-200 text-amber-700"
+                      "bg-amber-50 border-amber-200 text-amber-700",
                   )}
                 >
                   {account.isPremium ? "⭐ Premium" : "Basic"}

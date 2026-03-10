@@ -16,13 +16,8 @@ export const fetchUsers = createAsyncThunk(
   "users/fetchAll",
   async (
     { page, limit, search, accountStatus, isPremium, last24Hours },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
-    // console.log("page: ", page);
-    // console.log("limit: ", limit);
-    // console.log("search: ", search);
-    // console.log("accountStatus: ", accountStatus);
-    // console.log("isPremium: ", isPremium);
     try {
       // Pass the new filters directly to your API function
       const response = await getALLUserListApi(
@@ -31,10 +26,8 @@ export const fetchUsers = createAsyncThunk(
         search,
         accountStatus,
         isPremium,
-        last24Hours
+        last24Hours,
       );
-
-      console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -51,7 +44,7 @@ export const fetchUsers = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const fetchPendingVerifications = createAsyncThunk(
@@ -62,7 +55,7 @@ export const fetchPendingVerifications = createAsyncThunk(
 
       if (!response.success) {
         return rejectWithValue(
-          response.message || "Failed to fetch pending verifications"
+          response.message || "Failed to fetch pending verifications",
         );
       }
 
@@ -73,7 +66,7 @@ export const fetchPendingVerifications = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const verifyUserProfile = createAsyncThunk(
@@ -92,10 +85,10 @@ export const verifyUserProfile = createAsyncThunk(
       return { userId, action };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Verification failed"
+        error.response?.data?.message || "Verification failed",
       );
     }
-  }
+  },
 );
 
 export const exportUsersStream = createAsyncThunk(
@@ -111,8 +104,6 @@ export const exportUsersStream = createAsyncThunk(
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let csvData = "";
-
-      //
 
       while (true) {
         const { done, value } = await reader.read();
@@ -140,7 +131,7 @@ export const exportUsersStream = createAsyncThunk(
       console.error("Export Stream Thunk Error:", error);
       return rejectWithValue(error.message || "Streaming export failed");
     }
-  }
+  },
 );
 
 export const bannedUserProfile = createAsyncThunk(
@@ -153,8 +144,6 @@ export const bannedUserProfile = createAsyncThunk(
         payload: { category, reason },
       });
 
-      console.log("response: ", response);
-
       if (!response.success) {
         return rejectWithValue(response.message);
       }
@@ -163,7 +152,7 @@ export const bannedUserProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Ban failed");
     }
-  }
+  },
 );
 
 // Thunk for Unbanning
@@ -172,20 +161,18 @@ export const unbanUserProfile = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await unBannedUserAPI(userId);
-      console.log("response: ", response);
       if (!response.success) return rejectWithValue(response.message);
       return { userId };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Unban failed");
     }
-  }
+  },
 );
 
 export const suspendUserProfile = createAsyncThunk(
   "users/suspendUserProfile",
   async ({ userId, reason, durationHours }, { rejectWithValue }) => {
     try {
-      console.log("call suspend: ", userId);
       const response = await suspendUserAPI({
         userId,
         payload: { reason, durationHours },
@@ -196,10 +183,10 @@ export const suspendUserProfile = createAsyncThunk(
       return { userId, reason, durationHours };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Suspension failed"
+        error.response?.data?.message || "Suspension failed",
       );
     }
-  }
+  },
 );
 
 export const updateUserProfile = createAsyncThunk(
@@ -220,7 +207,7 @@ export const updateUserProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const deleteUserPhoto = createAsyncThunk(
@@ -238,7 +225,7 @@ export const deleteUserPhoto = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 const userSlice = createSlice({
@@ -319,13 +306,13 @@ const userSlice = createSlice({
 
         // 1. Remove from pending list (already doing this)
         state.pendingVerifications = state.pendingVerifications.filter(
-          (item) => item.userId !== userId
+          (item) => item.userId !== userId,
         );
 
         // 2. FIND AND UPDATE THE USER IN THE LIST
         // This is the key for real-time UI updates
         const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (userIndex !== -1) {
@@ -346,7 +333,7 @@ const userSlice = createSlice({
 
         // Find the user in the main list
         const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (userIndex !== -1) {
@@ -366,7 +353,7 @@ const userSlice = createSlice({
       .addCase(deleteUserPhoto.fulfilled, (state, action) => {
         const { userId, updatedPhotos } = action.payload;
         const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (userIndex !== -1) {
@@ -385,7 +372,7 @@ const userSlice = createSlice({
         const { userId, category, reason } = action.payload;
 
         const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (user) {
@@ -417,7 +404,7 @@ const userSlice = createSlice({
         const { userId } = action.payload;
 
         const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (user) {
@@ -443,7 +430,7 @@ const userSlice = createSlice({
         state.loading = false;
         const { userId, reason, durationHours } = action.payload;
         const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (user) {
@@ -451,7 +438,7 @@ const userSlice = createSlice({
           if (user.account) user.account.status = "suspended";
 
           const suspendUntil = new Date(
-            Date.now() + durationHours * 60 * 60 * 1000
+            Date.now() + durationHours * 60 * 60 * 1000,
           ).toISOString();
 
           user.suspensionDetails = {

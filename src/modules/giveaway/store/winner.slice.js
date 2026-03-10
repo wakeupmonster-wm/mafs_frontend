@@ -6,7 +6,6 @@ export const fetchWinner = createAsyncThunk(
   async ({ page, limit, search, status } = {}, { rejectWithValue }) => {
     try {
       const response = await getWinnerApi(page, limit, search, status);
-      // console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -22,14 +21,14 @@ export const fetchWinner = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch pending winner"
+        response.message || "Failed to fetch pending winner",
       );
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch winner"
+        err.response?.data?.message || "Failed to fetch winner",
       );
     }
-  }
+  },
 );
 
 const winnerSlice = createSlice({

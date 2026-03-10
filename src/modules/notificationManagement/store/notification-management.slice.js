@@ -9,10 +9,10 @@ export const notificationHistory = createAsyncThunk(
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch notification history"
+        e.response?.data?.message || "Failed to fetch notification history",
       );
     }
-  }
+  },
 );
 
 export const broadcastNotification = createAsyncThunk(
@@ -23,10 +23,10 @@ export const broadcastNotification = createAsyncThunk(
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to send broadcast"
+        e.response?.data?.message || "Failed to send broadcast",
       );
     }
-  }
+  },
 );
 
 export const sendNotificationToPremiumUsers = createAsyncThunk(
@@ -37,10 +37,10 @@ export const sendNotificationToPremiumUsers = createAsyncThunk(
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to send to premium users"
+        e.response?.data?.message || "Failed to send to premium users",
       );
     }
-  }
+  },
 );
 
 export const createPremiumExpiryCampaign = createAsyncThunk(
@@ -51,24 +51,23 @@ export const createPremiumExpiryCampaign = createAsyncThunk(
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to create expiry campaign"
+        e.response?.data?.message || "Failed to create expiry campaign",
       );
     }
-  }
+  },
 );
 
 export const sendEmailCampaign = createAsyncThunk(
   "notificationManagement/sendEmailCampaign",
   async (payload, { rejectWithValue }) => {
     try {
-      console.log("payload: ", payload);
       return await notifyAPI.sendEmailCampaignApi(payload);
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to send email campaign"
+        e.response?.data?.message || "Failed to send email campaign",
       );
     }
-  }
+  },
 );
 
 const notificationManagementSlice = createSlice({

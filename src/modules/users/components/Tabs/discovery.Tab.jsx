@@ -1,9 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
-import { DetailRow } from "../detailRow";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   IconHeart,
   IconMapPin,
@@ -13,66 +11,18 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import { AttributeBlock } from "../attribute.Block";
-
-// export const DiscoveryTab = ({ discovery }) => {
-//   return (
-//     // --- TAB 4: DISCOVERY ---
-//     <TabsContent value="discovery" className="mt-6">
-//       <Card>
-//         <CardHeader>
-//           <CardTitle className="flex items-center gap-2">
-//             <IconSearch className="text-blue-500" /> Discovery Preferences
-//           </CardTitle>
-//         </CardHeader>
-//         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-//           <div className="space-y-6">
-//             <DetailRow
-//               icon={<IconHeart className="text-red-500" />}
-//               label="Relationship Goal"
-//               value={discovery?.relationshipGoal}
-//             />
-//             <DetailRow
-//               icon={<IconTimeline size={18} />}
-//               label="Age Range"
-//               value={`${discovery?.ageRange?.min} - ${discovery?.ageRange?.max} years`}
-//             />
-//             <DetailRow
-//               icon={<IconMapPin size={18} />}
-//               label="Distance Range"
-//               value={`${discovery?.distanceRange} km`}
-//             />
-//           </div>
-//           <div className="space-y-6">
-//             <AttributeBlock
-//               label="Interested In"
-//               value={discovery?.showMeGender?.join(", ")}
-//             />
-//             <AttributeBlock
-//               label="Global Visibility"
-//               value={discovery?.globalVisibility ? "Public" : "Hidden"}
-//             />
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </TabsContent>
-//   );
-// };
 
 export const DiscoveryTab = ({ discovery, attributes }) => {
-  console.log("discovery: ", discovery);
-  console.log("attributes: ", attributes);
-
   return (
     <TabsContent
       value="discovery"
       className="mt-6 animate-in fade-in slide-in-from-top-2 duration-500"
     >
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-2">
         {/* LEFT COLUMN: DISCOVERY SETTINGS (2 Columns Wide) */}
-        <div className="xl:col-span-2 space-y-6">
-          <Card className="border-slate-200 shadow-sm overflow-hidden rounded-3xl">
-            <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-5 px-8">
+        <div className="xl:col-span-3 space-y-6">
+          <Card className="border-slate-200 py-3 shadow-sm gap-2 overflow-hidden rounded-3xl">
+            <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-4 px-8">
               <CardTitle className="flex items-center gap-3 text-lg font-bold text-slate-800">
                 <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-200">
                   <IconSearch className="text-white" size={20} />
@@ -81,7 +31,7 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
               </CardTitle>
             </CardHeader>
 
-            <CardContent className="p-8">
+            <CardContent className="px-8 py-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Intent Section */}
                 <div className="space-y-8">
@@ -154,7 +104,7 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
                       "flex items-center justify-between p-4 rounded-2xl border-2 transition-all",
                       discovery?.globalVisibility === "everyone"
                         ? "bg-indigo-50/50 border-indigo-100 shadow-sm shadow-indigo-100"
-                        : "bg-slate-50 border-slate-100"
+                        : "bg-slate-50 border-slate-100",
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -163,7 +113,7 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
                           "p-2.5 rounded-xl",
                           discovery?.globalVisibility === "everyone"
                             ? "bg-indigo-600 text-white"
-                            : "bg-slate-200 text-slate-500"
+                            : "bg-slate-200 text-slate-500",
                         )}
                       >
                         <IconWorld size={20} />
@@ -185,7 +135,7 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
         </div>
 
         {/* RIGHT COLUMN: PERSONAL ATTRIBUTES (1 Column Wide) */}
-        <div className="space-y-6">
+        {/* <div className="space-y-6">
           <Card className="border-slate-200 shadow-sm rounded-3xl overflow-hidden h-full">
             <CardHeader className="bg-amber-50/50 border-b border-amber-100 py-5">
               <CardTitle className="flex items-center gap-3 text-lg font-bold text-amber-900 px-4">
@@ -235,7 +185,7 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </div> */}
       </div>
     </TabsContent>
   );
@@ -294,7 +244,7 @@ const AttributeGroup = ({ label, items }) => (
                 {item.val}
               </span>
             </div>
-          )
+          ),
       )}
     </div>
   </div>

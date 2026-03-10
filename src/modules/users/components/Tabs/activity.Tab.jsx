@@ -17,141 +17,6 @@ import { cn } from "@/lib/utils";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 import { Button } from "@/components/ui/button";
 
-// export const ActivityTab = ({ stats, recentMatches }) => {
-//   // Calculate match rate percentage
-//   const matchRate =
-//     stats.totalSwipes > 0
-//       ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
-//       : 0;
-
-//   console.log("recentMatches: ", recentMatches);
-
-//   return (
-//     <TabsContent value="activity" className="mt-6 space-y-6">
-//       {/* Dynamic Stat Cards */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-//         <StatCard
-//           label="Total Likes"
-//           value={stats.totalLikes?.toLocaleString()}
-//           icon={<IconHeart className="text-red-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Super Likes"
-//           value={stats.totalSuperLikes?.toLocaleString()}
-//           icon={<IconStar className="text-amber-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Matches"
-//           value={stats.totalMatches?.toLocaleString()}
-//           icon={<IconCheck className="text-green-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Total Swipes"
-//           value={stats.totalSwipes?.toLocaleString()}
-//           icon={<IconEye className="text-blue-500" size={20} />}
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Match History List */}
-//         <Card className={"col-span-2"}>
-//           <CardHeader>
-//             <CardTitle>Recent Match History</CardTitle>
-//           </CardHeader>
-//           <CardContent>
-//             <div className="space-y-4">
-//               {recentMatches && recentMatches.length > 0 ? (
-//                 recentMatches.map((match) => (
-//                   <div
-//                     key={match._id}
-//                     className="flex items-center justify-between p-3 border rounded-xl hover:bg-muted/50 transition-all group"
-//                   >
-//                     <div className="flex items-center gap-3">
-//                       <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
-//                         <AvatarImage
-//                           src={match.photo || dummyImg}
-//                           className="object-cover"
-//                         />
-//                         <AvatarFallback>
-//                           {match.nickname?.substring(0, 2).toUpperCase()}
-//                         </AvatarFallback>
-//                       </Avatar>
-//                       <div>
-//                         <p className="font-bold text-sm">
-//                           Matched with{" "}
-//                           <span className="text-primary">{match.nickname}</span>
-//                         </p>
-//                         <p className="text-xs text-muted-foreground italic">
-//                           {match.matchedAt
-//                             ? `Connected ${formatDistanceToNow(
-//                                 new Date(match.matchedAt)
-//                               )} ago`
-//                             : "Date unavailable"}
-//                         </p>
-//                       </div>
-//                     </div>
-//                     <Badge
-//                       variant="secondary"
-//                       className="bg-green-50 text-green-700 border-green-200"
-//                     >
-//                       Active Match
-//                     </Badge>
-//                   </div>
-//                 ))
-//               ) : (
-//                 <div className="text-center py-12 border-2 border-dashed rounded-xl">
-//                   <p className="text-muted-foreground text-sm font-medium">
-//                     No recent matches found.
-//                   </p>
-//                 </div>
-//               )}
-//             </div>
-//           </CardContent>
-//         </Card>
-
-//         {/* Swipe Insights Card */}
-//         <Card className="shadow-sm border-muted">
-//           <CardHeader>
-//             <CardTitle className="text-lg">Engagement Insights</CardTitle>
-//           </CardHeader>
-//           <CardContent className="space-y-6">
-//             <div className="space-y-2">
-//               <div className="flex justify-between text-sm font-medium">
-//                 <span>Match Success Rate</span>
-//                 <span className="text-primary">{matchRate}%</span>
-//               </div>
-//               <Progress value={parseFloat(matchRate)} className="h-2" />
-//             </div>
-
-//             <div className="pt-4 space-y-3">
-//               <div className="flex items-center justify-between text-xs">
-//                 <span className="text-muted-foreground">
-//                   Likes vs. Total Swipes
-//                 </span>
-//                 <span className="font-mono">
-//                   {stats.totalLikes}/{stats.totalSwipes}
-//                 </span>
-//               </div>
-//               <div className="flex items-center justify-between text-xs">
-//                 <span className="text-muted-foreground">Super Like Ratio</span>
-//                 <span className="font-mono">
-//                   {stats.totalSuperLikes > 0
-//                     ? (
-//                         (stats.totalSuperLikes / stats.totalLikes) *
-//                         100
-//                       ).toFixed(1)
-//                     : 0}
-//                   %
-//                 </span>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </TabsContent>
-//   );
-// };
-
 export const ActivityTab = ({ stats, recentMatches }) => {
   const matchRate =
     stats.totalSwipes > 0
@@ -200,7 +65,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                 <div
                   className={cn(
                     "p-3 rounded-2xl transition-transform group-hover:scale-110",
-                    stat.bg
+                    stat.bg,
                   )}
                 >
                   {React.cloneElement(stat.icon, { size: 24, stroke: 2 })}
@@ -217,7 +82,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
               <div
                 className={cn(
                   "h-1 w-full opacity-20",
-                  stat.bg.replace("bg-", "bg-")
+                  stat.bg.replace("bg-", "bg-"),
                 )}
               />
             </CardContent>

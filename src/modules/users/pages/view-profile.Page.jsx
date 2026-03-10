@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { toast } from "sonner";
+import { useSelector } from "react-redux";
 import {
   IconArrowLeft,
   IconCircleCheck,
   IconMapPin,
   IconCalendar,
   IconSettings,
-  IconAlertCircle,
-  IconBan,
 } from "@tabler/icons-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,44 +16,26 @@ import EnhancedTabs from "../components/Tabs/tabs";
 import { TabData } from "@/app/data/tabs.data";
 import { ProfileTab } from "../components/Tabs/profile.Tab";
 import { GallleryTab } from "../components/Tabs/galllery.Tab";
-import { LifeStyleTab } from "../components/Tabs/lifestyle.Tab";
 import { DiscoveryTab } from "../components/Tabs/discovery.Tab";
 import { ActivityTab } from "../components/Tabs/activity.Tab";
 import { FinancialsTab } from "../components/Tabs/financials.Tab";
 import { SettingsTab } from "../components/Tabs/settings.Tab";
 import { Check, Copy } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { SuspendUserModal } from "../components/suspendUserModal";
-import { BanUserModal } from "../components/ban-user-modal";
-import ConfirmModal from "@/components/common/ConfirmModal";
-import {
-  bannedUserProfile,
-  suspendUserProfile,
-  unbanUserProfile,
-} from "../store/user.slice";
 import { PreLoader } from "@/app/loader/preloader";
+import { ManageAccountDialog } from "../components/Dialogs/manage.account.dialog";
+import { AttributesTab } from "../components/Tabs/attributes.Tab";
 
 export default function ViewProfilePage() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const location = useLocation();
   const [copied, setCopied] = useState(false);
-  const [isBanModalOpen, setIsBanModalOpen] = useState(false);
-  const [isUnbannedOpen, setIsUnbannedOpen] = useState(false);
-  const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
 
   const { loading } = useSelector((state) => state.users);
 
   const initialUserData = location.state?.userData;
   const liveUser = useSelector((state) =>
-    state.users.items.find((u) => u._id === initialUserData?._id)
+    state.users.items.find((u) => u._id === initialUserData?._id),
   );
   const userData = liveUser || initialUserData;
 
@@ -97,50 +76,6 @@ export default function ViewProfilePage() {
   } = userData;
 
   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
-
-  const handleBanConfirm = async (category, reason) => {
-    const userId = userData._id;
-    try {
-      await dispatch(bannedUserProfile({ userId, category, reason })).unwrap();
-      toast.success("User banned successfully", {
-        description: `${profile?.nickname} is now restricted.`,
-      });
-      setIsBanModalOpen(false);
-    } catch (error) {
-      toast.error(error || "Failed to ban user");
-    }
-  };
-
-  // 2. New Unban Handler
-  const handleUnban = async () => {
-    try {
-      await dispatch(unbanUserProfile(userData._id)).unwrap();
-      toast.success("Account Restored", {
-        description: `${profile?.nickname} can now access their profile.`,
-      });
-      setIsUnbannedOpen(false);
-    } catch (err) {
-      toast.error(err || "Failed to unban user");
-    }
-  };
-
-  const handleSuspendConfirm = async (reason, duration) => {
-    try {
-      await dispatch(
-        suspendUserProfile({
-          userId: userData._id,
-          reason,
-          durationHours: Number(duration),
-        })
-      ).unwrap();
-      toast.success("User Suspended", {
-        description: `Access restricted for ${duration} hours.`,
-      });
-      setIsSuspendModalOpen(false);
-    } catch (err) {
-      toast.error(err || "Failed to suspend user");
-    }
-  };
 
   // ✅ CRITICAL: You must RETURN the component
   if (loading) {
@@ -245,58 +180,13 @@ export default function ViewProfilePage() {
               </div>
 
               <div className="flex gap-2 w-full md:w-auto">
-                {/* <Button
-                variant="outline"
-                className="flex-1 md:flex-none h-10 border-slate-200"
-              >
-                Message
-              </Button> 
-             <Button
+                <Button
                   variant="outline"
-                  className="flex-1 md:flex-none h-10 border-red-100 text-red-600 hover:bg-red-50"
+                  className="shadow-sm"
+                  onClick={() => setIsManageDialogOpen(true)}
                 >
-                  Suspend
-                </Button> */}
-
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="shadow-sm">
-                      <IconSettings className="mr-2 h-4 w-4" /> Manage Account
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-                    {isBanned ? (
-                      <DropdownMenuItem
-                        className="text-green-600 font-medium"
-                        onClick={() => setIsUnbannedOpen(true)}
-                      >
-                        Unban User
-                      </DropdownMenuItem>
-                    ) : (
-                      <DropdownMenuItem
-                        className="text-destructive font-medium"
-                        onClick={() => setIsBanModalOpen(true)}
-                      >
-                        <IconBan className="mr-2 h-4 w-4 text-red-500" />
-                        Ban User Account
-                      </DropdownMenuItem>
-                    )}
-
-                    <DropdownMenuSeparator />
-
-                    {!isBanned && account.status !== "suspended" && (
-                      <DropdownMenuItem
-                        onClick={() => setIsSuspendModalOpen(true)}
-                      >
-                        <IconAlertCircle className="mr-2 h-4 w-4 text-orange-500" />
-                        Suspend User
-                      </DropdownMenuItem>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  <IconSettings className="mr-2 h-4 w-4" /> Manage Account
+                </Button>
               </div>
             </div>
           </div>
@@ -319,7 +209,7 @@ export default function ViewProfilePage() {
                 verification={verification}
               />
               <GallleryTab photos={photos} userId={userData._id} />
-              <LifeStyleTab userData={userData} attributes={attributes} />
+              <AttributesTab userData={userData} attributes={attributes} />
               <DiscoveryTab discovery={discovery} attributes={attributes} />
               <ActivityTab stats={stats} recentMatches={recentMatches} />
               <FinancialsTab
@@ -334,21 +224,7 @@ export default function ViewProfilePage() {
       </div>
 
       {/* --- MODALS --- */}
-      <SuspendUserModal
-        isOpen={isSuspendModalOpen}
-        onClose={() => setIsSuspendModalOpen(false)}
-        onConfirm={handleSuspendConfirm}
-        userName={profile?.nickname}
-      />
-
-      <BanUserModal
-        isOpen={isBanModalOpen}
-        onClose={() => setIsBanModalOpen(false)}
-        onConfirm={handleBanConfirm}
-        userName={profile?.nickname}
-      />
-
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={isUnbannedOpen}
         onClose={() => setIsUnbannedOpen(false)}
         onConfirm={handleUnban}
@@ -356,6 +232,12 @@ export default function ViewProfilePage() {
         message={`Are you sure you want to restore access for ${profile?.nickname}? they will be able to use the app immediately.`}
         confirmText="Restore Access"
         type="warning" // Changed to warning as it's a "positive" restoration
+      /> */}
+
+      <ManageAccountDialog
+        isOpen={isManageDialogOpen}
+        onOpenChange={setIsManageDialogOpen}
+        userData={userData}
       />
     </>
   );

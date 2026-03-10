@@ -79,7 +79,7 @@ export default function ViewPage() {
 
   // Sync with Redux store to get "live" updates (status changes, etc.)
   const liveUser = useSelector((state) =>
-    state.users.items.find((u) => u._id === initialUserData?._id)
+    state.users.items.find((u) => u._id === initialUserData?._id),
   );
 
   // Fallback to initial data if not found in store yet
@@ -140,17 +140,8 @@ export default function ViewPage() {
           userId: userData._id,
           action: status === "approved" ? "approve" : "reject",
           reason: status === "rejected" ? reason : undefined,
-        })
+        }),
       ).unwrap();
-
-      console.log(
-        "userId:",
-        userData._id,
-        "Status: ",
-        status,
-        "Reason: ",
-        reason
-      );
 
       toast.success(`Identity ${status} successfully`, {
         description: reason,
@@ -168,7 +159,7 @@ export default function ViewPage() {
           userId: userData._id,
           reason,
           durationHours: Number(duration),
-        })
+        }),
       ).unwrap();
       toast.success("User Suspended", {
         description: `Access restricted for ${duration} hours.`,
@@ -240,15 +231,15 @@ export default function ViewPage() {
                 isBanned
                   ? "destructive"
                   : account.status === "suspended" ||
-                    userData.accountStatus === "suspended"
-                  ? "warning"
-                  : "default"
+                      userData.accountStatus === "suspended"
+                    ? "warning"
+                    : "default"
               }
               className={cn(
                 "px-4 py-1.5 shadow-sm",
                 (account.status === "suspended" ||
                   userData.accountStatus === "suspended") &&
-                  "bg-orange-500 hover:bg-orange-500 text-white"
+                  "bg-orange-500 hover:bg-orange-500 text-white",
               )}
             >
               {(account.status || userData.accountStatus)?.toUpperCase()}
@@ -683,7 +674,7 @@ export default function ViewPage() {
                             variant="outline"
                             className={cn(
                               "transition-all duration-300 px-3 py-1 gap-1.5 font-bold shadow-sm cursor-default",
-                              config.color
+                              config.color,
                             )}
                           >
                             {config.icon}
@@ -742,7 +733,7 @@ export default function ViewPage() {
                 "transition-all duration-300 border-2",
                 verification?.status === "approved"
                   ? "border-green-200 bg-green-50/30"
-                  : "border-muted shadow-sm"
+                  : "border-muted shadow-sm",
               )}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -752,7 +743,7 @@ export default function ViewPage() {
                       "h-6 w-6",
                       verification?.status === "approved"
                         ? "text-green-600"
-                        : "text-muted-foreground"
+                        : "text-muted-foreground",
                     )}
                   />
                   <CardTitle className="text-lg">
@@ -764,7 +755,7 @@ export default function ViewPage() {
                     "px-4 py-1 font-bold",
                     verification?.status === "approved"
                       ? "bg-green-600 text-white"
-                      : "bg-amber-500 text-white"
+                      : "bg-amber-500 text-white",
                   )}
                 >
                   {verification?.status?.toUpperCase() || "PENDING"}

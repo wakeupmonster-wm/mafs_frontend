@@ -9,19 +9,15 @@ export const fetchDashboardKPIs = createAsyncThunk(
     try {
       const res = await dashboardKPIAPI();
 
-      // console.log("res: ", res);
-
       if (res.success) {
         return res.data.kpis;
       }
-
-      console.log("res.data.kpis: ", res.data.kpis);
 
       return rejectWithValue("Failed to fetch KPIs");
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server Error");
     }
-  }
+  },
 );
 
 const initialState = {

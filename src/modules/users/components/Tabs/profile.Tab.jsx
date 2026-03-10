@@ -5,66 +5,64 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { TabsContent } from "@/components/ui/tabs";
 import {
-  IconAlertTriangle,
+  IconAlertCircle,
   IconBriefcase,
   IconCalendar,
   IconChartBar,
-  IconCheck,
   IconDeviceMobile,
-  IconExternalLink,
   IconHeart,
   IconLock,
   IconMail,
   IconMapPin,
   IconMaximize,
   IconQuote,
-  IconShieldCheck,
   IconSparkles,
   IconUser,
-  IconX,
 } from "@tabler/icons-react";
 import { EditProfileDialog } from "../Dialogs/edit.profile.Dialog";
 import { Separator } from "@/components/ui/separator";
 import { DetailRow } from "../detailRow";
 import { cn } from "@/lib/utils";
-import { VerifyUserModal } from "../VerifyUserModal";
+// import { VerifyUserModal } from "../VerifyUserModal";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyUserProfile } from "../../store/user.slice";
 import { toast } from "sonner";
 import VerificationCard from "../verification.card";
 import { FaCheckCircle } from "react-icons/fa";
+import { GoUnverified } from "react-icons/go";
+// import { Mail, Phone } from "lucide-react";
 
 export const ProfileTab = ({ userData: initialUserData, ...props }) => {
   const dispatch = useDispatch();
   const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
-  const [verifyActionType, setVerifyActionType] = useState("");
+  // const [verifyActionType, setVerifyActionType] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
   const liveUser = useSelector((state) =>
-    state.users.items.find((u) => u._id === initialUserData._id)
+    state.users.items.find((u) => u._id === initialUserData._id),
   );
 
   const userData = liveUser || initialUserData;
   const verification = userData?.verification;
 
-  const handleVerifyConfirm = async (status, reason) => {
-    setIsVerifying(true);
-    try {
-      await dispatch(
-        verifyUserProfile({
-          userId: userData._id,
-          action: status === "approved" ? "approve" : "reject",
-          reason: status === "rejected" ? reason : undefined,
-        })
-      ).unwrap();
-      toast.success(`Identity ${status} successfully`);
-      setIsVerifyModalOpen(false);
-    } catch (err) {
-      toast.error(err || "Failed to update verification");
-    } finally {
-      setIsVerifying(false);
-    }
-  };
+  // const handleVerifyConfirm = async (status, reason) => {
+  //   setIsVerifying(true);
+  //   try {
+  //     await dispatch(
+  //       verifyUserProfile({
+  //         userId: userData._id,
+  //         action: status === "approved" ? "approve" : "reject",
+  //         reason: status === "rejected" ? reason : undefined,
+  //       }),
+  //     ).unwrap();
+  //     toast.success(`Identity ${status} successfully`);
+  //     setIsVerifyModalOpen(false);
+  //   } catch (err) {
+  //     toast.error(err || "Failed to update verification");
+  //   } finally {
+  //     setIsVerifying(false);
+  //   }
+  // };
 
   // Color map to fix Tailwind dynamic class issues
   const colorStyles = {
@@ -103,7 +101,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
       verifyUserProfile({
         userId: userData._id,
         action: status === "approved" ? "approve" : "reject",
-      })
+      }),
     ).unwrap();
     toast.success(`Identity ${status} successfully`);
     setIsVerifying(false);
@@ -112,13 +110,15 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
   const handleReject = async (reason, status) => {
     setIsVerifying(true);
     await new Promise((r) => setTimeout(r, 800));
+    // console.log("status: ", status, "reason: ", reason);
     await dispatch(
       verifyUserProfile({
         userId: userData._id,
         action: status === "approved" ? "approve" : "reject",
         reason: status === "rejected" ? reason : undefined,
-      })
+      }),
     ).unwrap();
+
     toast.success(`Identity ${status} successfully`);
     setIsVerifying(false);
   };
@@ -210,7 +210,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                       <div
                         className={cn(
                           "p-2.5 rounded-xl border transition-colors",
-                          colorStyles[item.color]
+                          colorStyles[item.color],
                         )}
                       >
                         {React.cloneElement(item.icon, { size: 20, stroke: 2 })}
@@ -232,31 +232,46 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "text-[10px] font-bold px-2 py-0 h-6 border-slate-200",
+                              "px-1 py-0 h-4 flex items-center justify-center border-none",
                               item.verified
-                                ? "text-slate-900 bg-white"
-                                : "text-slate-400"
+                                ? "text-green-500 bg-green-50/50"
+                                : "text-red-600",
                             )}
                           >
-                            <div className="flex items-center gap-1">
-                              {item.verified ? (
-                                <>
-                                  {/* <BadgeCheck
-                                    size={16}
-                                    className="text-blue-500"
-                                  /> */}
-                                  <FaCheckCircle />
-                                  <span>Verified</span>
-                                </>
-                              ) : (
-                                "Unverified"
-                              )}
-                            </div>
+                            {item.verified ? (
+                              <FaCheckCircle
+                                size={14}
+                                title="Verified Profile"
+                              />
+                            ) : (
+                              // <div className="flex items-center gap-1 px-1">
+                              //   {/* Unverified Icon */}
+                              //   <IconAlertCircle
+                              //     size={12}
+                              //     stroke={2.5}
+                              //     className="text-slate-400"
+                              //   />
+                              //   <span className="text-[10px] font-bold">
+                              //     Unverified
+                              //   </span>
+                              // </div>
+                              <GoUnverified
+                                size={18}
+                                strokeWidth={1}
+                                title="Unverified Profile"
+                              />
+                            )}
                           </Badge>
                         ) : (
-                          <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-bold px-2 py-0 h-6">
-                            {item.val || "Email"}
-                          </Badge>
+                          // <Badge className="bg-slate-100 text-slate-600 border-none text-[10px] font-bold px-2 py-0 h-6 flex items-center gap-1.5">
+                          //   {item.val?.toLowerCase() === "phone" ? (
+                          //     <Phone size={12} className="text-slate-500" />
+                          //   ) : (
+                          //     <Mail size={12} className="text-slate-500" />
+                          //   )}
+                          //   <span>{item.val || "Email"}</span>
+                          // </Badge>
+                          <></>
                         )}
                       </div>
                     </div>
@@ -276,7 +291,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                 <div className="space-y-3">
                   <div className="flex items-baseline gap-1">
                     <span className="text-2xl font-black text-slate-900">
-                      {props?.profile?.totalCompletion || 82}%
+                      {props?.profile?.totalCompletion || 0}%
                     </span>
                   </div>
 
@@ -345,7 +360,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                         "p-4 rounded-lg border transition-all hover:shadow-md hover:border-indigo-100",
                         attr.highlight
                           ? "bg-indigo-50/30 border-indigo-100"
-                          : "bg-white border-slate-100"
+                          : "bg-white border-slate-100",
                       )}
                     >
                       <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1.5">
@@ -384,7 +399,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     iconBg="bg-amber-50 text-amber-500"
                     label="Joined Date"
                     value={new Date(
-                      props?.account?.createdAt
+                      props?.account?.createdAt,
                     ).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "long",

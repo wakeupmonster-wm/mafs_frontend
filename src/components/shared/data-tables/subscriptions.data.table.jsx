@@ -8,15 +8,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -29,7 +20,6 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconFilter,
   IconInbox,
   IconSearch,
   IconX,
@@ -151,7 +141,8 @@ export default function SubscriptionsDataTables({
                 <SelectTrigger
                   className={cn(
                     "h-10 w-max bg-white",
-                    filters.status && "border-indigo-500 ring-1 ring-indigo-500"
+                    filters.status &&
+                      "border-indigo-500 ring-1 ring-indigo-500",
                   )}
                 >
                   <SelectValue placeholder="Status" />
@@ -170,7 +161,7 @@ export default function SubscriptionsDataTables({
                 <SelectTrigger
                   className={cn(
                     "h-10 w-max bg-white",
-                    filters.plan && "border-amber-500 ring-1 ring-amber-500"
+                    filters.plan && "border-amber-500 ring-1 ring-amber-500",
                   )}
                 >
                   <SelectValue placeholder="Plan" />
@@ -193,7 +184,7 @@ export default function SubscriptionsDataTables({
                   className={cn(
                     "h-10 w-max bg-white border-slate-200 transition-all",
                     filters.platform &&
-                      "border-brand-aqua ring-1 ring-brand-aqua bg-brand-aqua/10"
+                      "border-brand-aqua ring-1 ring-brand-aqua bg-brand-aqua/10",
                   )}
                 >
                   <SelectValue placeholder="Platform" />
@@ -297,7 +288,7 @@ export default function SubscriptionsDataTables({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -306,7 +297,7 @@ export default function SubscriptionsDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -316,7 +307,7 @@ export default function SubscriptionsDataTables({
                     <TableCell key={cell.id} className="py-3 px-0">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

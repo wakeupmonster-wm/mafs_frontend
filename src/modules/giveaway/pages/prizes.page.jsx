@@ -50,7 +50,7 @@ export default function PrizePage() {
           limit: pagination.pageSize,
           search: globalFilter,
           type: prizeType,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -74,7 +74,6 @@ export default function PrizePage() {
   };
 
   const handleEdit = (prize) => {
-    console.log("prize edit: ", prize);
     setForm({
       title: prize.title || "",
       type: prize.type || "",
@@ -103,7 +102,7 @@ export default function PrizePage() {
     try {
       if (editingId) {
         const res = await dispatch(
-          updatePrize({ id: editingId, data })
+          updatePrize({ id: editingId, data }),
         ).unwrap();
         toast.success(res.message || "Prize updated successfully");
       } else {
@@ -114,8 +113,6 @@ export default function PrizePage() {
       // 4. Success Actions: Close modal and reset
       setIsDialogOpen(false);
       resetForm();
-      console.log("editingId: ", editingId);
-      console.log("data: ", data);
     } catch (err) {
       // Error is already caught by your Redux extraReducers and shown via toast
       console.error("Submission failed:", err);
@@ -132,14 +129,13 @@ export default function PrizePage() {
           title: title,
         });
       }),
-    [prizes]
+    [prizes],
   );
 
   // Handle the actual deletion after confirmation
   const handleConfirmDelete = async () => {
     try {
       const res = await dispatch(deletePrize(confirmConfig.prizeId)).unwrap();
-      // console.log("confirmConfig: ", confirmConfig);
 
       toast.success(res.message || "Prize deleted successfully");
       setConfirmConfig((prev) => ({ ...prev, isOpen: false }));
@@ -188,8 +184,8 @@ export default function PrizePage() {
           filters={{
             prizeType,
             setPrizeType: (val) => {
-              setPrizeType(val),
-                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              (setPrizeType(val),
+                setPagination((prev) => ({ ...prev, pageIndex: 0 })));
             },
           }}
         />

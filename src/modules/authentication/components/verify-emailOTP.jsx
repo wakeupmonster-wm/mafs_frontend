@@ -36,8 +36,6 @@ export default function VerifyEmailOtp() {
       // Step 2 Thunk: Needs email + otp
       const response = await dispatch(verifyOtpThunk({ email, otp })).unwrap();
 
-      // console.log("Verify email Successfull: ", { email, otp }, ": otp");
-
       navigate("../new-password", { state: { email, otp } });
 
       toast.success(response.message || "OTP verified!", {
@@ -57,7 +55,6 @@ export default function VerifyEmailOtp() {
     if (timer > 0) {
       interval = setInterval(() => {
         setTimer((prev) => prev - 1);
-        // console.log("timer: ", timer);
       }, 1000);
     }
     return () => clearInterval(interval);
@@ -69,7 +66,6 @@ export default function VerifyEmailOtp() {
 
     try {
       await dispatch(requestOtpThunk({ email })).unwrap();
-      console.log("OTP Resent to:", email);
       setTimer(30); // Reset the clock
       setOtp(""); // Clear old OTP input for fresh start
     } catch (err) {

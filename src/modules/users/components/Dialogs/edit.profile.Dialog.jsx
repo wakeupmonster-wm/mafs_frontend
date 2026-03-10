@@ -15,48 +15,6 @@ import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { updateUserProfile } from "../../store/user.slice";
 
-// export const EditProfileDialog = ({ userData }) => {
-//   return (
-//     <Dialog>
-//       <DialogTrigger asChild>
-//         <Button variant="ghost" size="sm">
-//           <IconEdit size={16} className="mr-2" /> Edit Bio
-//         </Button>
-//       </DialogTrigger>
-//       <DialogContent className="max-w-2xl">
-//         <DialogHeader>
-//           <DialogTitle>Edit Profile Details</DialogTitle>
-//         </DialogHeader>
-//         <div className="grid grid-cols-2 gap-4 py-4">
-//           <Input
-//             placeholder="Nickname"
-//             defaultValue={userData.profile.nickname}
-//           />
-//           <Input placeholder="Gender" defaultValue={userData.profile.gender} />
-//           <Input placeholder="Age" defaultValue={userData.profile.age} />
-
-//           <Input
-//             placeholder="Job Title"
-//             defaultValue={userData.profile.jobTitle}
-//           />
-//           <div className="col-span-2">
-//             <Textarea
-//               placeholder="About/Bio"
-//               defaultValue={userData.profile.about}
-//               rows={4}
-//             />
-//           </div>
-//         </div>
-//         <DialogFooter>
-//           <Button onClick={() => toast.success("Details Updated")}>
-//             Save Changes
-//           </Button>
-//         </DialogFooter>
-//       </DialogContent>
-//     </Dialog>
-//   );
-// };
-
 export const EditProfileDialog = ({ userData }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -91,10 +49,8 @@ export const EditProfileDialog = ({ userData }) => {
         updateUserProfile({
           userId: userData._id,
           profile: cleanedData,
-        })
+        }),
       ).unwrap();
-
-      console.log("user: ", user);
 
       toast.success(`${user?.profile.nickname}, profile updated successfully!`);
       setIsOpen(false); // Close dialog only on success

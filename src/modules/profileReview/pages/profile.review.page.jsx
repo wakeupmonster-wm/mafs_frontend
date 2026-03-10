@@ -36,7 +36,6 @@ const sectionVariants = {
 
 export default function ProfileReviewPage() {
   const { userId } = useParams();
-  console.log("userId: ", userId);
 
   const dispatch = useDispatch();
   const { selected: p, loading } = useSelector((s) => s.profileReview || {});

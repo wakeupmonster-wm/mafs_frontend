@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"; // Assuming you use shadcn or similar
 import { format, formatDistanceToNow } from "date-fns";
-import { useLocation, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,13 +15,11 @@ import {
   Calendar,
   Monitor,
   MoreHorizontal,
-  PlayCircle,
   RefreshCcw,
   Smartphone,
   RefreshCwOff,
   Eye,
   Copy,
-  ExternalLink,
   MessagesSquare,
   Mail,
   Phone,
@@ -38,6 +36,8 @@ import {
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import dummyImg from "@/assets/images/dummyImg.jpg";
+import { GrAndroid } from "react-icons/gr";
+import { AiFillAndroid } from "react-icons/ai";
 
 export const subscriptionColumns = [
   {
@@ -67,16 +67,16 @@ export const subscriptionColumns = [
     ),
     cell: ({ row }) => {
       const user = row.original?.user;
-      console.log("user: ", user);
       const nickname = user?.nickname || "unknown";
-      // Added safety check for the photos array
       const avatar = user?.avatar.url || dummyImg;
 
       return (
         <div className="flex items-center gap-3 w-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={avatar} alt={nickname} />
-            <AvatarFallback>{nickname.charAt(0).toUpperCase()}</AvatarFallback>
+            <AvatarFallback>
+              {nickname.charAt(0).toUpperCase() || "U"}
+            </AvatarFallback>
           </Avatar>
           <span className="font-bold text-[11px] truncate">{nickname}</span>
         </div>
@@ -276,7 +276,9 @@ export const subscriptionColumns = [
       // Map icons to platforms
       const iconMap = {
         ios: <IoLogoApple className="w-3.5 h-3.5 mb-0.5" />,
-        android: <PlayCircle className="w-3.5 h-3.5 mb-0.5 text-green-600" />,
+        android: (
+          <AiFillAndroid className="w-3.5 h-3.5 mb-0.5 text-green-600" />
+        ),
         web: <Monitor className="w-3.5 h-3.5 mb-0.5" />,
       };
 
@@ -412,8 +414,6 @@ export const subscriptionColumns = [
     header: "Actions",
     cell: ({ row }) => {
       const subscription = row.original;
-      console.log("subscription: ", subscription?.user?.userId);
-
       const navigate = useNavigate();
 
       const handleCopyId = (id) => {

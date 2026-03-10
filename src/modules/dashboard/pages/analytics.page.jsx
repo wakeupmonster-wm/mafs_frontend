@@ -50,8 +50,6 @@ export default function AnalyticsPage() {
     dispatch(fetchRiskUsers());
   }, [dispatch]);
 
-  console.log("cancelAnalytics: ", cancelAnalytics);
-
   const { revenue, daily, byPlan, byPlatform, period } = revenueAnalytic;
 
   return (
@@ -304,8 +302,8 @@ function KpiCard({
                 trend === "up"
                   ? "text-alerts-success"
                   : trend === "down"
-                  ? "text-alerts-error"
-                  : "text-muted-foreground"
+                    ? "text-alerts-error"
+                    : "text-muted-foreground"
               }`}
             >
               {trendValue}{" "}

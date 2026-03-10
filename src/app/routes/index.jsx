@@ -11,135 +11,122 @@ import AuthLayout from "../layouts/AuthLayout";
 // 2. LAZY LOAD COMPONENTS
 const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
 const App = lazy(() => import("@/App"));
-const NotFoundPage = lazy(() =>
-  import("@/modules/not-found/Pages/not-found.page")
+const NotFoundPage = lazy(
+  () => import("@/modules/not-found/Pages/not-found.page"),
 );
-const PendingVerifications = lazy(() =>
-  import("@/modules/users/pages/PendingVerifications")
+const PendingVerifications = lazy(
+  () => import("@/modules/users/pages/PendingVerifications"),
 );
-const UserManagementPage = lazy(() =>
-  import("@/modules/users/pages/user-management.Page")
+const UserManagementPage = lazy(
+  () => import("@/modules/users/pages/user-management.Page"),
 );
-const ViewProfilePage = lazy(() =>
-  import("@/modules/users/pages/view-profile.Page")
+const ViewProfilePage = lazy(
+  () => import("@/modules/users/pages/view-profile.Page"),
 );
-const EditProfilePage = lazy(() =>
-  import("@/modules/users/pages/edit-profile.Page")
-);
+
 const ViewPage = lazy(() => import("@/modules/users/pages/viewPage"));
 
 // Giveaway Modules
-const GiveawayManagement = lazy(() =>
-  import("@/modules/giveaway/pages/GiveawayManagement")
+const GiveawayManagement = lazy(
+  () => import("@/modules/giveaway/pages/GiveawayManagement"),
 );
 
-const TicketDetailPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then((module) => ({
-    default: module.TicketDetailPage,
-  }))
+const ChatReportedList = lazy(
+  () => import("@/modules/chatManagement/pages/ChatReportedList"),
 );
-
-const ProfileReviewDetailPage = lazy(() =>
-  import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
-    default: module.ProfileReviewDetailPage,
-  }))
-);
-
-const ChatReportedList = lazy(() =>
-  import("@/modules/chatManagement/pages/ChatReportedList")
-);
-const ChatReviewDetail = lazy(() =>
-  import("@/modules/chatManagement/pages/ChatReviewDetail")
+const ChatReviewDetail = lazy(
+  () => import("@/modules/chatManagement/pages/ChatReviewDetail"),
 );
 
 // Auth
-const LoginPage = lazy(() =>
-  import("@/modules/authentication/pages/login.page")
+const LoginPage = lazy(
+  () => import("@/modules/authentication/pages/login.page"),
 );
-const ForgotPasswordPage = lazy(() =>
-  import("@/modules/authentication/pages/forgot-password.page")
+const ForgotPasswordPage = lazy(
+  () => import("@/modules/authentication/pages/forgot-password.page"),
 );
-const RequestResetEmailForm = lazy(() =>
-  import("@/modules/authentication/components/request-resetEmail")
+const RequestResetEmailForm = lazy(
+  () => import("@/modules/authentication/components/request-resetEmail"),
 );
-const VerifyEmailOtp = lazy(() =>
-  import("@/modules/authentication/components/verify-emailOTP")
+const VerifyEmailOtp = lazy(
+  () => import("@/modules/authentication/components/verify-emailOTP"),
 );
-const ForgotPasswordForm = lazy(() =>
-  import("@/modules/authentication/components/forgotPasswordForm")
+const ForgotPasswordForm = lazy(
+  () => import("@/modules/authentication/components/forgotPasswordForm"),
 );
 
 // CMS & Others
 const FAQSPage = lazy(() => import("@/modules/cms/pages/faqs.page"));
-const FAQEditView = lazy(() =>
-  import("@/modules/cms/components/faqs-edit-view.page")
+const FAQEditView = lazy(
+  () => import("@/modules/cms/components/faqs-edit-view.page"),
 );
-const PrivacyAndPolicyPage = lazy(() =>
-  import("@/modules/cms/pages/privacy-policy.page")
+const PrivacyAndPolicyPage = lazy(
+  () => import("@/modules/cms/pages/privacy-policy.page"),
 );
-const TermAndConditionsPage = lazy(() =>
-  import("@/modules/cms/pages/terms-conditions.page")
+const TermAndConditionsPage = lazy(
+  () => import("@/modules/cms/pages/terms-conditions.page"),
 );
-const NotificationManagementPages = lazy(() =>
-  import("@/modules/notificationManagement/pages/NotificationManagementPages")
+const NotificationManagementPages = lazy(
+  () =>
+    import("@/modules/notificationManagement/pages/NotificationManagementPages"),
 );
-const NotificationManagementPage = lazy(() =>
-  import("@/modules/notificationManagement/pages/notificationPage")
+const NotificationManagementPage = lazy(
+  () => import("@/modules/notificationManagement/pages/notificationPage"),
 );
-const ReportsProfilesPage = lazy(() =>
-  import("@/modules/profileReview/pages/reports.profiles.page")
+const ReportsProfilesPage = lazy(
+  () => import("@/modules/profileReview/pages/reports.profiles.page"),
 );
-const ProfileReviewPage = lazy(() =>
-  import("@/modules/profileReview/pages/profile.review.page")
-);
-
-const KYCVerificationPage = lazy(() =>
-  import("@/modules/verification/pages/kyc.verification.page")
+const ProfileReviewPage = lazy(
+  () => import("@/modules/profileReview/pages/profile.review.page"),
 );
 
-const SupportTicketsPage = lazy(() =>
-  import("@/modules/support/pages/supports.page")
+const KYCVerificationPage = lazy(
+  () => import("@/modules/verification/pages/kyc.verification.page"),
 );
 
-const ViewTicketDetails = lazy(() =>
-  import("@/modules/support/pages/view.ticket.details")
-);
-const SubscriptionsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/subscription.page")
+const SupportTicketsPage = lazy(
+  () => import("@/modules/support/pages/supports.page"),
 );
 
-const EntitlementPage = lazy(() =>
-  import("@/modules/membership/pages/entitlements.page")
+const ViewTicketDetails = lazy(
+  () => import("@/modules/support/pages/view.ticket.details"),
+);
+const SubscriptionsPage = lazy(
+  () => import("@/modules/subsciptions/pages/subscription.page"),
 );
 
-const ViewSubscriptionsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/view.subscriptions.page")
-);
-const AnalyticsPage = lazy(() =>
-  import("@/modules/dashboard/pages/analytics.page")
+const EntitlementPage = lazy(
+  () => import("@/modules/membership/pages/entitlements.page"),
 );
 
-const SettingsPage = lazy(() =>
-  import("@/modules/settings/pages/settings.page")
+const ViewSubscriptionsPage = lazy(
+  () => import("@/modules/subsciptions/pages/view.subscriptions.page"),
+);
+const AnalyticsPage = lazy(
+  () => import("@/modules/dashboard/pages/analytics.page"),
 );
 
-const AccountsPage = lazy(() =>
-  import("@/modules/accounts/page/accounts.page")
+const SettingsPage = lazy(
+  () => import("@/modules/settings/pages/settings.page"),
+);
+
+const AccountsPage = lazy(
+  () => import("@/modules/accounts/page/accounts.page"),
 );
 
 const PrizePage = lazy(() => import("@/modules/giveaway/pages/prizes.page"));
 
-const CampaignsPage = lazy(() =>
-  import("@/modules/giveaway/pages/campaigns.page")
+const CampaignsPage = lazy(
+  () => import("@/modules/giveaway/pages/campaigns.page"),
 );
-const BulkCampaignsPage = lazy(() =>
-  import("@/modules/giveaway/pages/bulk.campaign.page")
+const BulkCampaignsPage = lazy(
+  () => import("@/modules/giveaway/pages/bulk.campaign.page"),
 );
-const PendingDeliveriesPage = lazy(() =>
-  import("@/modules/giveaway/pages/pending.deliveries.page")
+const PendingDeliveriesPage = lazy(
+  () => import("@/modules/giveaway/pages/pending.deliveries.page"),
 );
-const ParticipantsPage = lazy(() =>
-  import("@/modules/giveaway/pages/participants.page")
+const ParticipantsPage = lazy(
+  () => import("@/modules/giveaway/pages/participants.page"),
 );
 
 import { PreLoader } from "../loader/preloader";
@@ -186,7 +173,6 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <NotFoundPage /> },
-
       {
         path: "dashboard",
         element: (
@@ -195,13 +181,9 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-
       { path: "analytics", element: <AnalyticsPage /> },
-
       { path: "kpi", element: <>KPI's</> },
-
       { path: "quick-actions", element: <>Quick Actions</> },
-
       {
         path: "management",
         children: [
@@ -240,14 +222,6 @@ export const router = createBrowserRouter([
                   </Suspense>
                 ),
               },
-              {
-                path: "edit-profile",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <EditProfilePage />
-                  </Suspense>
-                ),
-              },
             ],
           },
           {
@@ -258,8 +232,6 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
           },
-
-          // ======================================================
           {
             path: "kyc-verifications",
             element: (
@@ -337,30 +309,6 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "support",
-          //   children: [
-          //     { index: true, element: <MyTicketsPage /> },
-          //     {
-          //       path: "contact",
-          //       element: (
-          //         <Suspense fallback={<PreLoader />}>
-          //           <ContactSupportPage />
-          //         </Suspense>
-          //       ),
-          //     },
-          //     {
-          //       path: "ticket/:ticketId",
-          //       element: (
-          //         <Suspense fallback={<PreLoader />}>
-          //           <TicketWrapper />
-          //         </Suspense>
-          //       ),
-          //     },
-          //   ],
-          // },
-
-          // ==============================^
           {
             path: "support",
             children: [
@@ -382,15 +330,6 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          // ==============================^
-          // {
-          //   path: "profile-review",
-          //   children: [
-          //     { index: true, element: <ReportedProfilesPage /> },
-          //     { path: ":userId", element: <ProfileReviewWrapper /> },
-          //   ],
-          // },
-          // ==============================^
           {
             path: "profile-reports",
             children: [
@@ -412,7 +351,6 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          // ==============================^
           {
             path: "chat",
             children: [
@@ -453,7 +391,6 @@ export const router = createBrowserRouter([
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-
       {
         path: "membership",
         children: [
@@ -464,7 +401,6 @@ export const router = createBrowserRouter([
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-
       {
         path: "report-moderation",
         children: [
@@ -474,7 +410,6 @@ export const router = createBrowserRouter([
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-
       {
         path: "cms",
         children: [
@@ -531,24 +466,11 @@ export const router = createBrowserRouter([
           </Suspense>
         ),
       },
-
       { path: "*", element: <NotFoundPage /> },
     ],
   },
   { path: "*", element: <NotFoundPage /> },
 ]);
-
-// eslint-disable-next-line react-refresh/only-export-components
-function TicketWrapper() {
-  const { ticketId } = useParams();
-  return <TicketDetailPage ticketId={ticketId} />;
-}
-
-// eslint-disable-next-line react-refresh/only-export-components
-function ProfileReviewWrapper() {
-  const { userId } = useParams();
-  return <ProfileReviewDetailPage userId={userId} />;
-}
 
 // eslint-disable-next-line react-refresh/only-export-components
 function ChatReviewWrapper() {

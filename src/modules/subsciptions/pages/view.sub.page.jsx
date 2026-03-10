@@ -1,278 +1,11 @@
-// import React, { useEffect, useMemo } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useParams, useNavigate } from "react-router";
-// import { motion } from "framer-motion";
-// import { format } from "date-fns";
-// import {
-//   ArrowLeft,
-//   Mail,
-//   Phone,
-//   Globe,
-//   ShieldCheck,
-//   CreditCard,
-//   Activity,
-//   DollarSign,
-//   RefreshCcw,
-//   History,
-//   Layers,
-//   Zap,
-//   Database,
-//   CheckCircle2,
-// } from "lucide-react";
-
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import { Progress } from "@/components/ui/progress";
-// import { Separator } from "@/components/ui/separator";
-// import {
-//   clearSelectedUser,
-//   fetchUserDetails,
-// } from "../store/subcription.slices";
-// import { cn } from "@/lib/utils";
-// import { KPICard } from "../components/kpi.card";
-
-// export default function ViewSubPage() {
-//   const { userId } = useParams();
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const { userData, loading } = useSelector((state) => state.subscription);
-
-//   useEffect(() => {
-//     if (userId) dispatch(fetchUserDetails(userId));
-//     return () => dispatch(clearSelectedUser());
-//   }, [dispatch, userId]);
-
-//   console.log("userData: ", userData);
-
-//   const {
-//     subscription: sub,
-//     transactions,
-//     events,
-//     summary,
-//     user,
-//   } = userData || {};
-
-//   // console.log("Sub: ", sub);
-
-//   // Progress Logic
-//   const progress = useMemo(() => {
-//     if (!sub?.startedAt || !sub?.expiresAt) return 0;
-//     const total = new Date(sub.expiresAt) - new Date(sub.startedAt);
-//     const current = new Date() - new Date(sub.startedAt);
-//     return Math.min(100, Math.max(0, (current / total) * 100));
-//   }, [sub]);
-
-//   const KPIdata = useMemo(() => {
-//     return [
-//       {
-//         label: "Lifetime Value",
-//         val: (summary?.totalPaid - summary?.totalRefunded).toFixed(2),
-//         icon: DollarSign, // Reference the component, render inside StatCard
-//         color: "emerald",
-//         // trend: calculateTrend(stats.total, stats.previousTotal),
-//       },
-//       {
-//         label: "Total Transactions",
-//         val: summary?.totalTransactions,
-//         icon: History,
-//         color: "blue",
-//         // trend: 5.2, // Example hardcoded trend if backend doesn't provide
-//       },
-//       {
-//         label: "Days Active",
-//         val: summary?.daysSinceStart,
-//         icon: Zap,
-//         color: "orange",
-//         // trend: 12.5,
-//       },
-//       {
-//         label: "Auto Renew",
-//         val: sub?.autoRenew ? "Enabled" : "Disabled",
-//         icon: RefreshCcw,
-//         color: sub?.autoRenew ? "emerald" : "slate",
-//         // trend: -2.4,
-//       },
-//     ];
-//   }, [summary]);
-
-//   return (
-//     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
-//       {/* 1. PREMIUM HERO SECTION */}
-//       <div className="relative bg-white overflow-hidden border border-black">
-//         <div className="max-w-7xl mx-auto p-6 relative z-10">
-//           <Button
-//             variant="ghost"
-//             onClick={() => navigate(-1)}
-//             className="mb-8 hover:bg-slate-100 group text-slate-500 font-semibold"
-//           >
-//             <ArrowLeft className="mr-2 h-4 w-4 transition-transform group-hover:-translate-x-1" />
-//             Back to Analytics
-//           </Button>
-
-//           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-//             <div className="flex items-center gap-8">
-//               <motion.div
-//                 initial={{ scale: 0.9, opacity: 0 }}
-//                 animate={{ scale: 1, opacity: 1 }}
-//                 className="relative"
-//               >
-//                 <img
-//                   src={user?.avatar?.url}
-//                   alt={user?.nickname}
-//                   className="w-28 h-28 rounded-[2.5rem] object-cover shadow-2xl ring-8 ring-slate-50"
-//                 />
-//                 <div
-//                   className={cn(
-//                     "absolute -bottom-1 -right-1 p-2 rounded-2xl border-4 border-white shadow-xl",
-//                     userData?.status === "ACTIVE"
-//                       ? "bg-emerald-500"
-//                       : "bg-slate-400"
-//                   )}
-//                 >
-//                   <CheckCircle2 className="w-5 h-5 text-white" />
-//                 </div>
-//               </motion.div>
-
-//               <div className="space-y-2">
-//                 <div className="flex items-center gap-3">
-//                   <h1 className="text-4xl font-black text-slate-900 tracking-tight">
-//                     {user?.nickname || "Anonymous"}
-//                   </h1>
-//                   <Badge className="bg-indigo-50 text-indigo-600 border-indigo-100 px-3 py-1 font-bold">
-//                     {userData?.platform?.toUpperCase()}
-//                   </Badge>
-//                 </div>
-//                 <div className="flex items-center gap-6 text-slate-400">
-//                   <span className="flex items-center gap-2 text-sm font-medium">
-//                     <Mail className="w-4 h-4" /> {user?.email}
-//                   </span>
-//                   <span className="flex items-center gap-2 text-sm font-medium">
-//                     <Phone className="w-4 h-4" /> {user?.phone}
-//                   </span>
-//                 </div>
-//               </div>
-//             </div>
-
-//             <div className="flex gap-4">
-//               <StatusBox
-//                 label="Environment"
-//                 value={userData?.environment}
-//                 isAmber={userData?.environment === "sandbox"}
-//               />
-//               <StatusBox
-//                 label="Current Status"
-//                 value={userData?.status}
-//                 isActive={userData?.status === "ACTIVE"}
-//               />
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* 2. OVERLAPPING KPI GRID */}
-//       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-//         {KPIdata.map((item, index) => (
-//           <KPICard
-//             key={index}
-//             title={item.label}
-//             value={item.val}
-//             icon={item.icon}
-//             color={item.color}
-//             index={index} // Pass index for staggered animation
-//           />
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
-// /* Helper Mini-Component for Header Boxes */
-// const StatusBox = ({ label, value, isAmber, isActive }) => (
-//   <div className="bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm ring-1 ring-slate-200/50 min-w-[140px]">
-//     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">
-//       {label}
-//     </p>
-//     <div
-//       className={cn(
-//         "text-sm font-black px-3 py-1 rounded-xl inline-block",
-//         isAmber
-//           ? "bg-amber-50 text-amber-600"
-//           : isActive
-//           ? "bg-emerald-50 text-emerald-600"
-//           : "bg-indigo-50 text-indigo-600"
-//       )}
-//     >
-//       {value?.toUpperCase()}
-//     </div>
-//   </div>
-// );
-
-// /* HELPER COMPONENTS */
-// // const KPICard = ({ title, value, icon: Icon, color }) => (
-// //   <Card className="border-none shadow-sm ring-1 ring-slate-200">
-// //     <CardContent className="p-5 flex items-center gap-4">
-// //       <div className={`p-3 rounded-xl bg-${color}-500/10 text-${color}-600`}>
-// //         <Icon className="w-5 h-5" />
-// //       </div>
-// //       <div>
-// //         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-// //           {title}
-// //         </p>
-// //         <p className="text-xl font-bold text-slate-900">{value}</p>
-// //       </div>
-// //     </CardContent>
-// //   </Card>
-// // );
-
-// const InfoRow = ({ label, value, icon: Icon, badge, mono, capitalize }) => (
-//   <div className="flex items-center gap-3">
-//     {Icon && (
-//       <div className="p-2 bg-slate-50 rounded-lg border border-slate-100">
-//         <Icon className="w-3.5 h-3.5 text-slate-500" />
-//       </div>
-//     )}
-//     <div className="min-w-0 flex-1">
-//       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-0.5">
-//         {label}
-//       </p>
-//       {badge ? (
-//         <Badge variant="secondary" className={`capitalize text-[11px] h-5`}>
-//           {value}
-//         </Badge>
-//       ) : (
-//         <p
-//           className={`text-sm font-medium text-slate-700 truncate ${
-//             mono ? "font-mono text-xs" : ""
-//           } ${capitalize ? "capitalize" : ""}`}
-//         >
-//           {value || "N/A"}
-//         </p>
-//       )}
-//     </div>
-//   </div>
-// );
-
 import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router";
-import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import {
   ArrowLeft,
   Mail,
   Phone,
-  Globe,
-  ShieldCheck,
-  CreditCard,
   DollarSign,
   RefreshCcw,
   History,
@@ -281,11 +14,8 @@ import {
   Database,
   Calendar,
   CheckCircle2,
-  AlertCircle,
-  ExternalLink,
   Activity,
 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -318,8 +48,8 @@ export default function ViewSubscriptionsPage() {
 
   const {
     subscription: sub,
-    transactions,
-    events,
+    // transactions,
+    // events,
     summary,
     user,
   } = userData || {};
@@ -360,7 +90,7 @@ export default function ViewSubscriptionsPage() {
                     "absolute -bottom-2 -right-2 p-1.5 rounded-full border-4 border-white shadow-lg",
                     userData?.status === "ACTIVE"
                       ? "bg-emerald-500"
-                      : "bg-slate-400"
+                      : "bg-slate-400",
                   )}
                 >
                   <CheckCircle2 className="w-4 h-4 text-white" />
@@ -399,7 +129,7 @@ export default function ViewSubscriptionsPage() {
                     "font-black uppercase tracking-tighter",
                     userData?.environment === "sandbox"
                       ? "bg-amber-100 text-amber-700 hover:bg-amber-100"
-                      : "bg-indigo-600 text-white"
+                      : "bg-indigo-600 text-white",
                   )}
                 >
                   {userData?.environment}
@@ -414,7 +144,7 @@ export default function ViewSubscriptionsPage() {
                     "text-lg font-black",
                     userData?.status === "ACTIVE"
                       ? "text-emerald-600"
-                      : "text-slate-500"
+                      : "text-slate-500",
                   )}
                 >
                   {userData?.status}
@@ -431,7 +161,7 @@ export default function ViewSubscriptionsPage() {
           <StatCard
             title="Lifetime Value"
             value={`$${(summary?.totalPaid - summary?.totalRefunded).toFixed(
-              2
+              2,
             )}`}
             icon={DollarSign}
             color="emerald"
@@ -615,7 +345,7 @@ export default function ViewSubscriptionsPage() {
                             "p-2 rounded-lg",
                             event.processed
                               ? "bg-emerald-500/10"
-                              : "bg-amber-500/10"
+                              : "bg-amber-500/10",
                           )}
                         >
                           <Activity
@@ -623,7 +353,7 @@ export default function ViewSubscriptionsPage() {
                               "w-4 h-4",
                               event.processed
                                 ? "text-emerald-500"
-                                : "text-amber-500"
+                                : "text-amber-500",
                             )}
                           />
                         </div>
@@ -672,14 +402,14 @@ const StatCard = ({ title, value, icon: Icon, color, description }) => (
     <div
       className={cn(
         "absolute -right-4 -top-4 w-20 h-20 opacity-[0.03] rounded-full transition-transform group-hover:scale-150",
-        `bg-${color}-500`
+        `bg-${color}-500`,
       )}
     />
     <CardContent className="p-6">
       <div
         className={cn(
           "w-12 h-12 rounded-2xl flex items-center justify-center mb-4",
-          `bg-${color}-500/10 text-${color}-600`
+          `bg-${color}-500/10 text-${color}-600`,
         )}
       >
         <Icon className="w-6 h-6" />

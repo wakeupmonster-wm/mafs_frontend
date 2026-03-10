@@ -10,7 +10,6 @@ export const fetchProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getAdminAccountAPI();
-      // console.log("response: ", response);
 
       if (response && response.success) {
         return { account: response.data || [] };
@@ -18,10 +17,10 @@ export const fetchProfile = createAsyncThunk(
       return rejectWithValue(response.message || "Failed to fetch account");
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch account"
+        e.response?.data?.message || "Failed to fetch account",
       );
     }
-  }
+  },
 );
 
 export const updateAdminAccount = createAsyncThunk(
@@ -38,7 +37,7 @@ export const updateAdminAccount = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Update failed");
     }
-  }
+  },
 );
 
 export const changePassword = createAsyncThunk(
@@ -50,9 +49,6 @@ export const changePassword = createAsyncThunk(
     };
     try {
       const response = await postChangeAdminPasswordAPI(payload);
-
-      console.log("response: ", response);
-
       if (response && response.success) {
         return response; // Return the object directly
       }
@@ -61,7 +57,7 @@ export const changePassword = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.message || "Network error");
     }
-  }
+  },
 );
 
 const accountSlice = createSlice({

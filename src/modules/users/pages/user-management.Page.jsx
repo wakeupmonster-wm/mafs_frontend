@@ -191,7 +191,7 @@ export default function UserManagementPage() {
           accountStatus,
           isPremium,
           last24Hours: last24HR,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -205,7 +205,11 @@ export default function UserManagementPage() {
   const handleBanConfirm = async (category, reason) => {
     try {
       await dispatch(
-        bannedUserProfile({ userId: selectedUserForBan?._id, category, reason })
+        bannedUserProfile({
+          userId: selectedUserForBan?._id,
+          category,
+          reason,
+        }),
       ).unwrap();
       toast.success("User has been restricted");
 
@@ -260,7 +264,7 @@ export default function UserManagementPage() {
                 "bg-green-200 hover:bg-green-100 border-green-500",
                 "text-slate-800 hover:text-green-700 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
                 "hover:border-indigo-200 active:scale-[0.98]",
-                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden"
+                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden",
               )}
             >
               {/* Subtle Inner Glow on Hover */}

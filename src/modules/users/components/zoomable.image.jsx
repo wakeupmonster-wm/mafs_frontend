@@ -27,9 +27,9 @@ export const ZoomableImage = ({ src, label }) => {
         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
           {label}
         </span>
-        <span className="text-[10px] text-foreground font-semibold flex items-center gap-1">
+        {/* <span className="text-[10px] text-foreground font-semibold flex items-center gap-1">
           <Search className="w-3 h-3" /> Hover to Magnify
-        </span>
+        </span> */}
       </div>
 
       <div

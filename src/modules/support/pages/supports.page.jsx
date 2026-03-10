@@ -68,7 +68,7 @@ export default function SupportTicketsPage() {
           limit: pagination.pageSize,
           search: globalFilter,
           status: statusFilter,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -106,7 +106,7 @@ export default function SupportTicketsPage() {
           ticketId: selectedTicket._id,
           reply: reply,
           status: statusUpdate,
-        })
+        }),
       );
 
       if (adminReplyToTicket.fulfilled.match(resultAction)) {
@@ -114,7 +114,7 @@ export default function SupportTicketsPage() {
         setSelectedTicket(null);
 
         dispatch(
-          fetchMyTickets({ page: pagination.page, limit: pagination.limit })
+          fetchMyTickets({ page: pagination.page, limit: pagination.limit }),
         );
 
         setTimeout(() => dispatch(clearSupportStatus()), 3000);
@@ -165,8 +165,8 @@ export default function SupportTicketsPage() {
           filters={{
             statusFilter,
             setStatusFilter: (val) => {
-              setStatusFilter(val),
-                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              (setStatusFilter(val),
+                setPagination((prev) => ({ ...prev, pageIndex: 0 })));
             },
           }}
           meta={{

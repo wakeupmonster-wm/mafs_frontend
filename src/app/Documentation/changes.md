@@ -9,21 +9,19 @@ Todos in Admin
 3. Location is not visible in single line ✅
 
 4. In Reject Verification we need other options so admin can enter any specific
-   reason ⌛
+   reason ⌛ ✅ 1
 
-5. Edit Bio -> Edit details ⌛
+5. Edit Bio -> Edit details ⌛ ✅ 2
 
 6. In Edit bio - we should give dropdown so admin don't enter wrong value ⌛
 
-7. If email and phone is verified show check icon ⌛
+7. If email and phone is verified show check icon ⌛ ✅ 3
 
-8. In profile quality show full profile completed % but for now it showing
-   onboarding completed ⌛
+8. In profile quality show full profile completed % but for now it showing onboarding completed ⌛ ✅ 4
 
-9. In Gallery section - on tap on image show image with next image options,
-   delete photo is not working ⌛
+9. In Gallery section - on tap on image show image with next image options, delete photo is not working ⌛ ✅ 5
 
-10. Remove Edit Lifestyle option ✅
+10. Remove Edit Lifestyle option ✅ 6
 
 11. Also want to see how many swipe user has done ⌛
 
@@ -44,7 +42,7 @@ Todos in Admin
 
 1.  Also show created and updated at ⌛
 
-2.  Replace lifestyle tab to Attributes tab and show all the attributes ⌛
+2.  Replace lifestyle tab to Attributes tab and show all the attributes ⌛ ✅ 7
 
 3.  In Discovery filter tab only show discovery option of user ⌛
 
@@ -97,7 +95,7 @@ Todos in Admin
    management ⌛
 
 7. Side-by-Side Comparison View — Show ID photo next to selfie next to profile
-   photos for easy comparison. ⌛
+   photos for easy comparison. ⌛ ✅ 8
 
 # Subscription Management
 
@@ -120,9 +118,11 @@ Todos in Admin
 
 # CMS
 
-1. Faq should has an option to add categories ⚠️ = If Admin want to category.
-   Then, We need to create a Add Category button and change in backend FAQ
-   model, FAQ's API and create FAQ category APIs add, update or delete.
+1. Faq should has an option to add categories. ⚠️ = If Admin want to add
+   category in FAQ module. Then, We need to create a Add Category button and
+   change in backend FAQ model, create FAQ category model, re-create FAQ's API,
+   and create FAQ category APIs add,  
+   update or delete.
 
 # Admin profile
 
@@ -131,10 +131,10 @@ Todos in Admin
 2. Remove Active status tag ✅
 
 3. How admin can change its email and phone. ⚠️ = If admin want to change their
-   email then inform agency and admin want to update thier phone then ask otp
+   email then inform agency and if admin want to update thier phone then ask otp
    for verification then update their phone number.
 
-4. Also in account we should give him password change option ⚠️ = Already we
+4. Also in account we should give him password change option. ⚠️ = Already we
    created change password feature in settings tab. If Admin want to change
    their password then change password through setting security credential tab
    enter current, new and confirm password then successfully update their
@@ -164,5 +164,3 @@ Todos in Admin
 
 - Username: demo@khmertracks.com
 - Password: password
-
-1.

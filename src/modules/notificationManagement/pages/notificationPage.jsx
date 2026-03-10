@@ -141,7 +141,6 @@ export default function NotificationManagementPages() {
   };
 
   const handleSubmit = (e) => {
-    console.log("call 1");
     e.preventDefault();
     // Basic validation
     if (!form.campaignName) return;
@@ -164,10 +163,7 @@ export default function NotificationManagementPages() {
       email: () => sendEmailCampaign(form),
     };
 
-    console.log("call 2");
     dispatch(actions[form.notificationType]());
-    console.log("call 1");
-
     setTimeout(() => dispatch(clearNotificationStatus()), 4000);
   };
 

@@ -17,10 +17,10 @@ export const fetchFAQs = createAsyncThunk(
         : rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch FAQs"
+        error.response?.data?.message || "Failed to fetch FAQs",
       );
     }
-  }
+  },
 );
 
 export const createFAQ = createAsyncThunk(
@@ -30,16 +30,14 @@ export const createFAQ = createAsyncThunk(
       // payload will be { question, answer, category }
       const response = await createFAQAPI(faqData);
 
-      console.log("faqData: ", faqData);
-
       if (!response.success) return rejectWithValue(response.message);
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to create FAQ"
+        error.response?.data?.message || "Failed to create FAQ",
       );
     }
-  }
+  },
 );
 
 export const updateFAQ = createAsyncThunk(
@@ -52,10 +50,10 @@ export const updateFAQ = createAsyncThunk(
         : rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to update FAQ"
+        error.response?.data?.message || "Failed to update FAQ",
       );
     }
-  }
+  },
 );
 
 export const deleteFAQ = createAsyncThunk(
@@ -66,10 +64,10 @@ export const deleteFAQ = createAsyncThunk(
       return response.success ? id : rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to delete FAQ"
+        error.response?.data?.message || "Failed to delete FAQ",
       );
     }
-  }
+  },
 );
 
 const faqSlice = createSlice({
@@ -113,13 +111,13 @@ const faqSlice = createSlice({
       })
       .addCase(updateFAQ.fulfilled, (state, action) => {
         const index = state.items.findIndex(
-          (f) => f._id === action.payload.id || f.id === action.payload.id
+          (f) => f._id === action.payload.id || f.id === action.payload.id,
         );
         if (index !== -1) state.items[index] = action.payload;
       })
       .addCase(deleteFAQ.fulfilled, (state, action) => {
         state.items = state.items.filter(
-          (f) => f._id !== action.payload && f.id !== action.payload
+          (f) => f._id !== action.payload && f.id !== action.payload,
         );
       });
   },

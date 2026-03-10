@@ -8,18 +8,15 @@ import {
 export const fetchReportedProfiles = createAsyncThunk(
   "profileReview/fetchReportedProfiles",
   async ({ page, limit, search, status } = {}, { rejectWithValue }) => {
-    // console.log("page: ", page);
-    // console.log("limit: ", limit);
-    // console.log("search: ", search);
     try {
       const res = await getReportedProfilesApi(page, limit, search, status);
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch reported profiles"
+        e.response?.data?.message || "Failed to fetch reported profiles",
       );
     }
-  }
+  },
 );
 
 export const fetchProfileForReview = createAsyncThunk(
@@ -30,10 +27,10 @@ export const fetchProfileForReview = createAsyncThunk(
       return res?.data;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch profile"
+        e.response?.data?.message || "Failed to fetch profile",
       );
     }
-  }
+  },
 );
 
 export const performUpdateProfileStatus = createAsyncThunk(
@@ -48,7 +45,7 @@ export const performUpdateProfileStatus = createAsyncThunk(
       replyMessage,
       reportId,
     },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const res = await updateProfileStatusApi(userId, {
@@ -66,10 +63,10 @@ export const performUpdateProfileStatus = createAsyncThunk(
       };
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to update status"
+        e.response?.data?.message || "Failed to update status",
       );
     }
-  }
+  },
 );
 
 const initialState = {

@@ -132,7 +132,6 @@ export const reportColumns = (navigate) => [
     // Fixed width prevents the table from expanding too much
     size: 100,
     cell: ({ row }) => {
-      // console.log("row: ", row.original.userId);
       return (
         <Button
           variant="ghost"
@@ -140,7 +139,7 @@ export const reportColumns = (navigate) => [
           className="text-black font-medium border border-brand-aqua shadow-sm bg-brand-aqua/20 hover:bg-brand-aqua/60"
           onClick={() =>
             navigate(
-              `/admin/management/profile-reports/review/${row.original?.userId}`
+              `/admin/management/profile-reports/review/${row.original?.userId}`,
             )
           }
         >

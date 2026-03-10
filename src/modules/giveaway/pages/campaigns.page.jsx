@@ -63,7 +63,7 @@ export default function CampaignsPage() {
           limit: pagination.pageSize,
           search: globalFilter,
           drawStatus,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -81,7 +81,6 @@ export default function CampaignsPage() {
   };
 
   const handleEdit = (campaign) => {
-    console.log("campaign edit: ", campaign);
     setForm({
       date: campaign.date
         ? new Date(campaign.date).toISOString().split("T")[0]
@@ -96,7 +95,7 @@ export default function CampaignsPage() {
     try {
       if (editingId) {
         const res = await dispatch(
-          updateCampaign({ id: editingId, data: form })
+          updateCampaign({ id: editingId, data: form }),
         ).unwrap();
         toast.success(res.message || "Campaign updated successfully");
       } else {
@@ -128,12 +127,10 @@ export default function CampaignsPage() {
 
   const handleConfirmDelete = async () => {
     try {
-      console.log("confirmDelete.id: ", confirmDelete?.id);
       const res = await dispatch(deleteCampaign(confirmDelete?.id)).unwrap();
       setConfirmDelete({ isOpen: false, id: null, title: "" });
 
       toast.success(res.message || "Campaign deleted successfully");
-      // toast.success("Campaign deleted successfully");
     } catch (err) {
       console.error("error: ", err);
       toast.error(err || "Failed to delete campaign");
@@ -155,7 +152,7 @@ export default function CampaignsPage() {
   const columns = useMemo(
     () => campaignColumns(handleEdit, handleDeleteClick, handleDisableClick),
 
-    [handleEdit, handleDeleteClick, handleDisableClick] // handleDisableClick is stable if not using useCallback, but handleEdit is in deps
+    [handleEdit, handleDeleteClick, handleDisableClick], // handleDisableClick is stable if not using useCallback, but handleEdit is in deps
   );
 
   return (

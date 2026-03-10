@@ -38,7 +38,7 @@ export default function AdminEditDialog({ children, currentData }) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
       if (!allowedTypes.includes(file.type)) {
         return toast.error(
-          "Invalid file type. Please upload JPEG, PNG, or WebP."
+          "Invalid file type. Please upload JPEG, PNG, or WebP.",
         );
       }
       setSelectedFile(file);
@@ -63,8 +63,6 @@ export default function AdminEditDialog({ children, currentData }) {
     }
 
     try {
-      // Using .unwrap() is critical to catch the rejectWithValue from Redux
-      console.log("data: ", data);
       await dispatch(updateAdminAccount(data)).unwrap();
       toast.success("Profile updated successfully!");
       setOpen(false);

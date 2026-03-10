@@ -70,8 +70,6 @@ export default function KYCVerificationPage() {
 
   const initialFilter = location?.state;
 
-  // console.log("initialFilter: ", initialFilter);
-
   useEffect(() => {
     if (!initialFilter) return;
 
@@ -93,7 +91,7 @@ export default function KYCVerificationPage() {
           search: globalFilter,
           status: statusFilter,
           sortBy: sortBy,
-        })
+        }),
       );
     }, 500);
 
@@ -119,9 +117,9 @@ export default function KYCVerificationPage() {
             nickname,
           });
         },
-        (modalConfig) => setImageModal(modalConfig)
+        (modalConfig) => setImageModal(modalConfig),
       ),
-    [dispatch]
+    [dispatch],
   );
 
   const handleConfirmAction = () => {
@@ -133,7 +131,7 @@ export default function KYCVerificationPage() {
         action,
         reason:
           action === "reject" ? "Documents did not meet requirements" : "",
-      })
+      }),
     )
       .unwrap()
       .then(() => {

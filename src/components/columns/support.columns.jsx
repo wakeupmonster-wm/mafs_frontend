@@ -282,8 +282,6 @@ export const supportColumns = (onAction, onPreview) => [
     cell: ({ row, table }) => {
       const navigate = useNavigate();
       const ticket = row.original;
-      // console.log("ticket: ", ticket);
-      // Destructure both setters from meta
       const { setSelectedTicket, setConfirmConfig } = table.options?.meta || {};
 
       return (

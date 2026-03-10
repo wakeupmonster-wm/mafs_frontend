@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { PlayCircle, Hash, User, Smartphone } from "lucide-react";
-import { AiFillApple } from "react-icons/ai";
+import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 
 export const transactionColumns = [
   {
@@ -61,9 +61,9 @@ export const transactionColumns = [
           </span>
         </div>
       ) : (
-        <div className="flex items-center gap-1.5 text-slate-600">
+        <div className="flex items-center gap-1.5">
           <div className="p-1 bg-slate-100 rounded">
-            <PlayCircle className="w-3 h-3" />
+            <AiFillAndroid className="w-3 h-3 text-black" />
           </div>
           <span className="text-xs font-medium capitalize">{platform}</span>
         </div>
