@@ -11,7 +11,8 @@ export const getALLUserListApi = async (
   limit,
   search,
   accountStatus,
-  isPremium
+  isPremium,
+  last24Hours
 ) => {
   // Construct the params object carefully
   const queryParams = {
@@ -20,6 +21,7 @@ export const getALLUserListApi = async (
     ...(search && { search }),
     ...(accountStatus && { accountStatus }),
     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
+    ...(last24Hours !== undefined && { last24Hours: String(last24Hours) }),
   };
   try {
     const response = await apiConnector(

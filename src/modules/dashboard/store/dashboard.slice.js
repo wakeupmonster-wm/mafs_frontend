@@ -49,6 +49,7 @@ const dashboardSlice = createSlice({
       .addCase(fetchDashboardKPIs.fulfilled, (state, action) => {
         state.loading = false;
         state.stats = action.payload;
+        // state.stats = [];
       })
       .addCase(fetchDashboardKPIs.rejected, (state, action) => {
         state.loading = false;

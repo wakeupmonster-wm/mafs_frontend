@@ -199,7 +199,7 @@ export const campaignColumns = (handleEdit, handleDelete, handleDisable) => [
             )}
             <DropdownMenuItem
               className="text-red-600 focus:bg-red-50"
-              onClick={() => handleDelete(campaign._id, campaign.prize?.title)}
+              onClick={() => handleDelete(campaign?._id, campaign?.date)}
             >
               <Trash className="mr-2 h-4 w-4" /> Delete
             </DropdownMenuItem>

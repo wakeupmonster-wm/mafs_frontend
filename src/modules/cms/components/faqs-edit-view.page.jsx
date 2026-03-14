@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea"; // Standard Textarea
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -11,143 +18,142 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { IconArrowLeft, IconDeviceFloppy, IconEye } from "@tabler/icons-react";
-import { toast } from "sonner";
 import { createFAQ, updateFAQ } from "../store/faq.slice";
-import { useDispatch } from "react-redux";
-import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 
-const FAQEditView = () => {
+const FAQDialog = ({ isOpen, onClose, initialData }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { id } = useParams();
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    question: "",
+    answer: "",
+    category: "general",
+  });
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("general");
-
+  // Sync form state when initialData changes (for editing)
   useEffect(() => {
-    if (location.state?.faq) {
-      const { faq } = location.state;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTitle(faq.question);
-      setContent(faq.answer);
-      setCategory(faq.category);
-      console.log("faq: ", faq);
+    if (initialData) {
+      setFormData({
+        question: initialData.question || "",
+        answer: initialData.answer || "",
+        category: initialData.category || "general",
+      });
+    } else {
+      setFormData({ question: "", answer: "", category: "general" });
     }
-  }, [location.state]);
-
-  console.log("id: ", id);
+  }, [initialData, isOpen]);
 
   const handleSave = async () => {
-    if (!title || !content) return toast.error("Please fill all fields");
+    if (!formData.question || !formData.answer) {
+      return toast.error("Please fill all fields");
+    }
 
-    const payload = {
-      question: title,
-      answer: content,
-      category: category,
-    };
-
+    setLoading(true);
     try {
-      if (id) {
-        await dispatch(updateFAQ({ id, payload })).unwrap();
+      if (initialData?._id || initialData?.id) {
+        const id = initialData._id || initialData.id;
+        await dispatch(updateFAQ({ id, payload: formData })).unwrap();
         toast.success("FAQ Updated!");
       } else {
-        await dispatch(createFAQ(payload)).unwrap();
+        await dispatch(createFAQ(formData)).unwrap();
         toast.success("FAQ Created successfully!");
       }
-      navigate("..");
+      onClose();
     } catch (error) {
       toast.error(error || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="p-4 space-y-6 bg-[#F8FDFF] min-h-screen font-['Plus_Jakarta_Sans',sans-serif]">
-      {/* --- Actions Header --- */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="ghost"
-          onClick={() => navigate("..")}
-          className="gap-2"
-        >
-          <IconArrowLeft size={18} /> Back to List
-        </Button>
-        <Button
-          onClick={handleSave}
-          className="gap-2 bg-green-600 hover:bg-green-700"
-        >
-          <IconDeviceFloppy size={18} /> {id ? "Update FAQ" : "Save FAQ"}
-        </Button>
-      </div>
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-lg font-bold">
+            {initialData ? "Edit FAQ" : "Add New FAQ"}
+          </DialogTitle>
+        </DialogHeader>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* --- Simple Form Card --- */}
-        <Card className="shadow-sm border-none">
-          <CardHeader>
-            <CardTitle className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
-              Manage FAQ
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-500">
-                Category
-              </label>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="general">General</SelectItem>
-                  <SelectItem value="account">Account</SelectItem>
-                  <SelectItem value="dating">Dating</SelectItem>
-                  <SelectItem value="subscriptions">Subscriptions</SelectItem>
-                  <SelectItem value="troubleshooting">
-                    Troubleshooting
+        <div className="grid gap-4 py-4">
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase text-muted-foreground">
+              Category
+            </Label>
+            <Select
+              value={formData.category}
+              onValueChange={(v) => setFormData({ ...formData, category: v })}
+            >
+              <SelectTrigger className="bg-secondary/50">
+                <SelectValue
+                  placeholder="Select Category"
+                  className="!capitalize"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  "general",
+                  "account",
+                  "dating",
+                  "subscriptions",
+                  "troubleshooting",
+                  "billing",
+                  "technical",
+                  "security_privacy",
+                  "safety_reporting",
+                  "other",
+                ].map((cat) => (
+                  <SelectItem key={cat} value={cat} className="capitalize">
+                    {cat.replace("_", " ")}
                   </SelectItem>
-                  <SelectItem value="security_privacy">
-                    Security Privacy
-                  </SelectItem>
-                  <SelectItem value="safety_reporting">
-                    Safety Reporting
-                  </SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-500">
-                Question
-              </label>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g, What is Match At First Swipe?"
-                className="font-semibold text-slate-700"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase text-muted-foreground">
+              Question
+            </Label>
+            <Input
+              value={formData.question}
+              onChange={(e) =>
+                setFormData({ ...formData, question: e.target.value })
+              }
+              placeholder="e.g., How do I reset my password?"
+            />
+          </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-500">
-                Answer
-              </label>
-              <Textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Provide a clear, simple answer..."
-                className="min-h-[200px] leading-relaxed resize-none border-slate-200"
-              />
-            </div>
-          </CardContent>
-        </Card>
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase text-muted-foreground">
+              Answer
+            </Label>
+            <Textarea
+              value={formData.answer}
+              onChange={(e) =>
+                setFormData({ ...formData, answer: e.target.value })
+              }
+              placeholder="Write a clear, helpful answer…"
+              className="bg-secondary/50 min-h-[120px]"
+            />
+          </div>
+        </div>
 
-   
-      </div>
-    </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose} disabled={loading}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            disabled={loading}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            {loading ? "Saving..." : initialData ? "Update FAQ" : "Create FAQ"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default FAQEditView;
+export default FAQDialog;

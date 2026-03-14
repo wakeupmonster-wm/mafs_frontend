@@ -26,6 +26,18 @@ import { toast } from "sonner";
 
 export const supportColumns = (onAction, onPreview) => [
   {
+    id: "sno",
+    header: () => <div className="w-max text-center text-xs">S.No</div>,
+    cell: ({ row, table }) => {
+      const { pageIndex, pageSize } = table.getState().pagination;
+      const serialNumber = pageIndex * pageSize + row.index + 1;
+
+      return <div className="w-6 text-center font-medium">{serialNumber}</div>;
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "user",
     header: "Ticket Details",
     cell: ({ row, table }) => {

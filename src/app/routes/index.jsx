@@ -32,40 +32,13 @@ const ViewPage = lazy(() => import("@/modules/users/pages/viewPage"));
 const GiveawayManagement = lazy(() =>
   import("@/modules/giveaway/pages/GiveawayManagement")
 );
-const CreatePrize = lazy(() => import("@/modules/giveaway/pages/Prizes"));
-const Campaigns = lazy(() => import("@/modules/giveaway/pages/Campaigns"));
-const BulkCampaigns = lazy(() =>
-  import("@/modules/giveaway/pages/BulkCampaigns")
-);
-const CampaignWinner = lazy(() =>
-  import("@/modules/giveaway/pages/CampaignWinner")
-);
-const PendingDeliveries = lazy(() =>
-  import("@/modules/giveaway/pages/PendingDeliveries")
-);
 
-// Support & Reviews
-const MyTicketsPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then((module) => ({
-    default: module.MyTicketsPage,
-  }))
-);
-const ContactSupportPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then((module) => ({
-    default: module.ContactSupportPage,
-  }))
-);
 const TicketDetailPage = lazy(() =>
   import("@/modules/support/pages/SupportPages").then((module) => ({
     default: module.TicketDetailPage,
   }))
 );
 
-const ReportedProfilesPage = lazy(() =>
-  import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
-    default: module.ReportedProfilesPage,
-  }))
-);
 const ProfileReviewDetailPage = lazy(() =>
   import("@/modules/profileReview/pages/ProfileReviewPages").then((module) => ({
     default: module.ProfileReviewDetailPage,
@@ -107,7 +80,6 @@ const PrivacyAndPolicyPage = lazy(() =>
 const TermAndConditionsPage = lazy(() =>
   import("@/modules/cms/pages/terms-conditions.page")
 );
-const AdminProfile = lazy(() => import("@/modules/setting/AdminProfile.jsx"));
 const NotificationManagementPages = lazy(() =>
   import("@/modules/notificationManagement/pages/NotificationManagementPages")
 );
@@ -133,11 +105,56 @@ const ViewTicketDetails = lazy(() =>
   import("@/modules/support/pages/view.ticket.details")
 );
 const SubscriptionsPage = lazy(() =>
-  import("@/modules/membership/pages/subscriptions.page")
+  import("@/modules/subsciptions/pages/subscription.page")
+);
+const SubscriptionDashboardPage = lazy(() =>
+  import("@/modules/subsciptions/pages/subscription.dashboard")
 );
 
 const EntitlementPage = lazy(() =>
   import("@/modules/membership/pages/entitlements.page")
+);
+
+const ViewSubscriptionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/view.subscription.detail.page")
+);
+const SubscriptionProductsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/products.page")
+);
+const SubscriptionConfigPage = lazy(() =>
+  import("@/modules/subsciptions/pages/config.page")
+);
+const SubscriberManagementPage = lazy(() =>
+  import("@/modules/subsciptions/pages/subscriber.management.page")
+);
+const TransactionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/transactions.page")
+);
+const AnalyticsPage = lazy(() =>
+  import("@/modules/dashboard/pages/analytics.page")
+);
+
+const SettingsPage = lazy(() =>
+  import("@/modules/settings/pages/settings.page")
+);
+
+const AccountsPage = lazy(() =>
+  import("@/modules/accounts/page/accounts.page")
+);
+
+const PrizePage = lazy(() => import("@/modules/giveaway/pages/prizes.page"));
+
+const CampaignsPage = lazy(() =>
+  import("@/modules/giveaway/pages/campaigns.page")
+);
+const BulkCampaignsPage = lazy(() =>
+  import("@/modules/giveaway/pages/bulk.campaign.page")
+);
+const PendingDeliveriesPage = lazy(() =>
+  import("@/modules/giveaway/pages/pending.deliveries.page")
+);
+const ParticipantsPage = lazy(() =>
+  import("@/modules/giveaway/pages/participants.page")
 );
 
 import { PreLoader } from "../loader/preloader";
@@ -194,7 +211,7 @@ export const router = createBrowserRouter([
         ),
       },
 
-      { path: "analytics", element: <>Analytics</> },
+      { path: "analytics", element: <AnalyticsPage /> },
 
       { path: "kpi", element: <>KPI's</> },
 
@@ -289,7 +306,7 @@ export const router = createBrowserRouter([
                 path: "prizes",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <CreatePrize />
+                    <PrizePage />
                   </Suspense>
                 ),
               },
@@ -297,7 +314,7 @@ export const router = createBrowserRouter([
                 path: "campaigns",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <Campaigns />
+                    <CampaignsPage />
                   </Suspense>
                 ),
               },
@@ -305,7 +322,7 @@ export const router = createBrowserRouter([
                 path: "bulk-campaigns",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <BulkCampaigns />
+                    <BulkCampaignsPage />
                   </Suspense>
                 ),
               },
@@ -313,7 +330,7 @@ export const router = createBrowserRouter([
                 path: "winner",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <CampaignWinner />
+                    <PendingDeliveriesPage />
                   </Suspense>
                 ),
               },
@@ -321,7 +338,15 @@ export const router = createBrowserRouter([
                 path: "pending-deliveries",
                 element: (
                   <Suspense fallback={<PreLoader />}>
-                    <PendingDeliveries />
+                    <PendingDeliveriesPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "participants",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ParticipantsPage />
                   </Suspense>
                 ),
               },
@@ -413,11 +438,72 @@ export const router = createBrowserRouter([
           { path: "notifications", element: <NotificationManagementPages /> },
           {
             path: "all-notifications",
-            element: <NotificationManagementPage />,
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <NotificationManagementPage />
+              </Suspense>
+            ),
           },
           {
             path: "subscription-management",
-            element: <SubscriptionsPage />,
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionDashboardPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "subscribers",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-subscription/:userId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewSubscriptionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "manage-subscribers",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriberManagementPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "products",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionProductsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "config",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionConfigPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "transactions",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <TransactionsPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
           { path: "*", element: <NotFoundPage /> },
         ],
@@ -451,28 +537,55 @@ export const router = createBrowserRouter([
           {
             path: "faqs",
             children: [
-              { index: true, element: <FAQSPage /> },
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <FAQSPage />
+                  </Suspense>
+                ),
+              },
               { path: "edit", element: <FAQEditView /> },
               { path: "edit/:id", element: <FAQEditView /> },
             ],
           },
-          { path: "privacy-policy", element: <PrivacyAndPolicyPage /> },
-          { path: "terms-conditions", element: <TermAndConditionsPage /> },
+          {
+            path: "privacy-policy",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <PrivacyAndPolicyPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "terms-conditions",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <TermAndConditionsPage />
+              </Suspense>
+            ),
+          },
           { path: "*", element: <NotFoundPage /> },
         ],
       },
-
-      { path: "settings", element: <AdminProfile /> },
+      {
+        path: "settings",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <SettingsPage />
+          </Suspense>
+        ),
+      },
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },
-      // {
-      //   path: "accounts",
-      //   element: (
-      //     <Suspense fallback={<PreLoader />}>
-      //       <AccountsPage />
-      //     </Suspense>
-      //   ),
-      // },
+      {
+        path: "accounts",
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <AccountsPage />
+          </Suspense>
+        ),
+      },
 
       { path: "*", element: <NotFoundPage /> },
     ],

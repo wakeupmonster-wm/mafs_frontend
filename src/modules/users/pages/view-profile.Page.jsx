@@ -23,6 +23,7 @@ import { LifeStyleTab } from "../components/Tabs/lifestyle.Tab";
 import { DiscoveryTab } from "../components/Tabs/discovery.Tab";
 import { ActivityTab } from "../components/Tabs/activity.Tab";
 import { FinancialsTab } from "../components/Tabs/financials.Tab";
+import { SubscriptionTab } from "../components/Tabs/subscription.Tab";
 import { SettingsTab } from "../components/Tabs/settings.Tab";
 import { Check, Copy } from "lucide-react";
 import {
@@ -41,97 +42,7 @@ import {
   suspendUserProfile,
   unbanUserProfile,
 } from "../store/user.slice";
-
-// export default function ViewProfilePage() {
-//   const navigate = useNavigate();
-//   const location = useLocation();
-
-//   // Data Logic
-//   const initialUserData = location.state?.userData;
-//   const liveUser = useSelector((state) =>
-//     state.users.items.find((u) => u._id === initialUserData?._id)
-//   );
-//   const userData = liveUser || initialUserData;
-
-//   // UI States
-
-//   if (!userData)
-//     return (
-//       <div className="p-20 text-center">
-//         <Button onClick={() => navigate(-1)}>Go Back</Button>
-//       </div>
-//     );
-
-//   const {
-//     profile,
-//     account,
-//     attributes,
-//     discovery,
-//     location: userLoc,
-//     photos,
-//     verification,
-//     stats,
-//     recentMatches,
-//   } = userData;
-
-//   console.log("stats: ", stats);
-
-//   return (
-//     <div className="p-6 w-full space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
-//       {/* --- BREADCRUMB / TOP HEADER --- */}
-//       <div className="flex items-center gap-4 mb-2">
-//         <Button
-//           variant="ghost"
-//           size="icon"
-//           onClick={() => navigate(-1)}
-//           className="rounded-full"
-//         >
-//           <IconArrowLeft className="h-5 w-5" />
-//         </Button>
-//         <h1 className="text-2xl font-bold tracking-tight">
-//           User Detailed View
-//         </h1>
-//         <Badge variant="outline" className="ml-auto font-mono">
-//           {userData._id}
-//         </Badge>
-//       </div>
-
-//       <Tabs defaultValue="profile" className="w-full">
-//         <EnhancedTabs tabs={TabData} />
-
-//         {/*  --- TAB 1: PROFILE SUMMARY --- */}
-//         <ProfileTab
-//           userData={userData}
-//           photos={photos}
-//           profile={profile}
-//           userLoc={userLoc}
-//           account={account}
-//           discovery={discovery}
-//           attributes={attributes}
-//           verification={verification}
-//         />
-
-//         {/* --- TAB 2: GALLERY ---  */}
-//         <GallleryTab photos={photos} userId={userData._id} />
-
-//         {/* --- TAB 3: LIFESTYLE & INTERESTS --- */}
-//         <LifeStyleTab userData={userData} attributes={attributes} />
-
-//         {/* --- TAB 4: DISCOVERY --- */}
-//         <DiscoveryTab discovery={discovery} />
-
-//         {/* --- TAB 5: ACTIVITY LOGS --- */}
-//         <ActivityTab stats={stats} recentMatches={recentMatches} />
-
-//         {/* --- TAB 6: FINANCIALS --- */}
-//         <FinancialsTab account={account} />
-
-//         {/* --- TAB 7: SETTINGS --- */}
-//         <SettingsTab userData={userData} account={account} />
-//       </Tabs>
-//     </div>
-//   );
-// }
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function ViewProfilePage() {
   const navigate = useNavigate();
@@ -141,6 +52,8 @@ export default function ViewProfilePage() {
   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
   const [isUnbannedOpen, setIsUnbannedOpen] = useState(false);
   const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
+
+  const { loading } = useSelector((state) => state.users);
 
   const initialUserData = location.state?.userData;
   const liveUser = useSelector((state) =>
@@ -180,9 +93,9 @@ export default function ViewProfilePage() {
     verification,
     stats,
     recentMatches,
+    transactions,
+    subscription,
   } = userData;
-
-  console.log("userData: ", userData);
 
   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
 
@@ -229,6 +142,11 @@ export default function ViewProfilePage() {
       toast.error(err || "Failed to suspend user");
     }
   };
+
+  // ✅ CRITICAL: You must RETURN the component
+  if (loading) {
+    return <PreLoader />;
+  }
 
   return (
     <>
@@ -405,7 +323,12 @@ export default function ViewProfilePage() {
               <LifeStyleTab userData={userData} attributes={attributes} />
               <DiscoveryTab discovery={discovery} attributes={attributes} />
               <ActivityTab stats={stats} recentMatches={recentMatches} />
-              <FinancialsTab account={account} />
+              <FinancialsTab
+                account={account}
+                transactions={transactions}
+                subscription={subscription}
+              />
+              <SubscriptionTab userData={userData} subscription={subscription} />
               <SettingsTab userData={userData} account={account} />
             </div>
           </Tabs>

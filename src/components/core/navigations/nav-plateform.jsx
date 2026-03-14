@@ -1,138 +1,3 @@
-// // import { ChevronRight } from "lucide-react";
-
-// // import {
-// //   Collapsible,
-// //   CollapsibleContent,
-// //   CollapsibleTrigger,
-// // } from "@/components/ui/collapsible";
-// // import {
-// //   SidebarGroup,
-// //   SidebarGroupLabel,
-// //   SidebarMenu,
-// //   SidebarMenuButton,
-// //   SidebarMenuItem,
-// //   SidebarMenuSub,
-// //   SidebarMenuSubButton,
-// //   SidebarMenuSubItem,
-// // } from "@/components/ui/sidebar";
-// // import { Link } from "react-router";
-
-// // export function NavPlateform({ items }) {
-// //   return (
-// //     <SidebarGroup>
-// //       <SidebarGroupLabel>Managements</SidebarGroupLabel>
-// //       <SidebarMenu>
-// //         {items.map((item) => (
-// //           <Collapsible
-// //             key={item.title}
-// //             asChild
-// //             defaultOpen={item.isActive}
-// //             className="group/collapsible"
-// //           >
-// //             <SidebarMenuItem>
-// //               <CollapsibleTrigger asChild>
-// //                 <SidebarMenuButton tooltip={item.title}>
-// //                   {item.icon && <item.icon />}
-// //                   <span>{item.title}</span>
-// //                   <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-// //                 </SidebarMenuButton>
-// //               </CollapsibleTrigger>
-// //               <CollapsibleContent>
-// //                 <SidebarMenuSub>
-// //                   {item.items?.map((subItem) => (
-// //                     <SidebarMenuSubItem key={subItem.title}>
-// //                       <SidebarMenuSubButton asChild>
-// //                         <Link to={subItem.url}>
-// //                           <span>{subItem.title}</span>
-// //                         </Link>
-// //                       </SidebarMenuSubButton>
-// //                     </SidebarMenuSubItem>
-// //                   ))}
-// //                 </SidebarMenuSub>
-// //               </CollapsibleContent>
-// //             </SidebarMenuItem>
-// //           </Collapsible>
-// //         ))}
-// //       </SidebarMenu>
-// //     </SidebarGroup>
-// //   );
-// // }
-
-// import { ChevronRight } from "lucide-react";
-// import { Link, useLocation } from "react-router-dom";
-
-// import {
-//   Collapsible,
-//   CollapsibleContent,
-//   CollapsibleTrigger,
-// } from "@/components/ui/collapsible";
-// import {
-//   SidebarGroup,
-//   SidebarMenu,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-//   SidebarMenuSub,
-//   SidebarMenuSubButton,
-//   SidebarMenuSubItem,
-// } from "@/components/ui/sidebar";
-
-// export function NavPlateform({ items }) {
-//   const location = useLocation();
-
-//   // Safety check
-//   if (!items || items.length === 0) {
-//     return null;
-//   }
-
-//   return (
-//     <SidebarGroup>
-//       <SidebarMenu>
-//         {items.map((item) => {
-//           const Icon = item.icon;
-//           const hasActiveChild = item.items?.some(
-//             (subItem) => location.pathname === subItem.url
-//           );
-
-//           return (
-//             <Collapsible
-//               key={item.title}
-//               asChild
-//               defaultOpen={hasActiveChild}
-//               className="group/collapsible"
-//             >
-//               <SidebarMenuItem>
-//                 <CollapsibleTrigger asChild>
-//                   <SidebarMenuButton tooltip={item.title}>
-//                     {Icon && <Icon />}
-//                     <span>{item.title}</span>
-//                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-//                   </SidebarMenuButton>
-//                 </CollapsibleTrigger>
-//                 <CollapsibleContent>
-//                   <SidebarMenuSub>
-//                     {item.items?.map((subItem) => {
-//                       const isActive = location.pathname === subItem.url;
-//                       return (
-//                         <SidebarMenuSubItem key={subItem.title}>
-//                           <SidebarMenuSubButton asChild isActive={isActive}>
-//                             <Link to={subItem.url}>
-//                               <span>{subItem.title}</span>
-//                             </Link>
-//                           </SidebarMenuSubButton>
-//                         </SidebarMenuSubItem>
-//                       );
-//                     })}
-//                   </SidebarMenuSub>
-//                 </CollapsibleContent>
-//               </SidebarMenuItem>
-//             </Collapsible>
-//           );
-//         })}
-//       </SidebarMenu>
-//     </SidebarGroup>
-//   );
-// }
-
 import { ChevronRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -166,6 +31,7 @@ export function NavPlateform({ items }) {
       <SidebarMenu>
         {items.map((item) => {
           const Icon = item.icon;
+          const isActive = location.pathname === item.url;
           const hasActiveChild = item.items?.some(
             (subItem) => location.pathname === subItem.url
           );
@@ -184,7 +50,7 @@ export function NavPlateform({ items }) {
                     className={cn(
                       "group relative h-12 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      hasActiveChild &&
+                      isActive && !hasActiveChild &&
                         "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50"
                     )}
                   >

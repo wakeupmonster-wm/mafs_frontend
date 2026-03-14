@@ -160,16 +160,16 @@ export default function KYCVerificationPage() {
           />
           <Badge
             variant="secondary"
-            className="h-7 px-3 bg-slate-900 text-white"
+            className="bg-brand-aqua/20 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
           >
-            {reduxPagination?.total || 0} Total Requests
+            {reduxPagination?.total ?? 0} Total Requests
           </Badge>
         </header>
 
         <KYCVerificationDataTable
           columns={columns}
           data={pendingVerifications || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

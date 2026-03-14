@@ -15,7 +15,7 @@ export const PhotoGallery = ({ photos, onImageClick }) => {
           </div>
           Profile Photos
           <span className="ml-1 text-slate-400 font-medium text-sm">
-            ({photos?.length || 0})
+            ({photos?.length ?? 0})
           </span>
         </h3>
 

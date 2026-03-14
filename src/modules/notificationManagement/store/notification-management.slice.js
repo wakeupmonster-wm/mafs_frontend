@@ -61,6 +61,7 @@ export const sendEmailCampaign = createAsyncThunk(
   "notificationManagement/sendEmailCampaign",
   async (payload, { rejectWithValue }) => {
     try {
+      console.log("payload: ", payload);
       return await notifyAPI.sendEmailCampaignApi(payload);
     } catch (e) {
       return rejectWithValue(

@@ -156,17 +156,18 @@ export default function SupportTicketsDataTables({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 transition-all whitespace-nowrap",
+                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
                       hasActiveFilters &&
                         "border-brand-aqua ring-1 ring-brand-aqua"
                     )}
                   >
                     <IconFilter
+                      strokeWidth={2.5}
                       className={cn(
-                        "h-4 w-4 mr-2",
+                        "h-6 w-6",
                         hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/50"
+                          : "text-brand-aqua/60"
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">
@@ -262,7 +263,7 @@ export default function SupportTicketsDataTables({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-slate-700 w-max pl-5 font-semibold h-10 bg-slate-100 text-xs"
+                    className="text-slate-700 w-max pl-4 font-semibold h-10 bg-slate-100 text-xs"
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -282,7 +283,7 @@ export default function SupportTicketsDataTables({
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-4 pl-5">
+                    <TableCell key={cell.id} className="py-3 pl-3">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -295,7 +296,7 @@ export default function SupportTicketsDataTables({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className="h-64 text-center"
+                  className="h-60 text-center"
                 >
                   {isLoading ? (
                     <TableLoader text="Fetching data..." />

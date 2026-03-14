@@ -11,6 +11,10 @@ export const GIVEAWAYS_ENDPOINTS = {
   PATCH_PRIZE_BY_ID: (id) => `${GIVEAWAY_BASE}/prizes/${id}`,
   DELETE_PRIZE_BY_ID: (id) => `${GIVEAWAY_BASE}/prizes/${id}`,
 
+  // Participants
+  GET_PARTICIPANTS: (campaignId) =>
+    `${GIVEAWAY_BASE}/campaigns/${campaignId}/participants`,
+
   // CAMPAIGNS
   GET_CAMPAIGNS: `${GIVEAWAY_BASE}/campaigns`,
   ADD_CAMPAIGNS: `${GIVEAWAY_BASE}/campaigns`,

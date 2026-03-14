@@ -121,11 +121,48 @@
   }
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-card/95 backdrop-blur-xl border border-slate-200 shadow-md rounded-xl;
+  }
+  /* 
+  .glow-border {
+    box-shadow: 0 0 0 1px hsl(var(--border)),
+      0 0 20px -5px hsl(var(--card-glow) / 0.15);
+  } */
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--gradient-from)),
+      hsl(var(--gradient-to))
+    );
+  }
+
+  .stat-glow {
+    box-shadow: 0 4px 24px -4px hsl(var(--card-glow) / 0.2);
+  }
+}
+
+/* ::-webkit-scrollbar {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background-color: #0e0e0e; /* or add it to the track
+} */
+
 /* Fix Preview Typography (The standard Tailwind reset fix) */
 .preview-content {
   color: #334155; /* slate-700 */
   line-height: 1.6;
   font-size: 1rem;
+
+  background: #000000;
 
   /* This forces the text to wrap even if there are no spaces */
   overflow-wrap: break-word;

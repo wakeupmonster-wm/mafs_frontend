@@ -1,6 +1,16 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeToggle } from "./theme.Toggle";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { useSelector } from "react-redux";
+import dummyImg from "@/assets/images/dummyImg.jpg";
+import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // export function SiteHeader() {
 //   return (
@@ -36,35 +46,64 @@ import { ThemeToggle } from "./theme.Toggle";
 //   );
 // }
 
-  export function SiteHeader() {
-    return (
-      <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center border-b bg-white/60 backdrop-blur-md px-4 transition-all">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Sidebar Trigger for Mobile & Desktop collapse */}
-            <SidebarTrigger className="-ml-1 text-slate-500 hover:bg-slate-100" />
-            <Separator orientation="vertical" className="h-4 mx-2" />
+export function SiteHeader() {
+  const navigate = useNavigate();
+  const { account } = useSelector((state) => state.account);
 
-            {/* Breadcrumb-style Navigation */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-slate-800">Admin</span>
-              {/* <span className="text-xs text-slate-300">/</span>
+  return (
+    <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center border-b bg-white/60 backdrop-blur-md px-4 transition-all">
+      <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-2">
+          {/* Sidebar Trigger for Mobile & Desktop collapse */}
+          <SidebarTrigger className="-ml-1 text-slate-500 hover:bg-slate-100" />
+          <Separator orientation="vertical" className="h-4 mx-2" />
+
+          {/* Breadcrumb-style Navigation */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-slate-800">Admin</span>
+            {/* <span className="text-xs text-slate-300">/</span>
               <span className="text-sm font-semibold text-slate-900 tracking-tight">
                 Dashboard
               </span> */}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {/* Theme Toggle replaced the Pulsing Circle */}
-            <ThemeToggle />
-
-            {/* User Profile placeholder or Avatar */}
-            <div className="h-9 w-9 rounded-full bg-indigo-100 border border-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-xs shadow-sm">
-              AD
-            </div>
           </div>
         </div>
-      </header>
-    );
-  }
+
+        <div className="flex items-center gap-3">
+          {/* Theme Toggle replaced the Pulsing Circle */}
+          {/* <ThemeToggle /> */}
+
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  onClick={() => navigate("/admin/accounts")}
+                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100 cursor-pointer transition-all duration-200 group"
+                >
+                  {/* Avatar with fallback logic */}
+                  <Avatar className="h-9 w-9 rounded-full border shadow-lg transition-transform group-hover:scale-105 border-brand-aqua">
+                    <AvatarImage
+                      src={account?.avatar?.url}
+                      alt={account?.nickname}
+                    />
+                    <AvatarFallback className="bg-indigo-100 text-brand-aqua font-bold text-xs">
+                      {account?.nickname?.slice(0, 2).toUpperCase() || "AD"}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </TooltipTrigger>
+
+              {/* Hover Card / Tooltip content */}
+              <TooltipContent
+                side="bottom"
+                className="flex flex-col gap-1 p-3 bg-white border-slate-200 shadow-xl"
+              >
+                <p className="font-bold text-brand-aqua">{account?.nickname}</p>
+                <p className="text-xs text-slate-500">{account?.email}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+    </header>
+  );
+}

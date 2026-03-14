@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/set-state-in-effect */
 // import React, { useEffect, useMemo, useState } from "react";
 // import { motion } from "framer-motion";
@@ -207,9 +208,14 @@ import { motion } from "framer-motion";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Inbox } from "lucide-react";
 import SupportTicketsDataTables from "@/components/shared/data-tables/support.ticket.data.table";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { adminReplyToTicket, clearSupportStatus, fetchMyTickets } from "../store/support.slice";
+
+import {
+  adminReplyToTicket,
+  clearSupportStatus,
+  fetchMyTickets,
+} from "../store/support.slice";
 import { supportColumns } from "@/components/columns/support.columns";
 import { TicketAction } from "../components/dialogs/tickets.action";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -238,6 +244,7 @@ const itemVariants = {
 export default function SupportTicketsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const {
     tickets,
@@ -278,6 +285,14 @@ export default function SupportTicketsPage() {
     globalFilter,
     statusFilter,
   ]);
+
+  useEffect(() => {
+    const initialFilter = location?.state;
+    if (!initialFilter) return;
+
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+    if (initialFilter === "Tickets") setStatusFilter("open");
+  }, [location?.state]);
 
   useEffect(() => {
     if (selectedTicket) {
@@ -343,7 +358,7 @@ export default function SupportTicketsPage() {
         <SupportTicketsDataTables
           columns={columns}
           data={tickets || []}
-          rowCount={reduxPagination?.total || 0}
+          rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
           onPaginationChange={setPagination}

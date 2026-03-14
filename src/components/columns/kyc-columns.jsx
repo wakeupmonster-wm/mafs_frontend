@@ -54,7 +54,7 @@ export const getKYCColumns = (onAction, onPreview) => [
 
       if (!phone)
         return (
-          <span className="text-slate-400 text-xs italic">Not provided</span>
+          <span className="text-slate-400 text-xs italic">-</span>
         );
 
       const copyToClipboard = () => {
@@ -83,7 +83,7 @@ export const getKYCColumns = (onAction, onPreview) => [
       const email = row.original.user?.email;
 
       if (!email)
-        return <span className="text-slate-400 text-xs italic">No email</span>;
+        return <span className="text-slate-400 text-xs italic">-</span>;
 
       return (
         <Badge className="lowercase font-normal bg-gray-100 text-gray-700 border border-gray-200 transition-all duration-200 hover:bg-gray-200 hover:scale-105">
@@ -215,21 +215,22 @@ export const getKYCColumns = (onAction, onPreview) => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 p-2 shadow-lg">
             <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-              Verification Actions
+              KYC Actions
             </DropdownMenuLabel>
 
             {/* 1. VIEW DETAILS */}
-            <DropdownMenuItem
+            {/* <DropdownMenuItem
               className="cursor-pointer gap-2 py-2"
               onClick={() => {
-                /* Open detail modal logic */
+                /* Open detail modal logic
               }}
             >
               <Eye className="h-4 w-4 text-slate-500" />
               <span>View Profile Details</span>
-            </DropdownMenuItem>
+            </DropdownMenuItem> 
 
             <DropdownMenuSeparator />
+            */}
 
             {/* 2. APPROVE */}
             <DropdownMenuItem

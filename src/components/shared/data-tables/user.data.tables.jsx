@@ -1,12 +1,10 @@
 import { React, useState } from "react";
-
 import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,7 +28,6 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconFilter,
-  IconInbox,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
@@ -42,10 +39,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SimpleLoader } from "@/components/ui/loading-overlay";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { TableLoader } from "@/app/loader/table.loader";
+import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 
 export default function UserDataTables({
   columns,
@@ -79,7 +77,10 @@ export default function UserDataTables({
   });
 
   const hasActiveFilters =
-    filters.accountStatus || filters.isPremium !== undefined;
+    filters.accountStatus ||
+    filters.isPremium !== undefined ||
+    filters.last24HR !== undefined;
+
   return (
     <div className="w-full space-y-4">
       {/* --- TOOLBAR SECTION --- */}
@@ -169,6 +170,32 @@ export default function UserDataTables({
                     </Badge>
                   </motion.div>
                 )}
+
+                {filters.last24HR !== undefined && (
+                  <motion.div
+                    key="premium-chip"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="shrink-0"
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="p-2 gap-1 bg-amber-100 border-dashed border-amber-400 text-amber-700 shadow-sm whitespace-nowrap"
+                    >
+                      <span className="text-[10px] font-bold uppercase opacity-50">
+                        Login:
+                      </span>
+                      <span className="text-xs">Last 24 Hours</span>
+                      <button
+                        onClick={() => filters.setLast24HR(undefined)}
+                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                      >
+                        <IconX size={12} />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
               </AnimatePresence>
             </div>
 
@@ -184,17 +211,18 @@ export default function UserDataTables({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 transition-all whitespace-nowrap",
+                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
                       hasActiveFilters &&
                         "border-brand-aqua ring-1 ring-brand-aqua"
                     )}
                   >
                     <IconFilter
+                      strokeWidth={2.5}
                       className={cn(
-                        "h-4 w-4 mr-2",
+                        "h-6 w-6",
                         hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/50"
+                          : "text-brand-aqua/60"
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">
@@ -203,7 +231,8 @@ export default function UserDataTables({
                     {hasActiveFilters && (
                       <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
                         {Number(!!filters.accountStatus) +
-                          Number(filters.isPremium !== undefined)}
+                          Number(filters.isPremium !== undefined) +
+                          Number(filters.last24HR !== undefined)}
                       </span>
                     )}
                   </Button>
@@ -226,6 +255,13 @@ export default function UserDataTables({
                       {status}
                     </DropdownMenuCheckboxItem>
                   ))}
+                  <DropdownMenuCheckboxItem
+                    checked={filters.last24HR === true}
+                    onCheckedChange={() => filters.setLast24HR(true)}
+                  >
+                    Last 24 Hours
+                  </DropdownMenuCheckboxItem>
+
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                     Plan Type
@@ -358,19 +394,13 @@ export default function UserDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <SimpleLoader text="Fetching data..." />
+                    <TableLoader text="Fetching Users..." />
                   ) : (
-                    <div className="flex flex-col items-center justify-center text-slate-400 space-y-2">
-                      <IconInbox size={48} stroke={1} />
-                      <p className="text-sm font-medium">
-                        No results found for your search
-                      </p>
-                    </div>
+                    <DataNotFound message="No users found" />
                   )}
                 </TableCell>
               </TableRow>
             )}
-            {/*  ))} */}
           </TableBody>
         </Table>
       </div>
