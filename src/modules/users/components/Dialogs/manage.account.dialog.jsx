@@ -30,6 +30,7 @@ import {
   bannedUserProfile,
   unbanUserProfile,
   suspendUserProfile,
+  fetchUserData,
 } from "../../store/user.slice";
 
 export const ManageAccountDialog = ({ isOpen, onOpenChange, userData }) => {
@@ -85,6 +86,9 @@ export const ManageAccountDialog = ({ isOpen, onOpenChange, userData }) => {
           description: "Access restricted for 24 hours.",
         });
       }
+
+      // 2. AUTOMATICALLY RE-FETCH the fresh data from the server
+      await dispatch(fetchUserData(userData._id));
 
       onOpenChange(false);
     } catch (err) {

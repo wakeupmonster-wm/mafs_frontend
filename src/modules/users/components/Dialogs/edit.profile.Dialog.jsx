@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
-import { updateUserProfile } from "../../store/user.slice";
+import { fetchUserData, updateUserProfile } from "../../store/user.slice";
 
 export const EditProfileDialog = ({ userData }) => {
   const dispatch = useDispatch();
@@ -37,14 +37,10 @@ export const EditProfileDialog = ({ userData }) => {
 
   const handleSave = async () => {
     setIsSubmitting(true);
-
-    // Clean the data: Convert age to number, handle empty strings
-    const cleanedData = {
-      ...formData,
-      // age: formData.age === "" ? undefined : Number(formData.age),
-    };
+    const cleanedData = { ...formData };
 
     try {
+      // 1. Dispatch the update
       const user = await dispatch(
         updateUserProfile({
           userId: userData._id,
@@ -52,10 +48,13 @@ export const EditProfileDialog = ({ userData }) => {
         }),
       ).unwrap();
 
+      // 2. 🔥 RE-FETCH to sync calculated fields (completion %, etc.)
+      await dispatch(fetchUserData(userData._id));
+
       toast.success(`${user?.profile.nickname}, profile updated successfully!`);
-      setIsOpen(false); // Close dialog only on success
+
+      setIsOpen(false);
     } catch (err) {
-      // If 'err' is an array (from Joi), show the first error
       const message = Array.isArray(err) ? err[0] : err;
       toast.error(message || "Failed to update");
     } finally {

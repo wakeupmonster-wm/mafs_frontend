@@ -24,6 +24,7 @@ import dummyImg from "@/assets/images/dummyImg.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
+import mustardLogo from "@/assets/web/mustardLogo2.webp";
 
 export function AppSidebar({ ...props }) {
   const dispatch = useDispatch();
@@ -45,10 +46,10 @@ export function AppSidebar({ ...props }) {
   const navUser = useMemo(
     () => ({
       name: account?.nickname || "Admin",
-      email: account?.email || "admin@mafs.com",
+      email: account?.email || "admin@keenasmustard.com",
       avatar: account?.avatar?.url || dummyImg,
     }),
-    [account]
+    [account],
   );
 
   return (
@@ -66,16 +67,21 @@ export function AppSidebar({ ...props }) {
               asChild
               className="hover:bg-transparent p-1"
             >
-              <Link to="/admin/dashboard" className="flex items-center gap-3">
-                <div className="border text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-lg">
-                  <img src="/Favicon2.png" alt="" className="size-5" />
+              <Link to="/admin/dashboard" className="flex items-center gap-2">
+                <div className="flex aspect-square items-center justify-center rounded-lg">
+                  <img
+                    src={mustardLogo}
+                    alt={mustardLogo}
+                    loading="lazy"
+                    className="size-8"
+                  />
                 </div>
                 <div className="grid flex-1 text-left leading-tight">
                   <span className="truncate text-sm font-extrabold">
-                    MAFS Admin
+                    Keen As Mustard
                   </span>
                   <span className="truncate font-semibold text-[9px]">
-                    Control Panel
+                    Admin Control Panel
                   </span>
                 </div>
               </Link>
@@ -149,7 +155,7 @@ export function AppSidebar({ ...props }) {
   //       </div>
   //       <div className="ml-3 flex flex-col group-data-[collapsible=icon]:hidden">
   //         <span className="text-sm font-bold text-slate-900 leading-none">
-  //           MAFS Admin
+  //           Keen As Mustard Admin
   //         </span>
   //         <span className="text-[10px] font-medium text-slate-400">
   //           System Control

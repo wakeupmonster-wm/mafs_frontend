@@ -23,6 +23,7 @@ const itemVariants = {
 };
 
 const StatsGrid = ({ stats, colorMap, bgMap }) => {
+  // console.log("stats: ", stats);
   return (
     <>
       {stats.map((stat, i) => (
@@ -31,7 +32,7 @@ const StatsGrid = ({ stats, colorMap, bgMap }) => {
           variants={itemVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
           className={cn(
-            "group relative p-6 rounded-3xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
+            "group relative p-6 rounded-2xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
             bgMap[stat.color],
           )}
         >

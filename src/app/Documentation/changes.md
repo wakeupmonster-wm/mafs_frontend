@@ -9,24 +9,27 @@ Todos in Admin
 3. Location is not visible in single line ✅
 
 4. In Reject Verification we need other options so admin can enter any specific
-   reason ⌛ ✅ 1
+   reason ✅
 
-5. Edit Bio -> Edit details ⌛ ✅ 2
+5. Edit Bio -> Edit details ✅
 
 6. In Edit bio - we should give dropdown so admin don't enter wrong value ⌛
 
-7. If email and phone is verified show check icon ⌛ ✅ 3
+7. If email and phone is verified show check icon ✅
 
-8. In profile quality show full profile completed % but for now it showing onboarding completed ⌛ ✅ 4
+8. In profile quality show full profile completed % but for now it showing
+   onboarding completed ✅
 
-9. In Gallery section - on tap on image show image with next image options, delete photo is not working ⌛ ✅ 5
+9. In Gallery section - on tap on image show image with next image options,
+   delete photo is not working ✅
 
-10. Remove Edit Lifestyle option ✅ 6
+10. Remove Edit Lifestyle option ✅
 
-11. Also want to see how many swipe user has done ⌛
+11. Also want to see how many swipe user has done ⌛ = ⚠️ We have to show
+    overall swipe.
 
 12. In Search Distance take 500km max rang on based on that show user selected
-    range⌛
+    range⌛ 18 to 60 500km max.
 
 13. In Setting tab remove edit option — show settings of the user "settings": {
 
@@ -42,11 +45,11 @@ Todos in Admin
 
 1.  Also show created and updated at ⌛
 
-2.  Replace lifestyle tab to Attributes tab and show all the attributes ⌛ ✅ 7
+2.  Replace lifestyle tab to Attributes tab and show all the attributes ✅
 
-3.  In Discovery filter tab only show discovery option of user ⌛
+3.  In Discovery filter tab only show discovery option of user ✅
 
-4.  In User list if email is not available only show dash ⌛
+4.  In User list if email is not available only show dash ✅
 
 5.  In Actions for now we only have one option view profile add block, suspended
     ⌛
@@ -95,7 +98,7 @@ Todos in Admin
    management ⌛
 
 7. Side-by-Side Comparison View — Show ID photo next to selfie next to profile
-   photos for easy comparison. ⌛ ✅ 8
+   photos for easy comparison. ✅
 
 # Subscription Management
 
@@ -108,7 +111,7 @@ Todos in Admin
 
 1. S.no is missing add that ✅
 
-2. Search should work for name, contact, email, subject ⌛
+2. Search should work for name, contact, email, subject ✅ 1.
 
 3. Show same tab on top as we are showing in user managment like open, in
    progress, resolved, closed ⌛

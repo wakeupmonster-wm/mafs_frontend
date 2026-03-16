@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
-import { deleteUserPhoto } from "../../store/user.slice";
+import { deleteUserPhoto, fetchUserData } from "../../store/user.slice";
 import { cn } from "@/lib/utils";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 
@@ -46,6 +46,8 @@ export const GallleryTab = ({ photos = [], userId }) => {
       for (const publicId of idsToDelete) {
         await dispatch(deleteUserPhoto({ userId, publicId })).unwrap();
       }
+
+      await dispatch(fetchUserData(userId));
 
       toast.success(`${idsToDelete.length} photo(s) removed`);
       setSelectedPhotos([]);
@@ -109,7 +111,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
         ) : (
           <motion.div
             layout
-            className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 items-start gap-4"
           >
             <AnimatePresence mode="popLayout">
               {photos.map((photo, index) => {

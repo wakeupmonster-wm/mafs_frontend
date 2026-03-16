@@ -45,6 +45,16 @@ import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 
+// At the top of your file
+const GENDER_OPTIONS = [
+  "men",
+  "women",
+  "non-binary",
+  "trans-man",
+  "trans-women",
+  "genderqueer",
+];
+
 export default function UserDataTables({
   columns,
   data,
@@ -59,7 +69,6 @@ export default function UserDataTables({
   filters, // Destructure the new filters prop
 }) {
   const [sorting, setSorting] = useState([]);
-
   const table = useReactTable({
     data,
     columns,
@@ -79,49 +88,75 @@ export default function UserDataTables({
   const hasActiveFilters =
     filters.accountStatus ||
     filters.isPremium !== undefined ||
-    filters.last24HR !== undefined;
+    filters.last24HR !== undefined ||
+    filters.isDeactivated !== undefined ||
+    filters.isScheduledForDeletion !== undefined ||
+    filters.gender;
 
   return (
     <div className="w-full space-y-4">
       {/* --- TOOLBAR SECTION --- */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row md:items-center justify-between gap-4 bg-slate-50/50 p-2 rounded-xl">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-3 bg-slate-50/50 p-2 lg:p-3 rounded-2xl border border-slate-100">
           {/* 1. LEFT SIDE: Search Input */}
-          <div className="relative w-3/5 md:w-1/3">
-            {/* Search Icon (Left) */}
+          <div className="relative w-80 lg:w-96 order-1">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
-
             <Input
               placeholder={searchPlaceholder}
-              className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+              className="pl-9 pr-10 bg-white border-slate-200 h-11 lg:h-10 shadow-sm focus-visible:ring-brand-aqua rounded-xl"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
-
-            {/* Clear Cross Icon (Right) */}
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors duration-200"
-                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>
 
           {/* 2. RIGHT SIDE CONTAINER: Chips + Divider + Filter Button */}
-          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4">
+          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4 order-2">
             {/* Desktop Chips (Hidden on Mobile) */}
             <div className="hidden sm:flex flex-1 items-center justify-end gap-2 overflow-x-hidden min-w-0">
               <AnimatePresence mode="popLayout">
-                {filters.accountStatus && (
+                {/* 1. GENDER CHIP */}
+                {filters.gender && (
                   <motion.div
-                    key="status-chip"
+                    key="chip-gender" // Use a unique string prefix
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="shrink-0" // Prevents the chip itself from squeezing
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="p-2 gap-1 bg-purple-100 border-dashed border-purple-400 text-purple-700 shadow-sm whitespace-nowrap"
+                    >
+                      <span className="text-[10px] font-bold uppercase opacity-50">
+                        Gender:
+                      </span>
+                      <span className="capitalize text-xs">
+                        {filters.gender}
+                      </span>
+                      <button
+                        onClick={() => filters.setGender("")}
+                        className="ml-1"
+                      >
+                        <IconX size={12} />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
+
+                {/* 2. ACCOUNT STATUS CHIP */}
+                {filters.accountStatus && (
+                  <motion.div
+                    key="chip-status"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                   >
                     <Badge
                       variant="secondary"
@@ -135,7 +170,7 @@ export default function UserDataTables({
                       </span>
                       <button
                         onClick={() => filters.setAccountStatus("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        className="ml-1"
                       >
                         <IconX size={12} />
                       </button>
@@ -143,13 +178,13 @@ export default function UserDataTables({
                   </motion.div>
                 )}
 
+                {/* 3. PREMIUM CHIP */}
                 {filters.isPremium !== undefined && (
                   <motion.div
-                    key="premium-chip"
+                    key="chip-premium"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="shrink-0"
                   >
                     <Badge
                       variant="secondary"
@@ -163,7 +198,7 @@ export default function UserDataTables({
                       </span>
                       <button
                         onClick={() => filters.setIsPremium(undefined)}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        className="ml-1"
                       >
                         <IconX size={12} />
                       </button>
@@ -171,9 +206,10 @@ export default function UserDataTables({
                   </motion.div>
                 )}
 
+                {/* 3. Last24HR */}
                 {filters.last24HR !== undefined && (
                   <motion.div
-                    key="premium-chip"
+                    key="last24hr-chip"
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
@@ -186,10 +222,66 @@ export default function UserDataTables({
                       <span className="text-[10px] font-bold uppercase opacity-50">
                         Login:
                       </span>
+
                       <span className="text-xs">Last 24 Hours</span>
+
                       <button
                         onClick={() => filters.setLast24HR(undefined)}
                         className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                      >
+                        <IconX size={12} />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
+
+                {/* 4. DEACTIVATED CHIP */}
+                {filters.isDeactivated === true && (
+                  <motion.div
+                    key="chip-deactivated"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="p-2 gap-1 bg-slate-100 border-dashed border-slate-400 text-slate-700 shadow-sm whitespace-nowrap"
+                    >
+                      <span className="text-[10px] font-bold uppercase opacity-50">
+                        User:
+                      </span>
+                      <span className="text-xs">Deactivated</span>
+                      <button
+                        onClick={() => filters.setIsDeactivated(undefined)}
+                        className="ml-1"
+                      >
+                        <IconX size={12} />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
+
+                {/* 5. DELETION CHIP */}
+                {filters.isScheduledForDeletion === true && (
+                  <motion.div
+                    key="chip-deletion"
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="p-2 gap-1 bg-orange-100 border-dashed border-orange-400 text-orange-700 shadow-sm whitespace-nowrap"
+                    >
+                      <span className="text-[10px] font-bold uppercase opacity-50">
+                        Account:
+                      </span>
+                      <span className="text-xs">Pending Deletion</span>
+                      <button
+                        onClick={() =>
+                          filters.setIsScheduledForDeletion(undefined)
+                        }
+                        className="ml-1"
                       >
                         <IconX size={12} />
                       </button>
@@ -204,16 +296,16 @@ export default function UserDataTables({
               <div className="hidden sm:block w-0.5 h-6 bg-slate-200 shrink-0" />
             )}
 
-            {/* Filter Trigger Button */}
-            <div className="shrink-0">
+            {/* --- SEPARATE DROPDOWNS --- */}
+            <div className="flex items-center gap-2">
+              {/* DROPDOWN 1: GENDER */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
-                      hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all",
+                      filters.gender && "border-brand-aqua/80",
                     )}
                   >
                     <IconFilter
@@ -222,19 +314,80 @@ export default function UserDataTables({
                         "h-6 w-6",
                         hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
+                          : "text-brand-aqua/60",
+                      )}
+                    />
+                    <span className="text-sm font-medium text-slate-700">
+                      Gender
+                    </span>
+                    {/* {filters.gender && (
+                      <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                        1
+                      </span>
+                    )} */}
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="w-48 p-2 shadow-xl border-slate-200"
+                >
+                  <DropdownMenuLabel className="text-[10px] text-slate-400 font-bold uppercase tracking-widest px-2 py-1.5">
+                    Select Gender
+                  </DropdownMenuLabel>
+                  {GENDER_OPTIONS.map((g) => (
+                    <DropdownMenuCheckboxItem
+                      key={g}
+                      className="capitalize"
+                      checked={filters.gender === g}
+                      onCheckedChange={() =>
+                        filters.setGender(filters.gender === g ? "" : g)
+                      }
+                    >
+                      {g.replace("-", " ")}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+
+                  <DropdownMenuSeparator />
+                  {hasActiveFilters && (
+                    <DropdownMenuItem
+                      className="text-red-600 justify-center text-xs font-bold cursor-pointer"
+                      onClick={() => filters.setGender("")}
+                    >
+                      Clear Gender
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                      hasActiveFilters > 0 && "border-brand-aqua",
+                    )}
+                  >
+                    <IconFilter
+                      strokeWidth={2.5}
+                      className={cn(
+                        "h-6 w-6",
+                        hasActiveFilters
+                          ? "text-brand-aqua"
+                          : "text-brand-aqua/60",
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">
                       Filters
                     </span>
-                    {hasActiveFilters && (
+                    {/* {hasActiveFilters > 0 && (
                       <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
                         {Number(!!filters.accountStatus) +
                           Number(filters.isPremium !== undefined) +
                           Number(filters.last24HR !== undefined)}
                       </span>
-                    )}
+                    )} */}
                   </Button>
                 </DropdownMenuTrigger>
 
@@ -245,6 +398,7 @@ export default function UserDataTables({
                   <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                     Account Status
                   </DropdownMenuLabel>
+
                   {["active", "banned", "suspended"].map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
@@ -262,22 +416,45 @@ export default function UserDataTables({
                     Last 24 Hours
                   </DropdownMenuCheckboxItem>
 
+                  {/* 🔥 NEW: Deactivation Filter */}
+                  <DropdownMenuCheckboxItem
+                    checked={filters.isDeactivated === true}
+                    onCheckedChange={() => filters.setIsDeactivated(true)}
+                  >
+                    Deactivated Users
+                  </DropdownMenuCheckboxItem>
+
+                  {/* 🔥 NEW: Deletion Filter */}
+                  <DropdownMenuCheckboxItem
+                    checked={filters.isScheduledForDeletion === true}
+                    onCheckedChange={() =>
+                      filters.setIsScheduledForDeletion(true)
+                    }
+                  >
+                    Scheduled Deletion
+                  </DropdownMenuCheckboxItem>
+
                   <DropdownMenuSeparator />
+
                   <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                     Plan Type
                   </DropdownMenuLabel>
+
                   <DropdownMenuCheckboxItem
                     checked={filters.isPremium === true}
                     onCheckedChange={() => filters.setIsPremium(true)}
                   >
                     Premium Only
                   </DropdownMenuCheckboxItem>
+
                   <DropdownMenuCheckboxItem
                     checked={filters.isPremium === false}
                     onCheckedChange={() => filters.setIsPremium(false)}
                   >
                     Free Only
                   </DropdownMenuCheckboxItem>
+
+                  <DropdownMenuSeparator />
 
                   {hasActiveFilters && (
                     <>
@@ -287,6 +464,9 @@ export default function UserDataTables({
                         onClick={() => {
                           filters.setAccountStatus("");
                           filters.setIsPremium(undefined);
+                          filters.setIsDeactivated(undefined); // Reset
+                          filters.setIsScheduledForDeletion(undefined); // Reset
+                          filters.setLast24HR(undefined);
                         }}
                       >
                         Clear All Filters
@@ -362,7 +542,7 @@ export default function UserDataTables({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -371,17 +551,17 @@ export default function UserDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3">
+                    <TableCell key={cell.id} className="py-3 px-4">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

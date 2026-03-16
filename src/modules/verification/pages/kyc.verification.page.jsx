@@ -57,7 +57,7 @@ export default function KYCVerificationPage() {
 
   const [imageModal, setImageModal] = useState({
     open: false,
-    src: "",
+    images: [], // Changed from 'src' to 'images'
     title: "",
   });
 
@@ -189,6 +189,7 @@ export default function KYCVerificationPage() {
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             },
           }}
+          meta={{ setImageModal }} // Yeh add karna zaruri hai
         />
       </motion.div>
 

@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { TabsContent } from "@/components/ui/tabs";
 import {
-  IconAlertCircle,
   IconBriefcase,
   IconCalendar,
   IconChartBar,
@@ -23,14 +22,12 @@ import { EditProfileDialog } from "../Dialogs/edit.profile.Dialog";
 import { Separator } from "@/components/ui/separator";
 import { DetailRow } from "../detailRow";
 import { cn } from "@/lib/utils";
-// import { VerifyUserModal } from "../VerifyUserModal";
 import { useDispatch, useSelector } from "react-redux";
-import { verifyUserProfile } from "../../store/user.slice";
+import { fetchUserData, verifyUserProfile } from "../../store/user.slice";
 import { toast } from "sonner";
 import VerificationCard from "../verification.card";
 import { FaCheckCircle } from "react-icons/fa";
 import { GoUnverified } from "react-icons/go";
-// import { Mail, Phone } from "lucide-react";
 
 export const ProfileTab = ({ userData: initialUserData, ...props }) => {
   const dispatch = useDispatch();
@@ -38,11 +35,14 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
   // const [verifyActionType, setVerifyActionType] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
 
-  const liveUser = useSelector((state) =>
-    state.users.items.find((u) => u._id === initialUserData._id),
-  );
+  // 2. Select the user from Redux
+  const { user, loading } = useSelector((state) => state.users);
 
-  const userData = liveUser || initialUserData;
+  // const liveUser = useSelector((state) =>
+  //   state.users.items.find((u) => u._id === initialUserData._id),
+  // );
+
+  const userData = user || initialUserData;
   const verification = userData?.verification;
 
   // const handleVerifyConfirm = async (status, reason) => {
@@ -96,15 +96,21 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
 
   const handleApprove = async (status) => {
     setIsVerifying(true);
-    await new Promise((r) => setTimeout(r, 800));
-    await dispatch(
-      verifyUserProfile({
-        userId: userData._id,
-        action: status === "approved" ? "approve" : "reject",
-      }),
-    ).unwrap();
-    toast.success(`Identity ${status} successfully`);
-    setIsVerifying(false);
+    try {
+      await dispatch(
+        verifyUserProfile({
+          userId: userData._id,
+          action: status === "approved" ? "approve" : "reject",
+        }),
+      ).unwrap();
+      // 2. AUTOMATICALLY RE-FETCH the fresh data from the server
+      await dispatch(fetchUserData(userData._id));
+      toast.success(`Identity ${status} successfully`);
+    } catch (err) {
+      toast.error(err || "Failed to update verification");
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleReject = async (reason, status) => {
@@ -119,6 +125,8 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
       }),
     ).unwrap();
 
+    // 2. AUTOMATICALLY RE-FETCH the fresh data from the server
+    await dispatch(fetchUserData(userData._id));
     toast.success(`Identity ${status} successfully`);
     setIsVerifying(false);
   };
@@ -422,7 +430,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
               isVerifying={isVerifying}
               onApprove={handleApprove}
               onReject={handleReject}
-              userName={userData.nickname}
+              userName={userData?.profile?.nickname}
             />
           </div>
         </div>

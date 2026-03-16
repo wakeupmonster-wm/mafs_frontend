@@ -7,15 +7,11 @@ import {
   IconCalendarEvent,
   IconCrown,
   IconHistory,
-  IconArrowUpRight,
   IconBrandApple,
   IconBrandAndroid,
-  IconDeviceMobile,
   IconCircleCheck,
-  IconCircleX,
 } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 
@@ -42,14 +38,14 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
           "lg:col-span-4 border shadow-md overflow-hidden relative transition-all duration-300",
           isPremiumActive
             ? "bg-slate-900 text-white shadow-brand-aqua"
-            : "bg-brand-aqua/5 text-slate-900 border-brand-aqua"
+            : "bg-brand-aqua/5 text-slate-900 border-brand-aqua",
         )}
       >
         {/* Background Decorative Icon */}
         <IconCrown
           className={cn(
             "absolute -right-6 -top-6 h-32 w-32 opacity-10",
-            isPremiumActive ? "text-amber-400" : "text-slate-700"
+            isPremiumActive ? "text-amber-400" : "text-slate-700",
           )}
         />
 
@@ -70,7 +66,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
             <p
               className={cn(
                 "text-xs font-medium mt-1",
-                isPremiumActive ? "text-amber-400" : "text-slate-500"
+                isPremiumActive ? "text-amber-400" : "text-slate-500",
               )}
             >
               {isPremiumActive
@@ -99,7 +95,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                   "border-none font-bold",
                   subscription?.status === "ACTIVE"
                     ? "bg-emerald-500 text-white"
-                    : "bg-amber-500 text-white"
+                    : "bg-amber-500 text-white",
                 )}
               >
                 {subscription?.status || "INACTIVE"}
@@ -220,12 +216,12 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1 text-slate-900 font-mono text-xs font-bold group-hover:text-indigo-600 transition-colors">
-                          {txn.transactionId || "N/A"}
+                          {txn.transactionId || "-"}
                         </div>
                       </td>
                       <td className="px-6 py-4 font-black text-slate-900">
-                        ${txn.amount.toFixed(2)}{" "}
-                        <span className="text-[10px] text-slate-400">
+                        ${(txn.amount ?? 0).toFixed(2)}{" "}
+                        <span className="ml-0.5 text-[10px] text-slate-400">
                           {txn.currency}
                         </span>
                       </td>
@@ -264,7 +260,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                             txn.eventType === "PURCHASE" ||
                               txn.eventType === "RENEW"
                               ? "bg-emerald-100 text-emerald-700"
-                              : "bg-amber-100 text-amber-700"
+                              : "bg-amber-100 text-amber-700",
                           )}
                         >
                           {txn.eventType.toLowerCase()}

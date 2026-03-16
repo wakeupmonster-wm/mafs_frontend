@@ -50,7 +50,9 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="flex items-center justify-between p-6 border-b">
           <div className="flex items-center gap-2">
             <Heart className="w-8 h-8 text-pink-600 fill-pink-600" />
-            <span className="text-xl font-bold text-gray-900">MAFS Admin</span>
+            <span className="text-xl font-bold text-gray-900">
+              Keen As Mustard Admin
+            </span>
           </div>
           <button onClick={onClose} className="lg:hidden text-gray-500">
             <X className="w-6 h-6" />

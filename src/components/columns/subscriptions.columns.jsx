@@ -67,8 +67,9 @@ export const subscriptionColumns = [
     ),
     cell: ({ row }) => {
       const user = row.original?.user;
+      console.log("user: ", user);
       const nickname = user?.nickname || "unknown";
-      const avatar = user?.avatar.url || dummyImg;
+      const avatar = user?.avatar?.url || dummyImg;
 
       return (
         <div className="flex items-center gap-3 w-full">

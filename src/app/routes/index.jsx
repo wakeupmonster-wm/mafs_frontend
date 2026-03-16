@@ -24,8 +24,6 @@ const ViewProfilePage = lazy(
   () => import("@/modules/users/pages/view-profile.Page"),
 );
 
-const ViewPage = lazy(() => import("@/modules/users/pages/viewPage"));
-
 // Giveaway Modules
 const GiveawayManagement = lazy(
   () => import("@/modules/giveaway/pages/GiveawayManagement"),
@@ -211,14 +209,6 @@ export const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<PreLoader />}>
                     <ViewProfilePage />
-                  </Suspense>
-                ),
-              },
-              {
-                path: "view-page",
-                element: (
-                  <Suspense fallback={<PreLoader />}>
-                    <ViewPage />
                   </Suspense>
                 ),
               },

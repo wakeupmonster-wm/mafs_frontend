@@ -14,7 +14,7 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <ThemeProvider
         defaultTheme="light"
-        storageKey="mafs-admin-theme"
+        storageKey="keen-admin-theme"
         attribute="class"
       >
         {/* The router handles the entire app tree now */}
@@ -43,5 +43,5 @@ createRoot(document.getElementById("root")).render(
         />
       </ThemeProvider>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );

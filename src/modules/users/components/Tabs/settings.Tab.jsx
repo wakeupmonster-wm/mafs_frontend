@@ -11,17 +11,60 @@ import {
   IconTrash,
   IconLockAccess,
   IconHistory,
+  IconBellRinging,
+  IconEye,
+  IconMapPin,
 } from "@tabler/icons-react";
 import { EditSettingsDialog } from "../Dialogs/edit.Settings.Dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { fetchUserData, updateUserProfile } from "../../store/user.slice";
+import { toast } from "sonner";
+import { useDispatch } from "react-redux";
 
-export const SettingsTab = ({ userData, account }) => {
+export const SettingsTab = ({ userData }) => {
+  const dispatch = useDispatch();
+  const { account, settings, discovery } = userData;
+
   const handleDeleteAccount = () => {
-    // In a real app, trigger a ConfirmModal here
     console.log("Initiating account deletion for:", userData._id);
+  };
+
+  // 1. Handle Toggle Change
+  const handleToggleNotification = async (key, currentValue) => {
+    try {
+      // Construct the nested structure the backend expects
+      const payload = {
+        profile: {
+          settings: {
+            notifications: {
+              [key]: !currentValue, // e.g., push: true
+            },
+          },
+        },
+      };
+
+      await dispatch(
+        updateUserProfile({
+          userId: userData._id,
+          profile: payload.profile,
+        }),
+      ).unwrap();
+
+      toast.success(
+        `${key.charAt(0).toUpperCase() + key.slice(1)} preference updated`,
+      );
+
+      // Optional: Re-fetch to ensure UI is perfectly in sync with DB
+      dispatch(fetchUserData(userData._id));
+    } catch (error) {
+      toast.error("Failed to update preferences");
+      console.error(error);
+    }
   };
 
   return (
@@ -37,7 +80,8 @@ export const SettingsTab = ({ userData, account }) => {
             Controls
           </h3>
           <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Manage administrative permissions and account lifecycle.
+            Manage administrative permissions, discovery settings, and
+            notifications.
           </p>
         </div>
         <EditSettingsDialog userData={userData} />
@@ -45,14 +89,14 @@ export const SettingsTab = ({ userData, account }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2. GOVERNANCE & STATUS CARD */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden">
+        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconUserShield className="text-indigo-500" size={18} /> Account
               Governance
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 space-y-6">
+          <CardContent className="px-6 py-2 space-y-6">
             <div className="grid gap-4">
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div className="space-y-0.5">
@@ -120,18 +164,107 @@ export const SettingsTab = ({ userData, account }) => {
           </CardContent>
         </Card>
 
-        {/* 3. SECURITY & ACCESS CARD */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden">
+        {/* 3. NOTIFICATIONS & PREFERENCES */}
+        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+              <IconBellRinging className="text-blue-500" size={18} />{" "}
+              Communication Preferences
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-6 py-2 space-y-5">
+            {Object.entries(settings.notifications).map(([key, isEnabled]) => (
+              <div
+                key={key}
+                className="flex items-center justify-between group"
+              >
+                <div className="space-y-0.5">
+                  <Label
+                    htmlFor={`notif-${key}`}
+                    className="text-sm font-bold text-slate-800 capitalize cursor-pointer"
+                  >
+                    {key} Alerts
+                  </Label>
+                  <p className="text-[11px] text-slate-500">
+                    Receive {key} notifications and updates.
+                  </p>
+                </div>
+                <Switch
+                  id={`notif-${key}`}
+                  checked={isEnabled}
+                  onCheckedChange={() =>
+                    handleToggleNotification(key, isEnabled)
+                  }
+                  className="data-[state=checked]:bg-indigo-600"
+                />
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* 4. DISCOVERY SETTINGS */}
+        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+              <IconMapPin className="text-orange-500" size={18} /> Discovery
+              Parameters
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-6 py-2 space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Age Range
+                </p>
+                <p className="text-sm font-bold text-slate-900">
+                  {discovery.ageRange.min} - {discovery.ageRange.max} years
+                </p>
+              </div>
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
+                  Radius
+                </p>
+                <p className="text-sm font-bold text-slate-900">
+                  {discovery.distanceRange} km
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm mt-2">
+              <div className="flex items-center gap-3">
+                <IconEye size={18} className="text-slate-400" />
+                <div>
+                  <p className="text-xs font-bold text-slate-900">
+                    Global Visibility
+                  </p>
+                  <p className="text-[11px] text-slate-500 capitalize">
+                    {discovery.globalVisibility}
+                  </p>
+                </div>
+              </div>
+              <Badge variant="secondary" className="text-[10px] font-bold">
+                CHANGE
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 5. ACCESS & TRUST CARD */}
+        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-emerald-500" size={18} /> Access &
               Trust
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="px-6 py-2 space-y-4">
             <VerificationRow
               label="Primary Email"
-              subLabel={account.email}
+              subLabel={
+                userData.isEmailVerified
+                  ? "Verified Email"
+                  : "Verification Pending"
+              }
               isVerified={userData.isEmailVerified}
               icon={<IconLockAccess size={18} className="text-slate-400" />}
             />
@@ -143,9 +276,110 @@ export const SettingsTab = ({ userData, account }) => {
             />
           </CardContent>
         </Card>
+
+        {/* 6. PRIVACY & RESTRICTIONS */}
+        <Card className="border-slate-200 shadow-sm overflow-hidden lg:col-span-2">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+              <IconShieldLock className="text-rose-500" size={18} /> Restricted
+              Access
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+              {/* Blocked Users Section */}
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <h4 className="text-sm font-bold text-slate-900">
+                      Blocked Profiles
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Users this person has manually blocked.
+                    </p>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-100 text-slate-600"
+                  >
+                    {settings.blockedUsers?.length || 0} Users
+                  </Badge>
+                </div>
+
+                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                  {settings.blockedUsers?.length > 0 ? (
+                    settings.blockedUsers.map((id) => (
+                      <div
+                        key={id}
+                        className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100"
+                      >
+                        <code className="text-[10px] font-mono text-slate-600">
+                          {id}
+                        </code>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50"
+                        >
+                          Unblock
+                        </Button>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 border-2 border-dashed border-slate-100 rounded-xl">
+                      <p className="text-xs text-slate-400">No blocked users</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Blocked Contacts Section */}
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <h4 className="text-sm font-bold text-slate-900">
+                      Blocked Contacts
+                    </h4>
+                    <p className="text-[11px] text-slate-500">
+                      Synced contacts hidden from discovery.
+                    </p>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="bg-slate-100 text-slate-600"
+                  >
+                    {settings.blockedContacts?.length || 0} Contacts
+                  </Badge>
+                </div>
+
+                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                  {settings.blockedContacts?.length > 0 ? (
+                    settings.blockedContacts.map((contact, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center p-2 rounded-lg bg-slate-50 border border-slate-100 gap-3"
+                      >
+                        <div className="h-2 w-2 rounded-full bg-slate-300" />
+                        <span className="text-[11px] font-medium text-slate-600 truncate">
+                          {contact}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 border-2 border-dashed border-slate-100 rounded-xl">
+                      <p className="text-xs text-slate-400">
+                        No contacts blocked
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* 4. DANGER ZONE - High Contrast Refactor */}
+      {/* 7. DANGER ZONE */}
       <div className="pt-6">
         <div className="flex items-center gap-2 mb-4 px-1">
           <div className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
@@ -154,7 +388,7 @@ export const SettingsTab = ({ userData, account }) => {
           </h4>
         </div>
 
-        <Card className="border-rose-200 bg-rose-50/20 overflow-hidden shadow-sm">
+        <Card className="border-rose-200 bg-rose-50/20 overflow-hidden shadow-sm gap-2 py-4">
           <CardContent className="p-0">
             <div className="flex flex-col lg:flex-row items-center justify-between p-8 gap-8">
               <div className="space-y-2 text-center lg:text-left">

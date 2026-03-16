@@ -31,6 +31,7 @@ import {
   bannedUserProfile,
   unbanUserProfile,
   suspendUserProfile,
+  fetchUserData,
 } from "../../store/user.slice";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -53,11 +54,13 @@ export const EditSettingsDialog = ({ userData }) => {
     const nickname = userData?.profile?.nickname || "User";
 
     try {
-      if ((currentStatus === "banned" || "suspended") && status === "active") {
+      // FIX: Corrected logical comparison
+      if (
+        (currentStatus === "banned" || currentStatus === "suspended") &&
+        status === "active"
+      ) {
         await dispatch(unbanUserProfile(userData._id)).unwrap();
-        toast.success("Account Restored", {
-          description: `${nickname} can now access their profile.`,
-        });
+        toast.success("Account Restored");
       } else if (status === "banned") {
         await dispatch(
           bannedUserProfile({
@@ -66,11 +69,9 @@ export const EditSettingsDialog = ({ userData }) => {
             reason: reason || "Manual ban by admin",
           }),
         ).unwrap();
-        toast.success("User Banned", {
-          description: `${nickname} is now restricted.`,
-        });
+        toast.success("User Banned");
       } else if (status === "suspended") {
-        const hours = 24; // You could make this a state variable too
+        const hours = 24;
         await dispatch(
           suspendUserProfile({
             userId: userData._id,
@@ -78,14 +79,14 @@ export const EditSettingsDialog = ({ userData }) => {
             durationHours: hours,
           }),
         ).unwrap();
-
-        toast.success("User Suspended", {
-          description: `Access restricted for ${hours} hours.`,
-        });
+        toast.success("User Suspended");
       }
 
+      // 🔥 RE-FETCH the fresh data for the profile page
+      await dispatch(fetchUserData(userData._id));
+
       setIsOpen(false);
-      setReason(""); // Reset reason
+      setReason("");
     } catch (err) {
       toast.error(err || "Update failed");
     } finally {

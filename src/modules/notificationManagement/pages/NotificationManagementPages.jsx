@@ -33,7 +33,7 @@ import {
 export default function NotificationManagementPages() {
   const dispatch = useDispatch();
   const { loading, successMessage, error } = useSelector(
-    (s) => s.notificationManagement
+    (s) => s.notificationManagement,
   );
 
   const [form, setForm] = useState({
@@ -82,7 +82,7 @@ export default function NotificationManagementPages() {
                 Notification Engine
               </h1>
               <p className="text-slate-500 text-sm">
-                Create and target push campaigns for MAFS
+                Create and target push campaigns for Keen As Mustard
               </p>
             </div>
           </div>
@@ -268,7 +268,7 @@ export default function NotificationManagementPages() {
                           <Bell className="text-white w-[10px] h-[10px]" />
                         </div>
                         <span className="text-[10px] font-bold text-slate-400 uppercase">
-                          MAFS
+                          Keen As Mustard
                         </span>
                       </div>
                       <h4 className="text-[12px] font-bold text-slate-800 truncate">

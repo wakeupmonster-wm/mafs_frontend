@@ -5,19 +5,6 @@ import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 
 export const transactionColumns = [
   {
-    accessorKey: "transactionId",
-    header: () => (
-      <div className="flex items-center gap-2">
-        <Hash className="w-3 h-3" /> Transaction ID
-      </div>
-    ),
-    cell: ({ row }) => (
-      <span className="font-mono text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
-        {row.getValue("transactionId").slice(0, 12)}...
-      </span>
-    ),
-  },
-  {
     accessorKey: "userId",
     header: () => (
       <div className="flex items-center gap-2">
@@ -44,6 +31,40 @@ export const transactionColumns = [
         </div>
       );
     },
+  },
+  {
+    accessorKey: "transactionId",
+    header: () => (
+      <div className="w-max flex items-center gap-1">
+        <Hash className="w-3 h-3" /> Transaction ID
+      </div>
+    ),
+    cell: ({ row }) => (
+      // <span className="font-mono text-[11px] font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+      //   {row.getValue("transactionId").slice(0, 12) || "-"}...
+      // </span>
+      <div className="flex items-center gap-2 group">
+        <span className="font-mono text-[11px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-100 group-hover:text-blue-600 group-hover:border-blue-100 transition-colors">
+          {row.getValue("transactionId")
+            ? `${row.getValue("transactionId").slice(0, 12)}...`
+            : "-"}
+        </span>
+
+        {/* Optional: Hover par copy button ya full ID ka indicator */}
+        {row.getValue("transactionId") && (
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={() =>
+                navigator.clipboard.writeText(row.getValue("transactionId"))
+              }
+              className="text-[10px] text-blue-500 hover:underline font-bold uppercase tracking-tighter"
+            >
+              Copy
+            </button>
+          </div>
+        )}
+      </div>
+    ),
   },
   {
     accessorKey: "platform",
@@ -88,7 +109,7 @@ export const transactionColumns = [
   },
   {
     accessorKey: "eventType",
-    header: "Status / Event",
+    header: () => <div className="w-max">Status / Event</div>,
     cell: ({ row }) => {
       const type = row.getValue("eventType");
       return (
@@ -111,7 +132,7 @@ export const transactionColumns = [
     cell: ({ row }) => {
       const date = new Date(row.getValue("occurredAt"));
       return (
-        <div className="flex flex-col">
+        <div className="w-max min-w-24 flex flex-col">
           <span className="text-xs font-medium text-slate-700">
             {date.toLocaleDateString(undefined, {
               month: "short",

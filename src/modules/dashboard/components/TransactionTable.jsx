@@ -31,7 +31,7 @@ export default function TransactionTable({ data }) {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           ...filters,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);

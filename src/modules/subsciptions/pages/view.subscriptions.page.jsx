@@ -606,7 +606,7 @@ const InfoRow = ({ label, value, icon: Icon, badge, mono, capitalize }) => (
             mono ? "font-mono text-xs" : ""
           } ${capitalize ? "capitalize" : ""}`}
         >
-          {value || "N/A"}
+          {value || "-"}
         </p>
       )}
     </div>

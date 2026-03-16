@@ -89,7 +89,7 @@ import { cn } from "@/lib/utils";
 const PageHeader = React.forwardRef(
   (
     { className, color, heading, subheading, align = "left", icon, ...props },
-    ref
+    ref,
   ) => {
     // Minimalist animation variants
     const containerVariants = {
@@ -122,10 +122,10 @@ const PageHeader = React.forwardRef(
         animate="visible"
         variants={containerVariants}
         className={cn(
-          "flex flex-col gap-1",
+          "flex flex-col gap-2",
           align === "center" && "items-center text-center",
           align === "right" && "items-end text-right",
-          className
+          className,
         )}
         {...props}
       >
@@ -136,7 +136,7 @@ const PageHeader = React.forwardRef(
               variants={itemVariants}
               className={cn(
                 "flex p-2 size-10 items-center justify-center rounded-xl shadow-xl",
-                color || "bg-white"
+                color || "bg-white",
               )}
             >
               {icon}
@@ -169,7 +169,7 @@ const PageHeader = React.forwardRef(
         /> */}
       </motion.div>
     );
-  }
+  },
 );
 
 PageHeader.displayName = "PageHeader";

@@ -1,11 +1,4 @@
-import {
-  ArrowUpDown,
-  Mail,
-  MoreHorizontal,
-  Phone,
-  Calendar,
-  Clock,
-} from "lucide-react";
+import { ArrowUpDown, Mail, MoreHorizontal, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,7 +12,6 @@ import { Progress } from "@/components/ui/progress";
 import { IconStarFilled } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
 import dummyImg from "@/assets/images/dummyImg.jpg";
-import { format, formatDate, formatDistanceToNow } from "date-fns";
 
 // Helper for Completion Colors
 const getCompletionColor = (val) => {
@@ -51,49 +43,7 @@ export const userColumns = [
   //   enableSorting: false,
   //   enableHiding: false,
   // },
-  // {
-  //   id: "nickname",
-  //   accessorFn: (row) =>
-  //     `${row.profile?.nickname} ${row.account?.email} ${row.account?.phone}`,
-  //   // header: "User",
-  //   header: ({ column }) => (
-  //     <Button
-  //       variant="ghost"
-  //       size="md"
-  //       className="w-44 mx-auto"
-  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //     >
-  //       User
-  //       <ArrowUpDown className="ml-2 h-4 w-4" />
-  //     </Button>
-  //   ),
-  //   cell: ({ row }) => {
-  //     const user = row.original;
-  //     const displayName =
-  //       user.profile?.nickname || user.account?.phone || "Unknown User";
-  //     const email = user.account?.email || "No email provided";
-  //     const avatar = user.profile?.avatar || "";
-  //     return (
-  //       <div className="w-56 flex items-center gap-3">
-  //         <Avatar className="h-9 w-9">
-  //           <AvatarImage src={avatar} />
-  //           <AvatarFallback>
-  //             {displayName?.charAt(0).toUpperCase()}
-  //           </AvatarFallback>
-  //         </Avatar>
-  //         <div className="flex flex-col">
-  //           <span className="font-bold text-sm leading-none mb-0.5">
-  //             {displayName}
-  //           </span>
-  //           <span className="flex items-center gap-1 mt-0.5 text-muted-foreground text-xs">
-  //             <Mail className="w-3 h-3" />
-  //             {email}
-  //           </span>
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
+
   // S/No Column
   {
     id: "sno",
@@ -160,90 +110,6 @@ export const userColumns = [
       </div>
     ),
   },
-  // {
-  //   id: "auth",
-  //   header: "Auth",
-  //   cell: ({ row }) => {
-  //     const method = row.original.account?.authMethod;
-
-  //     const iconMap = {
-  //       email: { icon: <IconMail size={18} />, label: "Email" },
-  //       phone: { icon: <IconDeviceMobile size={18} />, label: "Phone" },
-  //       google: {
-  //         icon: <IconBrandGoogle size={18} className="text-blue-500" />,
-  //         label: "Google",
-  //       },
-  //       apple: { icon: <IconBrandApple size={18} />, label: "Apple" },
-  //     };
-
-  //     // Find the icon or use a fallback
-  //     const config = iconMap[method] || {
-  //       icon: <IconQuestionMark size={18} className="text-muted-foreground" />,
-  //       label: method || "Unknown",
-  //     };
-
-  //     return (
-  //       <TooltipProvider>
-  //         <Tooltip>
-  //           <TooltipTrigger asChild>
-  //             <div className="flex w-full items-center justify-center text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-  //               {config.icon}
-  //             </div>
-  //           </TooltipTrigger>
-  //           <TooltipContent>
-  //             <p className="capitalize">{config.label} Auth</p>
-  //           </TooltipContent>
-  //         </Tooltip>
-  //       </TooltipProvider>
-  //     );
-  //   },
-  // },
-  // {
-  //   id: "role",
-  //   accessorKey: "role",
-  //   header: "Role",
-  //   cell: ({ row }) => <Badge variant="secondary">{row.original.role}</Badge>,
-  // },
-  // {
-  //   accessorKey: "lastLoginAt",
-  //   header: ({ column }) => (
-  //     <button
-  //       className="text-[11px] w-max font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition-colors"
-  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //     >
-  //       Last Active
-  //     </button>
-  //   ),
-  //   cell: ({ row }) => {
-  //     const loginValue = row.original?.lastLoginAt;
-  //     if (!loginValue) return <span className="text-xs text-slate-300">—</span>;
-
-  //     const date = new Date(loginValue);
-  //     const isOnline = new Date().getTime() - date.getTime() < 5 * 60 * 1000;
-
-  //     return (
-  //       <div className="flex items-center gap-1">
-  //         {/* Subtle Status Dot */}
-  //         <div
-  //           className={`h-1.5 w-1.5 rounded-full ${
-  //             isOnline
-  //               ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"
-  //               : "bg-slate-300"
-  //           }`}
-  //         />
-
-  //         <div className="flex flex-col w-max">
-  //           <span className="text-xs font-medium text-slate-700 leading-none">
-  //             {formatDate(date, "MMM d, p")}
-  //           </span>
-  //           {/* <span className="text-[10px] text-slate-400 mt-1">
-  //             {format(date, "MMM d, p")}
-  //           </span> */}
-  //         </div>
-  //       </div>
-  //     );
-  //   },
-  // },
   // Age Column
   {
     id: "age",
@@ -314,29 +180,6 @@ export const userColumns = [
       );
     },
   },
-  // Verificaton Column
-  // {
-  //   id: "verification", // Manually set ID
-  //   accessorKey: "verification.status",
-  //   header: "Verification",
-  //   cell: ({ row }) => {
-  //     const status = row.original.verification?.status || "not_started";
-  //     const variants = {
-  //       approved: "bg-green-100 text-green-700 hover:bg-green-100",
-  //       rejected: "bg-red-100 text-red-700 hover:bg-red-100",
-  //       not_started: "bg-gray-100 text-gray-700 hover:bg-gray-100",
-  //     };
-
-  //     return (
-  //       <Badge
-  //         variant="outline"
-  //         className={`capitalize border-none ${variants[status]} px-2 text-[10px]`}
-  //       >
-  //         {status.replace("_", " ")}
-  //       </Badge>
-  //     );
-  //   },
-  // },
   // Location Column
   {
     id: "city", // Manually set ID
@@ -384,9 +227,11 @@ export const userColumns = [
     header: "Actions",
     cell: ({ row, table }) => {
       const user = row.original;
+      const userId = user._id;
       const navigate = useNavigate();
-      // Access the ban handler from table meta
       const onBan = table.options.meta?.onBan;
+      const onSuspend = table.options.meta?.onSuspend;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -395,38 +240,32 @@ export const userColumns = [
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {/* <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user._id)}
-            >
-              Copy User ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator /> */}
             <DropdownMenuItem
+              className="text-xs font-medium text-primary"
               onClick={() =>
                 navigate(`./view-profile`, {
-                  state: { userData: user },
+                  state: { userId },
                 })
               }
             >
               View Profile
             </DropdownMenuItem>
-            {/* <DropdownMenuItem
-              onClick={() =>
-                navigate(`./edit-profile`, {
-                  state: { userData: user },
-                })
-              }
-            >
-              Edit Details
-            </DropdownMenuItem> */}
-            {/* <DropdownMenuItem
-              className="text-destructive"
+            <DropdownMenuItem
+              className="text-xs font-medium text-destructive"
               onClick={() => {
                 onBan(user); // Call the function passed via meta
               }}
             >
               Ban Account
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-xs font-medium text-orange-600"
+              onClick={() => {
+                onSuspend(user); // Call the function passed via meta
+              }}
+            >
+              Suspend Account
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

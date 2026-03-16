@@ -3,19 +3,19 @@ import { lazy } from "react";
 
 // lazy imports (same pages)
 const TicketDetailPage = lazy(() =>
-  import("@/modules/support/pages/SupportPages").then(m => ({
+  import("@/modules/support/pages/SupportPages").then((m) => ({
     default: m.TicketDetailPage,
-  }))
+  })),
 );
 
 const ProfileReviewDetailPage = lazy(() =>
-  import("@/modules/profileReview/pages/ProfileReviewPages").then(m => ({
+  import("@/modules/profileReview/pages/ProfileReviewPages").then((m) => ({
     default: m.ProfileReviewDetailPage,
-  }))
+  })),
 );
 
-const ChatReviewDetail = lazy(() =>
-  import("@/modules/chatManagement/pages/ChatReviewDetail")
+const ChatReviewDetail = lazy(
+  () => import("@/modules/chatManagement/pages/ChatReviewDetail"),
 );
 
 // eslint-disable-next-line react-refresh/only-export-components

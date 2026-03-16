@@ -29,9 +29,11 @@ export const supportColumns = (onAction, onPreview) => [
     header: () => <div className="w-max text-center text-xs">S.No</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
-      const serialNumber = pageIndex * pageSize + row.index + 1;
-
-      return <div className="w-6 text-center font-medium">{serialNumber}</div>;
+      return (
+        <div className="w-6 text-center font-medium">
+          {pageIndex * pageSize + row.index + 1}
+        </div>
+      );
     },
     enableSorting: false,
     enableHiding: false,
@@ -42,8 +44,7 @@ export const supportColumns = (onAction, onPreview) => [
     cell: ({ row, table }) => {
       const user = row.original.user;
       const avatar = user?.avatar || dummyImg;
-      const nickname = user?.nickname || "No Nickname";
-      const ticketId = row.original._id;
+      const nickname = user?.nickname || "-";
 
       // Access the modal function passed from the main component
       const { setImageModal } = table.options.meta || {};
@@ -53,14 +54,14 @@ export const supportColumns = (onAction, onPreview) => [
           {/* Avatar with Click-to-Zoom logic */}
           <div className="h-9 w-9 rounded-full bg-gray-100 overflow-hidden border flex-shrink-0">
             <img
-              src={avatar || "/placeholder-avatar.png"} // Fallback image path
+              src={avatar} // Fallback image path
               alt="User Avatar"
               className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-200"
               onClick={() =>
                 setImageModal?.({
                   open: true,
                   src: avatar,
-                  title: `${nickname}'s Selfie`,
+                  title: `${nickname} Selfie`,
                 })
               }
             />

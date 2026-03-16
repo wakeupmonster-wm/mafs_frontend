@@ -80,23 +80,26 @@ export const DiscoveryTab = ({ discovery, attributes }) => {
                     title="Range Filters"
                   />
 
-                  {/* Age Range Slider Visual */}
+                  {/* Age Range Slider Visual: User range within 18-60 */}
                   <RangeSlider
                     icon={<IconTimeline size={18} />}
                     label="Age Preference"
-                    value={`${discovery?.ageRange?.min} - ${discovery?.ageRange?.max}`}
-                    min={discovery?.ageRange?.min}
-                    max={discovery?.ageRange?.max}
-                    unit="yrs"
+                    value={`${discovery?.ageRange?.min} - ${discovery?.ageRange?.max} yrs`}
+                    min={discovery?.ageRange?.min || 18}
+                    max={discovery?.ageRange?.max || 60}
+                    globalMin={"18 yrs"}
+                    globalMax={"60 yrs"}
                   />
 
-                  {/* Distance Slider Visual */}
+                  {/* Distance Slider Visual: User range within 0-500km */}
                   <RangeSlider
                     icon={<IconMapPin size={18} />}
                     label="Search Distance"
                     value={`${discovery?.distanceRange} km`}
-                    percent={(discovery?.distanceRange / 161) * 100}
-                    unit="km"
+                    min={0}
+                    max={discovery?.distanceRange || 0}
+                    globalMin={"0 km"}
+                    globalMax={"500 km"}
                   />
 
                   <div
@@ -199,32 +202,52 @@ const SectionHeader = ({ icon, title }) => (
   </h4>
 );
 
-const RangeSlider = ({ icon, label, value, min, max, percent, unit }) => (
-  <div className="space-y-4">
-    <div className="flex justify-between items-end">
-      <div className="flex items-center gap-2 text-slate-600 font-bold">
-        <span className="p-1.5 bg-slate-100 rounded-lg text-slate-500">
-          {icon}
-        </span>
-        <span className="text-xs uppercase tracking-tight">{label}</span>
+const RangeSlider = ({
+  icon,
+  label,
+  value,
+  min,
+  max,
+  globalMin,
+  globalMax,
+}) => {
+  // 1. Calculate how far the start and end are from the global bounds in percentage
+  const totalRange = globalMax - globalMin;
+  const leftPercent = ((min - globalMin) / totalRange) * 100;
+  const rightPercent = 100 - ((max - globalMin) / totalRange) * 100;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-end">
+        <div className="flex items-center gap-2 text-slate-600 font-bold">
+          <span className="p-1.5 bg-slate-100 rounded-lg text-slate-500">
+            {icon}
+          </span>
+          <span className="text-xs uppercase tracking-tight">{label}</span>
+        </div>
+        <span className="text-sm font-black text-indigo-600">{value}</span>
       </div>
-      <span className="text-sm font-black text-indigo-600">{value}</span>
+
+      {/* Outer Track */}
+      <div className="h-2 w-full bg-slate-100 rounded-full relative overflow-hidden">
+        {/* Inner Colored Progress (Calculated based on user min/max) */}
+        <div
+          className="absolute h-full bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.4)]"
+          style={{
+            left: `${Math.max(0, leftPercent)}%`,
+            right: `${Math.max(0, rightPercent)}%`,
+          }}
+        />
+      </div>
+
+      {/* Optional: Legend for Global Limits */}
+      <div className="flex justify-between text-xs text-slate-400 font-bold">
+        <span>{globalMin}</span>
+        <span>{globalMax}</span>
+      </div>
     </div>
-    <div className="h-2 w-full bg-slate-100 rounded-full relative overflow-hidden">
-      <div
-        className="absolute h-full bg-gradient-to-r from-indigo-400 to-indigo-600 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.4)]"
-        style={
-          percent
-            ? { width: `${percent}%` }
-            : {
-                left: `${(min / 100) * 100}%`,
-                right: `${100 - (max / 100) * 100}%`,
-              }
-        }
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 const AttributeGroup = ({ label, items }) => (
   <div className="space-y-3">

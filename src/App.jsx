@@ -20,8 +20,8 @@ export default function App() {
 
         <div className="space-y-6">
           <h1 className="text-5xl md:text-8xl font-extrabold tracking-tight text-grey-900">
-            Match At First <br />
-            <span className="text-brand-aqua drop-shadow-sm">Swipe</span>
+            Keen As{" "}
+            <span className="text-brand-aqua drop-shadow-sm">Mustard</span>
           </h1>
           <p className="text-lg md:text-2xl text-grey-500 max-w-xl mx-auto font-medium leading-relaxed">
             The future of connection is almost here. Love shouldn't be a waiting

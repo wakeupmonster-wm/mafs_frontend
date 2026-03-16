@@ -8,132 +8,98 @@ import {
   Clock,
   Shield,
   ShieldCheck,
+  History,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom"; // Use react-router-dom
 import { motion } from "framer-motion";
 
 export const Header = ({ p }) => {
+  const areAllReportsResolved = p?.reports?.every(
+    (r) => r.status === "resolved",
+  );
+  const isCaseClosed = p?.status === "resolved" || areAllReportsResolved;
+
   return (
-    // <div className="mb-8">
-    //   <Link to="/admin/management/profile-reports">
-    //     <Button variant="outline" className="mb-4 gap-2 border-slate-300">
-    //       <ArrowLeft className="w-4 h-4" />
-    //       Back to Reports
-    //     </Button>
-    //   </Link>
+    <div className="mb-8 space-y-2">
+      {/* 1. BACK BUTTON & BREADCRUMB AREA */}
+      <div className="flex items-center justify-between">
+        <Link to="/admin/management/profile-reports">
+          <Button
+            variant="outline"
+            className="group gap-2 border-slate-200 bg-white hover:bg-slate-50 rounded-xl transition-all shadow-sm"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="font-semibold text-slate-600">Back to Queue</span>
+          </Button>
+        </Link>
 
-    //   <div className="flex items-start justify-between flex-wrap gap-4">
-    //     <header className="flex flex-col gap-4">
-    //       <PageHeader
-    //         heading="Profile Review"
-    //         icon={<Shield className="w-9 h-9 text-white" />}
-    //         color="bg-gradient-to-br from-blue-500 to-blue-600"
-    //         subheading="Detailed review of reported user profile."
-    //       />
-    //     </header>
-
-    //     <div className="flex flex-wrap gap-2">
-    //       {p.accountStatus === "banned" && (
-    //         <Badge className="bg-red-100 text-red-700 border-red-300 text-base px-4 py-2">
-    //           <Ban className="w-4 h-4 mr-2" />
-    //           USER BANNED
-    //         </Badge>
-    //       )}
-    //       {p.accountStatus === "suspended" && (
-    //         <Badge className="bg-amber-100 text-amber-700 border-amber-300 text-base px-4 py-2">
-    //           <Clock className="w-4 h-4 mr-2" />
-    //           USER SUSPENDED
-    //         </Badge>
-    //       )}
-    //       {p.status === "resolved" && (
-    //         <Badge className="bg-emerald-100 text-emerald-700 border-emerald-300 text-sm px-3 py-1">
-    //           <ShieldCheck className="w-4 h-4 mr-1" /> RESOLVED
-    //         </Badge>
-    //       )}
-    //       {p.reportCount >= 5 && (
-    //         <Badge className="bg-red-100 text-red-700 border-red-300 text-sm px-3 py-1">
-    //           <AlertTriangle className="w-4 h-4 mr-1" /> HIGH PRIORITY
-    //         </Badge>
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
-    <div className="mb-8 space-y-4">
-      <Link to="/admin/management/profile-reports">
-        <Button variant="outline" className="gap-2 border-slate-300">
-          <ArrowLeft className="w-4 h-4" />
-          Back to Reports
-        </Button>
-      </Link>
-
-      {/* 1. CLEAN BREADCRUMB NAVIGATION */}
-      {/* <nav className="flex items-center gap-2 text-sm font-medium">
-      <Link
-        to="/admin/management/profile-reports"
-        className="text-slate-500 hover:text-brand-aqua transition-colors flex items-center gap-1.5"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        Reports Management
-      </Link>
-      <ChevronRight className="w-4 h-4 text-slate-300" />
-      <span className="text-slate-900 font-bold">
-        Reviewing: {p?.profile.nickname}
-      </span>
-    </nav> */}
+        {/* Optional: Last updated timestamp or ID */}
+        <div className="hidden md:flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          <History className="w-3.5 h-3.5" />
+          Last Activity: {new Date().toLocaleDateString()}
+        </div>
+      </div>
 
       {/* 2. MAIN HEADER AREA */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex-1">
           <PageHeader
-            heading={`Profile Review: ${p.profile.nickname}`}
+            heading={`Reviewing: ${p.profile?.nickname || "Unknown User"}`}
             icon={<Shield className="w-6 h-6 text-white shrink-0" />}
-            color="bg-gradient-to-br from-indigo-600 via-blue-600 to-brand-aqua"
-            subheading="Review the reported content, user history, and evidence before taking disciplinary action."
+            color="bg-gradient-to-br from-brand-aqua/80 to-brand-aqua/40"
+            subheading={`UID: ${p.userId} • Investigating ${p.reportCount} flagged incidents.`}
           />
         </div>
 
-        {/* 3. STATUS HUB (Glassmorphism Effect) */}
+        {/* 3. STATUS HUB (Visual Alignment with Tabs) */}
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex flex-wrap items-center gap-3 bg-white/40 backdrop-blur-md p-3 rounded-2xl border border-white shadow-xl shadow-slate-200/50"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-wrap items-center gap-3 bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/60"
         >
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest w-full px-2 mb-1">
-            Current Standing
-          </p>
+          <div className="w-full px-1 mb-1 flex justify-between items-center">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              Account Status
+            </p>
+          </div>
 
+          {/* BANNED BADGE */}
           {p.accountStatus === "banned" && (
-            <Badge className="bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 shadow-none py-1.5 px-3 rounded-lg flex items-center">
-              <Ban className="w-3.5 h-3.5 mr-2" />
+            <Badge className="bg-rose-100 text-rose-700 border-rose-200 hover:bg-rose-200 shadow-none py-2 px-4 rounded-lg font-bold flex items-center gap-2">
+              <Ban className="w-4 h-4" />
               BANNED
             </Badge>
           )}
 
+          {/* SUSPENDED BADGE */}
           {p.accountStatus === "suspended" && (
-            <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100 shadow-none py-1.5 px-3 rounded-lg">
-              <Clock className="w-3.5 h-3.5 mr-2" />
+            <Badge className="bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200 shadow-none py-2 px-4 rounded-lg font-bold flex items-center gap-2">
+              <Clock className="w-4 h-4" />
               SUSPENDED
             </Badge>
           )}
 
-          {p.status === "resolved" ? (
-            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 shadow-none py-1.5 px-3 rounded-lg">
-              <ShieldCheck className="w-3.5 h-3.5 mr-2" />
-              CASE CLOSED
+          {/* DYNAMIC CASE STATUS */}
+          {isCaseClosed ? (
+            <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 shadow-none py-2 px-4 rounded-lg font-bold flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4" />
+              RESOLVED
             </Badge>
           ) : (
             <Badge
               variant="outline"
-              className="text-slate-400 border-slate-200 py-1.5 px-3 rounded-lg"
+              className="bg-blue-50/50 text-brand-aqua border-brand-aqua/40 py-2 px-4 rounded-lg font-bold flex items-center gap-2 animate-pulse"
             >
-              OPEN CASE
+              <AlertTriangle className="w-4 h-4 text-brand-aqua" />
+              UNDER REVIEW
             </Badge>
           )}
 
-          {p.reportCount >= 5 && (
-            <Badge className="bg-red-600 text-white border-none shadow-lg shadow-red-200 py-1.5 px-3 rounded-lg animate-pulse">
-              <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-              CRITICAL RISK
+          {/* CRITICAL RISK (High report count) */}
+          {p.reportCount >= 5 && !isCaseClosed && (
+            <Badge className="bg-red-100 text-red-600 border-red-400 hover:bg-red-200 shadow-none py-2 px-4 rounded-lg font-bold flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              CRITICAL
             </Badge>
           )}
         </motion.div>

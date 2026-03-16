@@ -27,9 +27,9 @@ export const ActionPanel = ({
   onSubmit,
   isSubmitting,
 }) => {
-  const isResolved = p?.status === "resolved";
+  const allReportsResolved = p?.reports?.every((r) => r.status === "resolved");
+  const isResolved = allReportsResolved;
 
-  // Function to get the specific button styles based on action
   const getButtonStyles = () => {
     const base = "w-full h-12 font-bold text-base shadow-lg transition-all ";
     const gradients = {
@@ -45,7 +45,7 @@ export const ActionPanel = ({
   };
 
   return (
-    <Card className="p-6 sticky top-24 border-none shadow-2xl shadow-slate-200/50 rounded-3xl overflow-hidden bg-white">
+    <Card className="p-6 sticky top-24 border shadow-2xl shadow-slate-200/50 rounded-2xl overflow-hidden bg-white">
       <div className="mb-6">
         <h2 className="text-xl font-black text-slate-900 tracking-tight">
           {isResolved ? "Moderation Record" : "Decision Center"}
@@ -59,7 +59,7 @@ export const ActionPanel = ({
 
       {isResolved ? (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-          <div className="text-center p-8 bg-emerald-50/50 rounded-3xl border border-emerald-100">
+          <div className="text-center p-8 bg-emerald-100/30 rounded-3xl border border-emerald-300">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 rounded-full mb-4">
               <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             </div>

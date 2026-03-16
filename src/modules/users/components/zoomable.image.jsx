@@ -3,10 +3,10 @@ import { ExternalLink, Search } from "lucide-react";
 
 const ZOOM_LEVELS = [0.5, 1.0, 1.5, 2.0];
 
-export const ZoomableImage = ({ src, label }) => {
+export const ZoomableImage = ({ src, label, alt }) => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [zoomLevel, setZoomLevel] = useState(1.5);
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } =
@@ -40,8 +40,9 @@ export const ZoomableImage = ({ src, label }) => {
       >
         <img
           src={src}
-          alt={label}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out"
+          alt={alt}
+          loading="lazy"
+          className="absolute inset-0 w-full h-full object-contain transition-transform duration-500 ease-out"
           style={{
             transform: isZoomed ? `scale(${zoomLevel})` : "scale(1)",
             transformOrigin: `${position.x}% ${position.y}%`,

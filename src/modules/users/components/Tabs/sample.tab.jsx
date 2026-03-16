@@ -30,10 +30,10 @@ import {
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 
-export const AttributesTab = ({ attributes }) => {
+export const SampleTab = ({ attributes }) => {
   return (
     <TabsContent
-      value="attributes"
+      value="attribute"
       className="mt-6 animate-in fade-in slide-in-from-top-2 duration-500"
     >
       <Card className="border border-slate-200 gap-4 py-2 shadow-xl overflow-hidden rounded-3xl bg-white">
@@ -206,12 +206,19 @@ export const AttributesTab = ({ attributes }) => {
                 title="Relationship Goals"
                 color="bg-rose-500"
               >
-                <div className="p-4 capitalize rounded-2xl border border-rose-200 bg-rose-50/30 text-rose-700 font-bold text-start">
+                <div className="p-4 capitalize rounded-2xl border border-rose-100 bg-rose-50/30 text-rose-700 font-bold text-start">
                   {attributes?.relationshipGoal || "Not-set"}
                 </div>
               </SectionWrapper>
+            </div>
+          </div>
 
-              {/* 6. RELIGION */}
+          <hr className="border-slate-100" />
+
+          {/* BOTTOM ROW: RELIGION & MEDIA */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* 6. RELIGION */}
+            <div className="lg:col-span-1">
               <SectionWrapper
                 icon={IconPray}
                 title="Religion"
@@ -225,40 +232,39 @@ export const AttributesTab = ({ attributes }) => {
                 />
               </SectionWrapper>
             </div>
-          </div>
 
-          <hr className="border-slate-200" />
-
-          {/* 7. PREFERENCES (Media/Travel) */}
-          {/* BOTTOM ROW: RELIGION & MEDIA */}
-          <SectionWrapper
-            icon={IconMovie}
-            title="Favorites & Preferences"
-            color="bg-slate-800"
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <MediaCard
-                icon={<IconMusic />}
-                title="Music"
-                items={attributes?.music}
-              />
-              <MediaCard
-                icon={<IconMovie />}
-                title="Movies"
-                items={attributes?.movies}
-              />
-              <MediaCard
-                icon={<IconBook />}
-                title="Books"
-                items={attributes?.books}
-              />
-              <MediaCard
-                icon={<IconPlaneDeparture />}
-                title="Travel"
-                items={attributes?.travel}
-              />
+            {/* 7. PREFERENCES (Media/Travel) */}
+            <div className="lg:col-span-3">
+              <SectionWrapper
+                icon={IconMovie}
+                title="Favorites & Preferences"
+                color="bg-slate-800"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <MediaCard
+                    icon={<IconMusic />}
+                    title="Music"
+                    items={attributes?.music}
+                  />
+                  <MediaCard
+                    icon={<IconMovie />}
+                    title="Movies"
+                    items={attributes?.movies}
+                  />
+                  <MediaCard
+                    icon={<IconBook />}
+                    title="Books"
+                    items={attributes?.books}
+                  />
+                  <MediaCard
+                    icon={<IconPlaneDeparture />}
+                    title="Travel"
+                    items={attributes?.travel}
+                  />
+                </div>
+              </SectionWrapper>
             </div>
-          </SectionWrapper>
+          </div>
         </CardContent>
       </Card>
     </TabsContent>
@@ -312,7 +318,7 @@ const LifeTile = ({ icon, label, value, color }) => {
 };
 
 const MediaCard = ({ icon, title, items }) => (
-  <div className="p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow hover:shadow-md bg-slate-50/50 hover:bg-white transition-all">
+  <div className="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white transition-all">
     <div className="flex items-center gap-2 mb-3">
       <div className="text-slate-400">{icon}</div>
       <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">

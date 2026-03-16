@@ -1,13 +1,15 @@
 import { LoginForm } from "../components/login-form";
+import mustardLogo from "@/assets/web/phone-sticky2.webp";
 
 export default function LoginPage() {
   return (
     <>
-      <div className="bg-muted relative hidden lg:block">
+      <div className="bg-muted size-72 relative mx-auto my-20 text-center hidden lg:block">
         <img
-          src="/placeholder.svg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          src={mustardLogo}
+          alt={mustardLogo}
+          loading="lazy"
+          className="absolute h-auto w-full dark:brightness-[0.2] dark:grayscale"
         />
       </div>
 

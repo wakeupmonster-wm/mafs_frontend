@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
@@ -11,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
 import googleIcon from "@/assets/svgs/google-icon.svg";
-import mafsIcon from "@/assets/svgs/mafs-icon.svg";
+import mustardIcon from "@/assets/web/mustardLogo2.webp";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -72,11 +71,16 @@ export function LoginForm({ className, ...props }) {
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl">
-            <img src={mafsIcon} alt="Google" className="h-full w-full" />
+            <img
+              src={mustardIcon}
+              alt={mustardIcon}
+              loading="lazy"
+              className="h-full w-full"
+            />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
           <p className="text-muted-foreground mt-2 text-balance">
-            Login to manage the MAFS ecosystem
+            Login to manage the Keen As Mustard ecosystem
           </p>
         </div>
 
@@ -91,7 +95,7 @@ export function LoginForm({ className, ...props }) {
                 id="email"
                 type="email"
                 {...register("email")}
-                placeholder="mafs@example.com"
+                placeholder="keenasmustard@example.com"
                 className={`w-full px-9 py-5 bg-gray-50 border outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus:ring-red-100"

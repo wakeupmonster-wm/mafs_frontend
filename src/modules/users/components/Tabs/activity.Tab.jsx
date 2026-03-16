@@ -8,6 +8,7 @@ import {
   IconStar,
   IconMessage2,
   IconTrendingUp,
+  IconCreditCard,
 } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,12 +17,17 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
 export const ActivityTab = ({ stats, recentMatches }) => {
+  const navigate = useNavigate();
+
   const matchRate =
     stats.totalSwipes > 0
       ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
       : 0;
+
+  console.log("recentMatches: ", recentMatches);
 
   return (
     <TabsContent
@@ -29,31 +35,42 @@ export const ActivityTab = ({ stats, recentMatches }) => {
       className="mt-6 space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500"
     >
       {/* 1. TOP STATS ROW - Using a Glassmorphism Style */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {[
+          {
+            label: "Total Swipes",
+            val: stats.totalSwipes,
+            icon: <IconEye className="text-sky-500" />,
+            bg: "bg-sky-100/60",
+            border: "border-sky-200",
+          },
           {
             label: "Total Likes",
             val: stats.totalLikes,
             icon: <IconHeart className="text-rose-500" />,
-            bg: "bg-rose-50",
+            bg: "bg-rose-100/60",
+            border: "border-rose-200",
           },
           {
             label: "Super Likes",
             val: stats.totalSuperLikes,
             icon: <IconStar className="text-amber-500" />,
-            bg: "bg-amber-50",
+            bg: "bg-amber-100/60",
+            border: "border-amber-200",
           },
           {
             label: "Total Matches",
             val: stats.totalMatches,
             icon: <IconCheck className="text-emerald-500" />,
-            bg: "bg-emerald-50",
+            bg: "bg-emerald-100/60",
+            border: "border-emerald-200",
           },
           {
-            label: "Profile Views",
-            val: stats.totalSwipes,
-            icon: <IconEye className="text-sky-500" />,
-            bg: "bg-sky-50",
+            label: "Total Transections",
+            val: stats.totalTransactions,
+            icon: <IconCreditCard size={18} className="text-blue-500" />,
+            bg: "bg-blue-100/60",
+            border: "border-blue-200",
           },
         ].map((stat, i) => (
           <Card
@@ -64,8 +81,9 @@ export const ActivityTab = ({ stats, recentMatches }) => {
               <div className="flex items-center p-4 gap-4">
                 <div
                   className={cn(
-                    "p-3 rounded-2xl transition-transform group-hover:scale-110",
+                    "p-3 rounded-xl transition-transform group-hover:scale-110 border",
                     stat.bg,
+                    stat.border,
                   )}
                 >
                   {React.cloneElement(stat.icon, { size: 24, stroke: 2 })}
@@ -125,11 +143,11 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                           </AvatarFallback>
                         </Avatar>
                         {/* Status Indicator */}
-                        <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+                        {/* <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" /> */}
                       </div>
                       <div className="space-y-0.5">
                         <p className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                          Matched with {match.nickname}
+                          {match.nickname}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
                           {match.matchedAt
@@ -142,9 +160,14 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                     <Button
                       variant="ghost"
                       size="sm"
+                      onClick={() =>
+                        navigate(`../view-profile`, {
+                          state: { userId: match.ouserId },
+                        })
+                      }
                       className="h-8 text-xs font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
                     >
-                      View Chat
+                      View Profile
                     </Button>
                   </div>
                 ))

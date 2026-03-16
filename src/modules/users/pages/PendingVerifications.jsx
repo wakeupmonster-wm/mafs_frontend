@@ -42,7 +42,7 @@ import { PageHeader } from "@/components/common/headSubhead";
 export default function PendingVerifications() {
   const dispatch = useDispatch();
   const { pendingVerifications, loading, error, successMessage } = useSelector(
-    (state) => state.users
+    (state) => state.users,
   );
 
   const [reason, setReason] = useState("");
@@ -104,7 +104,7 @@ export default function PendingVerifications() {
   const totalPages = Math.ceil(processedData.length / itemsPerPage);
   const currentItems = processedData.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   const handleApprove = (userId) => {
@@ -116,7 +116,7 @@ export default function PendingVerifications() {
   const handleReject = (userId) => {
     if (!reason.trim()) return toast.error("Reason required");
     dispatch(
-      verifyUserProfile({ userId, action: "reject", reason: reason.trim() })
+      verifyUserProfile({ userId, action: "reject", reason: reason.trim() }),
     ).then(() => {
       setReason("");
       setExpandedRow(null);
@@ -202,7 +202,7 @@ export default function PendingVerifications() {
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-all duration-200 hover:scale-110 animate-in fade-in zoom-in-50 duration-300"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-all hover:scale-110 animate-in fade-in zoom-in-50 duration-300"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -394,7 +394,7 @@ export default function PendingVerifications() {
                         <td className="px-6 py-4">
                           <Badge
                             className={`${getStatusBadgeStyles(
-                              item.verification?.status
+                              item.verification?.status,
                             )} transition-all duration-200 hover:scale-105`}
                           >
                             {item.verification?.status === "approved" && (
@@ -414,7 +414,7 @@ export default function PendingVerifications() {
                           <div className="flex items-center gap-2">
                             <Calendar className="w-3.5 h-3.5 text-gray-400" />
                             {new Date(
-                              item.verification?.submittedAt || item.createdAt
+                              item.verification?.submittedAt || item.createdAt,
                             ).toLocaleDateString("en-IN", {
                               day: "2-digit",
                               month: "short",

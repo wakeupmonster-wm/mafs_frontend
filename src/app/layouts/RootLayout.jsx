@@ -25,7 +25,7 @@ export default function RootLayout() {
             <Link to="/" className="flex items-center gap-2">
               <Heart className="w-8 h-8 text-pink-600 fill-pink-600" />
               <span className="text-xl font-black tracking-tight text-gray-900">
-                MAFS<span className="text-pink-600">.</span>
+                Keen As Mustard<span className="text-pink-600">.</span>
               </span>
             </Link>
 
@@ -83,7 +83,7 @@ export default function RootLayout() {
       <footer className="bg-gray-50 border-t border-slate-200 py-8">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-sm text-gray-500">
-            © 2026 MAFS Dating App. All rights reserved.
+            © 2026 Keen As Mustard Dating App. All rights reserved.
           </p>
         </div>
       </footer>
