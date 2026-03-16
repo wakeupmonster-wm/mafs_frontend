@@ -1382,69 +1382,69 @@ export default function ProductsPage() {
 
             {/* Badge */}
             <div className="grid grid-cols-2 gap-4">
-                            <FormSection label="Badge Text" hint="Short label shown on product card (e.g. POPULAR, BEST VALUE)">
-                                <FormInput
-                                    placeholder="e.g. MOST POPULAR"
-                                    value={formData.badgeText}
-                                    onChange={(e) => updateField("badgeText", e.target.value)}
-                                />
-                            </FormSection>
-                            <FormSection label="Badge Color">
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="color"
-                                        value={formData.badgeColor || "#00BCD4"}
-                                        onChange={(e) => updateField("badgeColor", e.target.value)}
-                                        className="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer p-0.5 bg-white"
-                                    />
-                                    <FormInput
-                                        placeholder="#00BCD4"
-                                        value={formData.badgeColor}
-                                        onChange={(e) => updateField("badgeColor", e.target.value)}
-                                        mono
-                                        className="flex-1"
-                                    />
-                                    {formData.badgeText && (
-                                        <span
-                                            className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full text-white shrink-0"
-                                            style={{ backgroundColor: formData.badgeColor || "#00BCD4" }}
-                                        >
-                                            {formData.badgeText}
-                                        </span>
-                                    )}
-                                </div>
-                            </FormSection>
-                        </div>
+              <FormSection label="Badge Text" hint="Short label shown on product card (e.g. POPULAR, BEST VALUE)">
+                <FormInput
+                  placeholder="e.g. MOST POPULAR"
+                  value={formData.badgeText}
+                  onChange={(e) => updateField("badgeText", e.target.value)}
+                />
+              </FormSection>
+              <FormSection label="Badge Color">
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={formData.badgeColor || "#00BCD4"}
+                    onChange={(e) => updateField("badgeColor", e.target.value)}
+                    className="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer p-0.5 bg-white"
+                  />
+                  <FormInput
+                    placeholder="#00BCD4"
+                    value={formData.badgeColor}
+                    onChange={(e) => updateField("badgeColor", e.target.value)}
+                    mono
+                    className="flex-1"
+                  />
+                  {formData.badgeText && (
+                    <span
+                      className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full text-white shrink-0"
+                      style={{ backgroundColor: formData.badgeColor || "#00BCD4" }}
+                    >
+                      {formData.badgeText}
+                    </span>
+                  )}
+                </div>
+              </FormSection>
+            </div>
 
             {/* Features (subscriptions only) */}
             {formData.type === "SUBSCRIPTION" && (
-                            <FormSection label="Features List" hint="Bullet points shown on the subscription plan card in-app">
-                                <div className="space-y-2">
-                                    {(formData.features || []).map((f, i) => (
-                                        <div key={i} className="flex items-center gap-2">
-                                            <FormInput
-                                                placeholder={`Feature ${i + 1}`}
-                                                value={f}
-                                                onChange={(e) => updateFeature(i, e.target.value)}
-                                                className="flex-1"
-                                            />
-                                            <button
-                                                onClick={() => removeFeature(i)}
-                                                className="w-8 h-8 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition-colors flex items-center justify-center shrink-0"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                            </button>
-                                        </div>
-                                    ))}
-                                    <button
-                                        onClick={addFeature}
-                                        className="flex items-center gap-1.5 text-xs font-black text-brand-aqua hover:text-brand-aqua/80 transition-colors"
-                                    >
-                                        <Plus className="w-3.5 h-3.5" /> Add Feature
-                                    </button>
-                                </div>
-                            </FormSection>
-                        )}
+              <FormSection label="Features List" hint="Bullet points shown on the subscription plan card in-app">
+                <div className="space-y-2">
+                  {(formData.features || []).map((f, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <FormInput
+                        placeholder={`Feature ${i + 1}`}
+                        value={f}
+                        onChange={(e) => updateFeature(i, e.target.value)}
+                        className="flex-1"
+                      />
+                      <button
+                        onClick={() => removeFeature(i)}
+                        className="w-8 h-8 rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition-colors flex items-center justify-center shrink-0"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={addFeature}
+                    className="flex items-center gap-1.5 text-xs font-black text-brand-aqua hover:text-brand-aqua/80 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Feature
+                  </button>
+                </div>
+              </FormSection>
+            )}
 
             {/* Sort Order + Active */}
             <div className="grid grid-cols-2 gap-4">

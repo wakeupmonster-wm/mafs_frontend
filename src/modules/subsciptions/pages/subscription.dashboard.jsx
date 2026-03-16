@@ -20,6 +20,7 @@ import {
     ChevronLeft,
     ChevronRight,
     Smartphone,
+    Package,
 } from "lucide-react";
 import {
     BarChart,
@@ -66,6 +67,7 @@ const colorMap = {
     purple: "from-purple-500/40 to-purple-600/5 text-purple-600 border-purple-100",
     rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
     cyan: "from-cyan-500/40 to-cyan-600/5 text-cyan-600 border-cyan-100",
+    aqua: "from-brand-aqua/30 to-brand-aqua/5 text-brand-aqua border-brand-aqua/30",
 };
 
 const bgMap = {
@@ -75,6 +77,7 @@ const bgMap = {
     purple: "from-purple-300/20 via-purple-500/10 to-transparent text-purple-600 border-purple-200 hover:border-purple-400",
     rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
     cyan: "from-cyan-300/20 via-cyan-500/10 to-transparent text-cyan-600 border-cyan-200 hover:border-cyan-400",
+    aqua: "from-brand-aqua/20 via-brand-aqua/10 to-transparent text-brand-aqua border-brand-aqua/30 hover:border-brand-aqua/80",
 };
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
@@ -119,10 +122,17 @@ export default function SubscriptionDashboard() {
         if (!kpis) return [];
         return [
             {
-                label: "Active Subscribers",
-                val: kpis.activeSubscribers?.count || 0,
+                label: "Total Users",
+                val: kpis.totalUsers || 0,
                 icon: <Users className="w-6 h-6" />,
                 color: "blue",
+                description: "Total registered users",
+            },
+            {
+                label: "Active Subscribers",
+                val: kpis.activeSubscribers?.count || 0,
+                icon: <Crown className="w-6 h-6" />,
+                color: "aqua",
                 description: `Change: ${kpis.activeSubscribers?.change || "0%"}`,
             },
             {
@@ -133,17 +143,17 @@ export default function SubscriptionDashboard() {
                 description: "Monthly Recurring Revenue",
             },
             {
-                label: "Consumable Revenue",
-                val: `$${kpis.consumableRevenue?.amount?.toLocaleString() || 0}`,
-                icon: <Crown className="w-6 h-6" />,
+                label: "Today's Revenue",
+                val: `$${(kpis.todayRevenue || 0).toLocaleString()}`,
+                icon: <TrendingUp className="w-6 h-6" />,
                 color: "amber",
-                description: "Keens & Supercharges",
+                description: "Revenue generated today",
             },
             {
                 label: "Conversion Rate",
                 val: kpis.conversionRate || "0%",
                 icon: <Target className="w-6 h-6" />,
-                color: "purple",
+                color: "aqua",
                 description: "Free to Premium conversion",
             },
             {
@@ -153,17 +163,10 @@ export default function SubscriptionDashboard() {
                 color: "rose",
                 description: "Monthly cancellation %",
             },
-            {
-                label: "Milestone Users",
-                val: `${kpis.milestone?.currentCount || 0} / ${kpis.milestone?.target || 0}`,
-                icon: <Trophy className="w-6 h-6" />,
-                color: "cyan",
-                description: "Next target: 1k subscribers",
-            },
         ];
     }, [kpis]);
 
-    const milestoneProgress = parseFloat(kpis?.milestone?.progress) || 0;
+    const milestoneProgress = parseFloat(kpis?.milestone?.percentage) || 0;
 
     // Chart data formatting & filtering
     const revenueTrendData = useMemo(() => {
@@ -260,7 +263,10 @@ export default function SubscriptionDashboard() {
             });
         }
 
-        let grouped = Object.values(groups).sort((a, b) => a.compareDate - b.compareDate);
+        let grouped = Object.values(groups).map(item => ({
+            ...item,
+            total: (item.subscription || 0) + (item.consumable || 0)
+        })).sort((a, b) => a.compareDate - b.compareDate);
 
         // 3. Apply type filtering
         if (chartType === "subscription") {
@@ -269,7 +275,7 @@ export default function SubscriptionDashboard() {
             return grouped.map(item => ({ name: item.name, consumable: item.consumable }));
         }
 
-        return grouped;
+        return grouped.map(item => ({ name: item.name, total: item.total }));
     }, [charts, chartTimeframe, chartType]);
 
     const growthData = useMemo(() => {
@@ -372,7 +378,7 @@ export default function SubscriptionDashboard() {
     }, [charts, growthTimeframe, selectedMonth]);
 
     const platformData = useMemo(() => {
-        return charts?.platformSplit?.map((item, idx) => ({
+        return charts?.platformMix?.map((item, idx) => ({
             name: item.platform?.toUpperCase(),
             value: item.revenue,
             color: COLORS[idx % COLORS.length],
@@ -395,8 +401,8 @@ export default function SubscriptionDashboard() {
         });
 
         return [
-            { name: "1 Month Premium", subscribers: oneMonthCount, fill: "#46C7CD" }, // brand-aqua
-            { name: "3 Months Premium", subscribers: threeMonthCount, fill: "#8b5cf6" } // purple
+            { name: "1 Month Premium", subscribers: oneMonthCount, fill: "hsl(var(--brand-aqua))" },
+            { name: "3 Months Premium", subscribers: threeMonthCount, fill: "hsl(var(--aqua-gradient-start))" }
         ];
     }, [charts]);
 
@@ -431,7 +437,7 @@ export default function SubscriptionDashboard() {
                         heading="Revenue Dashboard"
                         subheading="Consolidated intelligence across subscriptions & consumable growth."
                         icon={<BarChart3 className="w-10 h-10 text-white" />}
-                        color="bg-brand-aqua shadow-indigo-100 shadow-xl"
+                        color="bg-brand-aqua shadow-xl"
                     />
                     <div className="flex items-center gap-3">
                         <Popover open={isMonthPickerOpen} onOpenChange={setIsMonthPickerOpen}>
@@ -524,12 +530,12 @@ export default function SubscriptionDashboard() {
                 {/* Milestone Progress Card */}
                 {kpis?.milestone && (
                     <div className="px-2">
-                        <Card className="rounded-[2rem] border-purple-200 shadow-md bg-white overflow-hidden">
+                        <Card className="rounded-[2rem] border-brand-aqua/30 hover:border-brand-aqua/60 transition-all shadow-md bg-white overflow-hidden">
                             <CardHeader className="pb-4">
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <CardTitle className="text-sm font-black flex items-center gap-2">
-                                            <Trophy className="w-4 h-4 text-purple-500" />
+                                            <Trophy className="w-4 h-4 text-brand-aqua" />
                                             Milestone Program
                                         </CardTitle>
                                         <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Free premium grant progress</p>
@@ -546,19 +552,19 @@ export default function SubscriptionDashboard() {
                                 <div className="space-y-4">
                                     <div className="flex items-center justify-between">
                                         <p className="text-xs font-bold text-slate-500">
-                                            Target: <span className="font-black text-slate-800">{(kpis.milestone.target || 0).toLocaleString()} users</span>
+                                            Target: <span className="font-black text-slate-800">{(kpis.milestone.targetCount || 0).toLocaleString()} users</span>
                                         </p>
-                                        <p className="text-xs font-black text-purple-600">
+                                        <p className="text-xs font-black text-brand-aqua">
                                             {Math.round(milestoneProgress * 100) / 100}%
                                         </p>
                                     </div>
                                     <Progress
                                         value={milestoneProgress}
-                                        className="h-3 rounded-full bg-purple-100"
+                                        className="h-3 rounded-full bg-brand-aqua/10 [&>div]:bg-brand-aqua"
                                     />
                                     <p className="text-[10px] font-medium text-slate-400">
                                         Currently at {(kpis.milestone.currentCount || 0).toLocaleString()} users ·
-                                        {` ${((kpis.milestone.target || 0) - (kpis.milestone.currentCount || 0)).toLocaleString()} to go`}
+                                        {` ${((kpis.milestone.targetCount || 0) - (kpis.milestone.currentCount || 0)).toLocaleString()} to go`}
                                     </p>
                                 </div>
                             </CardContent>
@@ -611,10 +617,13 @@ export default function SubscriptionDashboard() {
                                             contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
                                             cursor={{ fill: '#f8fafc', radius: 12 }}
                                         />
-                                        {(chartType === "all" || chartType === "subscription") && (
+                                        {chartType === "all" && (
+                                            <Bar dataKey="total" fill="#46C7CD" radius={[8, 8, 0, 0]} name="Total Revenue" barSize={32} />
+                                        )}
+                                        {chartType === "subscription" && (
                                             <Bar dataKey="subscription" fill="#4F46E5" radius={[8, 8, 0, 0]} name="Subscriptions" barSize={32} />
                                         )}
-                                        {(chartType === "all" || chartType === "consumable") && (
+                                        {chartType === "consumable" && (
                                             <Bar dataKey="consumable" fill="#f59e0b" radius={[8, 8, 0, 0]} name="Consumables" barSize={32} />
                                         )}
                                         <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', paddingTop: '10px' }} />
@@ -622,6 +631,10 @@ export default function SubscriptionDashboard() {
                                 ) : (
                                     <AreaChart data={revenueTrendData}>
                                         <defs>
+                                            <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#46C7CD" stopOpacity={0.3} />
+                                                <stop offset="95%" stopColor="#46C7CD" stopOpacity={0} />
+                                            </linearGradient>
                                             <linearGradient id="colorSubs" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
                                                 <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
@@ -638,10 +651,13 @@ export default function SubscriptionDashboard() {
                                             contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
                                             itemStyle={{ fontWeight: 900 }}
                                         />
-                                        {(chartType === "all" || chartType === "subscription") && (
+                                        {chartType === "all" && (
+                                            <Area type="monotone" dataKey="total" stroke="#46C7CD" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" name="Total Revenue" />
+                                        )}
+                                        {chartType === "subscription" && (
                                             <Area type="monotone" dataKey="subscription" stroke="#4F46E5" strokeWidth={3} fillOpacity={1} fill="url(#colorSubs)" name="Subscriptions" />
                                         )}
-                                        {(chartType === "all" || chartType === "consumable") && (
+                                        {chartType === "consumable" && (
                                             <Area type="monotone" dataKey="consumable" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorCons)" name="Consumables" />
                                         )}
                                         <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748b' }} />
@@ -656,7 +672,7 @@ export default function SubscriptionDashboard() {
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                             <div className="space-y-1">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
-                                    <Smartphone className="w-4 h-4 text-emerald-500" />
+                                    <Smartphone className="w-4 h-4 text-brand-aqua" />
                                     Platform Mix
                                 </CardTitle>
                                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Revenue by platform</p>
@@ -669,21 +685,21 @@ export default function SubscriptionDashboard() {
                                     const percentage = total > 0 ? ((platform.value || 0) / total) * 100 : 0;
                                     const isIOS = platform.name === 'IOS';
                                     const isAndroid = platform.name === 'ANDROID';
-                                    
+
                                     return (
                                         <div key={idx} className="p-4 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors space-y-3">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className={cn(
                                                         "p-2 rounded-xl shadow-sm",
-                                                        isIOS ? "bg-slate-800 text-white" : "",
-                                                        isAndroid ? "bg-emerald-500 text-white" : "",
+                                                        isIOS ? "bg-brand-aqua text-white" : "",
+                                                        isAndroid ? "bg-brand-aqua text-white" : "",
                                                         !isIOS && !isAndroid ? "bg-slate-200 text-slate-600" : ""
                                                     )}>
-                                                        <Smartphone className="w-4 h-4" />
+                                                        <Smartphone className="w-4 h-4 " />
                                                     </div>
                                                     <div>
-                                                        <p className="text-xs font-black uppercase tracking-widest text-slate-700">
+                                                        <p className="text-xs font-black uppercase tracking-widest text-brand-aqua">
                                                             {isIOS ? 'Apple iOS' : isAndroid ? 'Android' : platform.name}
                                                         </p>
                                                         <p className="text-[10px] font-bold text-slate-400">
@@ -704,9 +720,9 @@ export default function SubscriptionDashboard() {
                                                     transition={{ duration: 1, ease: "easeOut" }}
                                                     className={cn(
                                                         "h-full rounded-full",
-                                                        isIOS ? "bg-slate-800" : "",
-                                                        isAndroid ? "bg-emerald-500" : "",
-                                                        !isIOS && !isAndroid ? "bg-slate-400" : ""
+                                                        isIOS ? "bg-brand-aqua" : "",
+                                                        isAndroid ? "bg-brand-aqua/70" : "",
+                                                        !isIOS && !isAndroid ? "bg-brand-aqua/40" : ""
                                                     )}
                                                 />
                                             </div>
@@ -725,7 +741,7 @@ export default function SubscriptionDashboard() {
                         <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
                             <div className="space-y-1">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
-                                    <TrendingUp className="w-4 h-4 text-emerald-500" />
+                                    <TrendingUp className="w-4 h-4 text-brand-aqua" />
                                     Subscriber Growth
                                 </CardTitle>
                                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-relaxed">New vs cancelled vs net</p>
@@ -753,9 +769,9 @@ export default function SubscriptionDashboard() {
                                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '12px' }}
                                         cursor={{ fill: '#f8fafc', radius: 12 }}
                                     />
-                                    <Bar dataKey="new" fill="#46C7CD" radius={[4, 4, 0, 0]} name="New" barSize={14} />
+                                    <Bar dataKey="new" fill="#4F46E5" radius={[4, 4, 0, 0]} name="New" barSize={14} />
                                     <Bar dataKey="cancelled" fill="#cbd5e1" radius={[4, 4, 0, 0]} name="Cancelled" barSize={14} />
-                                    <Bar dataKey="net" fill="#4F46E5" radius={[4, 4, 0, 0]} name="Net Growth" barSize={14} />
+                                    <Bar dataKey="net" fill="#46C7CD" radius={[4, 4, 0, 0]} name="Net Growth" barSize={14} />
                                     <Legend align="center" verticalAlign="top" iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', paddingBottom: '10px' }} />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -792,6 +808,81 @@ export default function SubscriptionDashboard() {
                             </ResponsiveContainer>
                         </CardContent>
                     </Card>
+                </div>
+
+                {/* Third Row: Best Selling Products */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
+                    {/* Best Selling Products */}
+                    <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                            <div className="space-y-1">
+                                <CardTitle className="text-sm font-black flex items-center gap-2">
+                                    <Package className="w-4 h-4 text-brand-aqua" />
+                                    Top Selling Products
+                                </CardTitle>
+                                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Highest performing packages</p>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="px-6 pb-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                                {charts?.bestSellingProducts?.map((product, idx) => (
+                                    <div key={idx} className="p-3 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-slate-50 transition-colors flex items-center justify-between">
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-2 rounded-xl shadow-sm bg-brand-aqua/10 text-brand-aqua">
+                                                <Package className="w-4 h-4" />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <p className="text-xs font-black tracking-wide text-slate-700 truncate max-w-[120px]" title={product._id}>
+                                                    {product._id.split('.').pop().replace(/_/g, ' ')}
+                                                </p>
+                                                <p className="text-[10px] font-bold text-brand-aqua uppercase tracking-widest mt-0.5">
+                                                    Sales: {product.salesCount}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                {(!charts?.bestSellingProducts || charts.bestSellingProducts.length === 0) && (
+                                    <div className="col-span-full py-12 flex flex-col items-center justify-center text-slate-400">
+                                        <Package className="w-8 h-8 mb-2 opacity-50" />
+                                        <p className="text-xs font-bold">No product data available</p>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Quick Stats / Last 24 Hours (Placeholder or New Feature) */}
+                    {subscriptionStats?.last24HoursActivity && (
+                        <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
+                            <CardHeader className="pb-4">
+                                <CardTitle className="text-sm font-black flex items-center gap-2">
+                                    <TrendingUp className="w-4 h-4 text-brand-aqua" />
+                                    Last 24 Hours Activity
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="px-6 pb-6">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">New Subs</p>
+                                        <p className="text-lg font-black text-slate-900">{subscriptionStats.last24HoursActivity.newSubscriptions}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">Consumables Bought</p>
+                                        <p className="text-lg font-black text-slate-900">{subscriptionStats.last24HoursActivity.walletPacksBought}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">Cancellations</p>
+                                        <p className="text-lg font-black text-rose-500">{subscriptionStats.last24HoursActivity.cancellations}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">Expiring Soon</p>
+                                        <p className="text-lg font-black text-amber-500">{subscriptionStats.last24HoursActivity.plansExpiringSoon}</p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
             </motion.div>
         </div>

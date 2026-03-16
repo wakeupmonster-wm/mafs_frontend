@@ -62,6 +62,13 @@ const PLATFORM_MAP = {
     admin_granted: "Admin",
 };
 
+const STATUS_MAP = {
+    PENDING: "bg-amber-50 text-amber-600 border-amber-200",
+    SUCCESS: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    FAILED: "bg-rose-50 text-rose-600 border-rose-200",
+    REFUNDED: "bg-slate-100 text-slate-600 border-slate-200"
+};
+
 export default function TransactionsPage() {
     // Data states
     const [transactions, setTransactions] = useState([]);
@@ -321,7 +328,7 @@ export default function TransactionsPage() {
                                 <div className="relative group">
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-brand-aqua transition-colors" />
                                     <Input
-                                        placeholder="Search transaction..."
+                                        placeholder="Search by email, name, txn ID..."
                                         className="pl-10 h-10 rounded-2xl bg-slate-50 border-none group-focus-within:ring-2 ring-brand-aqua/20 text-xs font-bold"
                                         value={filters.search}
                                         onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value, page: 1 }))}
@@ -374,32 +381,35 @@ export default function TransactionsPage() {
                             <Table>
                                 <TableHeader className="bg-slate-50/50 border-b border-slate-100">
                                     <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4 w-[60px]">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">S.No</span>
+                                        </TableHead>
+                                        <TableHead className="h-12 px-2 md:px-4">
                                             <button onClick={() => handleSort("occurredAt")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
                                                 Date <SortIcon column="occurredAt" />
                                             </button>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4 hidden sm:table-cell">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">User</span>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4 hidden lg:table-cell">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Product</span>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Type</span>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4">
                                             <button onClick={() => handleSort("amount")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
-                                                Gross <SortIcon column="amount" />
+                                                Amount <SortIcon column="amount" />
                                             </button>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Net</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4 hidden sm:table-cell">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Platform</span>
                                         </TableHead>
-                                        <TableHead className="h-12 px-4">
+                                        <TableHead className="h-12 px-2 md:px-4">
+                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Status</span>
+                                        </TableHead>
+                                        <TableHead className="h-12 px-2 md:px-4 hidden lg:table-cell w-[180px]">
                                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Txn ID</span>
                                         </TableHead>
                                     </TableRow>
@@ -407,7 +417,7 @@ export default function TransactionsPage() {
                                 <TableBody>
                                     {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={8} className="h-64 text-center">
+                                            <TableCell colSpan={9} className="h-64 text-center">
                                                 <div className="flex flex-col items-center justify-center gap-3">
                                                     <Loader2 className="w-8 h-8 text-brand-aqua animate-spin" />
                                                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading transactions...</p>
@@ -415,74 +425,100 @@ export default function TransactionsPage() {
                                             </TableCell>
                                         </TableRow>
                                     ) : transactions.length > 0 ? (
-                                        transactions.map((txn) => {
+                                        transactions.map((txn, index) => {
                                             const eventConfig = EVENT_TYPE_MAP[txn.eventType] || { label: txn.eventType, color: "bg-slate-100 text-slate-600 border-slate-200" };
+                                            // derive status from eventType for backward compat if status not explicitly sent
+                                            const status = txn.status || (txn.eventType === 'REFUND' ? 'REFUNDED' : txn.eventType === 'CANCEL' ? 'FAILED' : 'SUCCESS');
+                                            const statusClass = STATUS_MAP[status] || STATUS_MAP.PENDING;
+                                            const serialNo = ((pagination.currentPage - 1) * (filters.limit || 15)) + index + 1;
+
                                             return (
                                                 <TableRow key={txn._id} className="hover:bg-slate-50/50 border-b border-slate-50 transition-colors">
+                                                    {/* Serial Number */}
+                                                    <TableCell className="px-2 md:px-4 py-3">
+                                                        <span className="text-[11px] font-black">{serialNo}</span>
+                                                    </TableCell>
+
                                                     {/* Date */}
-                                                    <TableCell className="px-4 py-3">
+                                                    <TableCell className="px-2 md:px-4 py-3">
                                                         <div>
                                                             <p className="text-xs font-bold text-slate-800">
-                                                                {txn.date ? new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
+                                                                {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
                                                             </p>
-                                                            <p className="text-[10px] text-slate-400 font-mono">
-                                                                {txn.date ? new Date(txn.date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : ""}
+                                                            <p className="text-[9px] text-slate-400 font-mono">
+                                                                {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : ""}
                                                             </p>
                                                         </div>
                                                     </TableCell>
+
                                                     {/* User */}
-                                                    <TableCell className="px-4 py-3">
+                                                    <TableCell className="px-2 md:px-4 py-3 hidden sm:table-cell">
                                                         <div className="max-w-[130px]">
-                                                            <p className="text-xs font-bold text-slate-800 truncate">
+                                                            <p className="text-xs font-bold text-slate-800 truncate" title={txn.user?.nickname || txn.user?.email || "Unknown"}>
                                                                 {txn.user?.nickname || txn.user?.email || "—"}
                                                             </p>
-                                                            <p className="text-[10px] text-slate-400 truncate font-mono">
+                                                            <p className="text-[9px] text-slate-400 truncate font-mono">
                                                                 {txn.user?.phone || ""}
                                                             </p>
                                                         </div>
                                                     </TableCell>
+
                                                     {/* Product */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <p className="text-[11px] font-bold text-slate-700 truncate max-w-[150px] font-mono" title={txn.productId}>
+                                                    <TableCell className="px-2 md:px-4 py-3 hidden lg:table-cell">
+                                                        <p className="text-[10px] font-bold text-slate-500 truncate max-w-[120px] font-mono" title={txn.productId}>
                                                             {txn.productId || "—"}
                                                         </p>
                                                     </TableCell>
+
                                                     {/* Event Type */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <Badge className={cn("text-[9px] font-black uppercase border rounded-lg px-2 py-0.5", eventConfig.color)}>
+                                                    <TableCell className="px-2 md:px-4 py-3">
+                                                        <Badge className={cn("text-[9px] font-black uppercase border rounded-md px-2 py-0.5", eventConfig.color)}>
                                                             {eventConfig.label}
                                                         </Badge>
                                                     </TableCell>
-                                                    {/* Gross Amount */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <span className="text-xs font-black text-slate-900 tabular-nums">
-                                                            ${txn.grossAmount?.toFixed(2) || "0.00"}
-                                                        </span>
+
+                                                    {/* Amount (Gross/Net combined for mobile space) */}
+                                                    <TableCell className="px-2 md:px-4 py-3">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-xs font-black text-slate-900 tabular-nums">
+                                                                ${(txn.grossAmount || txn.amount)?.toFixed(2) || "0.00"}
+                                                            </span>
+                                                            {txn.netAmount > 0 && txn.netAmount !== (txn.grossAmount || txn.amount) && (
+                                                                <span className="text-[9px] font-bold text-emerald-600 tabular-nums">
+                                                                    Net: ${txn.netAmount.toFixed(2)}
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </TableCell>
-                                                    {/* Net Amount */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <span className="text-xs font-bold text-emerald-600 tabular-nums">
-                                                            ${txn.netAmount?.toFixed(2) || "0.00"}
-                                                        </span>
-                                                    </TableCell>
+
                                                     {/* Platform */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <span className="text-[11px] font-bold text-slate-600">
+                                                    <TableCell className="px-2 md:px-4 py-3 hidden sm:table-cell">
+                                                        <span className="text-[10px] font-bold text-slate-600 uppercase">
                                                             {PLATFORM_MAP[txn.platform] || txn.platform || "—"}
                                                         </span>
                                                     </TableCell>
+
+                                                    {/* Status */}
+                                                    <TableCell className="px-2 md:px-4 py-3">
+                                                        <Badge variant="outline" className={cn("text-[8px] font-black uppercase tracking-widest border px-1.5 py-0", statusClass)}>
+                                                            {status}
+                                                        </Badge>
+                                                    </TableCell>
+
                                                     {/* Transaction ID */}
-                                                    <TableCell className="px-4 py-3">
-                                                        <p className="text-[10px] font-mono text-slate-400 truncate max-w-[100px]" title={txn.transactionId}>
-                                                            {txn.transactionId || "—"}
-                                                        </p>
+                                                    <TableCell className="px-2 md:px-4 py-3 hidden lg:table-cell">
+                                                        <div className="flex items-center gap-1.5">
+                                                            <p className="text-[10px] font-mono text-slate-400 truncate max-w-[140px]" title={txn.transactionId || txn.orderId || txn._id}>
+                                                                {txn.transactionId || txn.orderId || txn._id || "—"}
+                                                            </p>
+                                                        </div>
                                                     </TableCell>
                                                 </TableRow>
                                             );
                                         })
                                     ) : (
                                         <TableRow>
-                                            <TableCell colSpan={8} className="h-48 text-center">
+                                            <TableCell colSpan={9} className="h-48 text-center">
                                                 <div className="flex flex-col items-center justify-center gap-3">
                                                     <Inbox className="w-10 h-10 text-slate-200" />
                                                     <p className="text-sm font-bold text-slate-400">No transactions found</p>

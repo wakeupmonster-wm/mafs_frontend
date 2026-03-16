@@ -35,7 +35,9 @@ import {
     ShieldCheck,
     Gem,
     X,
-    CreditCard as CardIcon
+    CreditCard as CardIcon,
+    CalendarPlus,
+    Gift,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -76,7 +78,8 @@ import {
     clearUserDetail,
     grantSubscription,
     grantConsumables,
-    revokeUserSubscription
+    revokeUserSubscription,
+    extendSubscription
 } from "../store/subscription.slice";
 import { toast } from "sonner";
 import dummyImg from "@/assets/images/dummyImg.jpg";
@@ -101,6 +104,18 @@ export default function ViewSubscriptionDetailPage() {
     const [isRevokeOpen, setIsRevokeOpen] = useState(false);
     const [imageModal, setImageModal] = useState({ open: false, src: "", title: "" });
 
+    // Extend Subscription state
+    const [isExtendOpen, setIsExtendOpen] = useState(false);
+    const [extendDays, setExtendDays] = useState(30);
+    const [extendReason, setExtendReason] = useState("");
+
+    // Grant reason dropdown
+    const [grantReasonType, setGrantReasonType] = useState("");
+    const [grantReasonCustom, setGrantReasonCustom] = useState("");
+
+    // Consumable reason
+    const [consumableReason, setConsumableReason] = useState("Admin Grant");
+
     useEffect(() => {
         if (userId) dispatch(fetchUserDetail(userId));
         return () => dispatch(clearUserDetail());
@@ -111,12 +126,13 @@ export default function ViewSubscriptionDetailPage() {
         subscription: sub,
         recentTransactions = [],
         transactions = [],
+        subscriptionHistory = [],
         wallet,
         user: userInfo
     } = userDetail || {};
 
-    // UI Logic: Consolidate Audit Logs
-    const auditLogs = recentTransactions.length > 0 ? recentTransactions : transactions;
+    // UI Logic: Consolidate Audit Logs (prefer `transactions` — full list, `recentTransactions` is backward compat)
+    const auditLogs = transactions.length > 0 ? transactions : recentTransactions;
 
     // Robust user fallback logic: prioritize the full user object if available from various possible keys
     const user = userInfo || sub?.user || sub?.userId || userDetail?.user || userDetail?.userId;
@@ -129,37 +145,57 @@ export default function ViewSubscriptionDetailPage() {
     }, [sub]);
 
     const handleManualGrant = async () => {
-        if (!grantReason) return toast.error("Please provide a reason");
+        const finalReason = grantReasonType === "Other" ? grantReasonCustom : grantReasonType;
+        if (!finalReason) return toast.error("Please provide a reason");
         const result = await dispatch(grantSubscription({
             userId,
-            data: { planType: grantPlan, durationDays: Number(grantDuration), reason: grantReason }
+            data: { planType: grantPlan, durationDays: Number(grantDuration), reason: finalReason }
         }));
         if (result.meta.requestStatus === "fulfilled") {
             toast.success("Subscription granted successfully");
             setIsGrantOpen(false);
+            setGrantReasonType("");
+            setGrantReasonCustom("");
             dispatch(fetchUserDetail(userId));
+        } else {
+            toast.error(result.payload || "Failed to grant subscription");
         }
     };
 
     const handleGrantConsumables = async () => {
         const result = await dispatch(grantConsumables({
             userId,
-            data: { type: consumableType, quantity: Number(consumableAmount), reason: "Admin Grant" }
+            data: { type: consumableType, quantity: Number(consumableAmount), reason: consumableReason }
         }));
         if (result.meta.requestStatus === "fulfilled") {
             toast.success("Consumables granted successfully");
             setIsConsumableOpen(false);
             dispatch(fetchUserDetail(userId));
+        } else {
+            toast.error(result.payload || "Failed to grant consumables");
         }
     };
 
     const handleRevoke = async () => {
-        const result = await dispatch(revokeUserSubscription(userId));
+        const result = await dispatch(revokeUserSubscription({
+            userId,
+            data: { subscriptionId: sub?._id }
+        }));
         if (result.meta.requestStatus === "fulfilled") {
             toast.success("Subscription revoked");
             setIsRevokeOpen(false);
             dispatch(fetchUserDetail(userId));
+        } else {
+            toast.error(result.payload || "Failed to revoke subscription");
+            setIsRevokeOpen(false);
         }
+    };
+
+    // Helper: Derive source from platform for old records that don't have source field
+    const getSource = (subscription) => {
+        if (subscription?.source) return subscription.source;
+        if (subscription?.platform === "admin_granted") return "ADMIN";
+        return "STORE";
     };
 
     if (userDetailLoading) return <PreLoader />;
@@ -243,6 +279,14 @@ export default function ViewSubscriptionDetailPage() {
                             >
                                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> Manual Grant
                             </Button>
+                            {sub?.status === "ACTIVE" && (
+                                <Button
+                                    onClick={() => setIsExtendOpen(true)}
+                                    className="bg-brand-aqua hover:bg-brand-aqua/90 text-white rounded-2xl h-11 px-6 font-black text-xs uppercase tracking-widest gap-2 shadow-xl shadow-brand-aqua/20 transition-all active:scale-95 flex-1 sm:flex-none"
+                                >
+                                    <CalendarPlus className="w-4 h-4" /> Extend
+                                </Button>
+                            )}
                             <Button
                                 variant="ghost"
                                 onClick={() => setIsRevokeOpen(true)}
@@ -328,6 +372,7 @@ export default function ViewSubscriptionDetailPage() {
                                     <div className="flex flex-col gap-3.5 pt-1">
                                         <InfoRow label="Auto Renew" val={sub?.autoRenew ? "ENABLED" : "DISABLED"} isGreen={sub?.autoRenew} />
                                         <InfoRow label="Platform" val={sub?.platform?.toUpperCase() || "ADMIN_DIRECT"} />
+                                        <InfoRow label="Source" val={getSource(sub)} />
                                         <InfoRow label="Product ID" val={sub?.productId || "manual_grant_v1"} isMono />
                                     </div>
                                 </div>
@@ -335,19 +380,19 @@ export default function ViewSubscriptionDetailPage() {
                         </Card>
                     </div>
 
-                    {/* 4. Transactions Log */}
+                    {/* 4. Transactions Log — All payments and grants */}
                     <div className="lg:col-span-3">
                         <Card className="rounded-[2.5rem] border-white shadow-xl shadow-indigo-100/20 bg-white overflow-hidden border min-h-[400px]">
                             <CardHeader className="bg-slate-50/50 py-5 px-8 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="space-y-1 text-center sm:text-left">
                                     <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center sm:justify-start gap-2">
-                                        <History className="w-4 h-4 text-brand-aqua" /> Transaction Audit
+                                        <History className="w-4 h-4 text-brand-aqua" /> Transaction History
                                     </CardTitle>
-                                    <p className="text-[11px] font-bold text-slate-400 opacity-80">Full historical records for last 10 activities</p>
+                                    <p className="text-[11px] font-bold text-slate-400 opacity-80">All payments, grants, and admin actions ({auditLogs.length} records)</p>
                                 </div>
                                 <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Database Synced</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Live</span>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0">
@@ -355,44 +400,73 @@ export default function ViewSubscriptionDetailPage() {
                                     <Table>
                                         <TableHeader className="bg-slate-50/30">
                                             <TableRow className="border-none hover:bg-transparent">
-                                                <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-12 w-[180px]">Event</TableHead>
-                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Value</TableHead>
-                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Reference</TableHead>
+                                                <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-12">Event</TableHead>
+                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Amount</TableHead>
+                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Platform</TableHead>
+                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Product</TableHead>
+                                                <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Reason</TableHead>
                                                 <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-12">Date & Time</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {auditLogs.length > 0 ? (
-                                                auditLogs.map((txn, idx) => (
-                                                    <TableRow key={txn._id || idx} className="border-slate-50 hover:bg-slate-50/80 transition-colors group">
-                                                        <TableCell className="pl-8 py-4">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="w-2 h-2 rounded-full bg-slate-200 group-hover:bg-brand-aqua transition-colors" />
-                                                                <span className="font-black text-xs text-slate-800 uppercase tracking-tight">{txn.eventType || "LOG_ENTRY"}</span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>
-                                                            <span className={cn(
-                                                                "font-black text-xs",
-                                                                txn.amount > 0 ? "text-slate-900" : "text-slate-400"
-                                                            )}>${txn.amount?.toFixed(2) || "0.00"}</span>
-                                                        </TableCell>
-                                                        <TableCell className="font-mono text-[10px] text-slate-400 group-hover:text-slate-600 transition-colors uppercase">
-                                                            {txn.transactionId?.slice(-12) || "SYSTEM_GEN"}
-                                                        </TableCell>
-                                                        <TableCell className="text-right pr-8 text-xs font-bold text-slate-500">
-                                                            {txn.occurredAt ? format(new Date(txn.occurredAt), "MMM dd, yyyy · HH:mm") : "---"}
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))
+                                                auditLogs.map((txn, idx) => {
+                                                    const isAdminAction = ["ADMIN_GRANT", "EXTENSION", "ADMIN_CONSUMABLE_GRANT", "REVOKE"].includes(txn.eventType);
+                                                    return (
+                                                        <TableRow key={txn._id || idx} className="border-slate-50 hover:bg-slate-50/80 transition-colors group">
+                                                            <TableCell className="pl-8 py-4">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className={cn(
+                                                                        "w-2 h-2 rounded-full transition-colors",
+                                                                        isAdminAction ? "bg-brand-aqua" :
+                                                                        txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-500" :
+                                                                        txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-500" :
+                                                                        "bg-slate-200 group-hover:bg-brand-aqua"
+                                                                    )} />
+                                                                    <Badge className={cn(
+                                                                        "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
+                                                                        isAdminAction ? "bg-brand-aqua/10 text-brand-aqua border-brand-aqua/30" :
+                                                                        txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                                                        txn.eventType === "CONSUMABLE_PURCHASE" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
+                                                                        txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-50 text-rose-600 border-rose-100" :
+                                                                        "bg-slate-100 text-slate-600 border-slate-200"
+                                                                    )}>
+                                                                        {txn.eventType || "LOG_ENTRY"}
+                                                                    </Badge>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <span className={cn(
+                                                                    "font-black text-xs",
+                                                                    txn.amount > 0 ? "text-slate-900" : "text-slate-400"
+                                                                )}>
+                                                                    {txn.amount > 0 ? `$${txn.amount?.toFixed(2)}` : "—"}
+                                                                    {txn.currency && txn.amount > 0 && <span className="text-[10px] text-slate-400 ml-1">{txn.currency}</span>}
+                                                                </span>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <span className="text-xs font-bold text-slate-500 uppercase">{txn.platform || "—"}</span>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <span className="font-mono text-[10px] text-slate-400 truncate max-w-[120px] block">{txn.productId || "—"}</span>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <span className="text-[11px] font-bold text-slate-500 truncate max-w-[120px] block">{txn.reason || "—"}</span>
+                                                            </TableCell>
+                                                            <TableCell className="text-right pr-8 text-xs font-bold text-slate-500">
+                                                                {txn.occurredAt ? format(new Date(txn.occurredAt), "MMM dd, yyyy · HH:mm") : "---"}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                })
                                             ) : (
                                                 <TableRow>
-                                                    <TableCell colSpan={4} className="h-64 text-center">
+                                                    <TableCell colSpan={6} className="h-64 text-center">
                                                         <div className="flex flex-col items-center justify-center p-8 opacity-30 group">
                                                             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                                                                 <Database className="w-8 h-8 text-slate-400" />
                                                             </div>
-                                                            <p className="font-black text-xs uppercase tracking-widest text-slate-500">No Historical Data Found</p>
+                                                            <p className="font-black text-xs uppercase tracking-widest text-slate-500">No Transaction Data</p>
                                                             <p className="text-[10px] font-bold text-slate-400 mt-1">Transactions will appear here once processed.</p>
                                                         </div>
                                                     </TableCell>
@@ -401,6 +475,89 @@ export default function ViewSubscriptionDetailPage() {
                                         </TableBody>
                                     </Table>
                                 </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* 5. Subscription History — All past subscriptions */}
+                    <div className="lg:col-span-4">
+                        <Card className="rounded-[2.5rem] border-white shadow-xl shadow-indigo-100/20 bg-white overflow-hidden border">
+                            <CardHeader className="bg-slate-50/50 py-5 px-8 border-b border-slate-100">
+                                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                    <Layers className="w-4 h-4 text-brand-aqua" /> Subscription History
+                                </CardTitle>
+                                <p className="text-[11px] font-bold text-slate-400 opacity-80">All past subscriptions for this user ({subscriptionHistory.length} records)</p>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                {subscriptionHistory.length > 0 ? (
+                                    <div className="overflow-x-auto">
+                                        <Table>
+                                            <TableHeader className="bg-slate-50/30">
+                                                <TableRow className="border-none hover:bg-transparent">
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-12">Plan</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Status</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Platform</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Source</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Auto-Renew</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">Started</TableHead>
+                                                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-12">Expired</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {subscriptionHistory.map((hist, idx) => (
+                                                    <TableRow key={hist._id || idx} className="border-slate-50 hover:bg-slate-50/80 transition-colors">
+                                                        <TableCell className="pl-8 py-3">
+                                                            <Badge className={cn(
+                                                                "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
+                                                                hist.planType?.includes("1_MONTH") || hist.planType === "MONTHLY" ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                                                hist.planType?.includes("3_MONTH") || hist.planType === "QUARTERLY" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
+                                                                hist.planType === "MILESTONE" ? "bg-amber-50 text-amber-600 border-amber-100" :
+                                                                "bg-purple-50 text-purple-600 border-purple-100"
+                                                            )}>
+                                                                {hist.planType}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge className={cn(
+                                                                "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
+                                                                hist.status === "ACTIVE" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                                                hist.status === "REVOKED" ? "bg-red-50 text-red-600 border-red-100" :
+                                                                hist.status === "EXPIRED" ? "bg-rose-50 text-rose-500 border-rose-100" :
+                                                                "bg-slate-100 text-slate-500 border-slate-200"
+                                                            )}>
+                                                                {hist.status}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell className="text-xs font-bold text-slate-600 uppercase">{hist.platform}</TableCell>
+                                                        <TableCell className="text-xs font-bold text-slate-600 uppercase">{getSource(hist)}</TableCell>
+                                                        <TableCell className="text-center">
+                                                            <Badge className={cn(
+                                                                "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
+                                                                hist.autoRenew ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-slate-50 text-slate-400 border-slate-200"
+                                                            )}>
+                                                                {hist.autoRenew ? "Yes" : "No"}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell className="text-xs font-bold text-slate-500">
+                                                            {hist.startedAt ? format(new Date(hist.startedAt), "MMM dd, yyyy") : "-"}
+                                                        </TableCell>
+                                                        <TableCell className="text-right pr-8 text-xs font-bold text-slate-500">
+                                                            {hist.expiresAt ? format(new Date(hist.expiresAt), "MMM dd, yyyy") : "-"}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center p-12 opacity-30">
+                                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                            <Layers className="w-8 h-8 text-slate-400" />
+                                        </div>
+                                        <p className="font-black text-xs uppercase tracking-widest text-slate-500">No Past Subscriptions</p>
+                                        <p className="text-[10px] font-bold text-slate-400 mt-1">This is the user's first subscription.</p>
+                                    </div>
+                                )}
                             </CardContent>
                         </Card>
                     </div>
@@ -465,26 +622,40 @@ export default function ViewSubscriptionDetailPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Duration (Days)</Label>
-                                <Input
-                                    type="number"
-                                    className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
-                                    value={grantDuration}
-                                    onChange={(e) => setGrantDuration(e.target.value)}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Reason</Label>
-                                <Input
-                                    placeholder="e.g. Support"
-                                    className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
-                                    value={grantReason}
-                                    onChange={(e) => setGrantReason(e.target.value)}
-                                />
-                            </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Duration (Days)</Label>
+                            <Input
+                                type="number"
+                                className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
+                                value={grantDuration}
+                                onChange={(e) => setGrantDuration(e.target.value)}
+                            />
                         </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Reason</Label>
+                            <Select value={grantReasonType} onValueChange={setGrantReasonType}>
+                                <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm">
+                                    <SelectValue placeholder="Select reason..." />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-xl border-none shadow-xl">
+                                    <SelectItem value="1000th User Reward" className="text-sm font-bold">1000th User Reward</SelectItem>
+                                    <SelectItem value="Giveaway" className="text-sm font-bold">Giveaway</SelectItem>
+                                    <SelectItem value="Compensation" className="text-sm font-bold">Compensation</SelectItem>
+                                    <SelectItem value="Other" className="text-sm font-bold">Other (Custom)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        {grantReasonType === "Other" && (
+                            <div className="space-y-2">
+                                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Custom Reason</Label>
+                                <Input
+                                    placeholder="Enter custom reason..."
+                                    className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
+                                    value={grantReasonCustom}
+                                    onChange={(e) => setGrantReasonCustom(e.target.value)}
+                                />
+                            </div>
+                        )}
                     </div>
                     <DialogFooter className="gap-3">
                         <Button variant="ghost" className="h-11 rounded-xl font-bold text-xs uppercase tracking-widest px-6" onClick={() => setIsGrantOpen(false)}>Abort</Button>
@@ -510,6 +681,69 @@ export default function ViewSubscriptionDetailPage() {
                         <Button variant="ghost" className="h-12 rounded-2xl font-black text-xs uppercase tracking-widest px-8" onClick={() => setIsRevokeOpen(false)}>Dismiss</Button>
                         <Button className="bg-rose-500 h-12 rounded-2xl px-10 font-black text-white hover:bg-rose-600 text-xs uppercase tracking-widest shadow-2xl shadow-rose-500/30" onClick={handleRevoke} disabled={actionLoading}>
                             Revoke Now
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            {/* Extend Subscription Dialog */}
+            <Dialog open={isExtendOpen} onOpenChange={setIsExtendOpen}>
+                <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-sm font-jakarta">
+                    <DialogHeader>
+                        <DialogTitle className="text-xl font-black text-slate-900">Extend Subscription</DialogTitle>
+                        <DialogDescription className="text-xs font-bold uppercase tracking-widest text-slate-400">Add extra days to current subscription</DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-5 pt-4">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Days to Add</Label>
+                            <Input
+                                type="number"
+                                className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
+                                value={extendDays}
+                                onChange={(e) => setExtendDays(e.target.value)}
+                                min={1}
+                                max={365}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Reason</Label>
+                            <Input
+                                placeholder="e.g. Compensation for downtime"
+                                className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
+                                value={extendReason}
+                                onChange={(e) => setExtendReason(e.target.value)}
+                            />
+                        </div>
+                        {sub?.expiresAt && (
+                            <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Preview</p>
+                                <p className="text-xs font-bold text-slate-600">
+                                    Current: {format(new Date(sub.expiresAt), "MMM dd, yyyy")}
+                                </p>
+                                <p className="text-xs font-black text-brand-aqua">
+                                    New: {format(new Date(new Date(sub.expiresAt).getTime() + (Number(extendDays) || 0) * 86400000), "MMM dd, yyyy")}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                    <DialogFooter className="mt-6 gap-3">
+                        <Button variant="ghost" className="h-11 rounded-xl font-bold text-xs uppercase tracking-widest px-6" onClick={() => setIsExtendOpen(false)}>Cancel</Button>
+                        <Button
+                            className="bg-brand-aqua h-11 rounded-xl px-8 font-black text-white hover:bg-brand-aqua/90 text-xs uppercase tracking-widest shadow-lg shadow-brand-aqua/20"
+                            onClick={async () => {
+                                if (!extendReason) return toast.error("Please provide a reason");
+                                const result = await dispatch(extendSubscription({ userId, data: { days: Number(extendDays), reason: extendReason } }));
+                                if (result.meta.requestStatus === "fulfilled") {
+                                    toast.success(result.payload?.message || "Subscription extended successfully");
+                                    setIsExtendOpen(false);
+                                    setExtendDays(30);
+                                    setExtendReason("");
+                                    dispatch(fetchUserDetail(userId));
+                                }
+                            }}
+                            disabled={actionLoading}
+                        >
+                            {actionLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Extend Now"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

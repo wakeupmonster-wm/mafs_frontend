@@ -10,6 +10,7 @@ import {
     manualGrantAPI,
     grantConsumableAPI,
     revokeSubscriptionAPI,
+    extendSubscriptionAPI,
     getDashboardStatsAPI,
     getSubscriptionStatsAPI,
 } from "../services/subscription.services";
@@ -18,9 +19,9 @@ import {
 
 export const fetchDashboardStats = createAsyncThunk(
     "subscription/fetchDashboardStats",
-    async (_, { rejectWithValue }) => {
+    async (params, { rejectWithValue }) => {
         try {
-            const response = await getDashboardStatsAPI();
+            const response = await getDashboardStatsAPI(params);
             if (response && response.success) return response.data;
             return rejectWithValue(response.message || "Failed to fetch dashboard");
         } catch (error) {
@@ -166,11 +167,24 @@ export const grantConsumables = createAsyncThunk(
 
 export const revokeUserSubscription = createAsyncThunk(
     "subscription/revokeSubscription",
-    async (userId, { rejectWithValue }) => {
+    async ({ userId, data }, { rejectWithValue }) => {
         try {
-            const response = await revokeSubscriptionAPI(userId);
+            const response = await revokeSubscriptionAPI(userId, data);
             if (response && response.success) return response;
             return rejectWithValue(response.message || "Failed to revoke");
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Server Error");
+        }
+    }
+);
+
+export const extendSubscription = createAsyncThunk(
+    "subscription/extendSubscription",
+    async ({ userId, data }, { rejectWithValue }) => {
+        try {
+            const response = await extendSubscriptionAPI(userId, data);
+            if (response && response.success) return response;
+            return rejectWithValue(response.message || "Failed to extend subscription");
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || "Server Error");
         }
@@ -296,6 +310,9 @@ const subscriptionSlice = createSlice({
             .addCase(revokeUserSubscription.pending, (state) => { state.actionLoading = true; })
             .addCase(revokeUserSubscription.fulfilled, (state) => { state.actionLoading = false; })
             .addCase(revokeUserSubscription.rejected, (state, action) => { state.actionLoading = false; state.error = action.payload; })
+            .addCase(extendSubscription.pending, (state) => { state.actionLoading = true; })
+            .addCase(extendSubscription.fulfilled, (state) => { state.actionLoading = false; })
+            .addCase(extendSubscription.rejected, (state, action) => { state.actionLoading = false; state.error = action.payload; })
             // Analytics Mappings
             .addCase(fetchRevenueAnalytics.fulfilled, (state, action) => {
                 const data = action.payload;

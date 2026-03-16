@@ -85,24 +85,60 @@ export default function SubscriptionPage() {
     const [lastRefresh, setLastRefresh] = useState(null);
     const [timeRange, setTimeRange] = useState("7");
 
-    // Initial fetch + auto-refresh every 5 minutes
+    // Fetch + auto-refresh every 5 minutes
     const refreshDashboard = useCallback(() => {
-        dispatch(fetchDashboardStats());
+        const payload = timeRange === "all" ? { timeFilter: "allTime" } : { timeFilter: `last${timeRange}` };
+        dispatch(fetchDashboardStats(payload));
         setLastRefresh(new Date());
-    }, [dispatch]);
+    }, [dispatch, timeRange]);
 
     useEffect(() => {
         refreshDashboard();
         const interval = setInterval(refreshDashboard, 5 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [refreshDashboard]);
+
+    // Cleanup state only on component unmount
+    useEffect(() => {
         return () => {
-            clearInterval(interval);
             dispatch(clearSubscriptionState());
         };
-    }, [dispatch, refreshDashboard]);
+    }, [dispatch]);
 
     const kpis = dashboardStats?.kpis;
     const activity = dashboardStats?.last24HoursActivity;
     const milestone = dashboardStats?.milestone;
+
+    // Date padding logic to ensure the entire filter timeframe is shown on chart
+    const paddedRevenueTrend = useMemo(() => {
+        const rawData = dashboardStats?.revenueTrend || [];
+        if (timeRange === "all" || isNaN(Number(timeRange))) return rawData;
+
+        const days = Number(timeRange);
+        const padded = [];
+        const today = new Date();
+
+        const getLocalYYYYMMDD = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        for (let i = days - 1; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const dateString = getLocalYYYYMMDD(d);
+            
+            const existingPoint = rawData.find(item => item._id === dateString);
+            
+            padded.push({
+                _id: dateString,
+                dailyRevenue: existingPoint ? existingPoint.dailyRevenue : 0,
+            });
+        }
+        return padded;
+    }, [dashboardStats?.revenueTrend, timeRange]);
 
     // Section 1: Unified 5-Item KPI Row
     const pulseCards = useMemo(() => {
@@ -151,14 +187,6 @@ export default function SubscriptionPage() {
         ];
     }, [kpis, activity]);
 
-    // Revenue Trend Filter Logic
-    const filteredRevenueTrend = useMemo(() => {
-        const rawData = dashboardStats?.revenueTrend || [];
-        if (timeRange === "all" || !timeRange) return rawData;
-        const days = Number(timeRange);
-        return rawData.slice(-days);
-    }, [dashboardStats?.revenueTrend, timeRange]);
-
     return (
         <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8 font-jakarta">
             <motion.div
@@ -190,7 +218,7 @@ export default function SubscriptionPage() {
                 {dashboardLoading && !dashboardStats && <PreLoader />}
 
                 {/* Section 1: Unified KPI Block */}
-                {!dashboardLoading && pulseCards.length > 0 && (
+                {pulseCards.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 px-2">
                         {pulseCards.map((card, i) => (
                             <motion.div
@@ -242,13 +270,13 @@ export default function SubscriptionPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="h-[250px] p-0 pr-6">
-                            {dashboardLoading ? (
+                            {(dashboardLoading && !dashboardStats) ? (
                                 <div className="flex items-center justify-center h-full">
                                     <Skeleton className="w-[90%] h-[80%] rounded-2xl" />
                                 </div>
                             ) : (
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={filteredRevenueTrend}>
+                                    <AreaChart data={paddedRevenueTrend}>
                                         <defs>
                                             <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.3} />
@@ -262,6 +290,11 @@ export default function SubscriptionPage() {
                                             tickLine={false}
                                             tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }}
                                             dy={10}
+                                            tickFormatter={(val) => {
+                                                if (!val) return '';
+                                                const d = new Date(val);
+                                                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                                            }}
                                         />
                                         <YAxis
                                             axisLine={false}
@@ -292,7 +325,7 @@ export default function SubscriptionPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="px-6 pb-6">
-                            {dashboardLoading ? (
+                            {(dashboardLoading && !dashboardStats) ? (
                                 <div className="space-y-4">
                                     {[1, 2].map(i => <Skeleton key={i} className="h-12 rounded-2xl" />)}
                                 </div>

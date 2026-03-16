@@ -23,6 +23,8 @@ export const SUBSCRIPTION_ENDPOINTS = {
     `${BASE_URL}/api/v1/admin/subscription/users/${userId}/grant-consumable`,
   REVOKE_SUBSCRIPTION: (userId) =>
     `${BASE_URL}/api/v1/admin/subscription/users/${userId}/revoke`,
+  EXTEND_SUBSCRIPTION: (userId) =>
+    `${BASE_URL}/api/v1/admin/subscription/users/${userId}/extend`,
 
   /* --- Dashboard / Analytics --- */
   GET_DASHBOARD: `${BASE_URL}/api/v1/admin/subscription/dashboard`,

@@ -92,15 +92,20 @@ export const grantConsumableAPI = async (userId, data) => {
     return apiConnector("POST", url, data);
 };
 
-export const revokeSubscriptionAPI = async (userId) => {
+export const revokeSubscriptionAPI = async (userId, data = {}) => {
     const url = SUBSCRIPTION_ENDPOINTS.REVOKE_SUBSCRIPTION(userId);
-    return apiConnector("POST", url);
+    return apiConnector("POST", url, data);
+};
+
+export const extendSubscriptionAPI = async (userId, data) => {
+    const url = SUBSCRIPTION_ENDPOINTS.EXTEND_SUBSCRIPTION(userId);
+    return apiConnector("POST", url, data);
 };
 
 /*================= DASHBOARD / ANALYTICS =====================*/
 
-export const getDashboardStatsAPI = async () => {
-    return apiConnector("GET", SUBSCRIPTION_ENDPOINTS.GET_DASHBOARD);
+export const getDashboardStatsAPI = async (params = {}) => {
+    return apiConnector("GET", SUBSCRIPTION_ENDPOINTS.GET_DASHBOARD, null, {}, params);
 };
 
 export const getSubscriptionStatsAPI = async (params = {}) => {
@@ -117,6 +122,7 @@ export const getTransactionsAPI = async (params = {}) => {
     if (params.platform) queryParams.platform = params.platform;
     if (params.productId) queryParams.productId = params.productId;
     if (params.status) queryParams.status = params.status;
+    if (params.search) queryParams.search = params.search;
     if (params.startDate) queryParams.startDate = params.startDate;
     if (params.endDate) queryParams.endDate = params.endDate;
     if (params.sortBy) queryParams.sortBy = params.sortBy;
