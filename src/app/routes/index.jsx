@@ -134,6 +134,10 @@ const AnalyticsPage = lazy(() =>
   import("@/modules/dashboard/pages/analytics.page")
 );
 
+const FakeProfileManagementPage = lazy(() =>
+  import("@/modules/fake-profiles/pages/fake-profile-management.Page")
+);
+
 const SettingsPage = lazy(() =>
   import("@/modules/settings/pages/settings.page")
 );
@@ -270,6 +274,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PreLoader />}>
                 <PendingVerifications />
+              </Suspense>
+            ),
+          },
+          {
+            path: "fake-profiles",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <FakeProfileManagementPage />
               </Suspense>
             ),
           },

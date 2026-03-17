@@ -18,6 +18,7 @@ import deliveryReducer from "@/modules/giveaway/store/delivery.slice";
 import winnerReducer from "@/modules/giveaway/store/winner.slice";
 import accountReducer from "@/modules/accounts/store/account.slice";
 import subscriptionReducer from "@/modules/subsciptions/store/subscription.slice";
+import fakeProfilesReducer from "@/modules/fake-profiles/store/fake-profile.slice";
  
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -39,4 +40,5 @@ export const rootReducer = combineReducers({
   faqs: faqsReducer,
   privacypolicy: privacypolicyReducer,
   termsAndcondition: termConditionReducer,
+  fakeProfiles: fakeProfilesReducer,
 });

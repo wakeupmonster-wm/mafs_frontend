@@ -58,6 +58,8 @@ import { format, startOfWeek, startOfMonth } from "date-fns";
 import { PreLoader } from "@/app/loader/preloader";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
+import Last24HoursPieChart from "./Last24HoursPieChart";
+import PlanDistributionChart from "./PlanDistributionChart";
 
 // Same color maps as subscription.page.jsx
 const colorMap = {
@@ -103,6 +105,19 @@ export default function SubscriptionDashboard() {
     // Chart Filters
     const [chartTimeframe, setChartTimeframe] = useState("daily"); // daily, weekly, monthly
     const [chartType, setChartType] = useState("all"); // all, subscription, consumable
+    const [activeSubFilters, setActiveSubFilters] = useState([]); // holds active sub-options like 'subscription_1_month', 'consumable_super_keen'
+
+    // Auto-select all sub-filters when main filter changes
+    useEffect(() => {
+        if (chartType === "subscription") {
+            setActiveSubFilters(["subscription_1_month", "subscription_3_month"]);
+        } else if (chartType === "consumable") {
+            setActiveSubFilters(["consumable_super_keen", "consumable_boost"]);
+        } else {
+            setActiveSubFilters([]);
+        }
+    }, [chartType]);
+
     const [growthTimeframe, setGrowthTimeframe] = useState("daily"); // daily, weekly, monthly
 
     const refreshDashboard = useCallback(() => {
@@ -122,11 +137,11 @@ export default function SubscriptionDashboard() {
         if (!kpis) return [];
         return [
             {
-                label: "Total Users",
-                val: kpis.totalUsers || 0,
+                label: "Consumable Revenue",
+                val: kpis.consumableRevenue || 0,
                 icon: <Users className="w-6 h-6" />,
                 color: "blue",
-                description: "Total registered users",
+                description: "Super Keen + Supercharge sales this month",
             },
             {
                 label: "Active Subscribers",
@@ -202,15 +217,19 @@ export default function SubscriptionDashboard() {
 
             while (curr <= end) {
                 const key = format(curr, "MMM dd");
-                groups[key] = { name: key, subscription: 0, consumable: 0, compareDate: curr.getTime() };
+                groups[key] = { name: key, subscription: 0, subscription_1_month: 0, subscription_3_month: 0, consumable: 0, consumable_super_keen: 0, consumable_boost: 0, compareDate: curr.getTime() };
                 curr.setDate(curr.getDate() + 1);
             }
 
             rawData.forEach((item) => {
                 const key = format(new Date(item.day), "MMM dd");
                 if (groups[key]) {
-                    groups[key].subscription += item.subscription || 0;
-                    groups[key].consumable += item.consumable || 0;
+                    groups[key].subscription += (item["1_MONTH"] || 0) + (item["3_MONTH"] || 0) + (item.subscription || 0);
+                    groups[key].subscription_1_month += item["1_MONTH"] || 0;
+                    groups[key].subscription_3_month += item["3_MONTH"] || 0;
+                    groups[key].consumable += (item.SUPER_KEEN || 0) + (item.BOOST || 0) + (item.other || 0) + (item.consumable || 0);
+                    groups[key].consumable_super_keen += item.SUPER_KEEN || 0;
+                    groups[key].consumable_boost += item.BOOST || 0;
                 }
             });
         } else if (chartTimeframe === "weekly") {
@@ -227,7 +246,7 @@ export default function SubscriptionDashboard() {
                 endOfWeekDate.setDate(endOfWeekDate.getDate() + 6); // Add 6 to reach Saturday
 
                 const key = `${format(startOfWeekDate, "MMM dd")} - ${format(endOfWeekDate, "dd")} (Sat)`;
-                groups[key] = { name: key, subscription: 0, consumable: 0, compareDate: endOfWeekDate.getTime() };
+                groups[key] = { name: key, subscription: 0, subscription_1_month: 0, subscription_3_month: 0, consumable: 0, consumable_super_keen: 0, consumable_boost: 0, compareDate: endOfWeekDate.getTime() };
                 curr.setDate(curr.getDate() + 7);
             }
 
@@ -241,8 +260,12 @@ export default function SubscriptionDashboard() {
 
                 const key = `${format(startOfWeekDate, "MMM dd")} - ${format(endOfWeekDate, "dd")} (Sat)`;
                 if (groups[key]) {
-                    groups[key].subscription += item.subscription || 0;
-                    groups[key].consumable += item.consumable || 0;
+                    groups[key].subscription += (item["1_MONTH"] || 0) + (item["3_MONTH"] || 0) + (item.subscription || 0);
+                    groups[key].subscription_1_month += item["1_MONTH"] || 0;
+                    groups[key].subscription_3_month += item["3_MONTH"] || 0;
+                    groups[key].consumable += (item.SUPER_KEEN || 0) + (item.BOOST || 0) + (item.other || 0) + (item.consumable || 0);
+                    groups[key].consumable_super_keen += item.SUPER_KEEN || 0;
+                    groups[key].consumable_boost += item.BOOST || 0;
                 }
             });
         } else if (chartTimeframe === "monthly") {
@@ -254,12 +277,20 @@ export default function SubscriptionDashboard() {
                     groups[key] = {
                         name: key,
                         subscription: 0,
+                        subscription_1_month: 0,
+                        subscription_3_month: 0,
                         consumable: 0,
+                        consumable_super_keen: 0,
+                        consumable_boost: 0,
                         compareDate: new Date(d.getFullYear(), d.getMonth(), 1).getTime()
                     };
                 }
-                groups[key].subscription += item.subscription || 0;
-                groups[key].consumable += item.consumable || 0;
+                groups[key].subscription += (item["1_MONTH"] || 0) + (item["3_MONTH"] || 0) + (item.subscription || 0);
+                groups[key].subscription_1_month += item["1_MONTH"] || 0;
+                groups[key].subscription_3_month += item["3_MONTH"] || 0;
+                groups[key].consumable += (item.SUPER_KEEN || 0) + (item.BOOST || 0) + (item.other || 0) + (item.consumable || 0);
+                groups[key].consumable_super_keen += item.SUPER_KEEN || 0;
+                groups[key].consumable_boost += item.BOOST || 0;
             });
         }
 
@@ -268,15 +299,28 @@ export default function SubscriptionDashboard() {
             total: (item.subscription || 0) + (item.consumable || 0)
         })).sort((a, b) => a.compareDate - b.compareDate);
 
-        // 3. Apply type filtering
+        // 3. Apply type filtering dynamically based on activeSubFilters
         if (chartType === "subscription") {
-            return grouped.map(item => ({ name: item.name, subscription: item.subscription }));
+            return grouped.map(item => {
+                let res = { name: item.name };
+                if (activeSubFilters.includes("subscription_1_month")) res.subscription_1_month = item.subscription_1_month;
+                if (activeSubFilters.includes("subscription_3_month")) res.subscription_3_month = item.subscription_3_month;
+                // if nothing selected, maybe fallback to all subscription?
+                if (activeSubFilters.length === 0) res.subscription = item.subscription;
+                return res;
+            });
         } else if (chartType === "consumable") {
-            return grouped.map(item => ({ name: item.name, consumable: item.consumable }));
+            return grouped.map(item => {
+                let res = { name: item.name };
+                if (activeSubFilters.includes("consumable_super_keen")) res.consumable_super_keen = item.consumable_super_keen;
+                if (activeSubFilters.includes("consumable_boost")) res.consumable_boost = item.consumable_boost;
+                if (activeSubFilters.length === 0) res.consumable = item.consumable;
+                return res;
+            });
         }
 
         return grouped.map(item => ({ name: item.name, total: item.total }));
-    }, [charts, chartTimeframe, chartType]);
+    }, [charts, chartTimeframe, chartType, activeSubFilters]);
 
     const growthData = useMemo(() => {
         let rawData = charts?.subscriberGrowth || [];
@@ -316,8 +360,8 @@ export default function SubscriptionDashboard() {
             rawData.forEach((item) => {
                 const key = format(new Date(item.day), "MMM dd");
                 if (groups[key]) {
-                    groups[key].new += item.new || 0;
-                    groups[key].cancelled += item.cancelled || 0;
+                    groups[key].new += item.newSubscriptions ?? item.new ?? 0;
+                    groups[key].cancelled += item.cancellations ?? item.cancelled ?? 0;
                     groups[key].net = groups[key].new - groups[key].cancelled;
                 }
             });
@@ -349,8 +393,8 @@ export default function SubscriptionDashboard() {
 
                 const key = `${format(startOfWeekDate, "MMM dd")} - ${format(endOfWeekDate, "dd")} (Sat)`;
                 if (groups[key]) {
-                    groups[key].new += item.new || 0;
-                    groups[key].cancelled += item.cancelled || 0;
+                    groups[key].new += item.newSubscriptions ?? item.new ?? 0;
+                    groups[key].cancelled += item.cancellations ?? item.cancelled ?? 0;
                     groups[key].net = groups[key].new - groups[key].cancelled;
                 }
             });
@@ -367,8 +411,8 @@ export default function SubscriptionDashboard() {
                         compareDate: new Date(d.getFullYear(), d.getMonth(), 1).getTime()
                     };
                 }
-                groups[key].new += item.new || 0;
-                groups[key].cancelled += item.cancelled || 0;
+                groups[key].new += item.newSubscriptions ?? item.new ?? 0;
+                groups[key].cancelled += item.cancellations ?? item.cancelled ?? 0;
                 groups[key].net = groups[key].new - groups[key].cancelled;
             });
         }
@@ -582,6 +626,65 @@ export default function SubscriptionDashboard() {
                                     Revenue Trend
                                 </CardTitle>
                                 <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-relaxed">Subscription vs consumable revenue</p>
+
+                                {/* Dynamic Checkboxes for Sub-filters */}
+                                {chartType === "subscription" && (
+                                    <div className="flex items-center gap-3 mt-2">
+                                        <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-indigo-500 focus:ring-indigo-500 w-3 h-3 cursor-pointer"
+                                                checked={activeSubFilters.includes("subscription_1_month")}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) setActiveSubFilters(prev => [...prev, "subscription_1_month"]);
+                                                    else setActiveSubFilters(prev => prev.filter(f => f !== "subscription_1_month"));
+                                                }}
+                                            />
+                                            1 Month Sub
+                                        </label>
+                                        <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-indigo-700 focus:ring-indigo-700 w-3 h-3 cursor-pointer"
+                                                checked={activeSubFilters.includes("subscription_3_month")}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) setActiveSubFilters(prev => [...prev, "subscription_3_month"]);
+                                                    else setActiveSubFilters(prev => prev.filter(f => f !== "subscription_3_month"));
+                                                }}
+                                            />
+                                            3 Month Sub
+                                        </label>
+                                    </div>
+                                )}
+
+                                {chartType === "consumable" && (
+                                    <div className="flex items-center gap-3 mt-2">
+                                        <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-amber-400 focus:ring-amber-400 w-3 h-3 cursor-pointer"
+                                                checked={activeSubFilters.includes("consumable_super_keen")}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) setActiveSubFilters(prev => [...prev, "consumable_super_keen"]);
+                                                    else setActiveSubFilters(prev => prev.filter(f => f !== "consumable_super_keen"));
+                                                }}
+                                            />
+                                            Super Keen
+                                        </label>
+                                        <label className="flex items-center gap-1.5 text-[10px] font-bold text-slate-600 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                className="rounded text-amber-600 focus:ring-amber-600 w-3 h-3 cursor-pointer"
+                                                checked={activeSubFilters.includes("consumable_boost")}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) setActiveSubFilters(prev => [...prev, "consumable_boost"]);
+                                                    else setActiveSubFilters(prev => prev.filter(f => f !== "consumable_boost"));
+                                                }}
+                                            />
+                                            Boost
+                                        </label>
+                                    </div>
+                                )}
                             </div>
                             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                                 <Select value={chartTimeframe} onValueChange={setChartTimeframe}>
@@ -595,13 +698,13 @@ export default function SubscriptionDashboard() {
                                     </SelectContent>
                                 </Select>
                                 <Select value={chartType} onValueChange={setChartType}>
-                                    <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[130px]">
+                                    <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[145px]">
                                         <SelectValue placeholder="Revenue Type" />
                                     </SelectTrigger>
                                     <SelectContent className="rounded-2xl border-none shadow-xl">
                                         <SelectItem value="all" className="text-xs rounded-xl cursor-pointer">All Revenue</SelectItem>
-                                        <SelectItem value="subscription" className="text-xs rounded-xl cursor-pointer">Subscriptions</SelectItem>
-                                        <SelectItem value="consumable" className="text-xs rounded-xl cursor-pointer">Consumables</SelectItem>
+                                        <SelectItem value="subscription" className="text-xs rounded-xl cursor-pointer">All Subscriptions</SelectItem>
+                                        <SelectItem value="consumable" className="text-xs rounded-xl cursor-pointer">All Consumables</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -620,11 +723,23 @@ export default function SubscriptionDashboard() {
                                         {chartType === "all" && (
                                             <Bar dataKey="total" fill="#46C7CD" radius={[8, 8, 0, 0]} name="Total Revenue" barSize={32} />
                                         )}
-                                        {chartType === "subscription" && (
+                                        {chartType === "subscription" && activeSubFilters.length === 0 && (
                                             <Bar dataKey="subscription" fill="#4F46E5" radius={[8, 8, 0, 0]} name="Subscriptions" barSize={32} />
                                         )}
-                                        {chartType === "consumable" && (
+                                        {chartType === "subscription" && activeSubFilters.includes("subscription_1_month") && (
+                                            <Bar dataKey="subscription_1_month" fill="#6366f1" radius={[8, 8, 0, 0]} name="1 Month Sub" barSize={32} />
+                                        )}
+                                        {chartType === "subscription" && activeSubFilters.includes("subscription_3_month") && (
+                                            <Bar dataKey="subscription_3_month" fill="#4338ca" radius={[8, 8, 0, 0]} name="3 Month Sub" barSize={32} />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.length === 0 && (
                                             <Bar dataKey="consumable" fill="#f59e0b" radius={[8, 8, 0, 0]} name="Consumables" barSize={32} />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.includes("consumable_super_keen") && (
+                                            <Bar dataKey="consumable_super_keen" fill="#fbbf24" radius={[8, 8, 0, 0]} name="Super Keen" barSize={32} />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.includes("consumable_boost") && (
+                                            <Bar dataKey="consumable_boost" fill="#d97706" radius={[8, 8, 0, 0]} name="Boost" barSize={32} />
                                         )}
                                         <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', paddingTop: '10px' }} />
                                     </BarChart>
@@ -654,11 +769,23 @@ export default function SubscriptionDashboard() {
                                         {chartType === "all" && (
                                             <Area type="monotone" dataKey="total" stroke="#46C7CD" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" name="Total Revenue" />
                                         )}
-                                        {chartType === "subscription" && (
+                                        {chartType === "subscription" && activeSubFilters.length === 0 && (
                                             <Area type="monotone" dataKey="subscription" stroke="#4F46E5" strokeWidth={3} fillOpacity={1} fill="url(#colorSubs)" name="Subscriptions" />
                                         )}
-                                        {chartType === "consumable" && (
+                                        {chartType === "subscription" && activeSubFilters.includes("subscription_1_month") && (
+                                            <Area type="monotone" dataKey="subscription_1_month" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorSubs)" name="1 Month Sub" />
+                                        )}
+                                        {chartType === "subscription" && activeSubFilters.includes("subscription_3_month") && (
+                                            <Area type="monotone" dataKey="subscription_3_month" stroke="#4338ca" strokeWidth={3} fillOpacity={1} fill="url(#colorSubs)" name="3 Month Sub" />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.length === 0 && (
                                             <Area type="monotone" dataKey="consumable" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorCons)" name="Consumables" />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.includes("consumable_super_keen") && (
+                                            <Area type="monotone" dataKey="consumable_super_keen" stroke="#fbbf24" strokeWidth={3} fillOpacity={1} fill="url(#colorCons)" name="Super Keen" />
+                                        )}
+                                        {chartType === "consumable" && activeSubFilters.includes("consumable_boost") && (
+                                            <Area type="monotone" dataKey="consumable_boost" stroke="#d97706" strokeWidth={3} fillOpacity={1} fill="url(#colorCons)" name="Boost" />
                                         )}
                                         <Legend verticalAlign="top" height={36} iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', color: '#64748b' }} />
                                     </AreaChart>
@@ -779,7 +906,7 @@ export default function SubscriptionDashboard() {
                     </Card>
 
                     {/* Plan Distribution */}
-                    <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
+                    {/* <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                             <div className="space-y-1">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
@@ -807,7 +934,9 @@ export default function SubscriptionDashboard() {
                                 </BarChart>
                             </ResponsiveContainer>
                         </CardContent>
-                    </Card>
+                    </Card> */}
+
+                    <PlanDistributionChart planData={planData} />
                 </div>
 
                 {/* Third Row: Best Selling Products */}
@@ -833,7 +962,7 @@ export default function SubscriptionDashboard() {
                                             </div>
                                             <div className="min-w-0">
                                                 <p className="text-xs font-black tracking-wide text-slate-700 truncate max-w-[120px]" title={product._id}>
-                                                    {product._id.split('.').pop().replace(/_/g, ' ')}
+                                                    {product.displayName ? product.displayName.split('.').pop().replace(/_/g, ' ') : 'Unknown Product'}
                                                 </p>
                                                 <p className="text-[10px] font-bold text-brand-aqua uppercase tracking-widest mt-0.5">
                                                     Sales: {product.salesCount}
@@ -852,8 +981,14 @@ export default function SubscriptionDashboard() {
                         </CardContent>
                     </Card>
 
-                    {/* Quick Stats / Last 24 Hours (Placeholder or New Feature) */}
                     {subscriptionStats?.last24HoursActivity && (
+                        <Last24HoursPieChart
+                            last24HoursActivity={subscriptionStats.last24HoursActivity}
+                        />
+                    )}
+
+                    {/* Quick Stats / Last 24 Hours (Placeholder or New Feature) */}
+                    {/* {subscriptionStats?.last24HoursActivity && (
                         <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
                             <CardHeader className="pb-4">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
@@ -882,7 +1017,7 @@ export default function SubscriptionDashboard() {
                                 </div>
                             </CardContent>
                         </Card>
-                    )}
+                    )} */}
                 </div>
             </motion.div>
         </div>

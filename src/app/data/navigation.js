@@ -9,6 +9,7 @@ import {
   IconTicket,
   IconFileText,
   IconUserCheck,
+  IconUserPlus,
   IconSettings,
   IconHelp,
 } from "@tabler/icons-react";
@@ -39,6 +40,12 @@ const navigationData = {
       title: "User management",
       url: "/admin/management/users-management",
       icon: IconUsers,
+      badge: null,
+    },
+    {
+      title: "Fake profiles",
+      url: "/admin/management/fake-profiles",
+      icon: IconUserPlus,
       badge: null,
     },
     {
