@@ -6,6 +6,8 @@ import {
   ToggleLeft,
   ToggleRight,
   MapPin,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,6 +67,32 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
             </AvatarFallback>
           </Avatar>
           <span className="font-semibold text-[11px] truncate max-w-[120px]">{nickname}</span>
+        </div>
+      );
+    },
+  },
+  {
+    id: "phone",
+    header: "Phone",
+    cell: ({ row }) => {
+      const phone = row.original.user?.account?.phone || "-";
+      return (
+        <div className="flex items-center gap-1.5 text-xs text-slate-700">
+          <Phone className="h-3 w-3 text-brand-aqua/80 shrink-0" />
+          <span>{phone}</span>
+        </div>
+      );
+    },
+  },
+  {
+    id: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const email = row.original.user?.account?.email || "-";
+      return (
+        <div className="flex items-center gap-1.5" title={email}>
+          <Mail className="h-3 w-3 text-brand-aqua/80 shrink-0" />
+          <span className="text-[10px] lowercase text-slate-500 max-w-[120px] truncate block">{email}</span>
         </div>
       );
     },

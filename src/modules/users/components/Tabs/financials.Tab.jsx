@@ -137,7 +137,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
             <div className="flex justify-between items-center p-1 px-3">
               <span className="text-sm opacity-70">Member Since</span>
               <span className="text-sm font-bold">
-                {format(new Date(account.createdAt), "MMM dd, yyyy")}
+                {account?.createdAt ? format(new Date(account.createdAt), "MMM dd, yyyy") : "N/A"}
               </span>
             </div>
           </div>
@@ -216,7 +216,9 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                       className="group hover:bg-slate-50/80 transition-colors"
                     >
                       <td className="px-6 py-4 font-medium text-slate-600">
-                        {format(new Date(txn.occurredAt), "dd MMM yyyy")}
+                        {txn?.occurredAt 
+                           ? format(new Date(txn.occurredAt), "dd MMM yyyy") 
+                           : "N/A"}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1 text-slate-900 font-mono text-xs font-bold group-hover:text-indigo-600 transition-colors">
@@ -224,9 +226,9 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                         </div>
                       </td>
                       <td className="px-6 py-4 font-black text-slate-900">
-                        ${txn.amount.toFixed(2)}{" "}
+                        ${txn.amount?.toFixed(2) || "0.00"}{" "}
                         <span className="text-[10px] text-slate-400">
-                          {txn.currency}
+                          {txn.currency || "USD"}
                         </span>
                       </td>
                       <td className="px-6 py-4">

@@ -101,6 +101,12 @@ export default function ViewSubscriptionDetailPage() {
     const [consumableAmount, setConsumableAmount] = useState(5);
     const [isConsumableOpen, setIsConsumableOpen] = useState(false);
 
+    // Separate dialog states for Super Keen & Boost
+    const [isSuperKeenOpen, setIsSuperKeenOpen] = useState(false);
+    const [superKeenAmount, setSuperKeenAmount] = useState(5);
+    const [isBoostOpen, setIsBoostOpen] = useState(false);
+    const [boostAmount, setBoostAmount] = useState(5);
+
     const [isRevokeOpen, setIsRevokeOpen] = useState(false);
     const [imageModal, setImageModal] = useState({ open: false, src: "", title: "" });
 
@@ -144,6 +150,12 @@ export default function ViewSubscriptionDetailPage() {
         return Math.min(100, Math.max(0, (current / total) * 100));
     }, [sub]);
 
+    // Extract extension logs from transactions
+    const extensionLogs = useMemo(() => {
+        const allTxns = (userDetail?.transactions?.length > 0 ? userDetail.transactions : userDetail?.recentTransactions) || [];
+        return allTxns.filter(txn => txn.eventType === "EXTENSION");
+    }, [userDetail]);
+
     const handleManualGrant = async () => {
         const finalReason = grantReasonType === "Other" ? grantReasonCustom : grantReasonType;
         if (!finalReason) return toast.error("Please provide a reason");
@@ -162,10 +174,12 @@ export default function ViewSubscriptionDetailPage() {
         }
     };
 
-    const handleGrantConsumables = async () => {
+    const handleGrantConsumables = async (type, quantity) => {
+        const finalType = type || consumableType;
+        const finalQty = quantity || Number(consumableAmount);
         const result = await dispatch(grantConsumables({
             userId,
-            data: { type: consumableType, quantity: Number(consumableAmount), reason: consumableReason }
+            data: { type: finalType, quantity: finalQty, reason: consumableReason }
         }));
         if (result.meta.requestStatus === "fulfilled") {
             toast.success("Consumables granted successfully");
@@ -226,13 +240,13 @@ export default function ViewSubscriptionDetailPage() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6 bg-white/90 backdrop-blur-xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-indigo-100/40">
+                    <div className="flex flex-col lg:flex-row items-center justify-between gap-6  backdrop-blur-xl p-6 rounded-[2.5rem] border border-brand-aqua/30 shadow-2xl shadow-indigo-100/40">
                         <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
                             <div className="relative">
-                                <Avatar 
+                                <Avatar
                                     className="w-20 h-20 rounded-2xl shadow-xl p-1 bg-white ring-1 ring-slate-100 cursor-pointer hover:scale-105 transition-transform active:scale-95"
-                                    onClick={() => setImageModal({ 
-                                        open: true, 
+                                    onClick={() => setImageModal({
+                                        open: true,
                                         src: user?.photo || user?.avatar?.url || dummyImg,
                                         title: user?.nickname || "User Photo"
                                     })}
@@ -242,12 +256,12 @@ export default function ViewSubscriptionDetailPage() {
                                         {user?.nickname?.charAt(0) || user?.fullName?.charAt(0) || "U"}
                                     </AvatarFallback>
                                 </Avatar>
-                                <div className={cn(
+                                {/* <div className={cn(
                                     "absolute -bottom-1.5 -right-1.5 p-1.5 rounded-xl border-2 border-white shadow-lg pointer-events-none",
                                     sub?.status === "ACTIVE" ? "bg-emerald-500 text-white" : "bg-slate-400 text-white"
                                 )}>
                                     {sub?.status === "ACTIVE" ? <CheckCircle2 className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
-                                </div>
+                                </div> */}
                             </div>
                             <div className="space-y-1.5">
                                 <div className="flex flex-col sm:flex-row items-center gap-3">
@@ -273,12 +287,12 @@ export default function ViewSubscriptionDetailPage() {
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-3 w-full lg:w-auto">
-                            <Button
+                            {/* <Button
                                 onClick={() => setIsGrantOpen(true)}
                                 className="bg-slate-900 hover:bg-slate-800 text-white rounded-2xl h-11 px-6 font-black text-xs uppercase tracking-widest gap-2 shadow-xl shadow-slate-900/20 transition-all active:scale-95 flex-1 sm:flex-none"
                             >
                                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> Manual Grant
-                            </Button>
+                            </Button> */}
                             {sub?.status === "ACTIVE" && (
                                 <Button
                                     onClick={() => setIsExtendOpen(true)}
@@ -319,23 +333,23 @@ export default function ViewSubscriptionDetailPage() {
                         label="Super Keens"
                         val={wallet?.superKeensBalance || 0}
                         icon={Gem}
-                        color="indigo"
-                        subVal="Available Currency"
-                        onAction={() => setIsConsumableOpen(true)}
+                        color="aqua"
+                        subVal="Total Super Keens"
+                        onAction={() => setIsSuperKeenOpen(true)}
                     />
                     <StatBox
                         label="Profile Boosts"
                         val={wallet?.boostsBalance || 0}
                         icon={Zap}
-                        color="orange"
-                        subVal="Spotlight Tokens"
-                        onAction={() => setIsConsumableOpen(true)}
+                        color="aqua"
+                        subVal="Total Profile Boosts"
+                        onAction={() => setIsBoostOpen(true)}
                     />
 
                     {/* 3. Main Detail Grid */}
-                    <div className="lg:col-span-1 space-y-5">
-                        <Card className="rounded-[2.5rem] border-white shadow-xl shadow-indigo-100/20 bg-white/80 backdrop-blur-md overflow-hidden border">
-                            <CardHeader className="bg-slate-50/50 py-4 px-6 border-b border-slate-100">
+                    <div className="lg:col-span-1 space-y-5 ">
+                        <Card className="rounded-[2.5rem] border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white/80 backdrop-blur-md overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 bg-brand-aqua/5">
+                            <CardHeader className="py-4 px-6 border-b border-brand-aqua/10">
                                 <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
                                     <Clock className="w-4 h-4 text-brand-aqua" /> Access Cycle
                                 </CardTitle>
@@ -349,11 +363,11 @@ export default function ViewSubscriptionDetailPage() {
                                                 {Math.round(progress)}<span className="text-xl text-slate-300 ml-1">%</span>
                                             </h3>
                                         </div>
-                                        <Badge variant="secondary" className="bg-blue-50 text-blue-600 text-[10px] font-black py-1 px-2 uppercase tracking-widest">
+                                        <Badge variant="secondary" className="bg-brand-aqua/10 text-brand-aqua text-[10px] font-black py-1 px-2 uppercase tracking-widest">
                                             {sub?.planType || "NO TIER"}
                                         </Badge>
                                     </div>
-                                    <Progress value={progress} className="h-2 rounded-full bg-slate-100 shadow-inner" />
+                                    <Progress value={progress} className="h-2 rounded-full bg-brand-aqua/10 [&>div]:bg-brand-aqua shadow-inner" />
                                 </div>
 
                                 <div className="space-y-3">
@@ -375,6 +389,42 @@ export default function ViewSubscriptionDetailPage() {
                                         <InfoRow label="Source" val={getSource(sub)} />
                                         <InfoRow label="Product ID" val={sub?.productId || "manual_grant_v1"} isMono />
                                     </div>
+
+                                    {/* Extension History inside Access Cycle */}
+                                    {extensionLogs.length > 0 && (
+                                        <>
+                                            <Separator className="bg-brand-aqua/10 my-4" />
+                                            <div className="space-y-3">
+                                                <p className="text-[10px] font-black text-brand-aqua uppercase tracking-widest flex items-center gap-1.5">
+                                                    <CalendarPlus className="w-3.5 h-3.5" /> Admin Extensions ({extensionLogs.length})
+                                                </p>
+                                                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1">
+                                                    {extensionLogs.map((ext, idx) => (
+                                                        <div key={ext._id || idx} className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/15 space-y-1.5">
+                                                            <div className="flex items-center justify-between">
+                                                                <Badge className="bg-brand-aqua/10 text-brand-aqua border-brand-aqua/20 text-[9px] font-black px-2 py-0 h-5 shadow-none">
+                                                                    EXTENDED
+                                                                </Badge>
+                                                                <span className="text-[10px] font-bold text-slate-400">
+                                                                    {ext.occurredAt ? format(new Date(ext.occurredAt), "MMM dd, yyyy") : "—"}
+                                                                </span>
+                                                            </div>
+                                                            {ext.reason && (
+                                                                <p className="text-[11px] font-bold text-slate-600 leading-snug">
+                                                                    <span className="text-slate-400">Reason: </span>{ext.reason}
+                                                                </p>
+                                                            )}
+                                                            {ext.metadata?.daysAdded && (
+                                                                <p className="text-[10px] font-bold text-brand-aqua">
+                                                                    +{ext.metadata.daysAdded} days added
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>
@@ -382,18 +432,18 @@ export default function ViewSubscriptionDetailPage() {
 
                     {/* 4. Transactions Log — All payments and grants */}
                     <div className="lg:col-span-3">
-                        <Card className="rounded-[2.5rem] border-white shadow-xl shadow-indigo-100/20 bg-white overflow-hidden border min-h-[400px]">
-                            <CardHeader className="bg-slate-50/50 py-5 px-8 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <Card className="rounded-[2.5rem]  border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 min-h-[400px] bg-brand-aqua/5">
+                            <CardHeader className="py-5 px-8 border-b border-brand-aqua/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="space-y-1 text-center sm:text-left">
                                     <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center sm:justify-start gap-2">
-                                        <History className="w-4 h-4 text-brand-aqua" /> Transaction History
+                                        <History className="w-4 h-4" /> Transaction History
                                     </CardTitle>
                                     <p className="text-[11px] font-bold text-slate-400 opacity-80">All payments, grants, and admin actions ({auditLogs.length} records)</p>
                                 </div>
-                                <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
+                                {/* <div className="flex items-center gap-2 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100">
                                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Live</span>
-                                </div>
+                                </div> */}
                             </CardHeader>
                             <CardContent className="p-0">
                                 <div className="overflow-x-auto">
@@ -419,17 +469,17 @@ export default function ViewSubscriptionDetailPage() {
                                                                     <div className={cn(
                                                                         "w-2 h-2 rounded-full transition-colors",
                                                                         isAdminAction ? "bg-brand-aqua" :
-                                                                        txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-500" :
-                                                                        txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-500" :
-                                                                        "bg-slate-200 group-hover:bg-brand-aqua"
+                                                                            txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-500" :
+                                                                                txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-500" :
+                                                                                    "bg-slate-200 group-hover:bg-brand-aqua"
                                                                     )} />
                                                                     <Badge className={cn(
                                                                         "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
                                                                         isAdminAction ? "bg-brand-aqua/10 text-brand-aqua border-brand-aqua/30" :
-                                                                        txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                                        txn.eventType === "CONSUMABLE_PURCHASE" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
-                                                                        txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-50 text-rose-600 border-rose-100" :
-                                                                        "bg-slate-100 text-slate-600 border-slate-200"
+                                                                            txn.eventType === "PURCHASE" || txn.eventType === "RENEW" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                                                                txn.eventType === "CONSUMABLE_PURCHASE" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
+                                                                                    txn.eventType === "CANCEL" || txn.eventType === "REFUND" ? "bg-rose-50 text-rose-600 border-rose-100" :
+                                                                                        "bg-slate-100 text-slate-600 border-slate-200"
                                                                     )}>
                                                                         {txn.eventType || "LOG_ENTRY"}
                                                                     </Badge>
@@ -481,10 +531,10 @@ export default function ViewSubscriptionDetailPage() {
 
                     {/* 5. Subscription History — All past subscriptions */}
                     <div className="lg:col-span-4">
-                        <Card className="rounded-[2.5rem] border-white shadow-xl shadow-indigo-100/20 bg-white overflow-hidden border">
-                            <CardHeader className="bg-slate-50/50 py-5 px-8 border-b border-slate-100">
+                        <Card className="rounded-[2.5rem] border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 bg-brand-aqua/5">
+                            <CardHeader className="py-5 px-8 border-b border-brand-aqua/10">
                                 <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                                    <Layers className="w-4 h-4 text-brand-aqua" /> Subscription History
+                                    <Layers className="w-4 h-4" /> Subscription History
                                 </CardTitle>
                                 <p className="text-[11px] font-bold text-slate-400 opacity-80">All past subscriptions for this user ({subscriptionHistory.length} records)</p>
                             </CardHeader>
@@ -510,9 +560,9 @@ export default function ViewSubscriptionDetailPage() {
                                                             <Badge className={cn(
                                                                 "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
                                                                 hist.planType?.includes("1_MONTH") || hist.planType === "MONTHLY" ? "bg-blue-50 text-blue-600 border-blue-100" :
-                                                                hist.planType?.includes("3_MONTH") || hist.planType === "QUARTERLY" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
-                                                                hist.planType === "MILESTONE" ? "bg-amber-50 text-amber-600 border-amber-100" :
-                                                                "bg-purple-50 text-purple-600 border-purple-100"
+                                                                    hist.planType?.includes("3_MONTH") || hist.planType === "QUARTERLY" ? "bg-indigo-50 text-indigo-600 border-indigo-100" :
+                                                                        hist.planType === "MILESTONE" ? "bg-amber-50 text-amber-600 border-amber-100" :
+                                                                            "bg-purple-50 text-purple-600 border-purple-100"
                                                             )}>
                                                                 {hist.planType}
                                                             </Badge>
@@ -521,9 +571,9 @@ export default function ViewSubscriptionDetailPage() {
                                                             <Badge className={cn(
                                                                 "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
                                                                 hist.status === "ACTIVE" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
-                                                                hist.status === "REVOKED" ? "bg-red-50 text-red-600 border-red-100" :
-                                                                hist.status === "EXPIRED" ? "bg-rose-50 text-rose-500 border-rose-100" :
-                                                                "bg-slate-100 text-slate-500 border-slate-200"
+                                                                    hist.status === "REVOKED" ? "bg-red-50 text-red-600 border-red-100" :
+                                                                        hist.status === "EXPIRED" ? "bg-rose-50 text-rose-500 border-rose-100" :
+                                                                            "bg-slate-100 text-slate-500 border-slate-200"
                                                             )}>
                                                                 {hist.status}
                                                             </Badge>
@@ -565,40 +615,71 @@ export default function ViewSubscriptionDetailPage() {
             </motion.div>
 
             {/* Dialogs scaled slightly larger */}
-            <Dialog open={isConsumableOpen} onOpenChange={setIsConsumableOpen}>
-                <DialogContent className="rounded-[2.5rem] p-8 max-w-sm border-none shadow-2xl font-jakarta">
-                    <DialogHeader>
-                        <DialogTitle className="text-xl font-black">Adjust Balance</DialogTitle>
-                        <DialogDescription className="text-xs font-bold uppercase tracking-widest text-slate-400">Modify user inventory assets</DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-5 pt-4">
-                        <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Select Asset</Label>
-                            <Select value={consumableType} onValueChange={setConsumableType}>
-                                <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="rounded-xl border-none shadow-xl">
-                                    <SelectItem value="SUPER_KEEN" className="font-bold">Super Keens</SelectItem>
-                                    <SelectItem value="BOOST" className="font-bold">Profile Boosts</SelectItem>
-                                </SelectContent>
-                            </Select>
+            {/* Super Keen Dialog */}
+            <Dialog open={isSuperKeenOpen} onOpenChange={setIsSuperKeenOpen}>
+                <DialogContent className="rounded-[2.5rem] p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
+                    <div className="bg-gradient-to-br from-brand-aqua to-brand-aqua/80 p-6 text-center">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                            <Gem className="w-8 h-8 text-white" />
                         </div>
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-black text-white text-center">Super Keens</DialogTitle>
+                            <DialogDescription className="text-white/70 text-xs font-bold uppercase tracking-widest text-center">Current Balance: {wallet?.superKeensBalance || 0}</DialogDescription>
+                        </DialogHeader>
+                    </div>
+                    <div className="p-6 space-y-5">
                         <div className="space-y-2">
-                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Asset Volume</Label>
-                            <Input
-                                type="number"
-                                className="h-12 rounded-xl bg-slate-50 border-none font-bold text-sm"
-                                value={consumableAmount}
-                                onChange={(e) => setConsumableAmount(e.target.value)}
-                            />
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Quantity to Add</Label>
+                            <div className="flex items-center gap-3">
+                                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black" onClick={() => setSuperKeenAmount(Math.max(1, superKeenAmount - 1))}>−</Button>
+                                <Input type="number" className="h-12 rounded-xl bg-slate-50 border-none font-black text-lg text-center flex-1" value={superKeenAmount} onChange={(e) => setSuperKeenAmount(Number(e.target.value))} min={1} />
+                                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black" onClick={() => setSuperKeenAmount(superKeenAmount + 1)}>+</Button>
+                            </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">After Grant</p>
+                            <p className="text-sm font-black text-brand-aqua">{(wallet?.superKeensBalance || 0) + (Number(superKeenAmount) || 0)} Super Keens</p>
                         </div>
                     </div>
-                    <DialogFooter className="mt-8">
-                        <Button className="w-full bg-slate-900 text-white font-black h-12 rounded-2xl hover:bg-slate-800 transition-all text-xs uppercase tracking-widest shadow-xl shadow-slate-900/20" onClick={handleGrantConsumables} disabled={actionLoading}>
-                            Confirm Modification
+                    <div className="px-6 pb-6">
+                        <Button className="w-full bg-brand-aqua text-white font-black h-12 rounded-2xl hover:bg-brand-aqua/90 transition-all text-xs uppercase tracking-widest shadow-xl shadow-brand-aqua/20" onClick={() => handleGrantConsumables("SUPER_KEEN", superKeenAmount).then(() => setIsSuperKeenOpen(false))} disabled={actionLoading}>
+                            {actionLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Grant Super Keens"}
                         </Button>
-                    </DialogFooter>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Boost Dialog */}
+            <Dialog open={isBoostOpen} onOpenChange={setIsBoostOpen}>
+                <DialogContent className="rounded-[2.5rem] p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
+                    <div className="bg-gradient-to-br from-brand-aqua/90 to-brand-aqua/60 p-6 text-center">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
+                            <Zap className="w-8 h-8 text-white" />
+                        </div>
+                        <DialogHeader>
+                            <DialogTitle className="text-xl font-black text-white text-center">Profile Boosts</DialogTitle>
+                            <DialogDescription className="text-white/70 text-xs font-bold uppercase tracking-widest text-center">Current Balance: {wallet?.boostsBalance || 0}</DialogDescription>
+                        </DialogHeader>
+                    </div>
+                    <div className="p-6 space-y-5">
+                        <div className="space-y-2">
+                            <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">Quantity to Add</Label>
+                            <div className="flex items-center gap-3">
+                                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black" onClick={() => setBoostAmount(Math.max(1, boostAmount - 1))}>−</Button>
+                                <Input type="number" className="h-12 rounded-xl bg-slate-50 border-none font-black text-lg text-center flex-1" value={boostAmount} onChange={(e) => setBoostAmount(Number(e.target.value))} min={1} />
+                                <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black" onClick={() => setBoostAmount(boostAmount + 1)}>+</Button>
+                            </div>
+                        </div>
+                        <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">After Grant</p>
+                            <p className="text-sm font-black text-brand-aqua">{(wallet?.boostsBalance || 0) + (Number(boostAmount) || 0)} Profile Boosts</p>
+                        </div>
+                    </div>
+                    <div className="px-6 pb-6">
+                        <Button className="w-full bg-brand-aqua text-white font-black h-12 rounded-2xl hover:bg-brand-aqua/90 transition-all text-xs uppercase tracking-widest shadow-xl shadow-brand-aqua/20" onClick={() => handleGrantConsumables("BOOST", boostAmount).then(() => setIsBoostOpen(false))} disabled={actionLoading}>
+                            {actionLoading ? <Loader2 className="animate-spin w-4 h-4" /> : "Grant Boosts"}
+                        </Button>
+                    </div>
                 </DialogContent>
             </Dialog>
 
@@ -754,9 +835,9 @@ export default function ViewSubscriptionDetailPage() {
                 <DialogContent className="max-w-[95vw] sm:max-w-3xl p-0 overflow-hidden bg-black/95 border-none shadow-2xl rounded-3xl">
                     <DialogHeader className="p-4 bg-white/10 backdrop-blur-md border-b border-white/10 flex flex-row items-center justify-between space-y-0 absolute top-0 left-0 right-0 z-50">
                         <DialogTitle className="text-white font-black text-xs uppercase tracking-widest">{imageModal.title}</DialogTitle>
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => setImageModal({ ...imageModal, open: false })}
                             className="text-white hover:bg-white/20 transition-all active:scale-90"
                         >
@@ -764,8 +845,8 @@ export default function ViewSubscriptionDetailPage() {
                         </Button>
                     </DialogHeader>
                     <div className="flex items-center justify-center min-h-[50vh] max-h-[85vh] p-2 pt-16">
-                        <img 
-                            src={imageModal.src} 
+                        <img
+                            src={imageModal.src}
                             alt={imageModal.title}
                             className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl animate-in zoom-in-95 duration-300"
                         />
@@ -778,14 +859,15 @@ export default function ViewSubscriptionDetailPage() {
 
 // Larger/Dense StatBox
 const StatBox = ({ label, val, icon: Icon, color, subVal, onAction, isActive }) => (
-    <Card className="rounded-[2rem] border-none shadow-xl shadow-indigo-100/20 bg-white transition-all hover:translate-y-[-4px] duration-300 overflow-hidden relative group">
+    <Card className="rounded-[2rem] border-brand-aqua/20 shadow-xl shadow-brand-aqua/5 bg-white transition-all hover:translate-y-[-4px] hover:border-brand-aqua/50 duration-300 overflow-hidden relative group">
         <CardContent className="p-5 flex items-center gap-5 relative z-10">
             <div className={cn(
                 "w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110",
-                color === "emerald" ? "bg-emerald-50 text-emerald-600" :
-                    color === "blue" ? "bg-blue-50 text-blue-600" :
-                        color === "indigo" ? "bg-indigo-50 text-indigo-600" :
-                            color === "orange" ? "bg-orange-50 text-orange-600" : "bg-slate-50 text-slate-400"
+                color === "aqua" ? "bg-brand-aqua/10 text-brand-aqua" :
+                    color === "emerald" ? "bg-emerald-50 text-emerald-600" :
+                        color === "blue" ? "bg-blue-50 text-blue-600" :
+                            color === "indigo" ? "bg-indigo-50 text-indigo-600" :
+                                color === "orange" ? "bg-orange-50 text-orange-600" : "bg-slate-50 text-slate-400"
             )}>
                 <Icon className="w-6 h-6" />
             </div>

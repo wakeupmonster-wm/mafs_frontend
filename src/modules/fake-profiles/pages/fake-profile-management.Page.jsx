@@ -51,7 +51,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
-import { TableLoader } from "@/app/loader/table.loader";
+import { PreLoader } from "@/app/loader/preloader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import {
@@ -107,6 +107,11 @@ export default function FakeProfileManagementPage() {
 
   // ─── Fetch with debounce (same pattern as user-management) ───
   useEffect(() => {
+    // Optional: If you want search to reset pagination, do it ONLY if pageIndex is NOT already 0
+    if (search && pagination.pageIndex !== 0) {
+      setPagination(p => ({ ...p, pageIndex: 0 }));
+    }
+
     const delayDebounceFn = setTimeout(() => {
       const params = {
         page: pagination.pageIndex + 1,
@@ -140,24 +145,24 @@ export default function FakeProfileManagementPage() {
         val: serverPagination?.total || 0,
         icon: <IconUsers size={22} />,
         color: "blue",
-        description: "All generated profiles",
+        description: "All matching profiles",
       },
       {
-        label: "Active",
+        label: "Active Users",
         val: items.filter((u) => u.user?.account?.status === "active").length,
         icon: <IconUserCheck size={22} />,
         color: "emerald",
-        description: "Visible in feed",
+        description: `Active Users on page ${pagination.pageIndex + 1}`,
       },
       {
-        label: "Deactivated",
+        label: "Deactivated Users",
         val: items.filter((u) => u.user?.account?.status !== "active").length,
         icon: <IconUserOff size={22} />,
         color: "rose",
-        description: "Hidden from feed",
+        description: `Deactivated Users on page ${pagination.pageIndex + 1}`,
       },
     ];
-  }, [items, serverPagination?.total]);
+  }, [items, serverPagination?.total, pagination.pageIndex]);
 
   // ─── Handlers ───
   const handleToggleStatus = async (id) => {
@@ -245,7 +250,7 @@ export default function FakeProfileManagementPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative">
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -294,14 +299,13 @@ export default function FakeProfileManagementPage() {
             <div className="relative w-3/5 md:w-1/3">
               <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
               <Input
-                placeholder="Search by nickname..."
-                className="pl-9 pr-10 bg-white border-slate-200 h-9 shadow-sm focus-visible:ring-brand-aqua rounded-lg text-sm"
+                placeholder="Search by nickname, city..."
+                // className="pl-9 pr-10 bg-white border-slate-200 h-9 shadow-sm focus-visible:ring-brand-aqua rounded-lg text-sm"
+                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
                 value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-                }}
+                onChange={(e) => setSearch(e.target.value)}
               />
+
               {search && (
                 <button
                   onClick={() => {
@@ -396,7 +400,12 @@ export default function FakeProfileManagementPage() {
 
         {/* ─── DATA TABLE ─── */}
         <motion.div variants={itemVariants}>
-          <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden relative min-h-[400px]">
+            {loading && (
+              <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+                <PreLoader />
+              </div>
+            )}
             <Table>
               <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -409,7 +418,7 @@ export default function FakeProfileManagementPage() {
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody className={cn(loading && "opacity-50 pointer-events-none transition-opacity")}>
+              <TableBody>
                 {table.getRowModel().rows?.length ? (
                   table.getRowModel().rows.map((row) => (
                     <TableRow key={row.id} className="hover:bg-slate-50/50">
@@ -423,11 +432,7 @@ export default function FakeProfileManagementPage() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} className="h-56 text-center">
-                      {loading ? (
-                        <TableLoader text="Fetching profiles..." />
-                      ) : (
-                        <DataNotFound message="No fake profiles found" />
-                      )}
+                      {!loading && <DataNotFound message="No fake profiles found" />}
                     </TableCell>
                   </TableRow>
                 )}

@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Select,
@@ -14,6 +14,15 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuCheckboxItem,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
     Table,
     TableBody,
     TableCell,
@@ -22,21 +31,29 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
+    ArrowUp,
+    ArrowDown,
     ArrowUpDown,
-    ChevronLeft,
-    ChevronRight,
     Download,
     DollarSign,
     TrendingDown,
     AlertTriangle,
     ReceiptText,
-    Search,
-    RefreshCcw,
     Loader2,
     Inbox,
-    ArrowUp,
-    ArrowDown,
 } from "lucide-react";
+import {
+    IconRefresh,
+    IconSearch,
+    IconFilter,
+    IconX,
+    IconChevronLeft,
+    IconChevronRight,
+    IconReceipt,
+    IconCurrencyDollar,
+    IconArrowBackUp,
+    IconReportMoney,
+} from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import {
@@ -44,6 +61,9 @@ import {
     getTransactionSummaryAPI,
     exportTransactionsCSVAPI,
 } from "../services/subscription.services";
+import StatsGrid from "@/components/common/stats.grid";
+import { PreLoader } from "@/app/loader/preloader";
+import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 
 /* ───── Event Type Config ───── */
 const EVENT_TYPE_MAP = {
@@ -69,6 +89,24 @@ const STATUS_MAP = {
     REFUNDED: "bg-slate-100 text-slate-600 border-slate-200"
 };
 
+// ─── Animation variants ───
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    },
+};
+const itemVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.97 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { type: "spring", stiffness: 120, damping: 18 },
+    },
+};
+
 export default function TransactionsPage() {
     // Data states
     const [transactions, setTransactions] = useState([]);
@@ -79,23 +117,22 @@ export default function TransactionsPage() {
     const [exporting, setExporting] = useState(false);
 
     // Filters
-    const [filters, setFilters] = useState({
-        eventType: "",
-        platform: "",
-        search: "",
-        page: 1,
-        limit: 15,
-        sortBy: "occurredAt",
-        sortOrder: "desc",
-    });
+    const [search, setSearch] = useState("");
+    const [eventTypeFilter, setEventTypeFilter] = useState("");
+    const [platformFilter, setPlatformFilter] = useState("");
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(15);
+    const [sortBy, setSortBy] = useState("occurredAt");
+    const [sortOrder, setSortOrder] = useState("desc");
 
     /* ───── Fetch Transactions ───── */
     const fetchTransactions = useCallback(async () => {
         setLoading(true);
         try {
-            const params = { ...filters };
-            // Clean empty params
-            Object.keys(params).forEach(k => { if (!params[k]) delete params[k]; });
+            const params = { page, limit, sortBy, sortOrder };
+            if (search) params.search = search;
+            if (eventTypeFilter) params.eventType = eventTypeFilter;
+            if (platformFilter) params.platform = platformFilter;
             const res = await getTransactionsAPI(params);
             if (res?.success) {
                 setTransactions(res.transactions || []);
@@ -106,16 +143,14 @@ export default function TransactionsPage() {
         } finally {
             setLoading(false);
         }
-    }, [filters]);
+    }, [search, eventTypeFilter, platformFilter, page, limit, sortBy, sortOrder]);
 
     /* ───── Fetch Summary ───── */
     const fetchSummary = useCallback(async () => {
         setSummaryLoading(true);
         try {
             const res = await getTransactionSummaryAPI();
-            if (res?.success) {
-                setSummary(res.data);
-            }
+            if (res?.success) setSummary(res.data);
         } catch (err) {
             console.error("Summary error:", err);
         } finally {
@@ -128,18 +163,13 @@ export default function TransactionsPage() {
         return () => clearTimeout(delay);
     }, [fetchTransactions]);
 
-    useEffect(() => {
-        fetchSummary();
-    }, [fetchSummary]);
+    useEffect(() => { fetchSummary(); }, [fetchSummary]);
 
     /* ───── CSV Export ───── */
     const handleExport = async () => {
         setExporting(true);
         try {
-            const blob = await exportTransactionsCSVAPI({
-                eventType: filters.eventType,
-                platform: filters.platform,
-            });
+            const blob = await exportTransactionsCSVAPI({ eventType: eventTypeFilter, platform: platformFilter });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
@@ -156,411 +186,425 @@ export default function TransactionsPage() {
 
     /* ───── Sort Handler ───── */
     const handleSort = (column) => {
-        setFilters(prev => ({
-            ...prev,
-            sortBy: column,
-            sortOrder: prev.sortBy === column && prev.sortOrder === "desc" ? "asc" : "desc",
-            page: 1,
-        }));
+        if (sortBy === column) {
+            setSortOrder(prev => prev === "desc" ? "asc" : "desc");
+        } else {
+            setSortBy(column);
+            setSortOrder("desc");
+        }
+        setPage(1);
     };
 
     const SortIcon = ({ column }) => {
-        if (filters.sortBy !== column) return <ArrowUpDown className="w-3 h-3 ml-1 text-slate-300" />;
-        return filters.sortOrder === "asc"
+        if (sortBy !== column) return <ArrowUpDown className="w-3 h-3 ml-1 text-slate-300" />;
+        return sortOrder === "asc"
             ? <ArrowUp className="w-3 h-3 ml-1 text-brand-aqua" />
             : <ArrowDown className="w-3 h-3 ml-1 text-brand-aqua" />;
     };
 
-    /* ───── Clear Filters ───── */
-    const clearFilters = () => {
-        setFilters({ eventType: "", platform: "", search: "", page: 1, limit: 15, sortBy: "occurredAt", sortOrder: "desc" });
-    };
+    /* ───── Filter helpers ───── */
+    const activeFilterCount = [eventTypeFilter, platformFilter].filter(Boolean).length;
+    const hasActiveFilter = activeFilterCount > 0;
 
-    const hasFilters = filters.eventType || filters.platform || filters.search;
+    const clearFilters = () => {
+        setEventTypeFilter("");
+        setPlatformFilter("");
+        setSearch("");
+        setPage(1);
+    };
 
     const overview = summary?.overview;
     const refunds = summary?.refunds;
 
+    /* ───── Stats ───── */
+    const stats = useMemo(() => [
+        {
+            label: "Gross Revenue",
+            val: summaryLoading ? "..." : `$${overview?.grossRevenue?.toFixed(2) || "0.00"}`,
+            icon: <IconCurrencyDollar size={22} />,
+            color: "blue",
+            description: overview?.currency || "AUD",
+        },
+        {
+            label: "Net Revenue",
+            val: summaryLoading ? "..." : `$${overview?.netRevenue?.toFixed(2) || "0.00"}`,
+            icon: <IconReportMoney size={22} />,
+            color: "emerald",
+            description: `Commission: $${overview?.totalCommission?.toFixed(2) || "0.00"}`,
+        },
+        {
+            label: "Refund Rate",
+            val: summaryLoading ? "..." : (refunds?.refundRate || "0%"),
+            icon: <IconArrowBackUp size={22} />,
+            color: refunds && !refunds.isHealthy ? "rose" : "emerald",
+            description: `${refunds?.totalRefunds || 0} refunds · $${refunds?.totalRefundAmount?.toFixed(2) || "0.00"}`,
+        },
+        {
+            label: "Total Transactions",
+            val: loading ? "..." : (pagination.totalItems?.toLocaleString() || "0"),
+            icon: <IconReceipt size={22} />,
+            color: "blue",
+            description: `Page ${pagination.currentPage} of ${pagination.totalPages}`,
+        },
+    ], [summary, summaryLoading, loading, pagination, overview, refunds]);
+
+    const colorMap = {
+        blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+        emerald: "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+        rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+    };
+    const bgMap = {
+        blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+        emerald: "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+        rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+    };
+
     return (
-        <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8 font-jakarta">
+        <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative font-jakarta">
             <motion.div
-                className="max-w-7xl mx-auto w-full space-y-8"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                className="@container/main space-y-4"
+                initial="hidden"
+                animate="visible"
+                variants={containerVariants}
             >
-                {/* Header */}
-                <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-                    <PageHeader
-                        heading="Transactions"
-                        subheading="Revenue tracking, transaction history & export."
-                        icon={<ReceiptText className="w-10 h-10 text-white" />}
-                        color="bg-brand-aqua shadow-brand-aqua/20 shadow-xl"
-                    />
-                    <Button
-                        className="bg-slate-900 text-white font-black h-10 px-5 rounded-2xl text-[10px] uppercase tracking-widest hover:bg-slate-800 gap-2"
-                        onClick={handleExport}
-                        disabled={exporting}
-                    >
-                        {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                        Export CSV
-                    </Button>
-                </header>
+                {/* ─── HEADER ─── */}
+                <motion.header variants={itemVariants} className="flex flex-col gap-3">
+                    <div className="flex md:items-center justify-between gap-3">
+                        <PageHeader
+                            heading="Transactions"
+                            subheading="Revenue tracking, transaction history & export."
+                        />
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => { setPage(1); fetchTransactions(); }}
+                                disabled={loading}
+                                className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
+                            >
+                                <IconRefresh className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")} />
+                                Refresh
+                            </Button>
+                            <Button
+                                size="sm"
+                                onClick={handleExport}
+                                disabled={exporting}
+                                className="h-9 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold shadow-md transition-all active:scale-95"
+                            >
+                                {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" /> : <Download className="mr-1.5 h-4 w-4" />}
+                                Export CSV
+                            </Button>
+                        </div>
+                    </div>
+                </motion.header>
 
-                {/* Revenue Summary Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
-                    {/* Gross Revenue */}
-                    <Card className="rounded-[2rem] border-brand-aqua/30 shadow-md bg-white overflow-hidden">
-                        <CardContent className="p-6">
-                            {summaryLoading ? <Skeleton className="h-16 rounded-2xl" /> : (
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Gross Revenue</p>
-                                        <div className="p-2 bg-brand-aqua/10 rounded-xl">
-                                            <DollarSign className="w-4 h-4 text-brand-aqua" />
-                                        </div>
-                                    </div>
-                                    <h3 className="text-2xl font-black text-slate-900">
-                                        ${overview?.grossRevenue?.toFixed(2) || "0.00"}
-                                    </h3>
-                                    <p className="text-[10px] font-bold text-slate-400">{overview?.currency || "AUD"}</p>
-                                </div>
+                {/* ─── STATS GRID ─── */}
+                <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
+                </motion.div>
+
+                {/* ─── TOOLBAR (Search + Filters) ─── */}
+                <motion.div variants={itemVariants}>
+                    <div className="flex flex-row md:items-center justify-between gap-3 bg-slate-50/50 p-2 rounded-xl">
+                        {/* Search */}
+                        <div className="relative w-3/5 md:w-1/3">
+                            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+                            <Input
+                                placeholder="Search by email, name, txn ID..."
+                                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+                                value={search}
+                                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+                            />
+                            {search && (
+                                <button
+                                    onClick={() => { setSearch(""); setPage(1); }}
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-0.5 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors"
+                                >
+                                    <IconX className="h-3.5 w-3.5 text-slate-600 group-hover:text-white transition-colors" />
+                                </button>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Net Revenue */}
-                    <Card className="rounded-[2rem] border-brand-aqua/30 shadow-md bg-white overflow-hidden">
-                        <CardContent className="p-6">
-                            {summaryLoading ? <Skeleton className="h-16 rounded-2xl" /> : (
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Net Revenue</p>
-                                        <div className="p-2 bg-emerald-50 rounded-xl">
-                                            <TrendingDown className="w-4 h-4 text-emerald-600" />
-                                        </div>
-                                    </div>
-                                    <h3 className="text-2xl font-black text-slate-900">
-                                        ${overview?.netRevenue?.toFixed(2) || "0.00"}
-                                    </h3>
-                                    <p className="text-[10px] font-bold text-slate-400">
-                                        Commission: ${overview?.totalCommission?.toFixed(2) || "0.00"}
-                                    </p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Refund Rate */}
-                    <Card className={cn(
-                        "rounded-[2rem] shadow-md bg-white overflow-hidden",
-                        refunds && !refunds.isHealthy ? "border-red-300" : "border-brand-aqua/30"
-                    )}>
-                        <CardContent className="p-6">
-                            {summaryLoading ? <Skeleton className="h-16 rounded-2xl" /> : (
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Refund Rate</p>
-                                        <div className={cn("p-2 rounded-xl", refunds?.isHealthy ? "bg-emerald-50" : "bg-red-50")}>
-                                            <AlertTriangle className={cn("w-4 h-4", refunds?.isHealthy ? "text-emerald-600" : "text-red-500")} />
-                                        </div>
-                                    </div>
-                                    <div className="flex items-end gap-2">
-                                        <h3 className="text-2xl font-black text-slate-900">
-                                            {refunds?.refundRate || "0%"}
-                                        </h3>
-                                        <Badge className={cn(
-                                            "text-[9px] font-black uppercase mb-1",
-                                            refunds?.isHealthy
-                                                ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                                                : "bg-red-50 text-red-600 border-red-200"
-                                        )}>
-                                            {refunds?.isHealthy ? "Healthy" : "Warning"}
-                                        </Badge>
-                                    </div>
-                                    <p className="text-[10px] font-bold text-slate-400">
-                                        {refunds?.totalRefunds || 0} refunds · ${refunds?.totalRefundAmount?.toFixed(2) || "0.00"}
-                                    </p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Total Transactions */}
-                    <Card className="rounded-[2rem] border-brand-aqua/30 shadow-md bg-white overflow-hidden">
-                        <CardContent className="p-6">
-                            {loading ? <Skeleton className="h-16 rounded-2xl" /> : (
-                                <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Transactions</p>
-                                        <div className="p-2 bg-brand-aqua/10 rounded-xl">
-                                            <ReceiptText className="w-4 h-4 text-brand-aqua" />
-                                        </div>
-                                    </div>
-                                    <h3 className="text-2xl font-black text-slate-900">
-                                        {pagination.totalItems?.toLocaleString() || 0}
-                                    </h3>
-                                    <p className="text-[10px] font-bold text-slate-400">
-                                        Page {pagination.currentPage} of {pagination.totalPages}
-                                    </p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Transaction Table Section */}
-                <section className="px-2">
-                    <div className="bg-white p-6 rounded-[2.5rem] border border-brand-aqua/30 shadow-xl">
-                        {/* Table Header + Filters */}
-                        <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-6 mb-6">
-                            <div className="space-y-1">
-                                <h2 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
-                                    <ReceiptText className="w-5 h-5 text-brand-aqua" />
-                                    Transaction History
-                                </h2>
-                                <p className="text-[11px] font-medium text-slate-400 uppercase tracking-widest">
-                                    All revenue events · Filterable & sortable
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full xl:max-w-3xl">
-                                <div className="relative group">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-brand-aqua transition-colors" />
-                                    <Input
-                                        placeholder="Search by email, name, txn ID..."
-                                        className="pl-10 h-10 rounded-2xl bg-slate-50 border-none group-focus-within:ring-2 ring-brand-aqua/20 text-xs font-bold"
-                                        value={filters.search}
-                                        onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value, page: 1 }))}
-                                    />
-                                </div>
-
-                                <Select value={filters.eventType} onValueChange={(val) => setFilters(p => ({ ...p, eventType: val === "all" ? "" : val, page: 1 }))}>
-                                    <SelectTrigger className="h-10 rounded-2xl bg-slate-50 border-none text-xs font-bold">
-                                        <SelectValue placeholder="All Types" />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
-                                        <SelectItem value="all" className="rounded-xl">All Types</SelectItem>
-                                        <SelectItem value="PURCHASE" className="rounded-xl">Purchase</SelectItem>
-                                        <SelectItem value="RENEW" className="rounded-xl">Renewal</SelectItem>
-                                        <SelectItem value="REFUND" className="rounded-xl">Refund</SelectItem>
-                                        <SelectItem value="CANCEL" className="rounded-xl">Cancel</SelectItem>
-                                        <SelectItem value="CONSUMABLE_PURCHASE" className="rounded-xl">Consumable</SelectItem>
-                                    </SelectContent>
-                                </Select>
-
-                                <Select value={filters.platform} onValueChange={(val) => setFilters(p => ({ ...p, platform: val === "all" ? "" : val, page: 1 }))}>
-                                    <SelectTrigger className="h-10 rounded-2xl bg-slate-50 border-none text-xs font-bold">
-                                        <SelectValue placeholder="All Platforms" />
-                                    </SelectTrigger>
-                                    <SelectContent className="rounded-2xl border-none shadow-2xl">
-                                        <SelectItem value="all" className="rounded-xl">All Platforms</SelectItem>
-                                        <SelectItem value="ios" className="rounded-xl">iOS</SelectItem>
-                                        <SelectItem value="android" className="rounded-xl">Android</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
                         </div>
 
-                        {/* Clear Filters */}
-                        {hasFilters && (
-                            <div className="flex items-center gap-2 mb-4">
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={clearFilters}
-                                    className="text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-50 rounded-xl h-8 px-3"
+                        {/* Filter chips + button */}
+                        <div className="flex items-center justify-end gap-2 min-w-0 flex-1 ml-3">
+                            {/* Active filter chips */}
+                            <div className="hidden sm:flex flex-1 items-center justify-end gap-1.5 overflow-x-hidden min-w-0">
+                                <AnimatePresence mode="popLayout">
+                                    {eventTypeFilter && (
+                                        <motion.div key="event-chip" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="shrink-0">
+                                            <Badge variant="secondary" className="p-2 gap-1 bg-violet-100 border-dashed border-violet-400 text-violet-700 shadow-sm whitespace-nowrap">
+                                                <span className="text-[10px] font-bold uppercase opacity-50">Type:</span>
+                                                <span className="capitalize text-xs">{EVENT_TYPE_MAP[eventTypeFilter]?.label || eventTypeFilter}</span>
+                                                <button onClick={() => { setEventTypeFilter(""); setPage(1); }} className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+                                                    <IconX size={12} />
+                                                </button>
+                                            </Badge>
+                                        </motion.div>
+                                    )}
+                                    {platformFilter && (
+                                        <motion.div key="platform-chip" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="shrink-0">
+                                            <Badge variant="secondary" className="p-2 gap-1 bg-blue-100 border-dashed border-blue-400 text-blue-700 shadow-sm whitespace-nowrap">
+                                                <span className="text-[10px] font-bold uppercase opacity-50">Platform:</span>
+                                                <span className="capitalize text-xs">{PLATFORM_MAP[platformFilter] || platformFilter}</span>
+                                                <button onClick={() => { setPlatformFilter(""); setPage(1); }} className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+                                                    <IconX size={12} />
+                                                </button>
+                                            </Badge>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {hasActiveFilter && (
+                                <div className="hidden sm:block w-0.5 h-6 bg-slate-200 shrink-0" />
+                            )}
+
+                            {/* Filter dropdown */}
+                            <div className="shrink-0">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className={cn(
+                                                "h-9 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                                                hasActiveFilter && "border-brand-aqua ring-1 ring-brand-aqua"
+                                            )}
+                                        >
+                                            <IconFilter strokeWidth={2.5} className={cn("h-5 w-5", hasActiveFilter ? "text-brand-aqua" : "text-brand-aqua/60")} />
+                                            <span className="text-sm font-medium text-slate-700">Filters</span>
+                                            {hasActiveFilter && (
+                                                <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">{activeFilterCount}</span>
+                                            )}
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-56 p-2 shadow-xl border-slate-200">
+                                        {/* Event Type */}
+                                        <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">Event Type</DropdownMenuLabel>
+                                        {["PURCHASE", "RENEW", "REFUND", "CANCEL", "CONSUMABLE_PURCHASE", "ADMIN_GRANT"].map((type) => (
+                                            <DropdownMenuCheckboxItem
+                                                key={type}
+                                                checked={eventTypeFilter === type}
+                                                onCheckedChange={() => {
+                                                    setEventTypeFilter(eventTypeFilter === type ? "" : type);
+                                                    setPage(1);
+                                                }}
+                                            >
+                                                {EVENT_TYPE_MAP[type]?.label || type}
+                                            </DropdownMenuCheckboxItem>
+                                        ))}
+                                        <DropdownMenuSeparator />
+
+                                        {/* Platform */}
+                                        <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">Platform</DropdownMenuLabel>
+                                        {[{ value: "ios", label: "iOS" }, { value: "android", label: "Android" }, { value: "admin_granted", label: "Admin" }].map((p) => (
+                                            <DropdownMenuCheckboxItem
+                                                key={p.value}
+                                                checked={platformFilter === p.value}
+                                                onCheckedChange={() => {
+                                                    setPlatformFilter(platformFilter === p.value ? "" : p.value);
+                                                    setPage(1);
+                                                }}
+                                            >
+                                                {p.label}
+                                            </DropdownMenuCheckboxItem>
+                                        ))}
+
+                                        {hasActiveFilter && (
+                                            <>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem
+                                                    className="text-red-600 justify-center font-medium focus:bg-red-50 focus:text-red-700 cursor-pointer"
+                                                    onClick={clearFilters}
+                                                >
+                                                    Clear All Filters
+                                                </DropdownMenuItem>
+                                            </>
+                                        )}
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* ─── DATA TABLE ─── */}
+                <motion.div variants={itemVariants}>
+                    <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden relative min-h-[400px]">
+                        {loading && (
+                            <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-start justify-center pt-32">
+                                <PreLoader />
+                            </div>
+                        )}
+                        <Table>
+                            <TableHeader className="bg-slate-50/50">
+                                <TableRow>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 w-[60px]">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">S.No</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
+                                        <button onClick={() => handleSort("occurredAt")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
+                                            Date <SortIcon column="occurredAt" />
+                                        </button>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden sm:table-cell">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">User</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden lg:table-cell">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Product</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Type</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
+                                        <button onClick={() => handleSort("amount")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
+                                            Amount <SortIcon column="amount" />
+                                        </button>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden sm:table-cell">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Platform</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Status</span>
+                                    </TableHead>
+                                    <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden lg:table-cell w-[180px]">
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Txn ID</span>
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {transactions.length > 0 ? (
+                                    transactions.map((txn, index) => {
+                                        const eventConfig = EVENT_TYPE_MAP[txn.eventType] || { label: txn.eventType, color: "bg-slate-100 text-slate-600 border-slate-200" };
+                                        const status = txn.status || (txn.eventType === 'REFUND' ? 'REFUNDED' : txn.eventType === 'CANCEL' ? 'FAILED' : 'SUCCESS');
+                                        const statusClass = STATUS_MAP[status] || STATUS_MAP.PENDING;
+                                        const serialNo = ((pagination.currentPage - 1) * (limit || 15)) + index + 1;
+
+                                        return (
+                                            <TableRow key={txn._id} className="hover:bg-slate-50/50 border-b border-slate-50 transition-colors">
+                                                <TableCell className="px-2 md:px-4 py-2.5">
+                                                    <span className="text-[11px] font-black">{serialNo}</span>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5">
+                                                    <div>
+                                                        <p className="text-xs font-bold text-slate-800">
+                                                            {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
+                                                        </p>
+                                                        <p className="text-[9px] text-slate-400 font-mono">
+                                                            {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : ""}
+                                                        </p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5 hidden sm:table-cell">
+                                                    <div className="max-w-[130px]">
+                                                        <p className="text-xs font-bold text-slate-800 truncate" title={txn.user?.nickname || txn.user?.email || "Unknown"}>
+                                                            {txn.user?.nickname || txn.user?.email || "—"}
+                                                        </p>
+                                                        <p className="text-[9px] text-slate-400 truncate font-mono">
+                                                            {txn.user?.phone || ""}
+                                                        </p>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5 hidden lg:table-cell">
+                                                    <p className="text-[10px] font-bold text-slate-500 truncate max-w-[120px] font-mono" title={txn.productId}>
+                                                        {txn.productId || "—"}
+                                                    </p>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5">
+                                                    <Badge className={cn("text-[9px] font-black uppercase border rounded-md px-2 py-0.5", eventConfig.color)}>
+                                                        {eventConfig.label}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-xs font-black text-slate-900 tabular-nums">
+                                                            ${(txn.grossAmount || txn.amount)?.toFixed(2) || "0.00"}
+                                                        </span>
+                                                        {txn.netAmount > 0 && txn.netAmount !== (txn.grossAmount || txn.amount) && (
+                                                            <span className="text-[9px] font-bold text-emerald-600 tabular-nums">
+                                                                Net: ${txn.netAmount.toFixed(2)}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5 hidden sm:table-cell">
+                                                    <span className="text-[10px] font-bold text-slate-600 uppercase">
+                                                        {PLATFORM_MAP[txn.platform] || txn.platform || "—"}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5">
+                                                    <Badge variant="outline" className={cn("text-[8px] font-black uppercase tracking-widest border px-1.5 py-0", statusClass)}>
+                                                        {status}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="px-2 md:px-4 py-2.5 hidden lg:table-cell">
+                                                    <p className="text-[10px] font-mono text-slate-400 truncate max-w-[140px]" title={txn.transactionId || txn.orderId || txn._id}>
+                                                        {txn.transactionId || txn.orderId || txn._id || "—"}
+                                                    </p>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={9} className="h-56 text-center">
+                                            {!loading && <DataNotFound message="No transactions found" />}
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
+                </motion.div>
+
+                {/* ─── PAGINATION ─── */}
+                <motion.div variants={itemVariants}>
+                    <div className="flex flex-row items-center justify-between gap-3 py-2 border-t border-slate-100 px-3 md:px-0">
+                        <div className="text-xs font-medium text-slate-500">
+                            Showing {transactions.length} of {pagination.totalItems || 0} transactions
+                        </div>
+                        <div className="flex items-center gap-2 sm:gap-4">
+                            <div className="flex items-center gap-1.5">
+                                <Label className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase">Rows</Label>
+                                <Select
+                                    value={`${limit}`}
+                                    onValueChange={(value) => { setLimit(Number(value)); setPage(1); }}
                                 >
-                                    Clear All Filters
+                                    <SelectTrigger className="h-7 w-[65px] text-xs">
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {[10, 15, 20, 50, 100].map((size) => (
+                                            <SelectItem key={size} value={`${size}`}>{size}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                                    disabled={pagination.currentPage <= 1}
+                                >
+                                    <IconChevronLeft size={14} />
+                                </Button>
+                                <div className="text-xs font-semibold px-2">
+                                    {pagination.currentPage || 1} / {pagination.totalPages || 1}
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => setPage(p => p + 1)}
+                                    disabled={pagination.currentPage >= pagination.totalPages}
+                                >
+                                    <IconChevronRight size={14} />
                                 </Button>
                             </div>
-                        )}
-
-                        {/* Table */}
-                        <div className="rounded-[2rem] border border-slate-50 overflow-hidden bg-white">
-                            <Table>
-                                <TableHeader className="bg-slate-50/50 border-b border-slate-100">
-                                    <TableRow className="hover:bg-transparent border-none">
-                                        <TableHead className="h-12 px-2 md:px-4 w-[60px]">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">S.No</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4">
-                                            <button onClick={() => handleSort("occurredAt")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
-                                                Date <SortIcon column="occurredAt" />
-                                            </button>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4 hidden sm:table-cell">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">User</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4 hidden lg:table-cell">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Product</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Type</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4">
-                                            <button onClick={() => handleSort("amount")} className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors">
-                                                Amount <SortIcon column="amount" />
-                                            </button>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4 hidden sm:table-cell">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Platform</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Status</span>
-                                        </TableHead>
-                                        <TableHead className="h-12 px-2 md:px-4 hidden lg:table-cell w-[180px]">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Txn ID</span>
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {loading ? (
-                                        <TableRow>
-                                            <TableCell colSpan={9} className="h-64 text-center">
-                                                <div className="flex flex-col items-center justify-center gap-3">
-                                                    <Loader2 className="w-8 h-8 text-brand-aqua animate-spin" />
-                                                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading transactions...</p>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : transactions.length > 0 ? (
-                                        transactions.map((txn, index) => {
-                                            const eventConfig = EVENT_TYPE_MAP[txn.eventType] || { label: txn.eventType, color: "bg-slate-100 text-slate-600 border-slate-200" };
-                                            // derive status from eventType for backward compat if status not explicitly sent
-                                            const status = txn.status || (txn.eventType === 'REFUND' ? 'REFUNDED' : txn.eventType === 'CANCEL' ? 'FAILED' : 'SUCCESS');
-                                            const statusClass = STATUS_MAP[status] || STATUS_MAP.PENDING;
-                                            const serialNo = ((pagination.currentPage - 1) * (filters.limit || 15)) + index + 1;
-
-                                            return (
-                                                <TableRow key={txn._id} className="hover:bg-slate-50/50 border-b border-slate-50 transition-colors">
-                                                    {/* Serial Number */}
-                                                    <TableCell className="px-2 md:px-4 py-3">
-                                                        <span className="text-[11px] font-black">{serialNo}</span>
-                                                    </TableCell>
-
-                                                    {/* Date */}
-                                                    <TableCell className="px-2 md:px-4 py-3">
-                                                        <div>
-                                                            <p className="text-xs font-bold text-slate-800">
-                                                                {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"}
-                                                            </p>
-                                                            <p className="text-[9px] text-slate-400 font-mono">
-                                                                {txn.date || txn.occurredAt ? new Date(txn.date || txn.occurredAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }) : ""}
-                                                            </p>
-                                                        </div>
-                                                    </TableCell>
-
-                                                    {/* User */}
-                                                    <TableCell className="px-2 md:px-4 py-3 hidden sm:table-cell">
-                                                        <div className="max-w-[130px]">
-                                                            <p className="text-xs font-bold text-slate-800 truncate" title={txn.user?.nickname || txn.user?.email || "Unknown"}>
-                                                                {txn.user?.nickname || txn.user?.email || "—"}
-                                                            </p>
-                                                            <p className="text-[9px] text-slate-400 truncate font-mono">
-                                                                {txn.user?.phone || ""}
-                                                            </p>
-                                                        </div>
-                                                    </TableCell>
-
-                                                    {/* Product */}
-                                                    <TableCell className="px-2 md:px-4 py-3 hidden lg:table-cell">
-                                                        <p className="text-[10px] font-bold text-slate-500 truncate max-w-[120px] font-mono" title={txn.productId}>
-                                                            {txn.productId || "—"}
-                                                        </p>
-                                                    </TableCell>
-
-                                                    {/* Event Type */}
-                                                    <TableCell className="px-2 md:px-4 py-3">
-                                                        <Badge className={cn("text-[9px] font-black uppercase border rounded-md px-2 py-0.5", eventConfig.color)}>
-                                                            {eventConfig.label}
-                                                        </Badge>
-                                                    </TableCell>
-
-                                                    {/* Amount (Gross/Net combined for mobile space) */}
-                                                    <TableCell className="px-2 md:px-4 py-3">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-xs font-black text-slate-900 tabular-nums">
-                                                                ${(txn.grossAmount || txn.amount)?.toFixed(2) || "0.00"}
-                                                            </span>
-                                                            {txn.netAmount > 0 && txn.netAmount !== (txn.grossAmount || txn.amount) && (
-                                                                <span className="text-[9px] font-bold text-emerald-600 tabular-nums">
-                                                                    Net: ${txn.netAmount.toFixed(2)}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </TableCell>
-
-                                                    {/* Platform */}
-                                                    <TableCell className="px-2 md:px-4 py-3 hidden sm:table-cell">
-                                                        <span className="text-[10px] font-bold text-slate-600 uppercase">
-                                                            {PLATFORM_MAP[txn.platform] || txn.platform || "—"}
-                                                        </span>
-                                                    </TableCell>
-
-                                                    {/* Status */}
-                                                    <TableCell className="px-2 md:px-4 py-3">
-                                                        <Badge variant="outline" className={cn("text-[8px] font-black uppercase tracking-widest border px-1.5 py-0", statusClass)}>
-                                                            {status}
-                                                        </Badge>
-                                                    </TableCell>
-
-                                                    {/* Transaction ID */}
-                                                    <TableCell className="px-2 md:px-4 py-3 hidden lg:table-cell">
-                                                        <div className="flex items-center gap-1.5">
-                                                            <p className="text-[10px] font-mono text-slate-400 truncate max-w-[140px]" title={txn.transactionId || txn.orderId || txn._id}>
-                                                                {txn.transactionId || txn.orderId || txn._id || "—"}
-                                                            </p>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={9} className="h-48 text-center">
-                                                <div className="flex flex-col items-center justify-center gap-3">
-                                                    <Inbox className="w-10 h-10 text-slate-200" />
-                                                    <p className="text-sm font-bold text-slate-400">No transactions found</p>
-                                                    <p className="text-[10px] text-slate-400">Try adjusting your filters</p>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
                         </div>
-
-                        {/* Pagination */}
-                        {!loading && pagination.totalPages > 1 && (
-                            <div className="flex items-center justify-between mt-6 px-2">
-                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    Page {pagination.currentPage} of {pagination.totalPages} · {pagination.totalItems} total
-                                </p>
-                                <div className="flex items-center gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-xl h-8 w-8 p-0"
-                                        disabled={pagination.currentPage <= 1}
-                                        onClick={() => setFilters(prev => ({ ...prev, page: prev.page - 1 }))}
-                                    >
-                                        <ChevronLeft className="w-4 h-4" />
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-xl h-8 w-8 p-0"
-                                        disabled={pagination.currentPage >= pagination.totalPages}
-                                        onClick={() => setFilters(prev => ({ ...prev, page: prev.page + 1 }))}
-                                    >
-                                        <ChevronRight className="w-4 h-4" />
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
                     </div>
-                </section>
+                </motion.div>
             </motion.div>
         </div>
     );

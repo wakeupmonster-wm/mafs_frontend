@@ -152,11 +152,17 @@ import { Button } from "@/components/ui/button";
 //   );
 // };
 
-export const ActivityTab = ({ stats, recentMatches }) => {
+export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
+  // const matchRate =
+  //   stats.totalSwipes > 0
+  //     ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
+  //     : 0;
+
   const matchRate =
-    stats.totalSwipes > 0
-      ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
+    (stats?.totalSwipes || 0) > 0
+      ? (((stats?.totalMatches || 0) / stats?.totalSwipes) * 100).toFixed(1)
       : 0;
+
 
   return (
     <TabsContent
@@ -168,19 +174,19 @@ export const ActivityTab = ({ stats, recentMatches }) => {
         {[
           {
             label: "Total Likes",
-            val: stats.totalLikes,
+            val: stats?.totalLikes,
             icon: <IconHeart className="text-rose-500" />,
             bg: "bg-rose-50",
           },
           {
             label: "Super Likes",
-            val: stats.totalSuperLikes,
+            val: stats?.totalSuperLikes,
             icon: <IconStar className="text-amber-500" />,
             bg: "bg-amber-50",
           },
           {
             label: "Total Matches",
-            val: stats.totalMatches,
+            val: stats?.totalMatches,
             icon: <IconCheck className="text-emerald-500" />,
             bg: "bg-emerald-50",
           },
@@ -269,7 +275,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                         <p className="text-xs text-slate-400 font-medium">
                           {match.matchedAt
                             ? formatDistanceToNow(new Date(match.matchedAt)) +
-                              " ago"
+                            " ago"
                             : "Unknown date"}
                         </p>
                       </div>
@@ -336,9 +342,9 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                     <span className="text-xs font-bold text-slate-900">
                       {stats.totalLikes > 0
                         ? (
-                            (stats.totalMatches / stats.totalLikes) *
-                            100
-                          ).toFixed(1)
+                          (stats.totalMatches / stats.totalLikes) *
+                          100
+                        ).toFixed(1)
                         : 0}
                       %
                     </span>
@@ -350,9 +356,9 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                     <span className="text-xs font-bold text-slate-900">
                       {stats.totalLikes > 0
                         ? (
-                            (stats.totalSuperLikes / stats.totalLikes) *
-                            100
-                          ).toFixed(1)
+                          (stats.totalSuperLikes / stats.totalLikes) *
+                          100
+                        ).toFixed(1)
                         : 0}
                       %
                     </span>

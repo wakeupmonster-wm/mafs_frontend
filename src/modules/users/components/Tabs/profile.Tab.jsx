@@ -1555,13 +1555,13 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     icon={<IconCalendar size={18} />}
                     iconBg="bg-amber-50 text-amber-500"
                     label="Joined Date"
-                    value={new Date(
+                    value={props?.account?.createdAt ? new Date(
                       props?.account?.createdAt
                     ).toLocaleDateString(undefined, {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
-                    })}
+                    }) : "N/A"}
                   />
                   <DetailRow
                     icon={<IconMapPin size={18} />}

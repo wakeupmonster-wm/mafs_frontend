@@ -91,10 +91,10 @@ export default function ViewProfilePage() {
     location: userLoc,
     photos,
     verification,
-    stats,
-    recentMatches,
-    transactions,
-    subscription,
+    stats = {},
+    recentMatches = [],
+    transactions = [],
+    subscription = {},
   } = userData;
 
   const isBanned = account.status === "banned" || account.banDetails?.isBanned;
