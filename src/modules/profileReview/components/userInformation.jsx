@@ -23,7 +23,7 @@ export const UserInformation = ({ p }) => {
     return age;
   };
 
-  const userPhoto = p.profile?.photos?.[0]?.url;
+  const userPhoto = p.profile?.photos || dummyImg;
   const nickname = p.profile?.nickname || dummyImg;
 
   return (
@@ -74,11 +74,13 @@ export const UserInformation = ({ p }) => {
             <InfoItem label="Gender" value={p.profile?.gender || "-"} />
             <InfoItem
               label="Age"
-              value={`${calculateAge(p.profile?.dob)} Years`}
+              value={
+                p.profile?.dob ? `${calculateAge(p.profile?.dob)} Years` : "-"
+              }
             />
             <InfoItem
               label="City"
-              value={p.profile?.location?.city || "Unknown"}
+              value={p.profile?.location?.city || "-"}
               icon={<MapPin className="w-3 h-3 text-slate-400" />}
             />
             <InfoItem
@@ -105,12 +107,12 @@ export const UserInformation = ({ p }) => {
             />
             <InfoItem
               label="Email Address"
-              value={p.profile?.email || "No Email"}
+              value={p.profile?.email || "-"}
               icon={<Mail className="w-3 h-3 text-slate-400" />}
             />
             <InfoItem
               label="Phone Number"
-              value={p?.phone || "No Phone"}
+              value={p?.phone || "-"}
               icon={<Smartphone className="w-3 h-3 text-slate-400" />}
             />
           </div>

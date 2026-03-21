@@ -115,10 +115,13 @@ export const GallleryTab = ({ photos = [], userId }) => {
           >
             <AnimatePresence mode="popLayout">
               {photos.map((photo, index) => {
-                const isSelected = selectedPhotos.includes(photo.publicId);
+                // const isSelected = selectedPhotos.includes(photo.publicId);
+
+                const photoId = photo.publicId || photo._id || `idx-${index}`;
+                const isSelected = selectedPhotos.includes(photoId);
                 return (
                   <motion.div
-                    key={photo.publicId || photo.url}
+                    key={photoId}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -132,7 +135,10 @@ export const GallleryTab = ({ photos = [], userId }) => {
                   >
                     {/* SELECTION CHECKMARK */}
                     <button
-                      onClick={() => toggleSelect(photo.publicId)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the image's onClick
+                        toggleSelect(photoId);
+                      }}
                       className={cn(
                         "absolute top-3 right-3 z-30 h-6 w-6 rounded-full flex items-center justify-center border-2 transition-all",
                         isSelected
@@ -155,14 +161,17 @@ export const GallleryTab = ({ photos = [], userId }) => {
                         src={photo?.url || dummyImg}
                         alt="User Upload"
                         className={cn(
-                          "w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105",
+                          "w-full h-96 transition-transform duration-500 group-hover:scale-105",
                           isSelected && "opacity-80",
                         )}
+                        onError={(e) => {
+                          e.currentTarget.src = dummyImg;
+                        }}
                         onClick={() => {
-                          if (selectedPhotos.length > 0)
-                            toggleSelect(photo.publicId);
-                          else {
-                            setPreviewUrl(photo.url);
+                          if (selectedPhotos.length > 0) {
+                            toggleSelect(photoId);
+                          } else {
+                            setPreviewUrl(photo.url || dummyImg);
                             setIsPreviewOpen(true);
                           }
                         }}
@@ -187,8 +196,9 @@ export const GallleryTab = ({ photos = [], userId }) => {
                               size="icon"
                               variant="destructive"
                               className="h-9 w-9 rounded-full"
-                              onClick={() => {
-                                setSelectedPhotos([photo.publicId]);
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPhotos([photoId]);
                                 setIsPhotoDeleteOpen(true);
                               }}
                             >

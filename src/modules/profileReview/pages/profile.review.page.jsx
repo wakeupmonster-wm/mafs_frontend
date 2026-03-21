@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ExternalLink, ShieldAlert, UserSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -47,8 +48,6 @@ export default function ProfileReviewPage() {
     replyMessage: "",
     selectedReportId: "",
   });
-
-  const [modal, setModal] = useState({ isOpen: false, url: null, index: 0 });
 
   useEffect(() => {
     if (userId) dispatch(fetchProfileForReview(userId));
@@ -135,11 +134,18 @@ export default function ProfileReviewPage() {
 
   // Logic: Agar saari reports resolved hain toh action panel lock ho jayega
   const allReportsResolved = p?.reports?.every((r) => r.status === "resolved");
+  const pendingReports =
+    p?.reports?.filter((r) => r.status !== "resolved") || [];
+  const resolvedReports =
+    p?.reports?.filter((r) => r.status === "resolved") || [];
+
   const isResolved = allReportsResolved;
+
+  const hasPending = pendingReports.length > 0;
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-12">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="w-full mx-auto px-4 lg:px-5 py-4">
         <Header p={p} />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-6">
@@ -149,11 +155,34 @@ export default function ProfileReviewPage() {
               <TabsList className="grid w-full grid-cols-2 mb-8 gap-4 border border-slate-200 bg-slate-100 shadow-sm px-2 h-14 rounded-2xl">
                 <TabsTrigger
                   value="reports"
-                  className="rounded-xl font-bold py-2.5 border border-transparent data-[state=active]:border-brand-aqua/40 gap-2 data-[state=active]:bg-brand-aqua/20 data-[state=active]:text-red-600 data-[state=active]:shadow-sm"
+                  className={cn(
+                    "rounded-xl font-bold py-2.5 border border-transparent gap-2 transition-all",
+                    "data-[state=active]:border-brand-aqua/40 data-[state=active]:bg-brand-aqua/20 data-[state=active]:shadow-sm",
+                    hasPending
+                      ? "data-[state=active]:text-red-600"
+                      : "data-[state=active]:text-brand-aqua",
+                  )}
                 >
-                  <ShieldAlert className="w-4 h-4" />
-                  {isResolved ? "All Reports Resolved" : "Active Reports"}
-                  {isResolved ? "" : `(${p.reportCount})`}
+                  <ShieldAlert
+                    className={cn(
+                      "w-4 h-4",
+                      hasPending ? "text-red-500" : "text-brand-aqua",
+                    )}
+                  />
+
+                  {/* Text Logic */}
+                  <span>
+                    {!hasPending ? "Report History" : "Active Reports"}
+                  </span>
+
+                  {/* Count Badge */}
+                  <span className="opacity-60 text-sm">
+                    (
+                    {hasPending
+                      ? pendingReports.length
+                      : resolvedReports.length}
+                    )
+                  </span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="details"

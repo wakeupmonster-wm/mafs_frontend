@@ -34,7 +34,6 @@ export const SettingsTab = ({ userData }) => {
     console.log("Initiating account deletion for:", userData._id);
   };
 
-  // 1. Handle Toggle Change
   const handleToggleNotification = async (key, currentValue) => {
     try {
       // Construct the nested structure the backend expects
@@ -67,6 +66,19 @@ export const SettingsTab = ({ userData }) => {
     }
   };
 
+  const formatLabel = (text) => {
+    return text
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (str) => str.toUpperCase());
+  };
+
+  const notifDescriptions = {
+    push: "Get real-time alerts on your mobile device.",
+    email: "Summary of your matches sent to your inbox.",
+    marketing: "Stay updated with our latest offers and features.",
+    sms: "Direct text alerts for urgent match updates.",
+  };
+
   return (
     <TabsContent
       value="settings"
@@ -84,16 +96,16 @@ export const SettingsTab = ({ userData }) => {
             notifications.
           </p>
         </div>
-        <EditSettingsDialog userData={userData} />
+        {/* <EditSettingsDialog userData={userData} /> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* 2. GOVERNANCE & STATUS CARD */}
         <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconUserShield className="text-indigo-500" size={18} /> Account
-              Governance
+              Management
             </CardTitle>
           </CardHeader>
           <CardContent className="px-6 py-2 space-y-6">
@@ -166,45 +178,53 @@ export const SettingsTab = ({ userData }) => {
 
         {/* 3. NOTIFICATIONS & PREFERENCES */}
         <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconBellRinging className="text-blue-500" size={18} />{" "}
               Communication Preferences
             </CardTitle>
           </CardHeader>
           <CardContent className="px-6 py-2 space-y-5">
-            {Object.entries(settings.notifications).map(([key, isEnabled]) => (
-              <div
-                key={key}
-                className="flex items-center justify-between group"
-              >
-                <div className="space-y-0.5">
-                  <Label
-                    htmlFor={`notif-${key}`}
-                    className="text-sm font-bold text-slate-800 capitalize cursor-pointer"
+            {Object.entries(settings?.notifications || {}).map(
+              ([key, isEnabled]) => {
+                const formattedKey = formatLabel(key);
+
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center justify-between group p-3 rounded-xl hover:bg-slate-50 transition-colors"
                   >
-                    {key} Alerts
-                  </Label>
-                  <p className="text-[11px] text-slate-500">
-                    Receive {key} notifications and updates.
-                  </p>
-                </div>
-                <Switch
-                  id={`notif-${key}`}
-                  checked={isEnabled}
-                  onCheckedChange={() =>
-                    handleToggleNotification(key, isEnabled)
-                  }
-                  className="data-[state=checked]:bg-indigo-600"
-                />
-              </div>
-            ))}
+                    <div className="space-y-0.5">
+                      <Label
+                        htmlFor={`notif-${key}`}
+                        className="text-sm font-bold text-slate-800 cursor-pointer"
+                      >
+                        {formattedKey}
+                      </Label>
+                      <p className="text-[11px] text-slate-500 leading-tight">
+                        {notifDescriptions[key] ||
+                          `Receive ${key} notifications and updates.`}
+                      </p>
+                    </div>
+
+                    <Switch
+                      id={`notif-${key}`}
+                      checked={isEnabled}
+                      onCheckedChange={() =>
+                        handleToggleNotification(key, isEnabled)
+                      }
+                      className="data-[state=checked]:bg-brand-aqua shadow-sm scale-90"
+                    />
+                  </div>
+                );
+              },
+            )}
           </CardContent>
         </Card>
 
         {/* 4. DISCOVERY SETTINGS */}
         <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconMapPin className="text-orange-500" size={18} /> Discovery
               Parameters
@@ -217,7 +237,7 @@ export const SettingsTab = ({ userData }) => {
                   Age Range
                 </p>
                 <p className="text-sm font-bold text-slate-900">
-                  {discovery.ageRange.min} - {discovery.ageRange.max} years
+                  {discovery?.ageRange?.min} - {discovery?.ageRange?.max} years
                 </p>
               </div>
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
@@ -225,7 +245,7 @@ export const SettingsTab = ({ userData }) => {
                   Radius
                 </p>
                 <p className="text-sm font-bold text-slate-900">
-                  {discovery.distanceRange} km
+                  {discovery?.distanceRange} km
                 </p>
               </div>
             </div>
@@ -251,7 +271,7 @@ export const SettingsTab = ({ userData }) => {
 
         {/* 5. ACCESS & TRUST CARD */}
         <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-emerald-500" size={18} /> Access &
               Trust
@@ -260,11 +280,7 @@ export const SettingsTab = ({ userData }) => {
           <CardContent className="px-6 py-2 space-y-4">
             <VerificationRow
               label="Primary Email"
-              subLabel={
-                userData.isEmailVerified
-                  ? "Verified Email"
-                  : "Verification Pending"
-              }
+              subLabel={account.email || "Verification Pending"}
               isVerified={userData.isEmailVerified}
               icon={<IconLockAccess size={18} className="text-slate-400" />}
             />
@@ -278,13 +294,14 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 6. PRIVACY & RESTRICTIONS */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden lg:col-span-2">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-4 px-6">
+        <Card className="border-slate-200 shadow-sm overflow-hidden lg:col-span-2 gap-2">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-rose-500" size={18} /> Restricted
               Access
             </CardTitle>
           </CardHeader>
+
           <CardContent className="p-0">
             <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
               {/* Blocked Users Section */}
@@ -306,23 +323,44 @@ export const SettingsTab = ({ userData }) => {
                   </Badge>
                 </div>
 
-                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-2 max-h-[300px] overflow-y-auto py-3 px-5 border border-slate-200 rounded-xl custom-scrollbar">
                   {settings.blockedUsers?.length > 0 ? (
-                    settings.blockedUsers.map((id) => (
+                    settings.blockedUsers.map((user) => (
                       <div
-                        key={id}
-                        className="flex items-center justify-between p-2 rounded-lg bg-slate-50 border border-slate-100"
+                        key={user._id}
+                        className="flex items-center justify-between px-4 py-3 rounded-xl bg-slate-100 border border-dashed border-slate-300"
                       >
-                        <code className="text-[10px] font-mono text-slate-600">
-                          {id}
-                        </code>
-                        <Button
+                        <div className="flex items-center gap-2">
+                          {/* Show avatar if photo exists, otherwise a placeholder */}
+                          <div className="h-6 w-6 rounded-full bg-slate-200 overflow-hidden">
+                            {user.photo ? (
+                              <img
+                                src={user.photo}
+                                alt={user.nickname}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center text-[10px] text-slate-400">
+                                ?
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-[11px] font-semibold text-slate-700">
+                              {user.nickname || "Anonymous"}
+                            </span>
+                            <code className="text-[9px] font-mono text-slate-400">
+                              {user._id}
+                            </code>
+                          </div>
+                        </div>
+                        {/* <Button
                           variant="ghost"
                           size="sm"
                           className="h-7 text-xs text-rose-600 hover:text-rose-700 hover:bg-rose-50"
                         >
                           Unblock
-                        </Button>
+                        </Button> */}
                       </div>
                     ))
                   ) : (
@@ -352,17 +390,22 @@ export const SettingsTab = ({ userData }) => {
                   </Badge>
                 </div>
 
-                <div className="space-y-2 max-h-[200px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-2 max-h-[300px] overflow-y-auto py-3 px-5 border border-slate-200 rounded-xl custom-scrollbar">
                   {settings.blockedContacts?.length > 0 ? (
                     settings.blockedContacts.map((contact, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center p-2 rounded-lg bg-slate-50 border border-slate-100 gap-3"
+                        className="flex items-center px-4 p-2 rounded-xl bg-slate-100 border border-dashed border-slate-300 gap-3"
                       >
-                        <div className="h-2 w-2 rounded-full bg-slate-300" />
-                        <span className="text-[11px] font-medium text-slate-600 truncate">
-                          {contact}
-                        </span>
+                        <div className="h-2 w-2 rounded-full bg-rose-400" />
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[11px] font-medium text-slate-600 truncate">
+                            {contact.name || "-"}
+                          </span>
+                          <span className="text-[10px] text-slate-400">
+                            {contact.phone || "-"}
+                          </span>
+                        </div>
                       </div>
                     ))
                   ) : (

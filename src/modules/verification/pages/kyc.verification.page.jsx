@@ -14,6 +14,7 @@ import { getKYCColumns } from "@/components/columns/kyc-columns";
 import { ImagePreviewModal } from "../components/image.preview.modal";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
+import { RejectReasonDialog } from "@/modules/users/components/Dialogs/RejectReasonDialog";
 
 // --- Animation Variants ---
 const containerVariants = {
@@ -54,6 +55,7 @@ export default function KYCVerificationPage() {
     pageIndex: 0,
     pageSize: 10,
   });
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
   const [imageModal, setImageModal] = useState({
     open: false,
@@ -109,37 +111,50 @@ export default function KYCVerificationPage() {
     () =>
       getKYCColumns(
         (userId, action, nickname) => {
-          // Instead of dispatching immediately, open the modal
-          setConfirmConfig({
-            isOpen: true,
-            userId,
-            action,
-            nickname,
-          });
+          if (action === "reject") {
+            setConfirmConfig({ userId, action, nickname, isOpen: false }); // isOpen false rakhein taaki ConfirmModal na khule
+            setIsRejectModalOpen(true);
+          } else {
+            setConfirmConfig({
+              isOpen: true,
+              userId,
+              action,
+              nickname,
+            });
+          }
         },
         (modalConfig) => setImageModal(modalConfig),
       ),
     [dispatch],
   );
 
-  const handleConfirmAction = () => {
+  const handleConfirmAction = (reasonFromModal) => {
     const { userId, action } = confirmConfig;
+
+    // Agar Reject hai toh reason use karein, warna empty
+    const finalReason = action === "reject" ? reasonFromModal : "";
 
     dispatch(
       verifyUserProfile({
         userId,
         action,
-        reason:
-          action === "reject" ? "Documents did not meet requirements" : "",
+        reason: finalReason,
       }),
     )
       .unwrap()
       .then(() => {
         toast.success(`User ${action}ed successfully`);
         setConfirmConfig({ ...confirmConfig, isOpen: false });
+        setIsRejectModalOpen(false); // Dono modals close kar dein
       })
       .catch((err) => toast.error(err || "Action failed"));
   };
+
+  const filteredData = useMemo(() => {
+    return (pendingVerifications || []).filter(
+      (item) => item.verification?.status !== "not_started",
+    );
+  }, [pendingVerifications]);
 
   return (
     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
@@ -166,7 +181,7 @@ export default function KYCVerificationPage() {
 
         <KYCVerificationDataTable
           columns={columns}
-          data={pendingVerifications || []}
+          data={filteredData || []}
           rowCount={reduxPagination?.total ?? 0}
           isLoading={loading}
           pagination={pagination}
@@ -199,22 +214,24 @@ export default function KYCVerificationPage() {
         onClose={() => setImageModal({ ...imageModal, open: false })}
       />
 
+      {/* 1. Normal Confirm Modal (Sirf Approve ke liye ya general alerts) */}
       <ConfirmModal
         isOpen={confirmConfig.isOpen}
         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-        onConfirm={handleConfirmAction}
-        title={
-          confirmConfig.action === "approve" ? "Approve KYC?" : "Reject KYC?"
-        }
-        message={
-          confirmConfig.action === "approve"
-            ? `Are you sure you want to approve ${confirmConfig.nickname}? This will verify their profile across the platform.`
-            : `Are you sure you want to reject ${confirmConfig.nickname}? They will need to re-upload their documents.`
-        }
-        confirmText={
-          confirmConfig.action === "approve" ? "Approve User" : "Reject User"
-        }
-        type={confirmConfig.action === "approve" ? "success" : "danger"}
+        onConfirm={() => handleConfirmAction()} // Approve ke liye no reason needed
+        title="Approve KYC?"
+        message={`Are you sure you want to approve ${confirmConfig.nickname}?`}
+        confirmText="Approve User"
+        type="success"
+      />
+
+      {/* 2. REJECT REASON DIALOG (Sirf Rejection ke liye) */}
+      <RejectReasonDialog
+        isOpen={isRejectModalOpen}
+        onClose={() => setIsRejectModalOpen(false)}
+        onConfirm={(reason) => handleConfirmAction(reason)} // Yahan reason pass ho raha hai
+        userName={confirmConfig.nickname}
+        isLoading={loading}
       />
     </div>
   );

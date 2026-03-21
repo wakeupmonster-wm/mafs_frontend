@@ -1,6 +1,6 @@
 // src/app/routes/index.js
 import { Suspense, lazy } from "react"; // Added Suspense and lazy
-import { createBrowserRouter, useParams } from "react-router-dom";
+import { createBrowserRouter, Navigate, useParams } from "react-router-dom";
 import PrivateRoute from "./privateRoute";
 
 // 1. Layouts (Keep these standard or lazy load them too)
@@ -128,6 +128,11 @@ const ParticipantsPage = lazy(
 );
 
 import { PreLoader } from "../loader/preloader";
+import GeneralPage from "@/modules/settings/pages/general.page";
+import SocialMediaPage from "@/modules/settings/pages/social.media.page";
+import EmailPage from "@/modules/settings/pages/email.page";
+import ADSMobPage from "@/modules/settings/pages/ads.mob.page";
+import StoragePage from "@/modules/settings/pages/storage.page";
 
 export const router = createBrowserRouter([
   {
@@ -138,10 +143,19 @@ export const router = createBrowserRouter([
       </Suspense>
     ),
     children: [
-      { index: true, element: <App /> }, // Now renders landing page your stylized hero
+      // { index: true, element: <App /> }, // Now renders landing page your stylized hero
+      // 1. Jab koi "/" par aaye, usse redirect kar do login par
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<PreLoader />}>
+            <Navigate to="/auth/login" replace />
+          </Suspense>
+        ),
+      },
       {
         path: "auth",
-        element: <AuthLayout />,
+        element: <App />,
         children: [
           { index: true, element: <NotFoundPage /> },
           { path: "login", element: <LoginPage /> },
@@ -440,11 +454,55 @@ export const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: (
-          <Suspense fallback={<PreLoader />}>
-            <SettingsPage />
-          </Suspense>
-        ),
+        children: [
+          { index: true, element: <NotFoundPage /> },
+          {
+            path: "general",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <GeneralPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "social-media",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <SocialMediaPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "email",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <EmailPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "ads-mob",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <ADSMobPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "storage",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <StoragePage />
+              </Suspense>
+            ),
+          },
+          { path: "*", element: <NotFoundPage /> },
+        ],
       },
       { path: "get-help", element: <>Get-Help</> },
       { path: "search", element: <>Search</> },

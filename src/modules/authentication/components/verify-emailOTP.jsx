@@ -102,7 +102,7 @@ export default function VerifyEmailOtp() {
 
         <Button
           onClick={handleVerify}
-          className="w-full py-6"
+          className="py-5 mb-5 bg-brand-aqua/25 hover:bg-brand-aqua/45 hover:shadow-md border border-brand-aqua text-black"
           disabled={otp.length !== 6 || loading}
         >
           {loading ? <Loader2 className="animate-spin" /> : "Verify OTP"}
@@ -114,7 +114,7 @@ export default function VerifyEmailOtp() {
             type="button"
             disabled={timer > 0 || loading}
             onClick={handleResend}
-            className="text-blue-900 font-semibold hover:underline disabled:opacity-90 disabled:cursor-not-allowed"
+            className="text-brand-aqua font-semibold hover:underline disabled:opacity-90 disabled:cursor-not-allowed"
           >
             Resend {timer > 0 && `(${timer}s)`}
           </button>

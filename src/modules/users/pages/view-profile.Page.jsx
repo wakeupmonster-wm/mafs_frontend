@@ -26,7 +26,6 @@ import { PreLoader } from "@/app/loader/preloader";
 import { ManageAccountDialog } from "../components/Dialogs/manage.account.dialog";
 import { AttributesTab } from "../components/Tabs/attributes.Tab";
 import { clearSelectedUser, fetchUserData } from "../store/user.slice";
-import { SampleTab } from "../components/Tabs/sample.tab";
 
 export default function ViewProfilePage() {
   const navigate = useNavigate();
@@ -86,8 +85,10 @@ export default function ViewProfilePage() {
 
   // 6. NOW it is safe to destructure because we know 'user' exists
   const {
+    reports,
     profile,
     account,
+    security,
     attributes,
     discovery,
     location: userLoc,
@@ -101,6 +102,7 @@ export default function ViewProfilePage() {
   } = user;
 
   console.log("user: ", user);
+  console.log("reports1: ", reports);
 
   return (
     <>
@@ -140,7 +142,7 @@ export default function ViewProfilePage() {
           </div>
         </div>
 
-        <div className="p-4 md:p-8 max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="p-2 md:p-4 max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
           {/* User Summary Card */}
           <div className="bg-white rounded-2xl border border-slate-200 px-4 py-3 shadow-sm">
             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
@@ -245,6 +247,9 @@ export default function ViewProfilePage() {
 
             <div className="mt-6">
               <ProfileTab
+                reports={reports}
+                security={security}
+                stats={stats}
                 userData={user}
                 photos={photos}
                 profile={profile}
@@ -256,7 +261,7 @@ export default function ViewProfilePage() {
               />
               <GallleryTab photos={photos} userId={user._id} />
               <AttributesTab userData={user} attributes={attributes} />
-              <DiscoveryTab discovery={discovery} attributes={attributes} />
+              <DiscoveryTab discovery={discovery} />
               <ActivityTab stats={stats} recentMatches={recentMatches} />
               <FinancialsTab
                 account={account}

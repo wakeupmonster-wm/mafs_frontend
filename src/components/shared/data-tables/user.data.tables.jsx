@@ -44,16 +44,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
-
-// At the top of your file
-const GENDER_OPTIONS = [
-  "men",
-  "women",
-  "non-binary",
-  "trans-man",
-  "trans-women",
-  "genderqueer",
-];
+import { GENDER_OPTIONS } from "@/constants/gender.options";
 
 export default function UserDataTables({
   columns,
@@ -97,7 +88,7 @@ export default function UserDataTables({
     <div className="w-full space-y-4">
       {/* --- TOOLBAR SECTION --- */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-3 bg-slate-50/50 p-2 lg:p-3 rounded-2xl border border-slate-100">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-3 p-2 lg:p-3 rounded-2xl border border-slate-100">
           {/* 1. LEFT SIDE: Search Input */}
           <div className="relative w-80 lg:w-96 order-1">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
@@ -276,7 +267,7 @@ export default function UserDataTables({
                       <span className="text-[10px] font-bold uppercase opacity-50">
                         Account:
                       </span>
-                      <span className="text-xs">Pending Deletion</span>
+                      <span className="text-xs">Deletion</span>
                       <button
                         onClick={() =>
                           filters.setIsScheduledForDeletion(undefined)
@@ -431,7 +422,7 @@ export default function UserDataTables({
                       filters.setIsScheduledForDeletion(true)
                     }
                   >
-                    Scheduled Deletion
+                    Deletion
                   </DropdownMenuCheckboxItem>
 
                   <DropdownMenuSeparator />

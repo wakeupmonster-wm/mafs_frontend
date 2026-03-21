@@ -26,13 +26,13 @@ export function NavPlateform({ items }) {
   }
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={"group-data-[collapsible=icon]:mt-3"}>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={"gap-0"}>
         {items.map((item) => {
           const Icon = item.icon;
           const hasActiveChild = item.items?.some(
-            (subItem) => location.pathname === subItem.url
+            (subItem) => location.pathname === subItem.url,
           );
 
           return (
@@ -47,10 +47,10 @@ export function NavPlateform({ items }) {
                   <SidebarMenuButton
                     tooltip={item.title}
                     className={cn(
-                      "group relative h-12 w-full transition-all duration-300 rounded-lg px-2",
+                      "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
                       hasActiveChild &&
-                        "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50"
+                        "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50",
                     )}
                   >
                     {/* Icon with Dynamic Coloring */}
@@ -59,13 +59,13 @@ export function NavPlateform({ items }) {
                         "flex size-7 items-center justify-center rounded-lg transition-all duration-300",
                         hasActiveChild
                           ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
-                          : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
+                          : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
                       )}
                     >
-                      <Icon className="size-5" />
+                      <Icon className="size-4" />
                     </div>
 
-                    <span className="flex-1 truncate text-sm tracking-tight">
+                    <span className="flex-1 truncate text-xs tracking-tight">
                       {item.title}
                     </span>
 
@@ -75,7 +75,8 @@ export function NavPlateform({ items }) {
                         variant={item.badgeVariant || "secondary"}
                         className={cn(
                           "h-5 min-w-5 px-1.5 text-[10px] font-bold rounded-full",
-                          item.badgeVariant === "destructive" && "animate-pulse"
+                          item.badgeVariant === "destructive" &&
+                            "animate-pulse",
                         )}
                       >
                         {item.badge}
@@ -100,7 +101,7 @@ export function NavPlateform({ items }) {
                               "hover:bg-slate-50 hover:text-brand-aqua",
                               isActive
                                 ? "!bg-brand-aqua/10 text-brand-aqua font-semibold border border-brand-aqua/50"
-                                : "text-slate-500 font-medium"
+                                : "text-slate-500 font-medium",
                             )}
                           >
                             <Link

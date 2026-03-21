@@ -41,6 +41,8 @@ const VerificationCard = ({
 
   const currentStatus = verification?.status || "pending";
 
+  // console.log("verification: ", verification);
+
   const statusStyles = {
     approved:
       "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 shadow-[0_0_15px_-3px_rgba(16,185,129,0.2)]",
@@ -106,27 +108,27 @@ const VerificationCard = ({
 
         {/* Thumbnail Comparison Row */}
         <div className="flex items-center justify-start gap-3">
-          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-slate-50 transition-all hover:border-indigo-300">
+          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-brand-bg transition-all hover:border-brand-aqua">
             <img
-              src={verification.selfieUrl || dummyImg}
+              src={verification?.selfieUrl || dummyImg}
               alt="Selfie"
               className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100 flex items-end p-3">
-              <span className="text-[10px] font-bold text-white uppercase tracking-tighter">
-                Profile Selfie
+              <span className="text-[10px] font-bold text-white uppercase ">
+                Selfie
               </span>
             </div>
           </div>
-          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-slate-50 transition-all hover:border-indigo-300">
+          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-brand-bg transition-all hover:border-brand-aqua">
             <img
-              src={verification.docUrl || dummyID}
+              src={verification?.docUrl || dummyID}
               alt="Document"
               className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 transition-opacity group-hover:opacity-100 flex items-end p-3">
               <span className="text-[10px] font-bold text-white uppercase tracking-tighter">
-                ID Document
+                Document
               </span>
             </div>
           </div>
@@ -137,7 +139,7 @@ const VerificationCard = ({
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full h-11 bg-white border-slate-300 text-slate-600 hover:bg-slate-50 hover:text-indigo-600 hover:border-indigo-200 transition-all group"
+              className="w-full h-11 bg-brand-aqua/15 border-brand-aqua text-slate-600 hover:bg-brand-aqua/80 hover:text-white hover:border-brand-aqua transition-all group"
             >
               <IconEye className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
               Launch Side-by-Side Inspector
@@ -146,8 +148,8 @@ const VerificationCard = ({
           <DialogContent className="max-w-6xl h-[90vh] flex flex-col p-0 overflow-hidden rounded-3xl border-none">
             <div className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-md">
               <div className="flex items-center gap-4">
-                <div className="p-2.5 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
-                  <IconShieldCheck size={24} />
+                <div className="p-2.5 rounded-xl bg-brand-aqua text-white">
+                  <IconShieldCheck size={24} strokeWidth={2.5} />
                 </div>
                 <div>
                   <DialogTitle className="text-xl font-black text-slate-900">
@@ -164,14 +166,14 @@ const VerificationCard = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 px-1">
-                    <IconUserCircle size={18} className="text-indigo-500" />
+                    <IconUserCircle size={18} className="text-brand-aqua" />
                     <span className="text-sm font-bold uppercase tracking-widest text-slate-400">
-                      Live Selfie
+                      Selfie
                     </span>
                   </div>
                   <ZoomableImage
-                    src={verification.selfieUrl || dummyImg}
-                    alt={verification.selfieUrl || dummyImg}
+                    src={verification?.selfieUrl || dummyImg}
+                    alt={verification?.selfieUrl || dummyImg}
                     loading="lazy"
                     className="rounded-2xl shadow-2xl object-contain border-4 border-white"
                   />
@@ -179,14 +181,14 @@ const VerificationCard = ({
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 px-1">
-                    <IconId size={18} className="text-indigo-500" />
+                    <IconId size={18} className="text-brand-aqua" />
                     <span className="text-sm font-bold uppercase tracking-widest text-slate-400">
-                      Government Document
+                      Document
                     </span>
                   </div>
                   <ZoomableImage
-                    src={verification.docUrl || dummyID}
-                    alt={verification.docUrl || dummyID}
+                    src={verification?.docUrl || dummyID}
+                    alt={verification?.docUrl || dummyID}
                     loading="lazy"
                     className="rounded-2xl shadow-2xl object-contain border-4 border-white"
                   />
@@ -197,17 +199,18 @@ const VerificationCard = ({
             <div className="p-6 bg-white border-t flex gap-4">
               <Button
                 variant="ghost"
-                className="flex-1 h-14 text-rose-600 hover:bg-rose-50 font-bold uppercase tracking-widest text-xs"
+                className="flex-1 h-14 text-white hover:text-white bg-rose-600 hover:bg-rose-700 font-bold uppercase tracking-widest text-xs cursor-pointer disabled:cursor-not-allowed"
                 onClick={() => setRejectDialogOpen(true)}
+                disabled={isActionDisabled}
               >
-                <IconX className="mr-2 h-5 w-5" /> Deny Access
+                <IconX className="mr-2 h-5 w-5" /> Reject
               </Button>
               <Button
-                className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest text-xs shadow-lg shadow-emerald-200 transition-all active:scale-[0.98]"
+                className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest cursor-pointer disabled:cursor-not-allowed text-xs shadow-lg shadow-emerald-200 transition-all active:scale-[0.98]"
                 onClick={() => setIsApproveConfirmOpen(true)}
                 disabled={isActionDisabled}
               >
-                <IconCheck className="mr-2 h-5 w-5" /> Confirm Identity Match
+                <IconCheck className="mr-2 h-5 w-5" /> Approve
               </Button>
             </div>
           </DialogContent>
@@ -219,8 +222,8 @@ const VerificationCard = ({
             className={cn(
               "rounded-2xl p-4 border animate-in slide-in-from-top-2 duration-300",
               currentStatus === "approved" &&
-                "bg-emerald-50/50 border-emerald-100",
-              currentStatus === "rejected" && "bg-rose-50/50 border-rose-100",
+                "bg-emerald-100/50 border-emerald-300",
+              currentStatus === "rejected" && "bg-rose-100/50 border-rose-300",
               currentStatus === "not_started" &&
                 "bg-slate-50 border-dashed border-slate-400",
             )}
@@ -252,9 +255,9 @@ const VerificationCard = ({
 
             <p className="text-sm font-medium text-slate-600 leading-relaxed italic">
               {currentStatus === "approved" &&
-                (verification.approvalReason ||
+                (verification?.approvalReason ||
                   "User identity has been successfully verified.")}
-              {currentStatus === "rejected" && verification.rejectionReason}
+              {currentStatus === "rejected" && verification?.rejectionReason}
               {currentStatus === "not_started" &&
                 "KYC submission is awaiting user data."}
             </p>
@@ -267,9 +270,7 @@ const VerificationCard = ({
             <IconCalendarEvent size={14} />
             <span className="text-[10px] font-bold uppercase tracking-tight">
               Submitted:{" "}
-              {new Date(
-                verification.submittedAt || Date.now(),
-              ).toLocaleDateString()}
+              {new Date(verification?.submittedAt || "-").toLocaleDateString()}
             </span>
           </div>
 

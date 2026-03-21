@@ -8,7 +8,7 @@ import {
   IconStar,
   IconMessage2,
   IconTrendingUp,
-  IconCreditCard,
+  IconCircleX,
 } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +27,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
       ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
       : 0;
 
-  console.log("recentMatches: ", recentMatches);
+  // console.log("recentMatches: ", recentMatches);
 
   return (
     <TabsContent
@@ -59,18 +59,18 @@ export const ActivityTab = ({ stats, recentMatches }) => {
             border: "border-amber-200",
           },
           {
+            label: "Total Rejections",
+            val: stats.totalRejections, // Optional chaining safety ke liye
+            icon: <IconCircleX size={18} className="text-red-500" />,
+            bg: "bg-red-100/60",
+            border: "border-red-200",
+          },
+          {
             label: "Total Matches",
             val: stats.totalMatches,
             icon: <IconCheck className="text-emerald-500" />,
             bg: "bg-emerald-100/60",
             border: "border-emerald-200",
-          },
-          {
-            label: "Total Transections",
-            val: stats.totalTransactions,
-            icon: <IconCreditCard size={18} className="text-blue-500" />,
-            bg: "bg-blue-100/60",
-            border: "border-blue-200",
           },
         ].map((stat, i) => (
           <Card
@@ -146,7 +146,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                         {/* <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" /> */}
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                        <p className="text-sm font-bold text-slate-900 group-hover:text-brand-aqua transition-colors">
                           {match.nickname}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
@@ -165,7 +165,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                           state: { userId: match.ouserId },
                         })
                       }
-                      className="h-8 text-xs font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                      className="h-8 text-xs font-bold text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10"
                     >
                       View Profile
                     </Button>
@@ -190,7 +190,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
           <Card className="border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                <IconTrendingUp size={18} className="text-indigo-500" />{" "}
+                <IconTrendingUp size={18} className="text-brand-aqua" />{" "}
                 Engagement Score
               </CardTitle>
             </CardHeader>
@@ -208,7 +208,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs font-bold uppercase tracking-tighter text-slate-500">
                     <span>Funnel Success</span>
-                    <span className="text-indigo-600">{matchRate}%</span>
+                    <span className="text-brand-aqua">{matchRate}%</span>
                   </div>
                   <Progress
                     value={parseFloat(matchRate)}
@@ -250,7 +250,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-indigo-600 border-none shadow-lg shadow-indigo-100 p-6 text-white overflow-hidden relative">
+          <Card className="bg-brand-aqua border-none shadow-lg shadow-indigo-100 p-6 text-white overflow-hidden relative">
             <div className="relative z-10">
               <h4 className="text-sm font-bold opacity-80">Moderator Tip</h4>
               <p className="text-xs mt-2 leading-relaxed">
@@ -258,7 +258,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                 behavior or automated scripts.
               </p>
             </div>
-            <IconTrendingUp className="absolute -bottom-4 -right-4 h-24 w-24 opacity-10" />
+            <IconTrendingUp className="absolute -z-1 -bottom-4 -right-5 h-24 w-24 opacity-20" />
           </Card>
         </div>
       </div>

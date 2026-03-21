@@ -4,6 +4,16 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "420px", // Extra small devices
+        sm: "640px", // Small (Large phones)
+        md: "768px", // Medium (Tablets)
+        lg: "1024px", // Large (Laptops)
+        xl: "1280px", // Extra Large (Desktops)
+        "2xl": "1536px", // 2X Large Desktops
+        "3xl": "1920px", // Full HD+ / Ultra-wide
+        "4k": "2560px", // 4K Monitors / High Res
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

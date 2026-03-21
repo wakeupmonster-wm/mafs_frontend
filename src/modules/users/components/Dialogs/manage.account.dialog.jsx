@@ -146,17 +146,23 @@ export const ManageAccountDialog = ({ isOpen, onOpenChange, userData }) => {
         <div className="p-6 pt-2 space-y-6">
           <div className="space-y-3">
             <Label className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
-              Account Governance
+              Account Management
             </Label>
 
             <Select value={status} onValueChange={setStatus}>
               <SelectTrigger className="h-12 w-full border-2 transition-all">
-                <SelectValue placeholder="Select Action" />
+                <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
                 {/* Dynamically filter options based on currentStatus for better UX */}
                 {currentStatus === "banned" ? (
                   <>
+                    <SelectItem
+                      value="banned"
+                      className="text-red-600 font-bold"
+                    >
+                      🚫 Ban Account
+                    </SelectItem>
                     <SelectItem
                       value="active"
                       className="text-green-600 font-bold focus:bg-green-50"
@@ -164,26 +170,35 @@ export const ManageAccountDialog = ({ isOpen, onOpenChange, userData }) => {
                       ✅ Restore Account to Active
                     </SelectItem>
                     <SelectItem value="suspended" className="text-amber-600">
-                      ⏳ Switch to Suspension
+                      ⏳ Switch to Account Suspended
                     </SelectItem>
                   </>
                 ) : currentStatus === "suspended" ? (
                   <>
+                    <SelectItem value="suspended" className="text-amber-600">
+                      ⏳ Account Suspended
+                    </SelectItem>
                     <SelectItem
                       value="active"
                       className="text-green-600 font-bold"
                     >
-                      ✅ Switch to Account (Set Active)
+                      ✅ Switch to Account Active
                     </SelectItem>
                     <SelectItem
                       value="banned"
                       className="text-red-600 font-bold"
                     >
-                      🚫 Switch to Ban Permanently
+                      🚫 Ban Account
                     </SelectItem>
                   </>
                 ) : (
                   <>
+                    <SelectItem
+                      value="active"
+                      className="text-green-600 font-bold"
+                    >
+                      ✅ Account Active
+                    </SelectItem>
                     <SelectItem
                       value="suspended"
                       className="text-amber-600 font-medium"

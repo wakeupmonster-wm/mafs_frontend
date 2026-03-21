@@ -138,20 +138,66 @@ const navigationData = {
         },
       ],
     },
+    {
+      title: "Settings",
+      icon: IconSettings,
+      items: [
+        {
+          title: "General",
+          url: "/admin/settings/general",
+        },
+        {
+          title: "Social Media",
+          url: "/admin/settings/social-media",
+        },
+        {
+          title: "Email",
+          url: "/admin/settings/email",
+        },
+        {
+          title: "Ads",
+          url: "/admin/settings/ads-mob",
+        },
+        {
+          title: "Storage",
+          url: "/admin/settings/storage",
+        },
+      ],
+    },
   ],
   navSecondary: [
     {
       title: "Settings",
-      url: "/admin/settings",
       icon: IconSettings,
+      items: [
+        {
+          title: "General",
+          url: "/admin/settings/general",
+        },
+        {
+          title: "Social Media",
+          url: "/admin/settings/social-media",
+        },
+        {
+          title: "Email",
+          url: "/admin/settings/email",
+        },
+        {
+          title: "Ads",
+          url: "/admin/settings/ads",
+        },
+        {
+          title: "Storage",
+          url: "/admin/settings/storage",
+        },
+      ],
     },
-    {
-      title: "Help Center",
-      url: "/admin/help",
-      icon: IconHelp,
-    },
+    // {
+    //   title: "Help Center",
+    //   url: "/admin/help",
+    //   icon: IconHelp,
+    // },
   ],
-  documents: [],
 };
 
 export default navigationData;

@@ -57,7 +57,7 @@ export default function SubscriptionsPage() {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           ...filters,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -134,7 +134,7 @@ export default function SubscriptionsPage() {
   return (
     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-8"
+        className="w-full mx-auto px-2 lg:px-4 space-y-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >

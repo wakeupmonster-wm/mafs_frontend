@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { IconStarFilled } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
 import dummyImg from "@/assets/images/dummyImg.jpg";
+import { toast } from "sonner";
 
 // Helper for Completion Colors
 const getCompletionColor = (val) => {
@@ -75,7 +76,7 @@ export const userColumns = [
       const user = row.original;
       const nickname = user.profile?.nickname || "unknown";
       // Added safety check for the photos array
-      const avatar = user?.photos?.[0]?.url || dummyImg;
+      const avatar = user?.photos || dummyImg;
 
       return (
         <div className="flex items-center gap-3 w-full">
@@ -92,19 +93,28 @@ export const userColumns = [
   {
     accessorKey: "account.phone",
     header: "Phone",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-2 w-full text-[11px] text-foreground">
-        <Phone className="w-3.5 h-3.5" />
-        {row.original.account?.phone || "—"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(row.original.account?.phone);
+        toast.success("Phone number copied!");
+      };
+      return (
+        <div
+          onClick={copyToClipboard}
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
+        >
+          <Phone className="w-3.5 h-3.5" />
+          {row.original.account?.phone || "—"}
+        </div>
+      );
+    },
   },
   // Email Columnn
   {
     accessorKey: "account.email",
     header: "Email",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2 text-foreground text-[11px]">
+      <div className="flex items-center cursor-pointer gap-2 text-foreground text-[11px]">
         <Mail className="w-3.5 h-3.5" />
         {row.original.account?.email || "-"}
       </div>
@@ -114,16 +124,35 @@ export const userColumns = [
   {
     id: "age",
     header: "Age",
-    cell: ({ row }) => (
-      <span className="text-xs">{row.original.profile?.age || "-"}</span>
-    ),
+    cell: ({ row }) => {
+      const profile = row.original.profile;
+      const dob = profile?.dob;
+
+      // 1. Agar age field pehle se hai
+      if (profile?.age) return <span className="text-xs">{profile.age}</span>;
+
+      // 2. Agar DOB hai toh calculate karein
+      if (dob) {
+        const birthYear = new Date(dob).getFullYear();
+        const currentYear = new Date().getFullYear();
+        const calculatedAge = currentYear - birthYear;
+
+        // Check if result is a valid number
+        if (!isNaN(calculatedAge)) {
+          return <span className="text-xs">{calculatedAge}</span>;
+        }
+      }
+
+      // 3. Kuch bhi nahi toh default dash
+      return <span className="text-xs">-</span>;
+    },
   },
   // Gender Column
   {
     id: "gender",
     header: "Gender",
     cell: ({ row }) => (
-      <span className="text-xs">{row.original.profile.gender || "-"}</span>
+      <div className="w-max text-xs">{row.original.profile.gender || "-"}</div>
     ),
   },
   // Completion Column
@@ -203,7 +232,7 @@ export const userColumns = [
   },
   // Joined Column
   {
-    id: "createdAt", // Manually set ID
+    id: "createdAt",
     accessorKey: "createdAt",
     header: ({ column }) => (
       <Button
@@ -212,13 +241,21 @@ export const userColumns = [
         className="-ml-3"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Joined
+        Joined At
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"));
-      return <div className="text-[10px]">{date.toLocaleDateString()}</div>;
+      return (
+        <div className="text-[10px]">
+          {date.toLocaleDateString("en-IN", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </div>
+      );
     },
   },
   // Actions Column

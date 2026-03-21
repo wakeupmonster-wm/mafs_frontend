@@ -6,12 +6,11 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  Calendar,
   FileText,
-  Camera,
   MoreHorizontal,
   CheckCircle2,
   Eye,
+  ArrowUpDown,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -25,6 +24,8 @@ import dummyImg from "@/assets/images/dummyImg.jpg";
 import { useNavigate } from "react-router";
 import { IconCalendar } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export const getKYCColumns = (onAction, onPreview) => [
   {
@@ -43,9 +44,8 @@ export const getKYCColumns = (onAction, onPreview) => [
     accessorKey: "user",
     header: "User",
     cell: ({ row, table }) => {
-      const user = row.original.user;
-      const avatar = user?.avatar || dummyImg;
-      const nickname = user?.nickname || "-";
+      const avatar = row.original?.user?.avatar;
+      const nickname = row.original?.user?.nickname || "-";
 
       // Access the modal function passed from the main component
       const { setImageModal } = table.options.meta || {};
@@ -54,18 +54,22 @@ export const getKYCColumns = (onAction, onPreview) => [
         <div className="flex items-center gap-2">
           {/* Avatar with Click-to-Zoom logic */}
           <div className="h-9 w-9 rounded-full bg-gray-100 overflow-hidden border flex-shrink-0">
-            <img
-              src={avatar} // Fallback image path
-              alt="User Avatar"
-              className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-200"
-              onClick={() =>
-                setImageModal?.({
-                  open: true,
-                  src: avatar,
-                  title: `${nickname} Selfie`,
-                })
-              }
-            />
+            <Avatar className="w-full h-full border border-slate-100 shadow-lg transition-transform group-hover:scale-[1.02]">
+              <AvatarImage
+                src={avatar || dummyImg}
+                className="object-cover cursor-pointer hover:scale-110 transition-transform duration-200"
+                onClick={() =>
+                  setImageModal?.({
+                    open: true,
+                    src: avatar || dummyImg,
+                    title: `${nickname || "User"} Profile Photo`,
+                  })
+                }
+              />
+              <AvatarFallback className="text-4xl bg-slate-50 text-slate-400 font-bold">
+                {nickname?.[0]}
+              </AvatarFallback>
+            </Avatar>
           </div>
 
           {/* Text Labels */}
@@ -93,13 +97,13 @@ export const getKYCColumns = (onAction, onPreview) => [
       };
 
       return (
-        <Badge
+        <div
           onClick={copyToClipboard}
-          className="cursor-pointer bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 transition-all"
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
         >
           <Phone className="w-3 h-3 mr-1" />
           {phone}
-        </Badge>
+        </div>
       );
     },
   },
@@ -115,10 +119,10 @@ export const getKYCColumns = (onAction, onPreview) => [
         return <span className="text-slate-400 text-xs italic">-</span>;
 
       return (
-        <Badge className="lowercase font-normal bg-gray-100 text-gray-700 border border-gray-200 transition-all duration-200 hover:bg-gray-200 hover:scale-105">
+        <div className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground">
           <Mail className="w-3 h-3 mr-1.5 text-slate-500" />
           {email}
-        </Badge>
+        </div>
       );
     },
   },
@@ -126,15 +130,15 @@ export const getKYCColumns = (onAction, onPreview) => [
     accessorKey: "verification.status",
     header: "Status",
     cell: ({ row }) => {
-      //   const status = (
-      //     row.original.verification?.status || "pending"
-      //   ).toLowerCase();
-
+      console.log("row.original.verification: ", row.original.verification);
       const status = (
         row.original.verification?.status ||
         row.original.kycStatus ||
         "pending"
       ).toLowerCase();
+
+      // 🚀 Check: Agar status 'not_started' hai toh kuch bhi render mat karo
+      if (status === "not_started") return null;
 
       // Mapping styles to status
       const variants = {
@@ -143,20 +147,21 @@ export const getKYCColumns = (onAction, onPreview) => [
         rejected: "bg-red-100 text-red-700 border-red-200",
       };
 
+      // Agar status in teeno mein se nahi hai (safety check)
+      if (!variants[status]) return null;
+
       return (
         <Badge
           className={`
           capitalize font-medium transition-all duration-200 hover:scale-105
-          ${variants[status] || variants.pending}
+          ${variants[status]}
         `}
         >
-          {/* Dynamic Icon Rendering */}
           {status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
           {status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
           {status === "pending" && (
             <Clock className="w-3 h-3 mr-1 animate-pulse" />
           )}
-
           {status}
         </Badge>
       );
@@ -164,7 +169,16 @@ export const getKYCColumns = (onAction, onPreview) => [
   },
   {
     accessorKey: "createdAt",
-    header: "Joined At",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className={"text-xs"}
+      >
+        Submitted At
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const dateValue =
         row.original.verification?.submittedAt || row.original.createdAt;

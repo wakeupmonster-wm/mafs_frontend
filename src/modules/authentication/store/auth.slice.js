@@ -1,3 +1,4 @@
+// src/modules/authentication/store/auth.slice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   adminForgotPasswordAPI,
@@ -41,38 +42,8 @@ export const loginThunk = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
-
-// export const loginThunk = createAsyncThunk(
-//   "auth/login",
-//   async (credentials, { rejectWithValue }) => {
-//     try {
-//       const response = await adminLoginAPI(credentials);
-
-//       if (!response.success) {
-//         return rejectWithValue("Invalid credentials");
-//       }
-
-//       const { accessToken, refreshToken } = response.data;
-
-//       // Minimal admin user (until backend sends profile)
-//       const user = {
-//         role: "ADMIN",
-//       };
-
-//       localStorage.setItem("access_Token", accessToken);
-//       localStorage.setItem("refresh_Token", refreshToken);
-//       localStorage.setItem("auth_user", JSON.stringify(user));
-
-//       axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`;
-
-//       return user;
-//     } catch (error) {
-//       return rejectWithValue(error.response?.data?.message || "Server error");
-//     }
-//   }
-// );
 
 export const requestOtpThunk = createAsyncThunk(
   "auth/requestOtp",
@@ -84,10 +55,10 @@ export const requestOtpThunk = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to send OTP"
+        error.response?.data?.message || "Failed to send OTP",
       );
     }
-  }
+  },
 );
 
 // Step 2: Verify the OTP
@@ -101,10 +72,10 @@ export const verifyOtpThunk = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Invalid OTP code"
+        error.response?.data?.message || "Invalid OTP code",
       );
     }
-  }
+  },
 );
 
 // Step 3: Set the New Password
@@ -117,10 +88,10 @@ export const forgotPasswordThunk = createAsyncThunk(
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to reset password"
+        error.response?.data?.message || "Failed to reset password",
       );
     }
-  }
+  },
 );
 
 // Set the New Password, when user/admin is already login.
@@ -136,15 +107,13 @@ export const resetPasswordThunk = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to reset password"
+        error.response?.data?.message || "Failed to reset password",
       );
     }
-  }
+  },
 );
 
-/* ============================
- * ====== AUTH SLICE * ========
- * ============================ */
+/* =========== AUTH SLICE * ================ */
 const authSlice = createSlice({
   name: "auth",
   initialState: {

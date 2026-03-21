@@ -14,6 +14,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { fetchUserData, updateUserProfile } from "../../store/user.slice";
+import { GENDER_OPTIONS } from "@/constants/gender.options";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const EditProfileDialog = ({ userData }) => {
   const dispatch = useDispatch();
@@ -66,7 +74,7 @@ export const EditProfileDialog = ({ userData }) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="sm">
-          <IconEdit size={16} className="mr-2" /> Edit Bio
+          <IconEdit size={16} className="mr-2" /> Edit details
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
@@ -80,12 +88,25 @@ export const EditProfileDialog = ({ userData }) => {
             value={formData.nickname}
             onChange={handleChange}
           />
-          <Input
+          <Select
             name="gender"
-            placeholder="Gender"
             value={formData.gender}
-            onChange={handleChange}
-          />
+            onValueChange={(value) => {
+              // Shadcn Select seedha 'value' deta hai, 'event' nahi
+              setFormData({ ...formData, gender: value });
+            }}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select Gender" />
+            </SelectTrigger>
+            <SelectContent>
+              {GENDER_OPTIONS.map((option) => (
+                <SelectItem key={option} value={option}>
+                  {option.charAt(0).toUpperCase() + option.slice(1)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           {/* <Input
             name="age"
             placeholder="Age"

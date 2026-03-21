@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion"; // Added AnimatePresence
-
 import { Link, useLocation } from "react-router-dom";
 import {
   SidebarGroup,
@@ -28,14 +27,14 @@ export function NavManagements({ items }) {
   }
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={"py-1"}>
       <SidebarGroupLabel>Management</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={"gap-1"}>
         {items.map((item) => {
           const isActive = location.pathname === item.url;
           const Icon = item.icon;
           const hasActiveChild = item.items?.some(
-            (subItem) => location.pathname === subItem.url
+            (subItem) => location.pathname === subItem.url,
           );
 
           return (
@@ -51,15 +50,15 @@ export function NavManagements({ items }) {
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "group relative h-12 w-full transition-all duration-300 rounded-lg px-2",
+                      "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
                       isActive &&
-                        "!bg-brand-aqua/10 border border-brand-aqua/50"
+                        "!bg-brand-aqua/10 border border-brand-aqua/50",
                     )}
                   >
                     <Link
                       to={item.url}
-                      className="flex items-center gap-3 text-sm"
+                      className="flex items-center gap-3 text-xs"
                     >
                       {/* Icon with Dynamic Coloring */}
                       <div
@@ -67,13 +66,13 @@ export function NavManagements({ items }) {
                           "flex size-7 items-center justify-center rounded-lg transition-all duration-300",
                           hasActiveChild
                             ? "text-brand-aqua shadow-lg shadow-blue-500/40" // Added slight tilt for "pop"
-                            : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
+                            : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
                         )}
                       >
-                        <Icon className="size-5" />
+                        <Icon className="size-4" />
                       </div>
 
-                      <span className="flex-1 truncate text-sm tracking-tight">
+                      <span className="flex-1 truncate text-xs tracking-tight">
                         {item.title}
                       </span>
 
@@ -91,7 +90,7 @@ export function NavManagements({ items }) {
                           className={cn(
                             "h-5 min-w-5 px-1.5 text-[10px] font-semibold",
                             item.badgeVariant === "destructive" &&
-                              "animate-pulse"
+                              "animate-pulse",
                           )}
                         >
                           {item.badge}
@@ -103,7 +102,7 @@ export function NavManagements({ items }) {
                           "size-4 transition-all duration-200",
                           isActive
                             ? "opacity-100 translate-x-0"
-                            : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
+                            : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0",
                         )}
                       />
                     </Link>
@@ -125,7 +124,7 @@ export function NavManagements({ items }) {
                               "hover:bg-slate-50 hover:text-brand-aqua",
                               isActive
                                 ? "!bg-brand-aqua/10 text-brand-aqua font-semibold border border-brand-aqua/50"
-                                : "text-slate-500 font-medium"
+                                : "text-slate-500 font-medium",
                             )}
                           >
                             <Link
@@ -137,7 +136,7 @@ export function NavManagements({ items }) {
                                   "flex size-4 items-center justify-center rounded-lg transition-all duration-300",
                                   hasActiveChild
                                     ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
-                                    : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
+                                    : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
                                 )}
                               >
                                 <Icon className="size-5" />

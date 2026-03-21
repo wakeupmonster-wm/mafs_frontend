@@ -73,7 +73,11 @@ export default function RequestResetEmailForm() {
           )}
         </Field>
 
-        <Button type="submit" className="w-full py-6" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="py-5 mb-5 bg-brand-aqua/25 hover:bg-brand-aqua/45 hover:shadow-md border border-brand-aqua text-black"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Sending..." : "Send Reset Link"}
         </Button>
 

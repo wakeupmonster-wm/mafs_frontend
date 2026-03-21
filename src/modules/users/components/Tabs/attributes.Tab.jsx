@@ -23,7 +23,6 @@ import {
   IconPaw,
   IconMoonStars,
   IconDeviceMobile,
-  IconVaccine,
   IconDroplet,
   IconTarget,
   IconPlaneDeparture,
@@ -74,12 +73,6 @@ export const AttributesTab = ({ attributes }) => {
                   icon={<IconUsers />}
                   label="Family Plans"
                   value={attributes?.familyPlans}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconVaccine />}
-                  label="COVID Vaccine"
-                  value={attributes?.vaccineStatus}
                   color="blue"
                 />
                 <LifeTile
@@ -164,7 +157,7 @@ export const AttributesTab = ({ attributes }) => {
             {/* COLUMN 3: Interests & Languages (Stacked) */}
             <div className="space-y-8">
               {/* 3. INTERESTS */}
-              <SectionWrapper
+              {/* <SectionWrapper
                 icon={IconTags}
                 title="Interests"
                 color="bg-violet-500"
@@ -179,6 +172,29 @@ export const AttributesTab = ({ attributes }) => {
                     </Badge>
                   ))}
                 </div>
+              </SectionWrapper> */}
+
+              <SectionWrapper
+                icon={IconTags}
+                title="Interests"
+                color="bg-violet-500"
+              >
+                <div className="flex flex-wrap gap-2 px-1">
+                  {attributes?.interests?.length > 0 ? (
+                    attributes.interests.map((tag, index) => (
+                      <div
+                        key={`${tag}-${index}`}
+                        className="px-3 py-1 rounded-lg border border-violet-200 text-violet-700 bg-violet-100 text-[10px] font-bold uppercase tracking-wide shadow-sm transition-all hover:bg-violet-100"
+                      >
+                        {tag}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs font-medium text-slate-600 px-1">
+                      Not Set
+                    </div>
+                  )}
+                </div>
               </SectionWrapper>
 
               {/* 4. LANGUAGES */}
@@ -187,16 +203,21 @@ export const AttributesTab = ({ attributes }) => {
                 title="Languages"
                 color="bg-emerald-500"
               >
-                <div className="flex flex-wrap gap-2 p-1">
-                  {attributes?.languages?.map((lang) => (
-                    <Badge
-                      key={lang}
-                      variant="outline"
-                      className="border-emerald-200 text-emerald-700 bg-emerald-50/50 uppercase"
-                    >
-                      {lang}
-                    </Badge>
-                  ))}
+                <div className="flex flex-wrap gap-2 px-1">
+                  {attributes?.languages?.length > 0 ? (
+                    attributes.languages.map((lang, index) => (
+                      <div
+                        key={`${lang}-${index}`}
+                        className="px-3 py-1 rounded-lg border border-emerald-200 text-emerald-700 bg-emerald-100 text-[10px] font-bold uppercase tracking-wide shadow-sm transition-all hover:bg-emerald-100"
+                      >
+                        {lang}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs font-medium text-slate-600 px-1">
+                      Not Set
+                    </div>
+                  )}
                 </div>
               </SectionWrapper>
 

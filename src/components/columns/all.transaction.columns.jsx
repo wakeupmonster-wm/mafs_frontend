@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { PlayCircle, Hash, User, Smartphone } from "lucide-react";
+import { Hash, User, Smartphone } from "lucide-react";
 import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 
 export const transactionColumns = [

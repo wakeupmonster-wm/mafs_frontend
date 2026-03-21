@@ -40,7 +40,7 @@ export default function ForgotPasswordForm() {
   const onSubmit = async (data) => {
     try {
       const response = await dispatch(
-        forgotPasswordThunk({ email, otp, newPassword: data.password })
+        forgotPasswordThunk({ email, otp, newPassword: data.password }),
       ).unwrap();
 
       // Pass the email to the next route
@@ -136,7 +136,8 @@ export default function ForgotPasswordForm() {
         <Button
           type="submit"
           disabled={loading}
-          className="w-full py-6 bg-brand-aqua hover:bg-brand-aqua/90 text-white transition-all"
+          // className="w-full py-6 bg-brand-aqua hover:bg-brand-aqua/90 text-white transition-all"
+          className="py-5 mb-5 bg-brand-aqua/25 hover:bg-brand-aqua/45 hover:shadow-md border border-brand-aqua text-black"
         >
           {loading ? "Updating..." : "Update Password"}
         </Button>
