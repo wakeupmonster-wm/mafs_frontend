@@ -2,7 +2,7 @@ import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function EnhancedTabs({ tabs }) {
   return (
-    <TabsList className="relative h-12 w-full justify-start gap-2 bg-muted/30 p-0 mx-auto backdrop-blur-md rounded-2xl no-scrollbar md:grid md:grid-cols-7 md:h-10">
+    <TabsList className="relative h-12 w-full justify-start gap-2 bg-muted/30 p-0 mx-auto backdrop-blur-md rounded-2xl no-scrollbar md:grid md:grid-cols-8 md:h-10">
       {tabs.map((tab) => (
         <TabsTrigger
           key={tab.value}

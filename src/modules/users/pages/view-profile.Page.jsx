@@ -241,7 +241,7 @@ export default function ViewProfilePage() {
           </div>
 
           {/* Tabs Section */}
-          <Tabs defaultValue="profile" className="w-full space-y-6">
+          <Tabs defaultValue="profile" className="max-w-7xl space-y-6">
             <div className="bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
               <EnhancedTabs tabs={TabData} />
             </div>
@@ -269,6 +269,7 @@ export default function ViewProfilePage() {
                 transactions={transactions}
                 subscription={subscription}
               />
+              <SubscriptionTab userData={user} subscription={subscription} />
               <SettingsTab userData={user} account={account} />
             </div>
           </Tabs>

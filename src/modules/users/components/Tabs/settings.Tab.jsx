@@ -15,7 +15,6 @@ import {
   IconEye,
   IconMapPin,
 } from "@tabler/icons-react";
-import { EditSettingsDialog } from "../Dialogs/edit.Settings.Dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -117,19 +116,19 @@ export const SettingsTab = ({ userData }) => {
                     Account Status
                   </p>
                   <p className="text-sm font-bold text-slate-900 capitalize">
-                    {accountStatus}
+                    {account.status}
                   </p>
                 </div>
                 <Badge
                   className={cn(
                     "h-7 px-3 border-none shadow-sm",
-                    accountStatus === "active"
+                    account.status === "active"
                       ? "bg-emerald-500 text-white"
                       : "bg-rose-500 text-white",
                   )}
                 >
                   <span className="mr-2 h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                  {accountStatus}
+                  {account.status}
                 </Badge>
               </div>
 
@@ -140,7 +139,7 @@ export const SettingsTab = ({ userData }) => {
                     Membership Level
                   </p>
                   <p className="text-sm font-bold text-slate-900">
-                    {isPremium ? "Premium Pro" : "Standard Tier"}
+                    {account.isPremium ? "Premium Pro" : "Standard Tier"}
                   </p>
                 </div>
                 <Badge
@@ -151,7 +150,7 @@ export const SettingsTab = ({ userData }) => {
                       "bg-amber-50 border-amber-200 text-amber-700",
                   )}
                 >
-                  {isPremium ? "⭐ Premium" : "Basic"}
+                  {account.isPremium ? "⭐ Premium" : "Basic"}
                 </Badge>
               </div>
             </div>
@@ -288,8 +287,8 @@ export const SettingsTab = ({ userData }) => {
             />
             <VerificationRow
               label="Phone Connection"
-              subLabel={phone}
-              isVerified={isPhoneVerified}
+              subLabel={account.phone || "No phone linked"}
+              isVerified={userData.isPhoneVerified}
               icon={<IconLockAccess size={18} className="text-slate-400" />}
             />
           </CardContent>

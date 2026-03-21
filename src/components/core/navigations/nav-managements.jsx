@@ -34,7 +34,7 @@ export function NavManagements({ items }) {
           const isActive = location.pathname === item.url;
           const Icon = item.icon;
           const hasActiveChild = item.items?.some(
-            (subItem) => location.pathname === subItem.url,
+            (subItem) => location.pathname === subItem.url
           );
 
           return (
@@ -52,8 +52,9 @@ export function NavManagements({ items }) {
                     className={cn(
                       "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      isActive && !hasActiveChild &&
-                      "!bg-brand-aqua/10 border border-brand-aqua/50"
+                      isActive &&
+                        !hasActiveChild &&
+                        "!bg-brand-aqua/10 border border-brand-aqua/50"
                     )}
                   >
                     <Link
@@ -66,7 +67,7 @@ export function NavManagements({ items }) {
                           "flex size-7 items-center justify-center rounded-lg transition-all duration-300",
                           hasActiveChild
                             ? "text-brand-aqua shadow-lg shadow-blue-500/40" // Added slight tilt for "pop"
-                            : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
+                            : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
                         )}
                       >
                         <Icon className="size-4" />
@@ -90,7 +91,7 @@ export function NavManagements({ items }) {
                           className={cn(
                             "h-5 min-w-5 px-1.5 text-[10px] font-semibold",
                             item.badgeVariant === "destructive" &&
-                            "animate-pulse"
+                              "animate-pulse"
                           )}
                         >
                           {item.badge}
@@ -102,7 +103,7 @@ export function NavManagements({ items }) {
                           "size-4 transition-all duration-200",
                           isActive
                             ? "opacity-100 translate-x-0"
-                            : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0",
+                            : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0"
                         )}
                       />
                     </Link>
@@ -124,7 +125,7 @@ export function NavManagements({ items }) {
                               "hover:bg-slate-50 hover:text-brand-aqua",
                               isActive
                                 ? "!bg-brand-aqua/10 text-brand-aqua font-semibold border border-brand-aqua/50"
-                                : "text-slate-500 font-medium",
+                                : "text-slate-500 font-medium"
                             )}
                           >
                             <Link
@@ -146,7 +147,9 @@ export function NavManagements({ items }) {
                                 <div
                                   className={cn(
                                     "size-1.5 rounded-full mr-1 transition-all duration-300",
-                                    isActive ? "bg-brand-aqua" : "bg-slate-300 group-hover:bg-brand-aqua/50"
+                                    isActive
+                                      ? "bg-brand-aqua"
+                                      : "bg-slate-300 group-hover:bg-brand-aqua/50"
                                   )}
                                 />
                               )}
