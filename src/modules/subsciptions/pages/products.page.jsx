@@ -89,6 +89,8 @@ const EMPTY_PRODUCT = {
   googleProductId: "",
   badgeText: "",
   badgeColor: "#00BCD4",
+  subtitle: "",
+  badge: "",
   features: [],
 };
 
@@ -260,6 +262,8 @@ export default function ProductsPage() {
       features: product.features || [],
       badgeText: product.badgeText || "",
       badgeColor: product.badgeColor || "#00BCD4",
+      subtitle: product.subtitle || null,
+      badge: product.badge || null,
       category:
         product.category ||
         (product.type === "SUBSCRIPTION" ? "PREMIUM_PLAN" : "SUPER_KEEN"),
@@ -490,7 +494,7 @@ export default function ProductsPage() {
                       <ThCell label="Ref. Price (AUD)" col="displayPrice" />
                       <ThCell label="Apple ID" />
                       <ThCell label="Google ID" />
-                      <ThCell label="Badge" />
+                      <ThCell label="Badges" />
                       <ThCell label="Status" />
                       <ThCell label="Order" col="sortOrder" className="text-center" />
                       <ThCell label="" />
@@ -765,7 +769,7 @@ export default function ProductsPage() {
               </div>
 
               {/* Subscription-specific */}
-              {formData.type === "SUBSCRIPTION" && (
+              {/* {formData.type === "SUBSCRIPTION" && (
                 <div className="grid grid-cols-2 gap-4">
                   <FormSection label="Plan Type">
                     <Select
@@ -799,7 +803,7 @@ export default function ProductsPage() {
                     />
                   </FormSection>
                 </div>
-              )}
+              )} */}
 
               {/* Consumable-specific */}
               {formData.type === "CONSUMABLE" && (
@@ -849,6 +853,24 @@ export default function ProductsPage() {
                       </span>
                     )}
                   </div>
+                </FormSection>
+              </div>
+
+              {/* Subtitle & New Badge */}
+              <div className="grid grid-cols-2 gap-4">
+                <FormSection label="Subtitle" hint="e.g. Most Popular, Best Value">
+                  <FormInput
+                    placeholder="e.g. Best Value"
+                    value={formData.subtitle || ""}
+                    onChange={(e) => updateField("subtitle", e.target.value)}
+                  />
+                </FormSection>
+                <FormSection label="Sys Badge" hint="e.g. 🔥 HOT, 💎 BEST VALUE">
+                  <FormInput
+                    placeholder="e.g. 🔥 HOT"
+                    value={formData.badge || ""}
+                    onChange={(e) => updateField("badge", e.target.value)}
+                  />
                 </FormSection>
               </div>
 
@@ -980,13 +1002,18 @@ const TableRow = ({ product, index, onEdit }) => {
         </span>
       </td>
 
-      {/* Name */}
+      {/* Name & Subtitle */}
       <td className="px-4 py-3.5">
         <div>
           <p className="text-sm font-black text-slate-800 leading-tight">
             {product.displayName}
           </p>
-          <div className="flex items-center gap-1 mt-0.5">
+          {product.subtitle && (
+            <p className="text-[10px] font-bold text-slate-500 mt-0.5 leading-none">
+              {product.subtitle}
+            </p>
+          )}
+          <div className="flex items-center gap-1 mt-1">
             <span className="text-[10px] font-mono font-bold text-slate-400">
               {product.productKey}
             </span>
@@ -1048,18 +1075,26 @@ const TableRow = ({ product, index, onEdit }) => {
         )}
       </td>
 
-      {/* Badge */}
+      {/* Badges (Sys + Card) */}
       <td className="px-4 py-3.5">
-        {product.badgeText ? (
-          <span
-            className="text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-full text-white"
-            style={{ backgroundColor: product.badgeColor || "#00BCD4" }}
-          >
-            {product.badgeText}
-          </span>
-        ) : (
-          <span className="text-[10px] text-slate-300 font-bold">—</span>
-        )}
+        <div className="flex flex-col items-start gap-1.5">
+          {product.badge && (
+            <span className="text-[10px] font-bold text-slate-800 px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 leading-none">
+              {product.badge}
+            </span>
+          )}
+          {product.badgeText && (
+            <span
+              className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full text-white leading-none shadow-sm"
+              style={{ backgroundColor: product.badgeColor || "#00BCD4" }}
+            >
+              {product.badgeText}
+            </span>
+          )}
+          {!product.badge && !product.badgeText && (
+            <span className="text-[10px] text-slate-300 font-bold">—</span>
+          )}
+        </div>
       </td>
 
       {/* Status */}

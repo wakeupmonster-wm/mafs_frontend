@@ -1171,6 +1171,17 @@
 
 
 import React, { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Fix for default marker icons in Leaflet when using Webpack/Vite
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
+});
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1218,6 +1229,20 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
 
   const userData = liveUser || initialUserData;
   const verification = userData?.verification;
+
+  // Extract location data, handling different possible structures
+  const userLatitude =
+    props?.userLoc?.latitude ||
+    props?.userLoc?.lat ||
+    props?.userLoc?.coordinates?.[1] ||
+    props?.userLoc?.location?.coordinates?.[1];
+
+  const userLongitude =
+    props?.userLoc?.longitude ||
+    props?.userLoc?.lng ||
+    props?.userLoc?.lon ||
+    props?.userLoc?.coordinates?.[0] ||
+    props?.userLoc?.location?.coordinates?.[0];
 
   const handleVerifyConfirm = async (status, reason) => {
     setIsVerifying(true);
@@ -1351,16 +1376,88 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     </span>
                     <Badge
                       variant="outline"
-                      className="text-[9px] font-bold text-slate-400 uppercase py-0 px-1.5"
+                      className={cn(
+                        "text-[9px] font-bold uppercase py-0 px-1.5",
+                        userLatitude && userLongitude ? "text-emerald-600 border-emerald-200 bg-emerald-50" : "text-slate-400"
+                      )}
                     >
-                      Offline
+                      {userLatitude && userLongitude ? "Located" : "Offline"}
                     </Badge>
                   </div>
-                  <div className="aspect-video bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center grayscale opacity-60">
-                    <span className="text-[10px] text-slate-400 font-medium">
-                      Map view placeholder
-                    </span>
-                  </div>
+                  {userLatitude && userLongitude ? (
+                    <div className="aspect-video bg-slate-50 rounded-xl border border-slate-100 overflow-hidden relative z-0 group">
+                      <MapContainer
+                        center={[userLatitude, userLongitude]}
+                        zoom={13}
+                        scrollWheelZoom={true}
+                        style={{ height: "100%", width: "100%", borderRadius: "0.75rem", minHeight: "200px" }}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                        <Marker position={[userLatitude, userLongitude]}>
+                          <Popup>
+                            <div className="text-center">
+                              <p className="font-bold">{props?.profile?.nickname}</p>
+                              <p className="text-xs text-slate-500">
+                                {props?.userLoc?.city}, {props?.userLoc?.country}
+                              </p>
+                            </div>
+                          </Popup>
+                        </Marker>
+                      </MapContainer>
+                      
+                      {/* Fullscreen Map Dialog Overlay */}
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <div className="absolute top-2 right-2 z-[400] bg-white/80 hover:bg-white backdrop-blur-sm p-1.5 rounded-lg shadow-sm border border-slate-200 cursor-pointer transition-all opacity-0 group-hover:opacity-100">
+                            <IconMaximize size={16} className="text-slate-700" />
+                          </div>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-4xl w-[90vw] h-[80vh] p-0 border-none rounded-2xl overflow-hidden flex flex-col">
+                          <div className="p-4 bg-white border-b border-slate-100 flex items-center gap-3 shrink-0">
+                            <div className="p-2 bg-emerald-50 rounded-lg">
+                              <IconMapPin size={20} className="text-emerald-500" />
+                            </div>
+                            <div>
+                              <h3 className="text-base font-bold text-slate-900">{props?.profile?.nickname}'s Location</h3>
+                              <p className="text-sm text-slate-500">{props?.userLoc?.city}, {props?.userLoc?.country}</p>
+                            </div>
+                          </div>
+                          <div className="flex-1 w-full relative z-0">
+                            <MapContainer
+                              center={[userLatitude, userLongitude]}
+                              zoom={14}
+                              scrollWheelZoom={true}
+                              style={{ height: "100%", width: "100%" }}
+                            >
+                              <TileLayer
+                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                              />
+                              <Marker position={[userLatitude, userLongitude]}>
+                                <Popup>
+                                  <div className="text-center">
+                                    <p className="font-bold">{props?.profile?.nickname}</p>
+                                    <p className="text-xs text-slate-500">
+                                      {props?.userLoc?.city}, {props?.userLoc?.country}
+                                    </p>
+                                  </div>
+                                </Popup>
+                              </Marker>
+                            </MapContainer>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  ) : (
+                    <div className="aspect-video bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-center grayscale opacity-60">
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Map view placeholder
+                      </span>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
