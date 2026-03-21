@@ -10,7 +10,25 @@ import {
   unBannedUserAPI,
   updateUserProfileApi,
   verifyUserProfileApi,
+  unsuspendUserAPI
 } from "../services/user-management.operation";
+
+
+export const unsuspendUserProfile = createAsyncThunk(
+  "users/unsuspendUserProfile",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await unsuspendUserAPI(userId);
+      console.log(response, "response")
+      if (!response.success) return rejectWithValue(response.message);
+      return { userId };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unsuspend failed"
+      );
+    }
+  }
+);
 
 //  Pending This Fetch Users list API/.
 export const fetchUsers = createAsyncThunk(
@@ -420,6 +438,7 @@ const userSlice = createSlice({
         }
       })
       /* BANNED USER SUCCESS */
+
       .addCase(bannedUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -547,7 +566,38 @@ const userSlice = createSlice({
       })
       .addCase(exportUsersStream.rejected, (state) => {
         state.exportLoading = false;
-      });
+      })
+      .addCase(unsuspendUserProfile.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(unsuspendUserProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        const { userId } = action.payload;
+
+        const user = state.items.find(
+          (u) => u._id === userId || u.id === userId
+        );
+
+        if (user) {
+          user.accountStatus = "active";
+
+          if (user.account) {
+            user.account.status = "active";
+          }
+
+          // ✅ Sirf suspension details clear
+          user.suspensionDetails = {
+            isSuspended: false,
+            reason: null,
+            suspendedAt: null,
+            suspendUntil: null,
+          };
+        }
+      })
+      .addCase(unsuspendUserProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 

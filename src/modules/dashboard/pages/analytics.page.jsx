@@ -12,7 +12,7 @@ import {
   fetchCancellationAnalytics,
   fetchRevenueAnalytics,
   fetchRiskUsers,
-} from "@/modules/subsciptions/store/subcription.slices";
+} from "@/modules/subsciptions/store/subscription.slice";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -128,13 +128,12 @@ function KpiCard({
               <TrendingDown className="w-4 h-4 text-alerts-error" />
             )}
             <span
-              className={`text-sm font-medium ${
-                trend === "up"
-                  ? "text-alerts-success"
-                  : trend === "down"
-                    ? "text-alerts-error"
-                    : "text-muted-foreground"
-              }`}
+              className={`text-sm font-medium ${trend === "up"
+                ? "text-alerts-success"
+                : trend === "down"
+                  ? "text-alerts-error"
+                  : "text-muted-foreground"
+                }`}
             >
               {trendValue}{" "}
               <span className="text-slate-400 ml-1 font-normal text-[10px]">

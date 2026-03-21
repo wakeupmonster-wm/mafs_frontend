@@ -110,35 +110,37 @@ export const SettingsTab = ({ userData }) => {
           </CardHeader>
           <CardContent className="px-6 py-2 space-y-6">
             <div className="grid gap-4">
+              {/* ✅ Account Status */}
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Account Status
                   </p>
                   <p className="text-sm font-bold text-slate-900 capitalize">
-                    {account.status}
+                    {accountStatus}
                   </p>
                 </div>
                 <Badge
                   className={cn(
                     "h-7 px-3 border-none shadow-sm",
-                    account.status === "active"
+                    accountStatus === "active"
                       ? "bg-emerald-500 text-white"
                       : "bg-rose-500 text-white",
                   )}
                 >
                   <span className="mr-2 h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
-                  {account.status}
+                  {accountStatus}
                 </Badge>
               </div>
 
+              {/* ✅ Membership Level */}
               <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Membership Level
                   </p>
                   <p className="text-sm font-bold text-slate-900">
-                    {account.isPremium ? "Premium Pro" : "Standard Tier"}
+                    {isPremium ? "Premium Pro" : "Standard Tier"}
                   </p>
                 </div>
                 <Badge
@@ -149,7 +151,7 @@ export const SettingsTab = ({ userData }) => {
                       "bg-amber-50 border-amber-200 text-amber-700",
                   )}
                 >
-                  {account.isPremium ? "⭐ Premium" : "Basic"}
+                  {isPremium ? "⭐ Premium" : "Basic"}
                 </Badge>
               </div>
             </div>
@@ -286,8 +288,8 @@ export const SettingsTab = ({ userData }) => {
             />
             <VerificationRow
               label="Phone Connection"
-              subLabel={account.phone || "No phone linked"}
-              isVerified={userData.isPhoneVerified}
+              subLabel={phone}
+              isVerified={isPhoneVerified}
               icon={<IconLockAccess size={18} className="text-slate-400" />}
             />
           </CardContent>

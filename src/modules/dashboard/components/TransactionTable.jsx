@@ -2,7 +2,7 @@ import TransactionDataTables from "@/components/shared/data-tables/transactions.
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { transactionColumns } from "@/components/columns/all.transaction.columns";
-import { fetchAllTransactions } from "@/modules/subsciptions/store/subcription.slices";
+import { fetchAllTransactions } from "@/modules/subsciptions/store/subscription.slice";
 import { motion } from "framer-motion";
 
 export default function TransactionTable({ data }) {

@@ -107,6 +107,11 @@ const supportSlice = createSlice({
       state.pagination.page = action.payload.page;
       state.pagination.limit = action.payload.limit;
     },
+// <<<<<<< HEAD
+//        clearSupportStatus: (state) => {
+//       state.error = null;
+//       state.successMessage = null;
+// =======
     clearSupportStatus: (state) => {
       state.successMessage = null;
       state.error = null;
@@ -170,6 +175,7 @@ const supportSlice = createSlice({
       });
   },
 });
+
 
 export const { setPagination, clearSupportStatus } = supportSlice.actions;
 export default supportSlice.reducer;

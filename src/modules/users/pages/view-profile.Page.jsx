@@ -20,6 +20,7 @@ import { GallleryTab } from "../components/Tabs/galllery.Tab";
 import { DiscoveryTab } from "../components/Tabs/discovery.Tab";
 import { ActivityTab } from "../components/Tabs/activity.Tab";
 import { FinancialsTab } from "../components/Tabs/financials.Tab";
+import { SubscriptionTab } from "../components/Tabs/subscription.Tab";
 import { SettingsTab } from "../components/Tabs/settings.Tab";
 import { Check, Copy } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";

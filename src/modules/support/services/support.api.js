@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { SUPPORT_ENDPOINTS } from "@/services/api-enpoints/support.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
@@ -47,6 +48,8 @@ export const getMyTicketByIdApi = (ticketId) => {
  * Admin action to respond to a user ticket
  */
 export const replyToTicketApi = (payload) => {
+    console.log("=== API CALL DEBUG ===");
+  console.log("payload:", payload);
   return apiConnector("POST", SUPPORT_ENDPOINTS.ADMIN_REPLY, payload);
 };
 

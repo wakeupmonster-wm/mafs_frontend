@@ -52,8 +52,8 @@ export function NavManagements({ items }) {
                     className={cn(
                       "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      isActive &&
-                        "!bg-brand-aqua/10 border border-brand-aqua/50",
+                      isActive && !hasActiveChild &&
+                      "!bg-brand-aqua/10 border border-brand-aqua/50"
                     )}
                   >
                     <Link
@@ -76,7 +76,7 @@ export function NavManagements({ items }) {
                         {item.title}
                       </span>
 
-                      {isActive && (
+                      {isActive && !hasActiveChild && (
                         <motion.div
                           layoutId="active-dot"
                           className="size-1 rounded-full bg-brand-aqua shadow-[0_0_8px_rgba(var(--brand-aqua-rgb),0.8)]"
@@ -90,7 +90,7 @@ export function NavManagements({ items }) {
                           className={cn(
                             "h-5 min-w-5 px-1.5 text-[10px] font-semibold",
                             item.badgeVariant === "destructive" &&
-                              "animate-pulse",
+                            "animate-pulse"
                           )}
                         >
                           {item.badge}
@@ -113,7 +113,7 @@ export function NavManagements({ items }) {
                   <SidebarMenuSub className="ml-6 flex flex-col gap-1 border-l border-slate-200/60 pl-2">
                     {item.items?.map((subItem) => {
                       const isActive = location.pathname === subItem.url;
-                      const Icon = subItem.icon;
+                      const SubIcon = subItem.icon;
                       return (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
@@ -131,16 +131,25 @@ export function NavManagements({ items }) {
                               to={subItem.url}
                               className="flex items-center w-full"
                             >
-                              <div
-                                className={cn(
-                                  "flex size-4 items-center justify-center rounded-lg transition-all duration-300",
-                                  hasActiveChild
-                                    ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
-                                    : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
-                                )}
-                              >
-                                <Icon className="size-5" />
-                              </div>
+                              {SubIcon ? (
+                                <div
+                                  className={cn(
+                                    "flex size-4 items-center justify-center rounded-lg transition-all duration-300",
+                                    hasActiveChild
+                                      ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
+                                      : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
+                                  )}
+                                >
+                                  <SubIcon className="size-5" />
+                                </div>
+                              ) : (
+                                <div
+                                  className={cn(
+                                    "size-1.5 rounded-full mr-1 transition-all duration-300",
+                                    isActive ? "bg-brand-aqua" : "bg-slate-300 group-hover:bg-brand-aqua/50"
+                                  )}
+                                />
+                              )}
                               <span className="text-[11px]">
                                 {subItem.title}
                               </span>

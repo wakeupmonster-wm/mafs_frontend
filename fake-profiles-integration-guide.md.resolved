@@ -1,0 +1,566 @@
+# 🧑‍💻 Fake Profiles — Frontend Integration Guide
+
+> **Base URL**: `/api/v1/admin/fake-profiles`
+> **Auth**: All routes need Admin JWT token in `Authorization: Bearer <token>` header
+> **Last Updated**: 17 Mar 2026
+
+---
+
+## 📑 Table of Contents
+
+1. [API Summary](#api-summary)
+2. [GET /fake-profiles — List All (with Pagination, Sorting, Filters)](#1-get-fake-profiles--list-all)
+3. [POST /fake-profiles/bulk-create — Bulk Create](#2-post-fake-profilesbulk-create--bulk-create)
+4. [PATCH /fake-profiles/:id/toggle — Toggle Status](#3-patch-fake-profilesidtoggle--toggle-status)
+5. [DELETE /fake-profiles/:id — Delete Single](#4-delete-fake-profilesid--delete-single)
+6. [Frontend Implementation Checklist](#frontend-implementation-checklist)
+7. [React Code Snippets](#react-code-snippets)
+
+---
+
+## API Summary
+
+| Method   | Endpoint               | Purpose                  |
+|----------|------------------------|--------------------------|
+| `GET`    | `/`                    | List all fake profiles (paginated, sortable, filterable). **Auto-filters `isFake: true` only**. |
+| `POST`   | `/bulk-create`         | Bulk create fake profiles. Sets `isFake: true` automatically. |
+| `PATCH`  | `/:id/toggle`          | Toggle active/deactivated. Errors if ID is a real user. |
+| `DELETE` | `/:id`                 | Delete a single profile. Errors if ID is a real user.  |
+
+---
+
+## 1. GET /fake-profiles — List All
+
+> **Backend Logic Note:** You do NOT need to pass any parameter to hide real users. The backend automatically injects an `isFake: true` filter into the database query for this endpoint. Application's real profiles will **never** be exposed here.
+
+### Query Parameters
+
+| Param       | Type     | Default      | Allowed Values                                                                 | Description                     |
+|-------------|----------|--------------|--------------------------------------------------------------------------------|---------------------------------|
+| `page`      | number   | `1`          | `≥ 1`                                                                          | Current page number             |
+| `limit`     | number   | `10`         | `1 – 100`                                                                      | Items per page                  |
+| `gender`    | string   | `"all"`      | `men`, `women`, `non-binary`, `trans-man`, `trans-women`, `genderqueer`, `all` | Filter by gender                |
+| `status`    | string   | `"all"`      | `active`, `deactivated`, `all`                                                 | Filter by account status        |
+| `city`      | string   | `"all"`      | `Sydney`, `Melbourne`, `Brisbane`, `Perth`, `Adelaide`, `Gold Coast`, `Canberra`, `all` | Filter by city |
+| `search`    | string   | —            | Any string                                                                     | Search by nickname, email, phone |
+| `batchId`   | string   | —            | e.g. `batch_1710678900000`                                                     | Filter by creation batch        |
+| `sortBy`    | string   | `"createdAt"` | `createdAt`, `nickname`, `gender`, `city`, `accountStatus`                     | Sort field                      |
+| `sortOrder` | string   | `"desc"`     | `asc`, `desc`                                                                  | Sort direction                  |
+
+### Example Request
+
+```
+GET /api/v1/admin/fake-profiles?page=1&limit=10&gender=women&city=Sydney&sortBy=nickname&sortOrder=asc&search=emma
+```
+
+### ✅ Success Response (200)
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "user": {
+        "account": {
+          "status": "active",
+          "banDetails": { "isBanned": false, "reason": null, "bannedBy": null, "bannedAt": null },
+          "suspensionDetails": { "isSuspended": false, "reason": null, "suspendedAt": null, "suspendUntil": null },
+          "deactivationDetails": { "isDeactivated": false, "reason": null, "deactivatedAt": null },
+          "deletionDetails": { "isScheduledForDeletion": false, "reason": null, "scheduledAt": null, "deletionDate": null, "daysRemaining": null }
+        },
+        "profile": {
+          "id": "65f1a2b3c4d5e6f7a8b9c0d1",
+          "nickname": "Emma",
+          "dob": "1998-05-12",
+          "age": 27,
+          "gender": "women",
+          "height": null,
+          "about": "Beach lover, sun seeker, and occasionally a decent cook.",
+          "jobTitle": "Creative",
+          "company": null,
+          "school": null,
+          "totalCompletion": 100
+        },
+        "attributes": {
+          "zodiac": "leo",
+          "education": "bachelors",
+          "familyPlans": "not-sure-yet",
+          "personalityType": "enfp",
+          "communicationStyle": "chatty-cathy",
+          "loveStyle": "adventure-seeker",
+          "pets": "dog",
+          "drinking": "social",
+          "smoking": "non-smoker",
+          "workout": "sometimes",
+          "dietary": "omnivore",
+          "sleeping": "night-owl",
+          "socialMedia": "active-some",
+          "languages": ["en", "hi"],
+          "interests": ["travel", "cooking", "photography", "yoga", "hiking"],
+          "music": ["pop", "indie", "jazz", "rnb", "electronic"],
+          "movies": ["romance", "comedy", "thriller", "sci-fi", "drama"],
+          "books": ["fiction", "self-help", "mystery", "biography", "poetry"],
+          "travel": ["beach", "road-trip", "cultural", "food", "nature"],
+          "religion": "secular"
+        },
+        "discovery": {
+          "distanceRange": 50,
+          "ageRange": { "min": 18, "max": 30 },
+          "showMeGender": ["everyone"],
+          "relationshipGoal": "dating",
+          "globalVisibility": "everyone"
+        },
+        "location": {
+          "type": "Point",
+          "coordinates": [151.2093, -33.8688],
+          "city": "Sydney",
+          "country": "Australia",
+          "full_address": null
+        },
+        "photos": [
+          { "id": "photo_id_1", "url": "https://images.unsplash.com/photo-xxx?q=80&w=1080&auto=format&fit=crop", "publicId": null, "order": 0 },
+          { "id": "photo_id_2", "url": "https://images.unsplash.com/photo-yyy?q=80&w=1080&auto=format&fit=crop", "publicId": null, "order": 1 }
+        ],
+        "verification": { "status": "approved", "selfieUrl": "https://...", "docUrl": null, "rejectionReason": null },
+        "settings": {
+          "notifications": { "push": true, "email": false, "matches": true, "messages": true },
+          "blockedContacts": [],
+          "blockedUsers": []
+        },
+        "createdAt": "2026-03-17T12:30:00.000Z",
+        "updatedAt": "2026-03-17T12:30:00.000Z",
+        "isPhoneVerified": true,
+        "isEmailVerified": true,
+        "onboarding": {}
+      }
+    }
+  ],
+  "pagination": {
+    "total": 45,
+    "page": 1,
+    "limit": 10,
+    "totalPages": 5,
+    "hasNextPage": true,
+    "hasPrevPage": false
+  }
+}
+```
+
+### ❌ Error Response (400)
+
+```json
+{
+  "success": false,
+  "message": "\"sortBy\" must be one of [createdAt, nickname, gender, city, accountStatus]"
+}
+```
+
+> [!IMPORTANT]
+> The **profile ID** to use for toggle/delete operations is `data[i].user.profile.id` — this is the `userId` from the User model, NOT the Profile `_id`.
+
+---
+
+## 2. POST /fake-profiles/bulk-create — Bulk Create
+
+### Request Body (JSON)
+
+| Field     | Type   | Required | Default          | Allowed Values                                                                  |
+|-----------|--------|----------|------------------|---------------------------------------------------------------------------------|
+| `count`   | number | No       | `10`             | `1 – 500`                                                                       |
+| `gender`  | string | ✅ Yes   | —                | `men`, `women`, `non-binary`, `trans-man`, `trans-women`, `genderqueer`, `everyone` |
+| `ageRange`| object | No       | `{min:22,max:35}`| `{ min: 18-60, max: 18-60 }`                                                    |
+| `city`    | string | No       | `"Sydney"`       | `Sydney`, `Melbourne`, `Brisbane`, `Perth`, `Adelaide`, `Gold Coast`, `Canberra` |
+
+### Example Request
+
+```json
+POST /api/v1/admin/fake-profiles/bulk-create
+Content-Type: application/json
+
+{
+  "count": 5,
+  "gender": "women",
+  "ageRange": { "min": 22, "max": 30 },
+  "city": "Melbourne"
+}
+```
+
+### ✅ Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "5 fake profiles created successfully",
+  "data": {
+    "batchId": "batch_1710678900000",
+    "count": 5,
+    "profiles": [
+      {
+        "user": { /* same structure as list response user object */ }
+      }
+    ]
+  }
+}
+```
+
+> [!TIP]
+> After bulk-create, save the `batchId` and use it to filter the list: `GET /fake-profiles?batchId=batch_1710678900000`
+
+---
+
+## 3. PATCH /fake-profiles/:id/toggle — Toggle Status
+
+Toggles a fake profile between `active` ↔ `deactivated`. 
+*(Note: If the `id` provided belongs to a real user, the backend will reject it with an error. It validates `isFake: true` before toggling).*
+
+### URL Params
+
+| Param | Description                |
+|-------|----------------------------|
+| `id`  | The **userId** (`profile.id` from list response) |
+
+### Example Request
+
+```
+PATCH /api/v1/admin/fake-profiles/65f1a2b3c4d5e6f7a8b9c0d1/toggle
+```
+
+### ✅ Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Profile status updated to deactivated",
+  "data": {
+    "_id": "65f1a2b3c4d5e6f7a8b9c0d1",
+    "accountStatus": "deactivated",
+    "isFake": true
+  }
+}
+```
+
+### ❌ Error Response (400)
+
+```json
+{
+  "success": false,
+  "message": "Fake profile not found"
+}
+```
+
+---
+
+## 4. DELETE /fake-profiles/:id — Delete Single
+
+Permanently deletes a fake profile (both User + Profile documents).
+
+### URL Params
+
+| Param | Description                |
+|-------|----------------------------|
+| `id`  | The **userId** (`profile.id` from list response) |
+
+### Example Request
+
+```
+DELETE /api/v1/admin/fake-profiles/65f1a2b3c4d5e6f7a8b9c0d1
+```
+
+### ✅ Success Response (200)
+
+```json
+{
+  "success": true,
+  "message": "Fake profile deleted successfully"
+}
+```
+
+### ❌ Error Response (400)
+
+```json
+{
+  "success": false,
+  "message": "Fake profile not found"
+}
+```
+
+> [!CAUTION]
+> Delete is **permanent**. There is no undo. Consider using toggle (deactivate) instead for soft-disable.
+
+---
+
+## Frontend Implementation Checklist
+
+Here's exactly what the frontend developer needs to do for a **one-go** integration:
+
+### ☑️ Step 1: State Management
+
+```
+┌──────────────────────────────────────────────────┐
+│  State Variables to Maintain                     │
+├──────────────────────────────────────────────────┤
+│  profiles          → array of profile objects    │
+│  pagination        → { total, page, limit,       │
+│                       totalPages, hasNextPage,    │
+│                       hasPrevPage }               │
+│  filters           → { gender, status, city,     │
+│                       search, batchId }           │
+│  sorting           → { sortBy, sortOrder }       │
+│  isLoading         → boolean                     │
+│  selectedProfiles  → array (for bulk actions)    │
+└──────────────────────────────────────────────────┘
+```
+
+### ☑️ Step 2: API Service (axios/fetch wrapper)
+
+```javascript
+// services/fakeProfileApi.js
+
+const BASE_URL = "/api/v1/admin/fake-profiles";
+
+export const fakeProfileApi = {
+  list: (params) => api.get(BASE_URL, { params }),
+  bulkCreate: (data) => api.post(`${BASE_URL}/bulk-create`, data),
+  toggleStatus: (id) => api.patch(`${BASE_URL}/${id}/toggle`),
+  deleteSingle: (id) => api.delete(`${BASE_URL}/${id}`),
+};
+```
+
+### ☑️ Step 3: Fetch with All Params
+
+```javascript
+const fetchProfiles = async () => {
+  setIsLoading(true);
+  try {
+    const response = await fakeProfileApi.list({
+      page: pagination.page,
+      limit: pagination.limit,
+      gender: filters.gender,
+      status: filters.status,
+      city: filters.city,
+      search: filters.search,
+      batchId: filters.batchId,
+      sortBy: sorting.sortBy,
+      sortOrder: sorting.sortOrder,
+    });
+
+    if (response.data.success) {
+      setProfiles(response.data.data);
+      setPagination(response.data.pagination);
+    }
+  } catch (error) {
+    console.error("Failed to fetch profiles", error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+### ☑️ Step 4: Pagination Component
+
+```
+Use pagination object directly:
+
+• "Previous" button → disabled when pagination.hasPrevPage === false
+• "Next" button     → disabled when pagination.hasNextPage === false
+• Page info         → "Page {pagination.page} of {pagination.totalPages}"
+• Total info        → "Showing {profiles.length} of {pagination.total} profiles"
+• Page size select  → [10, 20, 50, 100] → updates limit param
+```
+
+### ☑️ Step 5: Sorting (Column Headers)
+
+```
+When user clicks a table column header:
+
+1. If clicking same column → toggle sortOrder (asc ↔ desc)
+2. If clicking new column  → set sortBy = newColumn, sortOrder = "desc"
+3. Re-fetch with page reset to 1
+
+Sortable columns:
+  • Created At    → sortBy = "createdAt"
+  • Nickname      → sortBy = "nickname"
+  • Gender        → sortBy = "gender"
+  • City          → sortBy = "city"
+  • Status        → sortBy = "accountStatus"
+```
+
+### ☑️ Step 6: Filter Dropdowns
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  [Gender ▼]  [Status ▼]  [City ▼]     [🔍 Search...]       │
+│   all          all         all                              │
+│   men          active      Sydney                           │
+│   women        deactivated Melbourne                        │
+│   non-binary                Brisbane                        │
+│   trans-man                 Perth                           │
+│   trans-women               Adelaide                        │
+│   genderqueer               Gold Coast                      │
+│                             Canberra                        │
+└─────────────────────────────────────────────────────────────┘
+
+• On any filter change → reset page to 1 → re-fetch
+• Search should be debounced (300-500ms) to avoid excessive API calls
+```
+
+### ☑️ Step 7: Toggle & Delete Actions
+
+```javascript
+// Toggle
+const handleToggle = async (profileId) => {
+  await fakeProfileApi.toggleStatus(profileId);
+  fetchProfiles(); // re-fetch current page
+};
+
+// Delete
+const handleDelete = async (profileId) => {
+  if (confirm("Are you sure? This is permanent.")) {
+    await fakeProfileApi.deleteSingle(profileId);
+    fetchProfiles(); // re-fetch current page
+  }
+};
+
+// The profileId to use is: profile.user.profile.id
+```
+
+### ☑️ Step 8: Bulk Create Form
+
+```
+Form fields:
+  • Count      → number input (1–500, default: 10)
+  • Gender     → dropdown (required, no "all" option here)
+  • Age Range  → two number inputs (min: 18, max: 60)
+  • City       → dropdown (default: Sydney)
+
+On success:
+  • Show toast: "X fake profiles created successfully"
+  • Optionally filter by returned batchId
+  • Re-fetch list
+```
+
+---
+
+## React Code Snippets
+
+### Custom Hook — `useFakeProfiles`
+
+```javascript
+import { useState, useEffect, useCallback } from "react";
+import { fakeProfileApi } from "../services/fakeProfileApi";
+
+const useFakeProfiles = () => {
+  const [profiles, setProfiles] = useState([]);
+  const [pagination, setPagination] = useState({
+    total: 0, page: 1, limit: 10, totalPages: 0, hasNextPage: false, hasPrevPage: false,
+  });
+  const [filters, setFilters] = useState({
+    gender: "all", status: "all", city: "all", search: "", batchId: "",
+  });
+  const [sorting, setSorting] = useState({ sortBy: "createdAt", sortOrder: "desc" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchProfiles = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { data: res } = await fakeProfileApi.list({
+        page: pagination.page,
+        limit: pagination.limit,
+        ...filters,
+        ...sorting,
+      });
+      if (res.success) {
+        setProfiles(res.data);
+        setPagination(res.pagination);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pagination.page, pagination.limit, filters, sorting]);
+
+  useEffect(() => { fetchProfiles(); }, [fetchProfiles]);
+
+  const goToPage = (page) => setPagination((prev) => ({ ...prev, page }));
+  const setLimit = (limit) => setPagination((prev) => ({ ...prev, page: 1, limit }));
+
+  const handleSort = (column) => {
+    setSorting((prev) => ({
+      sortBy: column,
+      sortOrder: prev.sortBy === column && prev.sortOrder === "desc" ? "asc" : "desc",
+    }));
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  };
+
+  const updateFilter = (key, value) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+    setPagination((prev) => ({ ...prev, page: 1 }));
+  };
+
+  return {
+    profiles, pagination, filters, sorting, isLoading,
+    goToPage, setLimit, handleSort, updateFilter, refetch: fetchProfiles,
+  };
+};
+
+export default useFakeProfiles;
+```
+
+### Sortable Table Header Component
+
+```jsx
+const SortableHeader = ({ label, field, sorting, onSort }) => {
+  const isActive = sorting.sortBy === field;
+  const icon = isActive ? (sorting.sortOrder === "asc" ? "↑" : "↓") : "↕";
+
+  return (
+    <th onClick={() => onSort(field)} style={{ cursor: "pointer" }}>
+      {label} {icon}
+    </th>
+  );
+};
+
+// Usage in table:
+<SortableHeader label="Nickname" field="nickname" sorting={sorting} onSort={handleSort} />
+<SortableHeader label="City"     field="city"     sorting={sorting} onSort={handleSort} />
+<SortableHeader label="Status"   field="accountStatus" sorting={sorting} onSort={handleSort} />
+```
+
+### Pagination Component
+
+```jsx
+const Pagination = ({ pagination, onPageChange, onLimitChange }) => {
+  const { page, totalPages, total, limit, hasNextPage, hasPrevPage } = pagination;
+
+  return (
+    <div className="pagination">
+      <span>Total: {total} profiles</span>
+
+      <button disabled={!hasPrevPage} onClick={() => onPageChange(page - 1)}>
+        ← Previous
+      </button>
+
+      <span>Page {page} of {totalPages}</span>
+
+      <button disabled={!hasNextPage} onClick={() => onPageChange(page + 1)}>
+        Next →
+      </button>
+
+      <select value={limit} onChange={(e) => onLimitChange(Number(e.target.value))}>
+        {[10, 20, 50, 100].map((val) => (
+          <option key={val} value={val}>{val} per page</option>
+        ))}
+      </select>
+    </div>
+  );
+};
+```
+
+---
+
+> [!NOTE]
+> **Key thing to remember**: The `id` used for toggle/delete is `item.user.profile.id` from the list response. This is the **userId** from the auth model. Do NOT use `item.user.profile._id` or any other field.
+
+> [!TIP]
+> For best UX, add debounce (300ms) on the search input and show a skeleton loader while `isLoading` is `true`.

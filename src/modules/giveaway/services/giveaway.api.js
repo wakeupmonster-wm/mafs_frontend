@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { GIVEAWAYS_ENDPOINTS } from "@/services/api-enpoints/giveaway.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
@@ -14,6 +15,7 @@ export const getAllPrizesApi = async (page, limit, search, type) => {
     ...(type && { type }),
   };
 
+  // eslint-disable-next-line no-useless-catch
   try {
     const response = await apiConnector(
       "GET",

@@ -31,6 +31,7 @@ export function NavPlateform({ items }) {
       <SidebarMenu className={"gap-0"}>
         {items.map((item) => {
           const Icon = item.icon;
+          const isActive = location.pathname === item.url;
           const hasActiveChild = item.items?.some(
             (subItem) => location.pathname === subItem.url,
           );
@@ -49,8 +50,8 @@ export function NavPlateform({ items }) {
                     className={cn(
                       "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      hasActiveChild &&
-                        "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50",
+                      isActive && !hasActiveChild &&
+                        "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50"
                     )}
                   >
                     {/* Icon with Dynamic Coloring */}

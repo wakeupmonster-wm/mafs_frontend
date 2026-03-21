@@ -25,6 +25,8 @@ import {
   IconShieldCheck,
   IconLock,
   IconClockPause,
+  IconGavel,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import {
@@ -39,17 +41,25 @@ export const EditSettingsDialog = ({ userData }) => {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [reason, setReason] = useState(""); // Track reason for logs
+  const [reason, setReason] = useState("");
 
   const currentStatus = userData.account.status;
-  const [status, setStatus] = useState(currentStatus);
 
-  // Sync state if userData changes while dialog is open
+  // ✅ FIX: Start with empty string (no selection) instead of current status
+  const [status, setStatus] = useState("");
+
+  // ✅ Reset everything when dialog opens/closes
   useEffect(() => {
     setStatus(currentStatus);
   }, [currentStatus]);
 
   const handleSave = async () => {
+    // ✅ Guard: Nothing selected
+    if (!status) {
+      toast.error("Please select an action first");
+      return;
+    }
+
     setLoading(true);
     const nickname = userData?.profile?.nickname || "User";
 
@@ -94,7 +104,7 @@ export const EditSettingsDialog = ({ userData }) => {
     }
   };
 
-  // Helper to get status-specific UI colors
+  // Status config helper
   const getStatusConfig = (val) => {
     switch (val) {
       case "active":
@@ -120,15 +130,17 @@ export const EditSettingsDialog = ({ userData }) => {
         };
       default:
         return {
-          color: "text-muted-foreground",
-          bg: "bg-muted/50",
-          border: "border-muted",
-          icon: <IconAlertCircle />,
+          color: "text-slate-500",
+          bg: "bg-slate-50",
+          border: "border-slate-200",
+          icon: <IconGavel />,
         };
     }
   };
 
-  const config = getStatusConfig(status);
+  // ✅ Use selected status config, or default when nothing selected
+  const config = getStatusConfig(status || null);
+  const currentConfig = getStatusConfig(currentStatus);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -160,14 +172,43 @@ export const EditSettingsDialog = ({ userData }) => {
         </DialogHeader>
 
         <div className="p-6 pt-2 space-y-6">
+          {/* ✅ NEW: Current Status Indicator - Always visible at top */}
+          <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                Current Status
+              </span>
+            </div>
+            <Badge
+              variant="outline"
+              className={cn(
+                "font-bold text-xs capitalize px-3 py-1",
+                currentConfig.color,
+                currentConfig.bg,
+                currentConfig.border
+              )}
+            >
+              {React.cloneElement(currentConfig.icon, {
+                size: 14,
+                className: "mr-1",
+              })}
+              {currentStatus}
+            </Badge>
+          </div>
+
           <div className="space-y-3">
             <Label className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
               Account Governance
             </Label>
 
             <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="h-12 w-full border-2 transition-all focus:ring-offset-0">
-                <SelectValue placeholder="Select Action" />
+              <SelectTrigger
+                className={cn(
+                  "h-12 w-full border-2 transition-all focus:ring-offset-0",
+                  !status && "text-muted-foreground"  // ✅ Dim when placeholder
+                )}
+              >
+                <SelectValue placeholder="Choose an action to perform..." />
               </SelectTrigger>
               <SelectContent>
                 {currentStatus === "banned" ? (
@@ -213,12 +254,6 @@ export const EditSettingsDialog = ({ userData }) => {
                     </SelectItem>
                   </>
                 )}
-                {/* <SelectItem
-                  value="deactivated"
-                  className="text-muted-foreground italic border-t mt-1"
-                >
-                  Mark as Deactivated
-                </SelectItem> */}
               </SelectContent>
             </Select>
 
@@ -256,40 +291,25 @@ export const EditSettingsDialog = ({ userData }) => {
               </div>
             </div>
 
+            {/* Reason textarea - only when ban/suspend selected */}
             {(status === "banned" || status === "suspended") && (
               <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
                 <Label className="text-[10px] uppercase font-bold text-muted-foreground">
-                  Reason for {status}
+                  Reason for {status === "banned" ? "ban" : "suspension"}
                 </Label>
                 <Textarea
-                  placeholder="Enter reason for this action..."
-                  className="text-xs resize-none"
+                  placeholder={
+                    status === "banned"
+                      ? "e.g., Repeated policy violations, fake profile..."
+                      : "e.g., Reported by multiple users, under investigation..."
+                  }
+                  className="text-xs resize-none min-h-[80px]"
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 />
               </div>
             )}
           </div>
-
-          {/* <div className="space-y-3">
-            <Label className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">
-              Session Management
-            </Label>
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                className="h-10 text-xs font-semibold hover:bg-muted"
-              >
-                Reset Password
-              </Button>
-              <Button
-                variant="secondary"
-                className="h-10 text-xs font-semibold hover:bg-red-50 hover:text-red-600 transition-colors"
-              >
-                Force Logout
-              </Button>
-            </div>
-          </div> */}
         </div>
 
         <DialogFooter className="bg-muted/30 p-6 flex-row gap-2">
@@ -297,15 +317,18 @@ export const EditSettingsDialog = ({ userData }) => {
             variant="ghost"
             onClick={() => setIsOpen(false)}
             className="flex-1"
+            disabled={loading}
           >
             Cancel
           </Button>
           <Button
             onClick={handleSave}
-            disabled={loading || status === currentStatus}
+            disabled={loading || !status}  // ✅ Disabled when nothing selected
             className={cn(
               "flex-[2] font-bold shadow-sm transition-all",
-              status === "banned"
+              !status
+                ? "bg-slate-400"
+                : status === "banned"
                 ? "bg-red-600 hover:bg-red-700"
                 : status === "active"
                   ? "bg-green-600 hover:bg-green-700"
@@ -316,6 +339,8 @@ export const EditSettingsDialog = ({ userData }) => {
           >
             {loading ? (
               <IconLoader2 className="animate-spin" />
+            ) : !status ? (
+              "Select an Action"
             ) : (
               "Apply Changes"
             )}

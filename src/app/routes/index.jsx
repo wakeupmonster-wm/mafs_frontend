@@ -89,19 +89,38 @@ const SupportTicketsPage = lazy(
 const ViewTicketDetails = lazy(
   () => import("@/modules/support/pages/view.ticket.details"),
 );
-const SubscriptionsPage = lazy(
-  () => import("@/modules/subsciptions/pages/subscription.page"),
+const SubscriptionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/subscription.page")
+);
+const SubscriptionDashboardPage = lazy(() =>
+  import("@/modules/subsciptions/pages/subscription.dashboard")
 );
 
-const EntitlementPage = lazy(
-  () => import("@/modules/membership/pages/entitlements.page"),
+const EntitlementPage = lazy(() =>
+  import("@/modules/membership/pages/entitlements.page")
 );
 
-const ViewSubscriptionsPage = lazy(
-  () => import("@/modules/subsciptions/pages/view.subscriptions.page"),
+const ViewSubscriptionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/view.subscription.detail.page")
 );
-const AnalyticsPage = lazy(
-  () => import("@/modules/dashboard/pages/analytics.page"),
+const SubscriptionProductsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/products.page")
+);
+const SubscriptionConfigPage = lazy(() =>
+  import("@/modules/subsciptions/pages/config.page")
+);
+const SubscriberManagementPage = lazy(() =>
+  import("@/modules/subsciptions/pages/subscriber.management.page")
+);
+const TransactionsPage = lazy(() =>
+  import("@/modules/subsciptions/pages/transactions.page")
+);
+const AnalyticsPage = lazy(() =>
+  import("@/modules/dashboard/pages/analytics.page")
+);
+
+const FakeProfileManagementPage = lazy(() =>
+  import("@/modules/fake-profiles/pages/fake-profile-management.Page")
 );
 
 const SettingsPage = lazy(
@@ -236,6 +255,16 @@ export const router = createBrowserRouter([
               </Suspense>
             ),
           },
+          {
+            path: "fake-profiles",
+            element: (
+              <Suspense fallback={<PreLoader />}>
+                <FakeProfileManagementPage />
+              </Suspense>
+            ),
+          },
+
+          // ======================================================
           {
             path: "kyc-verifications",
             element: (
@@ -378,6 +407,14 @@ export const router = createBrowserRouter([
                 index: true,
                 element: (
                   <Suspense fallback={<PreLoader />}>
+                    <SubscriptionDashboardPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "subscribers",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
                     <SubscriptionsPage />
                   </Suspense>
                 ),
@@ -387,6 +424,38 @@ export const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<PreLoader />}>
                     <ViewSubscriptionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "manage-subscribers",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriberManagementPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "products",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionProductsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "config",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <SubscriptionConfigPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "transactions",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <TransactionsPage />
                   </Suspense>
                 ),
               },

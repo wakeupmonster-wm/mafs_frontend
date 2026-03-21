@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Gift } from "lucide-react";
 
 export default function BulkForm({
-  prizes,
+  prizes = [],
   onSubmit,
   isSubmitting,
   isPrizesLoading,
@@ -91,7 +91,12 @@ export default function BulkForm({
             />
           </SelectTrigger>
           <SelectContent>
-            {prizes.map((p) => (
+             {isPrizesLoading ? (
+    <div className="p-2 text-sm text-gray-500">Loading prizes...</div>
+  ) : prizes.length === 0 ? (
+    <div className="p-2 text-sm text-gray-500">No prizes found</div>
+  ) : (
+            prizes.map((p) => (
               <SelectItem key={p._id} value={p._id} disabled={!p.isActive}>
                 <div className="flex justify-between w-full gap-4">
                   <span>{p.title}</span>
@@ -100,7 +105,7 @@ export default function BulkForm({
                   </Badge>
                 </div>
               </SelectItem>
-            ))}
+            )))}
           </SelectContent>
         </Select>
       </div>

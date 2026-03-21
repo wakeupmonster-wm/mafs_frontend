@@ -9,6 +9,7 @@ import {
   IconTicket,
   IconFileText,
   IconUserCheck,
+  IconUserPlus,
   IconSettings,
   IconHelp,
 } from "@tabler/icons-react";
@@ -42,6 +43,12 @@ const navigationData = {
       badge: null,
     },
     {
+      title: "Fake profiles",
+      url: "/admin/management/fake-profiles",
+      icon: IconUserPlus,
+      badge: null,
+    },
+    {
       title: "Profile reports",
       url: "/admin/management/profile-reports",
       icon: IconUserCheck,
@@ -60,6 +67,32 @@ const navigationData = {
       url: "/admin/management/subscription-management",
       icon: IconCreditCard,
       badge: null,
+      items: [
+        {
+          title: "Dashboard",
+          url: "/admin/management/subscription-management",
+        },
+        {
+          title: "Subscribers",
+          url: "/admin/management/subscription-management/subscribers",
+        },
+        {
+          title: "Manage Subscribers",
+          url: "/admin/management/subscription-management/manage-subscribers",
+        },
+        {
+          title: "Products",
+          url: "/admin/management/subscription-management/products",
+        },
+        {
+          title: "Config",
+          url: "/admin/management/subscription-management/config",
+        },
+        {
+          title: "Transactions",
+          url: "/admin/management/subscription-management/transactions",
+        },
+      ],
     },
     {
       title: "Entitlements",
