@@ -89,38 +89,38 @@ const SupportTicketsPage = lazy(
 const ViewTicketDetails = lazy(
   () => import("@/modules/support/pages/view.ticket.details"),
 );
-const SubscriptionsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/subscription.page")
+const SubscriptionsPage = lazy(
+  () => import("@/modules/subsciptions/pages/subscription.page"),
 );
-const SubscriptionDashboardPage = lazy(() =>
-  import("@/modules/subsciptions/pages/subscription.dashboard")
-);
-
-const EntitlementPage = lazy(() =>
-  import("@/modules/membership/pages/entitlements.page")
+const SubscriptionDashboardPage = lazy(
+  () => import("@/modules/subsciptions/pages/subscription.dashboard"),
 );
 
-const ViewSubscriptionsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/view.subscription.detail.page")
-);
-const SubscriptionProductsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/products.page")
-);
-const SubscriptionConfigPage = lazy(() =>
-  import("@/modules/subsciptions/pages/config.page")
-);
-const SubscriberManagementPage = lazy(() =>
-  import("@/modules/subsciptions/pages/subscriber.management.page")
-);
-const TransactionsPage = lazy(() =>
-  import("@/modules/subsciptions/pages/transactions.page")
-);
-const AnalyticsPage = lazy(() =>
-  import("@/modules/dashboard/pages/analytics.page")
+const EntitlementPage = lazy(
+  () => import("@/modules/membership/pages/entitlements.page"),
 );
 
-const FakeProfileManagementPage = lazy(() =>
-  import("@/modules/fake-profiles/pages/fake-profile-management.Page")
+const ViewSubscriptionsPage = lazy(
+  () => import("@/modules/subsciptions/pages/view.subscription.detail.page"),
+);
+const SubscriptionProductsPage = lazy(
+  () => import("@/modules/subsciptions/pages/products.page"),
+);
+const SubscriptionConfigPage = lazy(
+  () => import("@/modules/subsciptions/pages/config.page"),
+);
+const SubscriberManagementPage = lazy(
+  () => import("@/modules/subsciptions/pages/subscriber.management.page"),
+);
+const TransactionsPage = lazy(
+  () => import("@/modules/subsciptions/pages/transactions.page"),
+);
+const AnalyticsPage = lazy(
+  () => import("@/modules/dashboard/pages/analytics.page"),
+);
+
+const FakeProfileManagementPage = lazy(
+  () => import("@/modules/fake-profiles/pages/fake-profile-management.Page"),
 );
 
 const SettingsPage = lazy(

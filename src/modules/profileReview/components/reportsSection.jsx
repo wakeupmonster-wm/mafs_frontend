@@ -164,6 +164,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import dummyImg from "@/assets/images/dummyImg.jpg";
 
 export const ReportsSection = ({ reports, count }) => {
   // 1. Reports ko filter karein
@@ -172,6 +173,7 @@ export const ReportsSection = ({ reports, count }) => {
 
   console.log("reports: ", reports);
   console.log("pendingReports: ", pendingReports);
+  console.log("resolvedReports: ", resolvedReports);
 
   // Reusable Report Card Component taaki code repeat na ho
   const ReportItem = ({ r }) => (
@@ -220,12 +222,9 @@ export const ReportsSection = ({ reports, count }) => {
             <div className="h-8 w-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-bold">
               {/* {r.reportedBy?.nickname?.slice(0, 1)} */}
               <Avatar className="h-8 w-8">
-                <AvatarImage
-                  src={r.reportedBy?.avatar}
-                  alt={r.reportedBy?.nickname}
-                />
+                <AvatarImage src={r.reportedBy?.avatar || dummyImg} alt={""} />
                 <AvatarFallback>
-                  {r.reportedBy?.nickname.charAt(0).toUpperCase()}
+                  {dummyImg || r.reportedBy?.nickname.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>

@@ -102,8 +102,8 @@ export default function ViewProfilePage() {
     lastProfileUpdate,
   } = user;
 
-  console.log("user: ", user);
-  console.log("reports1: ", reports);
+  // console.log("user: ", user);
+  // console.log("reports1: ", reports);
 
   return (
     <>
@@ -165,10 +165,11 @@ export default function ViewProfilePage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-2xl font-bold text-slate-900">
                     {profile?.nickname},{" "}
-                    {profile?.dob
+                    {/* {profile?.dob
                       ? new Date().getFullYear() -
                         new Date(profile.dob).getFullYear()
-                      : "-"}
+                      : "-"} */}
+                    {profile?.age ? profile?.age : "-"}
                   </h2>
                   <Badge
                     className={

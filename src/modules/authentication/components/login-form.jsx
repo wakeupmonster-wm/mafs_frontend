@@ -73,7 +73,7 @@ export function LoginForm({ className, ...props }) {
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-muted-foreground mt-2 text-balance">
+          <p className="text-muted-foreground mt-2 text-xs sm:text-sm text-pretty sm:text-balance">
             Login to manage the Keen As Mustard ecosystem
           </p>
         </div>

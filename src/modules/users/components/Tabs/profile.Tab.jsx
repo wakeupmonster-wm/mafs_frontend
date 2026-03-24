@@ -741,7 +741,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                 </div>
 
                 {/* ATTRIBUTE GRID: "Pill" Style Attributes */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                   {[
                     { label: "Nickname", value: props?.profile?.nickname },
                     { label: "Gender", value: props?.profile?.gender },
@@ -749,10 +749,20 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                       label: "Age",
                       value: props?.profile?.age
                         ? `${props?.profile.age} Yrs`
-                        : `${
-                            new Date().getFullYear() -
-                            new Date(props?.profile?.dob).getFullYear()
-                          } Yrs`,
+                        : "-",
+                    },
+                    {
+                      label: "DOB",
+                      value: props?.profile?.dob
+                        ? new Date(props?.profile?.dob).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )
+                        : "-",
                     },
                     {
                       label: "Zodiac",

@@ -132,16 +132,16 @@ export const userColumns = [
       if (profile?.age) return <span className="text-xs">{profile.age}</span>;
 
       // 2. Agar DOB hai toh calculate karein
-      if (dob) {
-        const birthYear = new Date(dob).getFullYear();
-        const currentYear = new Date().getFullYear();
-        const calculatedAge = currentYear - birthYear;
+      // if (dob) {
+      //   const birthYear = new Date(dob).getFullYear();
+      //   const currentYear = new Date().getFullYear();
+      //   const calculatedAge = currentYear - birthYear;
 
-        // Check if result is a valid number
-        if (!isNaN(calculatedAge)) {
-          return <span className="text-xs">{calculatedAge}</span>;
-        }
-      }
+      //   // Check if result is a valid number
+      //   if (!isNaN(calculatedAge)) {
+      //     return <span className="text-xs">{calculatedAge}</span>;
+      //   }
+      // }
 
       // 3. Kuch bhi nahi toh default dash
       return <span className="text-xs">-</span>;

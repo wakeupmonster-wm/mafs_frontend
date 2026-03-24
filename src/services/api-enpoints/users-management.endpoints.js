@@ -16,7 +16,5 @@ export const USERENDPOINTS = {
   UPDATE_USER_DETAILS: (userId) => `${BASE_URL}/api/v1/admin/users/${userId}`,
 
   DELETE_USER_PHOTOS: (userId) =>
-    `${BASE_URL}/api/v1/admin/users/${userId}/photos`,
-
-  
+    `${BASE_URL}/api/v1/admin/users/${userId}/photos/delete`,
 };

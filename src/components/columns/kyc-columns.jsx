@@ -17,7 +17,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import dummyImg from "@/assets/images/dummyImg.jpg";
@@ -130,7 +129,7 @@ export const getKYCColumns = (onAction, onPreview) => [
     accessorKey: "verification.status",
     header: "Status",
     cell: ({ row }) => {
-      console.log("row.original.verification: ", row.original.verification);
+      // console.log("row.original.verification: ", row.original.verification);
       const status = (
         row.original.verification?.status ||
         row.original.kycStatus ||
