@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
-import { deleteUserPhoto } from "../../store/user.slice";
+import { deleteUserPhoto, fetchUserData } from "../../store/user.slice";
 import { cn } from "@/lib/utils";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 
@@ -34,22 +34,21 @@ export const GallleryTab = ({ photos = [], userId }) => {
     setSelectedPhotos((prev) =>
       prev.includes(publicId)
         ? prev.filter((id) => id !== publicId)
-        : [...prev, publicId]
+        : [...prev, publicId],
     );
   };
 
   const onConfirmDelete = async () => {
-    console.log("call confirm");
     try {
       // Logic for bulk or single delete
       const idsToDelete =
         selectedPhotos.length > 0 ? selectedPhotos : [selectedPhotos[0]];
 
-      console.log("idsToDelete: ", idsToDelete);
-
       for (const publicId of idsToDelete) {
         await dispatch(deleteUserPhoto({ userId, publicId })).unwrap();
       }
+
+      await dispatch(fetchUserData(userId));
 
       toast.success(`${idsToDelete.length} photo(s) removed`);
       setSelectedPhotos([]);
@@ -113,14 +112,17 @@ export const GallleryTab = ({ photos = [], userId }) => {
         ) : (
           <motion.div
             layout
-            className="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 items-start gap-4"
           >
             <AnimatePresence mode="popLayout">
               {photos.map((photo, index) => {
-                const isSelected = selectedPhotos.includes(photo.publicId);
+                // const isSelected = selectedPhotos.includes(photo.publicId);
+
+                const photoId = photo.publicId || photo._id || `idx-${index}`;
+                const isSelected = selectedPhotos.includes(photoId);
                 return (
                   <motion.div
-                    key={photo.publicId || photo.url}
+                    key={photoId}
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -129,17 +131,20 @@ export const GallleryTab = ({ photos = [], userId }) => {
                       "group relative break-inside-avoid rounded-2xl overflow-hidden border-2 transition-all duration-300",
                       isSelected
                         ? "border-indigo-600 ring-4 ring-indigo-50"
-                        : "border-transparent hover:border-slate-300 shadow-sm"
+                        : "border-transparent hover:border-slate-300 shadow-sm",
                     )}
                   >
                     {/* SELECTION CHECKMARK */}
                     <button
-                      onClick={() => toggleSelect(photo.publicId)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the image's onClick
+                        toggleSelect(photoId);
+                      }}
                       className={cn(
                         "absolute top-3 right-3 z-30 h-6 w-6 rounded-full flex items-center justify-center border-2 transition-all",
                         isSelected
                           ? "bg-indigo-600 border-indigo-600 text-white"
-                          : "bg-white/20 backdrop-blur-md border-white/50 text-transparent group-hover:text-white/50"
+                          : "bg-white/20 backdrop-blur-md border-white/50 text-transparent group-hover:text-white/50",
                       )}
                     >
                       <IconCheck size={14} stroke={3} />
@@ -157,14 +162,17 @@ export const GallleryTab = ({ photos = [], userId }) => {
                         src={photo?.url || dummyImg}
                         alt="User Upload"
                         className={cn(
-                          "w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105",
-                          isSelected && "opacity-80"
+                          "w-full h-96 transition-transform duration-500 group-hover:scale-105",
+                          isSelected && "opacity-80",
                         )}
+                        onError={(e) => {
+                          e.currentTarget.src = dummyImg;
+                        }}
                         onClick={() => {
-                          if (selectedPhotos.length > 0)
-                            toggleSelect(photo.publicId);
-                          else {
-                            setPreviewUrl(photo.url);
+                          if (selectedPhotos.length > 0) {
+                            toggleSelect(photoId);
+                          } else {
+                            setPreviewUrl(photo.url || dummyImg);
                             setIsPreviewOpen(true);
                           }
                         }}
@@ -189,8 +197,9 @@ export const GallleryTab = ({ photos = [], userId }) => {
                               size="icon"
                               variant="destructive"
                               className="h-9 w-9 rounded-full"
-                              onClick={() => {
-                                setSelectedPhotos([photo.publicId]);
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPhotos([photoId]);
                                 setIsPhotoDeleteOpen(true);
                               }}
                             >

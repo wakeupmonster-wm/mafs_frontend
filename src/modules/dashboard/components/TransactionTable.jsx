@@ -31,7 +31,7 @@ export default function TransactionTable({ data }) {
           page: pagination.pageIndex + 1,
           limit: pagination.pageSize,
           ...filters,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -46,7 +46,7 @@ export default function TransactionTable({ data }) {
   return (
     <div className="flex flex-1 flex-col pb-8">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-8"
+        className="w-full mx-auto px-4 lg:px-5 py-4 space-y-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >

@@ -14,10 +14,10 @@ export const createSupportTicket = createAsyncThunk(
       return res;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to create ticket"
+        e.response?.data?.message || "Failed to create ticket",
       );
     }
-  }
+  },
 );
 
 export const fetchMyTickets = createAsyncThunk(
@@ -26,8 +26,6 @@ export const fetchMyTickets = createAsyncThunk(
     try {
       // Pass the new filters directly to your API function
       const response = await getMyTicketsApi(page, limit, search, status);
-
-      console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -43,10 +41,10 @@ export const fetchMyTickets = createAsyncThunk(
       return rejectWithValue(response.message || "Failed to fetch users");
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch tickets"
+        e.response?.data?.message || "Failed to fetch tickets",
       );
     }
-  }
+  },
 );
 
 // export const fetchMyTickets = createAsyncThunk(
@@ -71,10 +69,10 @@ export const fetchTicketById = createAsyncThunk(
       return res?.data;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to fetch ticket"
+        e.response?.data?.message || "Failed to fetch ticket",
       );
     }
-  }
+  },
 );
 
 export const adminReplyToTicket = createAsyncThunk(
@@ -86,7 +84,7 @@ export const adminReplyToTicket = createAsyncThunk(
     } catch (e) {
       return rejectWithValue(e.response?.data?.message || "Failed to reply");
     }
-  }
+  },
 );
 
 const supportSlice = createSlice({

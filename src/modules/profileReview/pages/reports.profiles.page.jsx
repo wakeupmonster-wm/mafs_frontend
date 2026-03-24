@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/common/headSubhead";
-import { Card } from "@/components/ui/card"; // Ensure this is imported
-import {
-  ShieldAlert,
-  BarChart3,
-  AlertTriangle,
-  Clock,
-  CheckCircle2,
-  Flag,
-} from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchReportedProfiles } from "../store/profile-review.slice";
 import { useLocation, useNavigate } from "react-router";
 import { reportColumns } from "@/components/columns/reportColumns";
 import ReportsDataTables from "@/components/shared/data-tables/reports.data.tables";
+import StatsGrid from "@/components/common/stats.grid";
+import {
+  IconAlertOctagon,
+  IconCircleCheck,
+  IconClipboardList,
+  IconLoader,
+  IconSparkles,
+} from "@tabler/icons-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -24,16 +24,6 @@ const containerVariants = {
       staggerChildren: 0.1,
       delayChildren: 0.1,
     },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { type: "spring", stiffness: 100, damping: 15 },
   },
 };
 
@@ -63,7 +53,7 @@ export default function ReportsProfilesPage() {
           limit: pagination.pageSize,
           search: globalFilter,
           status: statusFilter,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -86,46 +76,72 @@ export default function ReportsProfilesPage() {
   const columns = useMemo(() => reportColumns(navigate), [navigate]);
 
   const statsData = useMemo(() => {
-    const stats = {
+    // 1. Calculate counts once to avoid re-filtering inside the array map
+    const counts = {
       total: pagination?.total || list.length,
-      new: list.filter(
-        (item) => item.status === "pending" || item.status === "new"
-      ).length,
+      new: list.filter((item) => ["pending", "new"].includes(item.status))
+        .length,
       pending: list.filter((item) => item.status === "in_progress").length,
       resolved: list.filter((item) => item.status === "resolved").length,
       highPriority: list.filter((item) => item.severity === "high").length,
     };
 
-    const { total, new: New, pending, resolved, highPriority } = stats;
-
     return [
-      { label: "Total Reports", value: total, icon: BarChart3, color: "blue" },
-      { label: "New", value: New, icon: AlertTriangle, color: "red" },
-      { label: "Pending", value: pending, icon: Clock, color: "amber" },
+      {
+        label: "Total Reports",
+        val: counts.total || 0,
+        icon: <IconClipboardList size={22} />,
+        color: "blue",
+        description: "Lifetime reports",
+      },
+      {
+        label: "New",
+        val: counts.new,
+        icon: <IconSparkles size={22} />,
+        color: "rose", // Using rose for 'New' feels more urgent
+        description: "Unassigned/Recent",
+      },
+      {
+        label: "In Progress",
+        val: counts.pending,
+        icon: <IconLoader size={22} className="animate-spin-slow" />,
+        color: "amber",
+        description: "Being reviewed",
+      },
       {
         label: "Resolved",
-        value: resolved,
-        icon: CheckCircle2,
+        val: counts.resolved,
+        icon: <IconCircleCheck size={22} />,
         color: "emerald",
+        description: "Issues fixed",
       },
       {
         label: "High Priority",
-        value: highPriority,
-        icon: Flag,
-        color: "purple",
+        val: counts.highPriority,
+        icon: <IconAlertOctagon size={22} />,
+        color: "red",
+        description: "Critical action",
       },
     ];
   }, [list, pagination?.total]);
 
-  const colorStyles = {
-    blue: "from-blue-50 to-blue-100 border-blue-200 text-blue-600 shadow-blue-100/50",
-    red: "from-red-50 to-red-100 border-red-200 text-red-600 shadow-red-100/50",
-    amber:
-      "from-amber-50 to-amber-100 border-amber-200 text-amber-600 shadow-amber-100/50",
+  const colorMap = {
+    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
     emerald:
-      "from-emerald-50 to-emerald-100 border-emerald-200 text-emerald-600 shadow-emerald-100/50",
-    purple:
-      "from-purple-50 to-purple-100 border-purple-200 text-purple-600 shadow-purple-100/50",
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+    red: "from-red-500/40 to-red-600/5 text-red-600 border-red-100",
+  };
+
+  const bgMap = {
+    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+    amber:
+      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+    red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
   };
 
   return (
@@ -145,37 +161,14 @@ export default function ReportsProfilesPage() {
           />
         </header>
 
-        {/* Dynamic Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 px-2">
-          {statsData.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <motion.div key={stat.label} variants={itemVariants}>
-                <Card
-                  className={`p-5 border bg-gradient-to-br shadow-sm transition-shadow hover:shadow-md ${
-                    colorStyles[stat.color]
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                      <p className="text-xs font-bold uppercase tracking-wider opacity-80">
-                        {stat.label}
-                      </p>
-                      <p className="text-3xl font-black tabular-nums">
-                        {stat.value.toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="p-2 bg-white/50 rounded-xl backdrop-blur-sm">
-                      <Icon className="w-6 h-6 opacity-80" />
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
+        {/* --- STATS GRID (Staggered) --- */}
+        <motion.div
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
+        >
+          <StatsGrid stats={statsData} colorMap={colorMap} bgMap={bgMap} />
+        </motion.div>
 
-        {/* <motion.div variants={itemVariants} initial="hidden" animate="visible"> */}
         <ReportsDataTables
           columns={columns}
           data={list || []}
@@ -192,12 +185,11 @@ export default function ReportsProfilesPage() {
           filters={{
             statusFilter,
             setStatusFilter: (val) => {
-              setStatusFilter(val),
-                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              (setStatusFilter(val),
+                setPagination((prev) => ({ ...prev, pageIndex: 0 })));
             },
           }}
         />
-        {/* </motion.div> */}
       </motion.div>
     </div>
   );

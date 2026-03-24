@@ -219,6 +219,15 @@ import {
 import { supportColumns } from "@/components/columns/support.columns";
 import { TicketAction } from "../components/dialogs/tickets.action";
 import ConfirmModal from "@/components/common/ConfirmModal";
+import { ImagePreviewModal } from "../components/image.preview.modal";
+import {
+  IconCircleCheck,
+  IconCircleX,
+  IconExclamationCircle,
+  IconLoaderQuarter,
+  IconTicket,
+} from "@tabler/icons-react";
+import StatsGrid from "@/components/common/stats.grid";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -245,7 +254,6 @@ export default function SupportTicketsPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-
   const {
     tickets,
     pagination: reduxPagination,
@@ -266,6 +274,53 @@ export default function SupportTicketsPage() {
     nickname: "",
   });
 
+  const [imageModal, setImageModal] = useState({
+    open: false,
+    src: "",
+    title: "",
+  });
+
+  // --- Optimized Stats Calculation ---
+  const ticketStats = useMemo(() => {
+    return [
+      {
+        label: "Total Tickets",
+        val: reduxPagination?.total || 0,
+        icon: <IconTicket size={22} />, // Represents the whole collection
+        color: "blue",
+        description: "All tickets in system",
+      },
+      {
+        label: "Open",
+        val: tickets.filter((u) => u.status === "open").length,
+        icon: <IconExclamationCircle size={22} />, // Represents something needing attention
+        color: "indigo",
+        description: "Awaiting assignment",
+      },
+      {
+        label: "In Progress",
+        val: tickets.filter((u) => u.status === "in_progress").length,
+        icon: <IconLoaderQuarter size={22} />, // Represents active work
+        color: "emerald",
+        description: "Currently being handled",
+      },
+      {
+        label: "Resolved",
+        val: tickets.filter((u) => u.status === "resolved").length,
+        icon: <IconCircleCheck size={22} />, // Represents successful completion
+        color: "amber",
+        description: "Fixed, pending closure",
+      },
+      {
+        label: "Closed",
+        val: tickets.filter((u) => u.status === "closed").length,
+        icon: <IconCircleX size={22} />, // Represents finalized/archived
+        color: "rose",
+        description: "Finalized tickets",
+      },
+    ];
+  }, [tickets, reduxPagination?.total]);
+
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       dispatch(
@@ -274,7 +329,7 @@ export default function SupportTicketsPage() {
           limit: pagination.pageSize,
           search: globalFilter,
           status: statusFilter,
-        })
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
@@ -301,7 +356,13 @@ export default function SupportTicketsPage() {
     }
   }, [selectedTicket]);
 
-  const columns = useMemo(() => supportColumns(navigate), [navigate]);
+  const columns = useMemo(
+    () =>
+      supportColumns(
+        (modalConfig) => setImageModal(modalConfig), // Ye second parameter hai
+      ),
+    [], // Dependencies: Sirf navigate agar setImageModal stable hai
+  );
 
   const handleActionSubmit = async () => {
     if (!reply.trim()) return;
@@ -312,7 +373,7 @@ export default function SupportTicketsPage() {
           ticketId: selectedTicket._id,
           reply: reply,
           status: statusUpdate,
-        })
+        }),
       );
 
       if (adminReplyToTicket.fulfilled.match(resultAction)) {
@@ -320,7 +381,7 @@ export default function SupportTicketsPage() {
         setSelectedTicket(null);
 
         dispatch(
-          fetchMyTickets({ page: pagination.page, limit: pagination.limit })
+          fetchMyTickets({ page: pagination.page, limit: pagination.limit }),
         );
 
         setTimeout(() => dispatch(clearSupportStatus()), 3000);
@@ -336,6 +397,31 @@ export default function SupportTicketsPage() {
     // await dispatch(deleteTicket(confirmConfig.ticketId));
     // Close modal after action
     setConfirmConfig({ ...confirmConfig, isOpen: false });
+  };
+
+  const colorMap = {
+    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+    indigo:
+      "from-indigo-500/40 to-indigo-600/5 text-indigo-600 border-indigo-100",
+    emerald:
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+    orange:
+      "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
+  };
+
+  const bgMap = {
+    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+    indigo:
+      "from-indigo-300/20 via-indigo-500/10 to-transparent text-indigo-600 border-indigo-200 hover:border-indigo-400",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+    amber:
+      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+    orange:
+      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
   };
 
   return (
@@ -355,6 +441,14 @@ export default function SupportTicketsPage() {
           />
         </header>
 
+        {/* --- STATS GRID (Staggered) --- */}
+        <motion.div
+          variants={containerVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6"
+        >
+          <StatsGrid stats={ticketStats} colorMap={colorMap} bgMap={bgMap} />
+        </motion.div>
+
         <SupportTicketsDataTables
           columns={columns}
           data={tickets || []}
@@ -371,13 +465,14 @@ export default function SupportTicketsPage() {
           filters={{
             statusFilter,
             setStatusFilter: (val) => {
-              setStatusFilter(val),
-                setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+              (setStatusFilter(val),
+                setPagination((prev) => ({ ...prev, pageIndex: 0 })));
             },
           }}
           meta={{
             setSelectedTicket: (ticket) => setSelectedTicket(ticket),
             setConfirmConfig, // Pass this to the columns
+            setImageModal: (config) => setImageModal(config),
           }}
         />
 
@@ -392,6 +487,12 @@ export default function SupportTicketsPage() {
           loading={loading}
         />
       </motion.div>
+
+      {/* // Add this before the final </div> of your return statement */}
+      <ImagePreviewModal
+        config={imageModal}
+        onClose={() => setImageModal({ ...imageModal, open: false })}
+      />
 
       {/* Updated ConfirmModal UI */}
       <ConfirmModal

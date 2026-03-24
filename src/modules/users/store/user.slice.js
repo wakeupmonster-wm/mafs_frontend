@@ -5,6 +5,7 @@ import {
   exportUsersApi,
   getALLUserListApi,
   getAllPendingVerificationsApi,
+  getUserData,
   suspendUserAPI,
   unBannedUserAPI,
   updateUserProfileApi,
@@ -33,14 +34,19 @@ export const unsuspendUserProfile = createAsyncThunk(
 export const fetchUsers = createAsyncThunk(
   "users/fetchAll",
   async (
-    { page, limit, search, accountStatus, isPremium, last24Hours },
-    { rejectWithValue }
+    {
+      page,
+      limit,
+      search,
+      accountStatus,
+      isPremium,
+      last24Hours,
+      gender,
+      isDeactivated,
+      isScheduledForDeletion,
+    },
+    { rejectWithValue },
   ) => {
-    // console.log("page: ", page);
-    // console.log("limit: ", limit);
-    // console.log("search: ", search);
-    // console.log("accountStatus: ", accountStatus);
-    // console.log("isPremium: ", isPremium);
     try {
       // Pass the new filters directly to your API function
       const response = await getALLUserListApi(
@@ -49,10 +55,11 @@ export const fetchUsers = createAsyncThunk(
         search,
         accountStatus,
         isPremium,
-        last24Hours
+        last24Hours,
+        gender,
+        isDeactivated,
+        isScheduledForDeletion,
       );
-
-      console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -69,7 +76,26 @@ export const fetchUsers = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
+);
+
+export const fetchUserData = createAsyncThunk(
+  "user/fetch",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await getUserData(userId);
+
+      if (response && response.success) {
+        return {
+          user: response.data || {},
+        };
+      }
+
+      return rejectWithValue(response.message || "Failed to fetch user");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Server error");
+    }
+  },
 );
 
 export const fetchPendingVerifications = createAsyncThunk(
@@ -80,7 +106,7 @@ export const fetchPendingVerifications = createAsyncThunk(
 
       if (!response.success) {
         return rejectWithValue(
-          response.message || "Failed to fetch pending verifications"
+          response.message || "Failed to fetch pending verifications",
         );
       }
 
@@ -91,7 +117,7 @@ export const fetchPendingVerifications = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const verifyUserProfile = createAsyncThunk(
@@ -110,10 +136,10 @@ export const verifyUserProfile = createAsyncThunk(
       return { userId, action };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Verification failed"
+        error.response?.data?.message || "Verification failed",
       );
     }
-  }
+  },
 );
 
 export const exportUsersStream = createAsyncThunk(
@@ -129,8 +155,6 @@ export const exportUsersStream = createAsyncThunk(
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let csvData = "";
-
-      //
 
       while (true) {
         const { done, value } = await reader.read();
@@ -158,7 +182,7 @@ export const exportUsersStream = createAsyncThunk(
       console.error("Export Stream Thunk Error:", error);
       return rejectWithValue(error.message || "Streaming export failed");
     }
-  }
+  },
 );
 
 export const bannedUserProfile = createAsyncThunk(
@@ -171,8 +195,6 @@ export const bannedUserProfile = createAsyncThunk(
         payload: { category, reason },
       });
 
-      console.log("response: ", response);
-
       if (!response.success) {
         return rejectWithValue(response.message);
       }
@@ -181,7 +203,7 @@ export const bannedUserProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Ban failed");
     }
-  }
+  },
 );
 
 // Thunk for Unbanning
@@ -190,20 +212,18 @@ export const unbanUserProfile = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await unBannedUserAPI(userId);
-      console.log("response: ", response);
       if (!response.success) return rejectWithValue(response.message);
       return { userId };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Unban failed");
     }
-  }
+  },
 );
 
 export const suspendUserProfile = createAsyncThunk(
   "users/suspendUserProfile",
   async ({ userId, reason, durationHours }, { rejectWithValue }) => {
     try {
-      console.log("call suspend: ", userId);
       const response = await suspendUserAPI({
         userId,
         payload: { reason, durationHours },
@@ -214,10 +234,10 @@ export const suspendUserProfile = createAsyncThunk(
       return { userId, reason, durationHours };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Suspension failed"
+        error.response?.data?.message || "Suspension failed",
       );
     }
-  }
+  },
 );
 
 export const updateUserProfile = createAsyncThunk(
@@ -238,7 +258,7 @@ export const updateUserProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const deleteUserPhoto = createAsyncThunk(
@@ -256,13 +276,14 @@ export const deleteUserPhoto = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 const userSlice = createSlice({
   name: "users",
   initialState: {
     items: [],
+    user: null,
     pendingVerifications: [],
     pendingCount: 0,
     loading: false,
@@ -298,6 +319,9 @@ const userSlice = createSlice({
     setExportProgress: (state, action) => {
       state.exportProgress = action.payload;
     },
+    clearSelectedUser: (state) => {
+      state.user = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -312,6 +336,19 @@ const userSlice = createSlice({
         state.pagination = action.payload.pagination;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* FETCH USER DATA */
+      .addCase(fetchUserData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserData.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user;
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -332,23 +369,22 @@ const userSlice = createSlice({
       /* VERIFY USER PROFILE */
       .addCase(verifyUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-
         const { userId, action: status, reason } = action.payload;
 
-        // 1. Remove from pending list (already doing this)
-        state.pendingVerifications = state.pendingVerifications.filter(
-          (item) => item.userId !== userId
-        );
-
-        // 2. FIND AND UPDATE THE USER IN THE LIST
-        // This is the key for real-time UI updates
-        const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
-        );
-
+        // 1. Update List
+        const userIndex = state.items.findIndex((u) => u._id === userId);
         if (userIndex !== -1) {
           state.items[userIndex].verification = {
             ...state.items[userIndex].verification,
+            status: status === "approve" ? "approved" : "rejected",
+            rejectionReason: reason || undefined,
+          };
+        }
+
+        // 2. 🔥 Update Single View
+        if (state.user && state.user._id === userId) {
+          state.user.verification = {
+            ...state.user.verification,
             status: status === "approve" ? "approved" : "rejected",
             rejectionReason: reason || undefined,
           };
@@ -358,20 +394,29 @@ const userSlice = createSlice({
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
       })
+      /* UPDATE USER PROFILE LIVE */
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         const { userId, profile } = action.payload;
 
-        // Find the user in the main list
+        // 1. Update in the LIST (for the table/directory view)
         const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
-
         if (userIndex !== -1) {
-          // Merge the new profile data into the existing user object
-          // Immer handles the "immutable" update automatically here
           state.items[userIndex].profile = {
             ...state.items[userIndex].profile,
+            ...profile,
+          };
+        }
+
+        // 2. 🔥 UPDATE THE SINGLE VIEW (for ViewProfilePage)
+        if (
+          state.user &&
+          (state.user._id === userId || state.user.id === userId)
+        ) {
+          state.user.profile = {
+            ...state.user.profile,
             ...profile,
           };
         }
@@ -384,7 +429,7 @@ const userSlice = createSlice({
       .addCase(deleteUserPhoto.fulfilled, (state, action) => {
         const { userId, updatedPhotos } = action.payload;
         const userIndex = state.items.findIndex(
-          (u) => u._id === userId || u.id === userId
+          (u) => u._id === userId || u.id === userId,
         );
 
         if (userIndex !== -1) {
@@ -398,29 +443,36 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      /* BANNED USER SUCCESS */
       .addCase(bannedUserProfile.fulfilled, (state, action) => {
         state.loading = false;
-        // Note: Ensure your thunk payload returns 'userId', 'category', and 'reason'
-        const { userId, reason } = action.payload;
+        const { userId, category, reason } = action.payload;
 
-        const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
+        const updateData = (target) => {
+          target.accountStatus = "banned";
+          if (target.account) {
+            target.account.status = "banned";
+            target.account.banDetails = {
+              isBanned: true,
+              reason: reason || "Manual ban by admin",
+              category: category || "General",
+              bannedAt: new Date().toISOString(),
+            };
+          }
+        };
+
+        // Update in list
+        const userInList = state.items.find(
+          (u) => u._id === userId || u.id === userId,
         );
+        if (userInList) updateData(userInList);
 
-        if (user) {
-          user.accountStatus = "banned";
-          user.banDetails = {
-            isBanned: true,
-            reason: reason || "No reason provided",
-            bannedAt: new Date().toISOString(),
-          };
-          user.suspensionDetails = {
-            isSuspended: false,
-            reason: null,
-            suspendedBy: null,
-            suspendedAt: null,
-            suspendUntil: null,
-          };
+        // 🔥 Update in Single View
+        if (
+          state.user &&
+          (state.user._id === userId || state.user.id === userId)
+        ) {
+          updateData(state.user);
         }
       })
       .addCase(bannedUserProfile.rejected, (state, action) => {
@@ -431,31 +483,33 @@ const userSlice = createSlice({
       .addCase(unbanUserProfile.pending, (state) => {
         state.loading = true;
       })
+      /* UNBAN USER SUCCESS */
       .addCase(unbanUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         const { userId } = action.payload;
 
-        const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
-        );
-
-        if (user) {
-          user.accountStatus = "active";
-          if (user.account) {
-            user.account.status = "active";
-            user.account.banDetails = {
+        const updateData = (target) => {
+          target.accountStatus = "active";
+          if (target.account) {
+            target.account.status = "active";
+            target.account.banDetails = {
               isBanned: false,
               unbannedAt: new Date().toISOString(),
             };
           }
-          user.suspensionDetails = {
-            isSuspended: false,
-            reason: null,
-            suspendedBy: null,
-            suspendedAt: null,
-            suspendUntil: null
+        };
 
-          }
+        const userInList = state.items.find(
+          (u) => u._id === userId || u.id === userId,
+        );
+        if (userInList) updateData(userInList);
+
+        // 🔥 Update in Single View
+        if (
+          state.user &&
+          (state.user._id === userId || state.user.id === userId)
+        ) {
+          updateData(state.user);
         }
       })
       .addCase(unbanUserProfile.rejected, (state, action) => {
@@ -466,34 +520,35 @@ const userSlice = createSlice({
       .addCase(suspendUserProfile.pending, (state) => {
         state.loading = true;
       })
+      /* SUSPEND USER SUCCESS */
       .addCase(suspendUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         const { userId, reason, durationHours } = action.payload;
-        const user = state.items.find(
-          (u) => u._id === userId || u.id === userId
-        );
 
-        if (user) {
-          user.accountStatus = "suspended";
-          if (user.account) user.account.status = "suspended";
-
-          user.account.banDetails = {
-            isBanned: false,
-            reason: null,
-            category: null,
-            bannedAt: null,
-          };
-
-          const suspendUntil = new Date(
-            Date.now() + durationHours * 60 * 60 * 1000
-          ).toISOString();
-
-          user.suspensionDetails = {
+        const updateData = (target) => {
+          target.accountStatus = "suspended";
+          if (target.account) target.account.status = "suspended";
+          target.suspensionDetails = {
             isSuspended: true,
             reason,
             suspendedAt: new Date().toISOString(),
-            suspendUntil,
+            suspendUntil: new Date(
+              Date.now() + durationHours * 60 * 60 * 1000,
+            ).toISOString(),
           };
+        };
+
+        const userInList = state.items.find(
+          (u) => u._id === userId || u.id === userId,
+        );
+        if (userInList) updateData(userInList);
+
+        // 🔥 Update in Single View
+        if (
+          state.user &&
+          (state.user._id === userId || state.user.id === userId)
+        ) {
+          updateData(state.user);
         }
       })
       .addCase(suspendUserProfile.rejected, (state, action) => {
@@ -552,5 +607,6 @@ export const {
   addUser,
   deleteUser,
   updateUserStatus,
+  clearSelectedUser,
 } = userSlice.actions;
 export default userSlice.reducer;

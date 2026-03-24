@@ -34,7 +34,7 @@ export default function BusinessPage() {
         <div>
           <h2 className="text-2xl font-bold tracking-tight">User Management</h2>
           <p className="text-[#606060] font-medium">
-            Manage your MAFS community members.
+            Manage your Keen As Mustard community members.
           </p>
         </div>
         <div className="flex gap-2">

@@ -8,6 +8,7 @@ import {
   IconStar,
   IconMessage2,
   IconTrendingUp,
+  IconCircleX,
 } from "@tabler/icons-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,153 +17,17 @@ import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 
-// export const ActivityTab = ({ stats, recentMatches }) => {
-//   // Calculate match rate percentage
-//   const matchRate =
-//     stats.totalSwipes > 0
-//       ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
-//       : 0;
-
-//   console.log("recentMatches: ", recentMatches);
-
-//   return (
-//     <TabsContent value="activity" className="mt-6 space-y-6">
-//       {/* Dynamic Stat Cards */}
-//       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-//         <StatCard
-//           label="Total Likes"
-//           value={stats.totalLikes?.toLocaleString()}
-//           icon={<IconHeart className="text-red-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Super Likes"
-//           value={stats.totalSuperLikes?.toLocaleString()}
-//           icon={<IconStar className="text-amber-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Matches"
-//           value={stats.totalMatches?.toLocaleString()}
-//           icon={<IconCheck className="text-green-500" size={20} />}
-//         />
-//         <StatCard
-//           label="Total Swipes"
-//           value={stats.totalSwipes?.toLocaleString()}
-//           icon={<IconEye className="text-blue-500" size={20} />}
-//         />
-//       </div>
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Match History List */}
-//         <Card className={"col-span-2"}>
-//           <CardHeader>
-//             <CardTitle>Recent Match History</CardTitle>
-//           </CardHeader>
-//           <CardContent>
-//             <div className="space-y-4">
-//               {recentMatches && recentMatches.length > 0 ? (
-//                 recentMatches.map((match) => (
-//                   <div
-//                     key={match._id}
-//                     className="flex items-center justify-between p-3 border rounded-xl hover:bg-muted/50 transition-all group"
-//                   >
-//                     <div className="flex items-center gap-3">
-//                       <Avatar className="h-12 w-12 border-2 border-background shadow-sm">
-//                         <AvatarImage
-//                           src={match.photo || dummyImg}
-//                           className="object-cover"
-//                         />
-//                         <AvatarFallback>
-//                           {match.nickname?.substring(0, 2).toUpperCase()}
-//                         </AvatarFallback>
-//                       </Avatar>
-//                       <div>
-//                         <p className="font-bold text-sm">
-//                           Matched with{" "}
-//                           <span className="text-primary">{match.nickname}</span>
-//                         </p>
-//                         <p className="text-xs text-muted-foreground italic">
-//                           {match.matchedAt
-//                             ? `Connected ${formatDistanceToNow(
-//                                 new Date(match.matchedAt)
-//                               )} ago`
-//                             : "Date unavailable"}
-//                         </p>
-//                       </div>
-//                     </div>
-//                     <Badge
-//                       variant="secondary"
-//                       className="bg-green-50 text-green-700 border-green-200"
-//                     >
-//                       Active Match
-//                     </Badge>
-//                   </div>
-//                 ))
-//               ) : (
-//                 <div className="text-center py-12 border-2 border-dashed rounded-xl">
-//                   <p className="text-muted-foreground text-sm font-medium">
-//                     No recent matches found.
-//                   </p>
-//                 </div>
-//               )}
-//             </div>
-//           </CardContent>
-//         </Card>
-
-//         {/* Swipe Insights Card */}
-//         <Card className="shadow-sm border-muted">
-//           <CardHeader>
-//             <CardTitle className="text-lg">Engagement Insights</CardTitle>
-//           </CardHeader>
-//           <CardContent className="space-y-6">
-//             <div className="space-y-2">
-//               <div className="flex justify-between text-sm font-medium">
-//                 <span>Match Success Rate</span>
-//                 <span className="text-primary">{matchRate}%</span>
-//               </div>
-//               <Progress value={parseFloat(matchRate)} className="h-2" />
-//             </div>
-
-//             <div className="pt-4 space-y-3">
-//               <div className="flex items-center justify-between text-xs">
-//                 <span className="text-muted-foreground">
-//                   Likes vs. Total Swipes
-//                 </span>
-//                 <span className="font-mono">
-//                   {stats.totalLikes}/{stats.totalSwipes}
-//                 </span>
-//               </div>
-//               <div className="flex items-center justify-between text-xs">
-//                 <span className="text-muted-foreground">Super Like Ratio</span>
-//                 <span className="font-mono">
-//                   {stats.totalSuperLikes > 0
-//                     ? (
-//                         (stats.totalSuperLikes / stats.totalLikes) *
-//                         100
-//                       ).toFixed(1)
-//                     : 0}
-//                   %
-//                 </span>
-//               </div>
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-//     </TabsContent>
-//   );
-// };
-
-export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
-  // const matchRate =
-  //   stats.totalSwipes > 0
-  //     ? ((stats.totalMatches / stats.totalSwipes) * 100).toFixed(1)
-  //     : 0;
+export const ActivityTab = ({ stats, recentMatches }) => {
+  const navigate = useNavigate();
 
   const matchRate =
     (stats?.totalSwipes || 0) > 0
       ? (((stats?.totalMatches || 0) / stats?.totalSwipes) * 100).toFixed(1)
       : 0;
 
+  // console.log("recentMatches: ", recentMatches);
 
   return (
     <TabsContent
@@ -170,31 +35,42 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
       className="mt-6 space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500"
     >
       {/* 1. TOP STATS ROW - Using a Glassmorphism Style */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {[
+          {
+            label: "Total Swipes",
+            val: stats.totalSwipes,
+            icon: <IconEye className="text-sky-500" />,
+            bg: "bg-sky-100/60",
+            border: "border-sky-200",
+          },
           {
             label: "Total Likes",
             val: stats?.totalLikes,
             icon: <IconHeart className="text-rose-500" />,
-            bg: "bg-rose-50",
+            bg: "bg-rose-100/60",
+            border: "border-rose-200",
           },
           {
             label: "Super Likes",
             val: stats?.totalSuperLikes,
             icon: <IconStar className="text-amber-500" />,
-            bg: "bg-amber-50",
+            bg: "bg-amber-100/60",
+            border: "border-amber-200",
+          },
+          {
+            label: "Total Rejections",
+            val: stats.totalRejections, // Optional chaining safety ke liye
+            icon: <IconCircleX size={18} className="text-red-500" />,
+            bg: "bg-red-100/60",
+            border: "border-red-200",
           },
           {
             label: "Total Matches",
             val: stats?.totalMatches,
             icon: <IconCheck className="text-emerald-500" />,
-            bg: "bg-emerald-50",
-          },
-          {
-            label: "Profile Views",
-            val: stats.totalSwipes,
-            icon: <IconEye className="text-sky-500" />,
-            bg: "bg-sky-50",
+            bg: "bg-emerald-100/60",
+            border: "border-emerald-200",
           },
         ].map((stat, i) => (
           <Card
@@ -205,8 +81,9 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
               <div className="flex items-center p-4 gap-4">
                 <div
                   className={cn(
-                    "p-3 rounded-2xl transition-transform group-hover:scale-110",
-                    stat.bg
+                    "p-3 rounded-xl transition-transform group-hover:scale-110 border",
+                    stat.bg,
+                    stat.border,
                   )}
                 >
                   {React.cloneElement(stat.icon, { size: 24, stroke: 2 })}
@@ -223,7 +100,7 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
               <div
                 className={cn(
                   "h-1 w-full opacity-20",
-                  stat.bg.replace("bg-", "bg-")
+                  stat.bg.replace("bg-", "bg-"),
                 )}
               />
             </CardContent>
@@ -266,11 +143,11 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
                           </AvatarFallback>
                         </Avatar>
                         {/* Status Indicator */}
-                        <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+                        {/* <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm" /> */}
                       </div>
                       <div className="space-y-0.5">
-                        <p className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-                          Matched with {match.nickname}
+                        <p className="text-sm font-bold text-slate-900 group-hover:text-brand-aqua transition-colors">
+                          {match.nickname}
                         </p>
                         <p className="text-xs text-slate-400 font-medium">
                           {match.matchedAt
@@ -283,9 +160,14 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 text-xs font-bold text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                      onClick={() =>
+                        navigate(`../view-profile`, {
+                          state: { userId: match.ouserId },
+                        })
+                      }
+                      className="h-8 text-xs font-bold text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10"
                     >
-                      View Chat
+                      View Profile
                     </Button>
                   </div>
                 ))
@@ -308,7 +190,7 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
           <Card className="border-slate-200 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                <IconTrendingUp size={18} className="text-indigo-500" />{" "}
+                <IconTrendingUp size={18} className="text-brand-aqua" />{" "}
                 Engagement Score
               </CardTitle>
             </CardHeader>
@@ -326,7 +208,7 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
                 <div className="space-y-2">
                   <div className="flex justify-between text-xs font-bold uppercase tracking-tighter text-slate-500">
                     <span>Funnel Success</span>
-                    <span className="text-indigo-600">{matchRate}%</span>
+                    <span className="text-brand-aqua">{matchRate}%</span>
                   </div>
                   <Progress
                     value={parseFloat(matchRate)}
@@ -368,7 +250,7 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-indigo-600 border-none shadow-lg shadow-indigo-100 p-6 text-white overflow-hidden relative">
+          <Card className="bg-brand-aqua border-none shadow-lg shadow-indigo-100 p-6 text-white overflow-hidden relative">
             <div className="relative z-10">
               <h4 className="text-sm font-bold opacity-80">Moderator Tip</h4>
               <p className="text-xs mt-2 leading-relaxed">
@@ -376,7 +258,7 @@ export const ActivityTab = ({ stats = {}, recentMatches = [] }) => {
                 behavior or automated scripts.
               </p>
             </div>
-            <IconTrendingUp className="absolute -bottom-4 -right-4 h-24 w-24 opacity-10" />
+            <IconTrendingUp className="absolute -z-1 -bottom-4 -right-5 h-24 w-24 opacity-20" />
           </Card>
         </div>
       </div>

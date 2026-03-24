@@ -40,7 +40,6 @@ export const sendEmailCampaignApi = (payload) => {
     body: payload.emailBody,
     target: payload.target,
   };
-  console.log("body: ", body);
 
   return apiConnector("POST", url, body);
 };

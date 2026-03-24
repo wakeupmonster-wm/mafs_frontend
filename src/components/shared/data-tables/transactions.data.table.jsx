@@ -8,15 +8,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -29,7 +20,6 @@ import {
 import {
   IconChevronLeft,
   IconChevronRight,
-  IconFilter,
   IconSearch,
   IconX,
 } from "@tabler/icons-react";
@@ -89,7 +79,7 @@ export default function TransactionDataTables({
       <div className="flex flex-col gap-4">
         <div className="flex flex-row md:items-center justify-between gap-4 bg-slate-50/50 p-2 rounded-xl">
           {/* 1. LEFT SIDE: Search Input */}
-          <div className="relative w-3/5 md:w-1/3">
+          <div className="relative w-2/3 md:w-2/4">
             {/* Search Icon (Left) */}
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
 
@@ -201,7 +191,7 @@ export default function TransactionDataTables({
                   className={cn(
                     "h-10 w-max bg-white border-slate-200 transition-all",
                     filters.platform &&
-                      "border-brand-aqua ring-1 ring-brand-aqua bg-brand-aqua/10"
+                      "border-brand-aqua ring-1 ring-brand-aqua bg-brand-aqua/10",
                   )}
                 >
                   <SelectValue placeholder="Platform" />
@@ -303,11 +293,11 @@ export default function TransactionDataTables({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-slate-700 w-max pl-10 font-semibold h-10 bg-slate-100 text-xs"
+                    className="text-slate-700 w-max pl-8 font-semibold h-10 bg-slate-100 text-xs"
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -316,17 +306,17 @@ export default function TransactionDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-3 pl-10">
+                    <TableCell key={cell.id} className="py-3 pl-6">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -351,7 +341,7 @@ export default function TransactionDataTables({
       </div>
 
       {/* --- PAGINATION SECTION --- */}
-      <div className="flex flex-row items-center justify-between gap-4 py-2 border-t border-slate-100 mt-4 px-5 md:px-0">
+      <div className="flex flex-row items-center justify-between gap-4 py-2 border-t border-slate-100 mt-4 px-2 sm:px-5 md:px-0">
         <div className="text-xs font-medium text-slate-500">
           Showing {data.length} of {rowCount} results
         </div>

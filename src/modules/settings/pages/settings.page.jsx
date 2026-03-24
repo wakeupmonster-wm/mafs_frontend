@@ -46,7 +46,7 @@ export default function SettingsPage() {
         changePassword({
           currentPassword: form.currentPassword,
           newPassword: form.newPassword,
-        })
+        }),
       ).unwrap();
       toast.success(result.message || "Success", {
         description: result.description,
@@ -186,8 +186,8 @@ export default function SettingsPage() {
                       passwordsMatch
                         ? "border-success/50 bg-success/5"
                         : passwordsMismatch
-                        ? "border-destructive/50 bg-destructive/5"
-                        : "border-border"
+                          ? "border-destructive/50 bg-destructive/5"
+                          : "border-border"
                     }`}
                     value={form.confirmPassword}
                     onChange={(e) =>

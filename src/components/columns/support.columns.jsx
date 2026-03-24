@@ -30,9 +30,11 @@ export const supportColumns = (onAction, onPreview) => [
     header: () => <div className="w-max text-center text-xs">S.No</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
-      const serialNumber = pageIndex * pageSize + row.index + 1;
-
-      return <div className="w-6 text-center font-medium">{serialNumber}</div>;
+      return (
+        <div className="w-6 text-center font-medium">
+          {pageIndex * pageSize + row.index + 1}
+        </div>
+      );
     },
     enableSorting: false,
     enableHiding: false,
@@ -43,8 +45,7 @@ export const supportColumns = (onAction, onPreview) => [
     cell: ({ row, table }) => {
       const user = row.original.user;
       const avatar = user?.avatar || dummyImg;
-      const nickname = user?.nickname || "No Nickname";
-      const ticketId = row.original._id;
+      const nickname = user?.nickname || "-";
 
       // Access the modal function passed from the main component
       const { setImageModal } = table.options.meta || {};
@@ -54,14 +55,14 @@ export const supportColumns = (onAction, onPreview) => [
           {/* Avatar with Click-to-Zoom logic */}
           <div className="h-9 w-9 rounded-full bg-gray-100 overflow-hidden border flex-shrink-0">
             <img
-              src={avatar || "/placeholder-avatar.png"} // Fallback image path
+              src={avatar} // Fallback image path
               alt="User Avatar"
               className="w-full h-full object-cover cursor-pointer hover:scale-110 transition-transform duration-200"
               onClick={() =>
                 setImageModal?.({
                   open: true,
                   src: avatar,
-                  title: `${nickname}'s Selfie`,
+                  title: `${nickname} Selfie`,
                 })
               }
             />
@@ -95,13 +96,13 @@ export const supportColumns = (onAction, onPreview) => [
       };
 
       return (
-        <Badge
+        <div
           onClick={copyToClipboard}
-          className="cursor-pointer bg-gray-100 text-gray-700 text-[11px] border-gray-200 hover:bg-gray-200 transition-all"
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
         >
           <Phone className="w-3 h-3 mr-1" />
           {phone}
-        </Badge>
+        </div>
       );
     },
   },
@@ -118,10 +119,10 @@ export const supportColumns = (onAction, onPreview) => [
         return <span className="text-slate-400 text-xs italic">-</span>;
 
       return (
-        <Badge className="lowercase font-normal bg-gray-100 text-[11px] text-gray-700 border border-gray-200 transition-all duration-200 hover:bg-gray-200 hover:scale-105">
+        <div className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground">
           <Mail className="w-3 h-3 mr-1.5 text-slate-500" />
           {email}
-        </Badge>
+        </div>
       );
     },
   },
@@ -283,8 +284,6 @@ export const supportColumns = (onAction, onPreview) => [
     cell: ({ row, table }) => {
       const navigate = useNavigate();
       const ticket = row.original;
-      // console.log("ticket: ", ticket);
-      // Destructure both setters from meta
       const { setSelectedTicket, setConfirmConfig } = table.options?.meta || {};
 
       return (

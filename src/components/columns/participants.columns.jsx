@@ -68,7 +68,7 @@ export const getParticipantsColumns = () => [
         <div className="flex items-center gap-2 text-slate-600">
           {getGenderIcon()}
           <span className="text-[13px] font-medium capitalize">
-            {gender || "N/A"}
+            {gender || "-"}
           </span>
         </div>
       );

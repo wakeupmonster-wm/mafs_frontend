@@ -12,10 +12,8 @@ export const fetchPendingDeliveries = createAsyncThunk(
         page,
         limit,
         search,
-        deliveryStatus
+        deliveryStatus,
       );
-
-      // console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -30,12 +28,12 @@ export const fetchPendingDeliveries = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch pending deliveries"
+        response.message || "Failed to fetch pending deliveries",
       );
     } catch (err) {
       return rejectWithValue("Failed to fetch deliveries");
     }
-  }
+  },
 );
 
 export const markAsDelivered = createAsyncThunk(
@@ -43,12 +41,11 @@ export const markAsDelivered = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const res = await markAsDeliveredApi(id);
-      console.log("RES mark: ", res);
       return id;
     } catch (err) {
       return rejectWithValue("Failed to mark delivered");
     }
-  }
+  },
 );
 
 const deliverySlice = createSlice({

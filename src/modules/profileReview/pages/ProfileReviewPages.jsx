@@ -1853,7 +1853,7 @@ const Toast = ({ type, message, onClose }) => {
 export function ReportedProfilesPage() {
   const dispatch = useDispatch();
   const { list, pagination, loading, error } = useSelector(
-    (s) => s.profileReview || {}
+    (s) => s.profileReview || {},
   );
 
   const [page, setPage] = useState(1);
@@ -1877,8 +1877,6 @@ export function ReportedProfilesPage() {
         });
       });
   }, [dispatch, page]);
-
-  console.log("list: ", list);
 
   // ✅ Real-time filtering
   const filteredList = list?.filter((item) => {
@@ -2149,7 +2147,7 @@ export function ReportedProfilesPage() {
                               day: "numeric",
                               month: "short",
                               year: "numeric",
-                            }
+                            },
                           )}
                         </div>
                         <div className="text-gray-500">
@@ -2158,7 +2156,7 @@ export function ReportedProfilesPage() {
                             {
                               hour: "2-digit",
                               minute: "2-digit",
-                            }
+                            },
                           )}
                         </div>
                       </div>
@@ -2166,7 +2164,7 @@ export function ReportedProfilesPage() {
                     <td className="px-6 py-4">
                       <Badge
                         className={`${getStatusColor(
-                          item.status
+                          item.status,
                         )} border font-semibold`}
                       >
                         {item.status.toUpperCase()}
@@ -2259,7 +2257,7 @@ export function ReportedProfilesPage() {
                     </h3>
                     <Badge
                       className={`${getStatusColor(
-                        item.status
+                        item.status,
                       )} border shrink-0`}
                     >
                       {item.status.toUpperCase()}
@@ -2278,7 +2276,7 @@ export function ReportedProfilesPage() {
                         {
                           day: "numeric",
                           month: "short",
-                        }
+                        },
                       )}
                     </Badge>
                   </div>
@@ -2388,7 +2386,7 @@ export function ReportedProfilesPage() {
 export function ProfileReviewDetailPage({ userId }) {
   const dispatch = useDispatch();
   const { selected, loading, error, successMessage } = useSelector(
-    (s) => s.profileReview || {}
+    (s) => s.profileReview || {},
   );
 
   const [action, setAction] = useState("");
@@ -2485,7 +2483,7 @@ export function ProfileReviewDetailPage({ userId }) {
     try {
       // eslint-disable-next-line no-unused-vars
       const result = await dispatch(
-        performUpdateProfileStatus(payload)
+        performUpdateProfileStatus(payload),
       ).unwrap();
 
       // ✅ Success toast
@@ -3088,7 +3086,7 @@ export function ProfileReviewDetailPage({ userId }) {
                                       </Badge>
                                       <span className="text-xs text-gray-500">
                                         {new Date(
-                                          report.createdAt
+                                          report.createdAt,
                                         ).toLocaleDateString("en-IN", {
                                           day: "numeric",
                                           month: "short",
@@ -3159,12 +3157,12 @@ export function ProfileReviewDetailPage({ userId }) {
                         action === "resolve"
                           ? "bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 shadow-green-200"
                           : action === "ban"
-                          ? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-red-200"
-                          : action === "reject"
-                          ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 shadow-amber-200"
-                          : action === "reply"
-                          ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-200"
-                          : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-emerald-200"
+                            ? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 shadow-red-200"
+                            : action === "reject"
+                              ? "bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 shadow-amber-200"
+                              : action === "reply"
+                                ? "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-blue-200"
+                                : "bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-emerald-200"
                       }`}
                     >
                       {isSubmitting ? (

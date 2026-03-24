@@ -6,6 +6,18 @@ import dummyImg from "@/assets/images/dummyImg.jpg";
 
 export const reportColumns = (navigate) => [
   {
+    id: "sno",
+    header: () => <div className="w-5 text-center text-xs">S.no</div>,
+    cell: ({ row, table }) => {
+      const { pageIndex, pageSize } = table.getState().pagination;
+      const serialNumber = pageIndex * pageSize + row.index + 1;
+
+      return <div className="w-5 text-center font-medium">{serialNumber}</div>;
+    },
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "nickname",
     header: "User Profile",
     cell: ({ row }) => (
@@ -132,17 +144,12 @@ export const reportColumns = (navigate) => [
     // Fixed width prevents the table from expanding too much
     size: 100,
     cell: ({ row }) => {
-      // console.log("row: ", row.original.userId);
       return (
         <Button
           variant="ghost"
           size="sm"
           className="text-black font-medium border border-brand-aqua shadow-sm bg-brand-aqua/20 hover:bg-brand-aqua/60"
-          onClick={() =>
-            navigate(
-              `/admin/management/profile-reports/review/${row.original?.userId}`
-            )
-          }
+          onClick={() => navigate(`./review/${row.original?.userId}`)}
         >
           <Eye className="w-4 h-4 mr-2" />
           Review

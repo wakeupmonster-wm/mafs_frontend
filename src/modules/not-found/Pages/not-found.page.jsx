@@ -58,7 +58,7 @@ export default function NotFoundPage() {
         {/* Branding Subtext */}
         <div className="pt-8 flex items-center justify-center gap-2 text-[#8D8D8D] font-medium text-sm">
           <MapPin className="w-4 h-4" />
-          <span>Lost in the MAFS universe?</span>
+          <span>Lost in the Keen As Mustard universe?</span>
         </div>
       </main>
     </div>

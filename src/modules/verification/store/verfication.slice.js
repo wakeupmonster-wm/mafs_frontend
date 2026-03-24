@@ -13,10 +13,8 @@ export const fetchPendingVerifications = createAsyncThunk(
         limit,
         search,
         status,
-        sortBy
+        sortBy,
       );
-
-      console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -31,12 +29,12 @@ export const fetchPendingVerifications = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch pending verifications"
+        response.message || "Failed to fetch pending verifications",
       );
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Server error");
     }
-  }
+  },
 );
 
 export const verifyUserProfile = createAsyncThunk(
@@ -55,10 +53,10 @@ export const verifyUserProfile = createAsyncThunk(
       return { userId, action };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Verification failed"
+        error.response?.data?.message || "Verification failed",
       );
     }
-  }
+  },
 );
 
 const verificationSlice = createSlice({
@@ -106,7 +104,7 @@ const verificationSlice = createSlice({
         const { userId } = action.payload;
 
         state.pendingVerifications = state.pendingVerifications.filter(
-          (item) => item.userId !== userId
+          (item) => item.userId !== userId,
         );
 
         if (state.pagination.total > 0) {

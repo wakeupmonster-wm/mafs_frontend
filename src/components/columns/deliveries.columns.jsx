@@ -167,7 +167,6 @@ export const getDeliveryColumns = (onMarkDelivered, deliveryLoading) => [
     cell: ({ row }) => {
       const d = row?.original;
       const isLoading = deliveryLoading[d._id];
-      // console.log("d: ", d);
 
       if (d.deliveryStatus === "PENDING" && d.claimedAt) {
         return (

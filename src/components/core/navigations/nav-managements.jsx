@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { motion } from "framer-motion"; // Added AnimatePresence
-
 import { Link, useLocation } from "react-router-dom";
 import {
   SidebarGroup,
@@ -28,9 +27,9 @@ export function NavManagements({ items }) {
   }
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={"py-1"}>
       <SidebarGroupLabel>Management</SidebarGroupLabel>
-      <SidebarMenu>
+      <SidebarMenu className={"gap-1"}>
         {items.map((item) => {
           const isActive = location.pathname === item.url;
           const Icon = item.icon;
@@ -51,15 +50,16 @@ export function NavManagements({ items }) {
                     asChild
                     tooltip={item.title}
                     className={cn(
-                      "group relative h-12 w-full transition-all duration-300 rounded-lg px-2",
+                      "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      isActive && !hasActiveChild &&
-                      "!bg-brand-aqua/10 border border-brand-aqua/50"
+                      isActive &&
+                        !hasActiveChild &&
+                        "!bg-brand-aqua/10 border border-brand-aqua/50"
                     )}
                   >
                     <Link
                       to={item.url}
-                      className="flex items-center gap-3 text-sm"
+                      className="flex items-center gap-3 text-xs"
                     >
                       {/* Icon with Dynamic Coloring */}
                       <div
@@ -70,10 +70,10 @@ export function NavManagements({ items }) {
                             : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm"
                         )}
                       >
-                        <Icon className="size-5" />
+                        <Icon className="size-4" />
                       </div>
 
-                      <span className="flex-1 truncate text-sm tracking-tight">
+                      <span className="flex-1 truncate text-xs tracking-tight">
                         {item.title}
                       </span>
 
@@ -91,7 +91,7 @@ export function NavManagements({ items }) {
                           className={cn(
                             "h-5 min-w-5 px-1.5 text-[10px] font-semibold",
                             item.badgeVariant === "destructive" &&
-                            "animate-pulse"
+                              "animate-pulse"
                           )}
                         >
                           {item.badge}
@@ -147,7 +147,9 @@ export function NavManagements({ items }) {
                                 <div
                                   className={cn(
                                     "size-1.5 rounded-full mr-1 transition-all duration-300",
-                                    isActive ? "bg-brand-aqua" : "bg-slate-300 group-hover:bg-brand-aqua/50"
+                                    isActive
+                                      ? "bg-brand-aqua"
+                                      : "bg-slate-300 group-hover:bg-brand-aqua/50"
                                   )}
                                 />
                               )}

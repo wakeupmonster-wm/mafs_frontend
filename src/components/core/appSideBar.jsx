@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import * as React from "react";
-import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect } from "react";
 import { NavMain } from "@/components/core/navigations/nav-main";
-import { NavSecondary } from "@/components/core/navigations/nav-secondary";
 import { NavUser } from "@/components/core/navigations/nav-user";
 import {
   Sidebar,
@@ -13,20 +12,23 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
-  SidebarSeparator,
+  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
 import { Link } from "react-router-dom";
-import { Separator } from "../ui/separator";
 import dummyImg from "@/assets/images/dummyImg.jpg";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
+import mustardLogo from "@/assets/web/mustardLogo2.webp";
+import { cn } from "@/lib/utils";
 
 export function AppSidebar({ ...props }) {
   const dispatch = useDispatch();
+  const { open } = useSidebar();
   const { account } = useSelector((state) => state.account);
 
   useEffect(() => {
@@ -45,80 +47,76 @@ export function AppSidebar({ ...props }) {
   const navUser = useMemo(
     () => ({
       name: account?.nickname || "Admin",
-      email: account?.email || "admin@mafs.com",
+      email: account?.email || "admin@keenasmustard.com",
       avatar: account?.avatar?.url || dummyImg,
     }),
-    [account]
+    [account],
   );
 
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-slate-300/50 bg-white/80 backdrop-blur-xl pt-2 justify-center"
+      className="border-r border-slate-300/50 bg-white/80 backdrop-blur-xl mt-1 justify-center"
       {...props}
     >
       {/* --- HEADER: Logo & Branding --- */}
-      <SidebarHeader className="h-16 border-b border-slate-100 bg-white/40">
+      <SidebarHeader className="h-14 items-center justify-center border border-slate-100 bg-white/40 p-0">
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              asChild
-              className="hover:bg-transparent p-1"
-            >
-              <Link to="/admin/dashboard" className="flex items-center gap-3">
-                <div className="border text-sidebar-primary-foreground flex aspect-square size-9 items-center justify-center rounded-lg">
-                  <img src="/Favicon2.png" alt="" className="size-5" />
-                </div>
-                <div className="grid flex-1 text-left leading-tight">
-                  <span className="truncate text-sm font-extrabold">
-                    MAFS Admin
-                  </span>
-                  <span className="truncate font-semibold text-[9px]">
-                    Control Panel
-                  </span>
-                </div>
-              </Link>
-            </SidebarMenuButton>
+          <SidebarMenuItem className="flex items-center justify-between">
+            {/* 2. Agar sidebar open hai tabhi logo dikhega */}
+            {open && (
+              <SidebarMenuButton
+                size="lg"
+                asChild
+                className="hover:bg-transparent p-1 animate-in fade-in duration-300"
+              >
+                <Link to="/admin/dashboard" className="flex items-center gap-2">
+                  <div className="flex aspect-square items-center justify-center rounded-lg">
+                    <img
+                      src={mustardLogo}
+                      alt="Logo"
+                      loading="lazy"
+                      className="size-8"
+                    />
+                  </div>
+                  <div className="grid flex-1 text-left leading-tight">
+                    <span className="truncate text-sm font-extrabold">
+                      Keen As <br /> Mustard
+                    </span>
+                  </div>
+                </Link>
+              </SidebarMenuButton>
+            )}
+
+            {/* 3. Trigger button hamesha dikhega, collapsed mode mein center ho jayega */}
+            <SidebarTrigger
+              className={cn(
+                "-ml-1 text-slate-500 hover:bg-slate-100",
+                !open && "mx-auto ml-0", // Collapsed hone par center align karne ke liye
+              )}
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="scrollbar-none">
+      <SidebarContent className="scrollbar-none gap-0">
         {/* Overview Section */}
-        {navigationData.navMain && (
-          <>
-            {/* <SectionHeader title="Overview" /> */}
-            <NavMain items={navigationData.navMain} />
-          </>
-        )}
-
-        <Separator />
+        {navigationData.navMain && <NavMain items={navigationData.navMain} />}
 
         {/* Management Section */}
         {navigationData.navManagement && (
-          <>
-            {/* <SectionHeader title="Management" /> */}
-            <NavManagements items={navigationData.navManagement} />
-          </>
+          <NavManagements items={navigationData.navManagement} />
         )}
 
         {/* Platform Section */}
         {navigationData.navPlateform && (
-          <>
-            {/* <SectionHeader title="Platform" /> */}
-            <NavPlateform items={navigationData.navPlateform} />
-          </>
+          <NavPlateform items={navigationData.navPlateform} />
         )}
 
-        {/* Secondary Navigation (Pinned to bottom if content is short) */}
-        {navigationData.navSecondary && (
-          <>
-            <SidebarSeparator className="mx-4 my-4 opacity-50" />
-            <NavSecondary items={navigationData.navSecondary} />
-          </>
-        )}
+        {/* {navigationData.navSecondary && (
+          <NavSecondary items={navigationData.navSecondary} />
+        )} */}
       </SidebarContent>
 
       {/* --- FOOTER: User Profile --- */}
@@ -128,46 +126,7 @@ export function AppSidebar({ ...props }) {
         </div>
       </SidebarFooter>
 
-      <SidebarRail />
+      {/* <SidebarRail /> */}
     </Sidebar>
   );
-
-  // return (
-  //   <Sidebar
-  //     collapsible="icon"
-  //     className="border-r border-slate-200 bg-white py-2"
-  //     {...props}
-  //   >
-  //     <SidebarHeader className="h-14 border-b border-slate-100 px-4 flex flex-row items-center">
-  //       {/* Logo Container is fixed-size to ensure centering in collapsed mode */}
-  //       <div className="flex aspect-square size-8 shrink-0 items-center justify-center rounded-lg bg-slate-900 shadow-lg">
-  //         <img
-  //           src="/Favicon2.png"
-  //           alt="M"
-  //           className="size-4 brightness-0 invert"
-  //         />
-  //       </div>
-  //       <div className="ml-3 flex flex-col group-data-[collapsible=icon]:hidden">
-  //         <span className="text-sm font-bold text-slate-900 leading-none">
-  //           MAFS Admin
-  //         </span>
-  //         <span className="text-[10px] font-medium text-slate-400">
-  //           System Control
-  //         </span>
-  //       </div>
-  //     </SidebarHeader>
-
-  //     <SidebarContent className="px-2 py-3 group-data-[collapsible=icon]:px-0">
-  //       {/* Navigation groups go here */}
-  //       <NavMain items={navigationData.navMain} />
-  //       <NavManagements items={navigationData.navManagement} />
-  //     </SidebarContent>
-
-  //     <SidebarFooter className="p-2 border-t border-slate-100">
-  //       <div className="group-data-[collapsible=icon]:justify-center flex">
-  //         <NavUser user={navUser} />
-  //       </div>
-  //     </SidebarFooter>
-  //   </Sidebar>
-  // );
 }

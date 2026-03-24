@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  IconPlus,
-  IconPencil,
-  IconTrash,
-  IconLoader,
-} from "@tabler/icons-react";
+import { IconLoader, IconX } from "@tabler/icons-react";
 import { deleteFAQ, fetchFAQs } from "../store/faq.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -36,6 +32,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import StatsGrid from "@/components/common/stats.grid";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      // Controls the speed of the "wave" between cards
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
 
 const FAQSPage = () => {
   const dispatch = useDispatch();
@@ -78,13 +87,13 @@ const FAQSPage = () => {
       label: "Total FAQs",
       value: items.length,
       icon: MessageSquareText,
-      color: "brand-aqua",
+      color: "blue", // Changed from brand-aqua
     },
     {
       label: "Categories",
       value: new Set(items.map((f) => f.category)).size,
       icon: Layers,
-      color: "alerts-error",
+      color: "amber", // Changed from alerts-error
     },
   ];
 
@@ -138,103 +147,29 @@ const FAQSPage = () => {
     return acc;
   }, {});
 
-  // return (
-  //   <div className="p-6 flex flex-col gap-6 bg-[#F8FDFF] min-h-screen">
-  //     <div className="flex justify-between items-center">
-  //       <div>
-  //         <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-  //           Platform FAQs
-  //         </h2>
-  //         <p className="text-slate-500 font-medium text-sm">
-  //           Manage user questions and categories.
-  //         </p>
-  //       </div>
-  //       <Button
-  //         onClick={() => setFormModal({ isOpen: true, data: null })}
-  //         className="gap-2"
-  //       >
-  //         <IconPlus size={18} /> Add FAQ
-  //       </Button>
-  //     </div>
+  const colorMap = {
+    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+    emerald:
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+    orange:
+      "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
+  };
 
-  //     <div className="grid gap-4">
-  //       {items.length > 0 ? (
-  //         items.map((faq) => (
-  //           <Card
-  //             key={faq._id || faq.id}
-  //             className="hover:shadow-md transition-all border-none shadow-sm"
-  //           >
-  //             <CardContent className="p-5 flex items-center justify-between">
-  //               <div className="space-y-1">
-  //                 <span className="text-[10px] font-black uppercase text-primary bg-primary/10 px-2 py-0.5 rounded">
-  //                   {faq.category}
-  //                 </span>
-  //                 <h4 className="font-bold text-slate-800 text-lg">
-  //                   {faq.order && <span>{faq.order}. </span>}
-  //                   {faq.question}
-  //                 </h4>
-  //                 <p className="text-slate-600 leading-relaxed line-clamp-2 max-w-4xl">
-  //                   {faq.answer}
-  //                 </p>
-  //               </div>
-  //               <div className="flex gap-1">
-  //                 <Button
-  //                   variant="ghost"
-  //                   size="icon"
-  //                   className="text-blue-600 hover:bg-blue-50"
-  //                   onClick={() => setFormModal({ isOpen: true, data: faq })}
-  //                 >
-  //                   <IconPencil size={19} />
-  //                 </Button>
-  //                 <Button
-  //                   variant="ghost"
-  //                   size="icon"
-  //                   className="text-red-500 hover:bg-red-50"
-  //                   onClick={() =>
-  //                     setDeleteModal({
-  //                       isOpen: true,
-  //                       id: faq._id || faq.id,
-  //                       title: faq.question,
-  //                     })
-  //                   }
-  //                 >
-  //                   <IconTrash size={19} />
-  //                 </Button>
-  //               </div>
-  //             </CardContent>
-  //           </Card>
-  //         ))
-  //       ) : (
-  //         <div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-slate-200">
-  //           <p className="text-slate-400">
-  //             No FAQs found. Start by adding a new one.
-  //           </p>
-  //         </div>
-  //       )}
-  //     </div>
-
-  //     {/* Form Dialog for Add/Edit */}
-  //     <FAQDialog
-  //       isOpen={formModal.isOpen}
-  //       onClose={() => setFormModal({ isOpen: false, data: null })}
-  //       initialData={formModal.data}
-  //     />
-
-  //     {/* Confirmation Modal for Delete */}
-  //     <ConfirmModal
-  //       isOpen={deleteModal.isOpen}
-  //       onClose={() => setDeleteModal({ isOpen: false, id: null, title: "" })}
-  //       onConfirm={handleConfirmDelete}
-  //       title="Delete FAQ?"
-  //       message={`Are you sure you want to delete "${deleteModal.title}"?`}
-  //       confirmText="Yes, Delete"
-  //       type="danger"
-  //     />
-  //   </div>
-  // );
+  const bgMap = {
+    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+    amber:
+      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+    orange:
+      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
+  };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 pb-16 space-y-6 animate-in fade-in duration-500">
+    <div className="w-full mx-auto p-4 pb-16 space-y-6 animate-in fade-in duration-500">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -259,42 +194,68 @@ const FAQSPage = () => {
         </Button>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {statCards.map((s) => (
-          <Card key={s.label}>
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className={`p-2 rounded-lg bg-${s.color}/20 text-primary`}>
-                <s.icon
-                  className={`h-5 w-5 text-${s.color}`}
-                  strokeWidth={2.5}
-                />
-              </div>
-              <div>
-                <p className="text-xl font-bold text-foreground">{s.value}</p>
-                <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-                  {s.label}
-                </p>
+          <Card
+            key={s.label}
+            className={`overflow-hidden border-slate-200 transition-all hover:shadow-md bg-gradient-to-br ${bgMap[s.color]}`}
+          >
+            <CardContent className="p-0 flex items-stretch h-24">
+              {/* Left Color Strip Accent */}
+              <div
+                className={`w-1.5 rounded-tr-lg rounded-br-lg ${s.color === "blue" ? "bg-blue-500" : "bg-amber-500"}`}
+              />
+
+              <div className="flex items-center gap-4 px-4 w-full">
+                <div
+                  className={`p-2.5 rounded-xl border bg-white shadow-sm ${colorMap[s.color]}`}
+                >
+                  <s.icon className="h-5 w-5" strokeWidth={2.5} />
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-2xl font-black text-slate-900 leading-none mb-1">
+                    {s.value}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">
+                    {s.label}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         ))}
-        {CATEGORIES.slice(0, 2).map((cat) => {
+
+        {/* Category Specific Stats */}
+        {CATEGORIES.slice(0, 2).map((cat, idx) => {
           const count = items.filter((f) => f.category === cat).length;
+          const catColor = idx === 0 ? "emerald" : "rose"; // Assigning specific theme colors
+
           return (
-            <Card key={cat}>
-              <CardContent className="p-4 flex items-center gap-3">
-                <Badge
-                  variant="outline"
-                  className={`${CATEGORY_COLORS[cat]} capitalize text-sm px-3 py-2`}
-                >
-                  {cat}
-                </Badge>
-                <div>
-                  <p className="text-xl font-bold text-foreground">{count}</p>
-                  <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
-                    Items
-                  </p>
+            <Card
+              key={cat}
+              className={`overflow-hidden border-slate-200 transition-all hover:shadow-md bg-gradient-to-br ${bgMap[catColor]}`}
+            >
+              <CardContent className="p-0 flex items-stretch h-24">
+                <div
+                  className={`w-1.5 rounded-tr-lg rounded-br-lg ${catColor === "emerald" ? "bg-emerald-500" : "bg-rose-500"}`}
+                />
+
+                <div className="flex items-center gap-4 px-4 w-full">
+                  <Badge
+                    variant="outline"
+                    className={`capitalize text-[10px] font-bold px-4 py-2 bg-white shadow-sm ${colorMap[catColor]}`}
+                  >
+                    {cat}
+                  </Badge>
+                  <div className="flex flex-col">
+                    <p className="text-2xl font-black text-slate-900 leading-none mb-1">
+                      {count}
+                    </p>
+                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+                      Items
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -303,16 +264,26 @@ const FAQSPage = () => {
       </div>
 
       {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row justify-between gap-3">
+        <div className="relative w-full max-w-lg lg:max-w-xl">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+          {/* // className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /> */}
           <Input
             placeholder="Search questions or answers…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 bg-secondary border-slate-400"
+            className="pl-9 pr-10 bg-white border-slate-200 h-11 lg:h-10 shadow-sm focus-visible:ring-brand-aqua rounded-xl"
           />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
+            >
+              <IconX className="h-3.5 w-3.5 text-slate-500" />
+            </button>
+          )}
         </div>
+
         <Select value={filterCategory} onValueChange={setFilterCategory}>
           <SelectTrigger className="w-full sm:w-64 bg-secondary">
             <SelectValue placeholder="All Categories" />
@@ -360,6 +331,7 @@ const FAQSPage = () => {
                           {faq.question}
                         </span>
                       </AccordionTrigger>
+
                       <div className="flex items-center gap-1 ml-2 shrink-0">
                         <Button
                           variant="ghost"
@@ -372,6 +344,7 @@ const FAQSPage = () => {
                         >
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
+
                         <Button
                           variant="ghost"
                           size="icon"

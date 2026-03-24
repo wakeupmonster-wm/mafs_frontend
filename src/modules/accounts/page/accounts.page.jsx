@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AdminEditDialog from "../components/AdminEditDialog";
-import { fetchProfile } from "../store/account.slice";
+import { fetchProfile, resetPasswordStatus } from "../store/account.slice";
 import {
   Calendar,
   CheckCircle2,
@@ -21,29 +21,33 @@ import {
   User,
 } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";
+import SecurityCredentials from "../components/security.credentials";
 
 export default function AccountsPage() {
   const dispatch = useDispatch();
-  const { account, loading } = useSelector((state) => state.account);
-  console.log("account: ", account);
+  const { account, loading, passwordSuccess } = useSelector(
+    (state) => state.account,
+  );
+  const [form, setForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
 
   useEffect(() => {
     dispatch(fetchProfile());
   }, [dispatch]);
 
-  if (loading) {
-    return (
-      // <div className="flex h-96 items-center justify-center">
-      //   <div className="animate-pulse text-indigo-600 font-bold">
-      //     Loading Profile...
-      //   </div>
-      // </div>
-      <PreLoader />
-    );
-  }
+  // SECOND HOOK (Moved up from below the if statement)
+  useEffect(() => {
+    if (passwordSuccess) {
+      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      setTimeout(() => dispatch(resetPasswordStatus()), 5000);
+    }
+  }, [passwordSuccess, dispatch]);
 
   const formatDateSafe = (dateString) => {
-    if (!dateString) return "N/A";
+    if (!dateString) return "-";
     const date = new Date(dateString);
 
     return isNaN(date.getTime())
@@ -59,9 +63,13 @@ export default function AccountsPage() {
     .toUpperCase()
     .slice(0, 2);
 
+  if (loading) {
+    return <PreLoader />;
+  }
+
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-1 lg:px-2 py-4 space-y-8">
+    <div className="min-h-screen pb-10">
+      <div className="w-full mx-auto px-2 lg:px-4 py-4 space-y-8">
         {/* Hero Profile Header */}
         <div className="glass-card glow-border p-8 animate-fade-in shadow-lg rounded-2xl">
           <div className="flex flex-col md:flex-row items-center gap-8">
@@ -268,6 +276,8 @@ export default function AccountsPage() {
           ))}
         </div>
       </div>
+
+      <SecurityCredentials loading={loading} />
     </div>
   );
 }
@@ -282,7 +292,7 @@ function InfoItem({ icon, label, value, verified }) {
             {label}
           </p>
           <p className="text-sm font-semibold text-foreground">
-            {value || "N/A"}
+            {value || "-"}
           </p>
         </div>
       </div>

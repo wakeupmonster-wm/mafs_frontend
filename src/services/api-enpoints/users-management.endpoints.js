@@ -7,6 +7,8 @@ export const USERENDPOINTS = {
 
   GET_PENDING_KYC: `${BASE_URL}/api/v1/admin/moderation/pending-verifications`,
 
+  GET_USERDATA: (userId) => `${BASE_URL}/api/v1/admin/users/${userId}`,
+
   VERIFY_USER_KYC: (userId) =>
     `${BASE_URL}/api/v1/admin/moderation/users/${userId}/verify`,
 
@@ -14,7 +16,5 @@ export const USERENDPOINTS = {
   UPDATE_USER_DETAILS: (userId) => `${BASE_URL}/api/v1/admin/users/${userId}`,
 
   DELETE_USER_PHOTOS: (userId) =>
-    `${BASE_URL}/api/v1/admin/users/${userId}/photos`,
-
-  
+    `${BASE_URL}/api/v1/admin/users/${userId}/photos/delete`,
 };

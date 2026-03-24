@@ -11,8 +11,6 @@ export default function Dashboard() {
   // const { token } = useSelector((state) => state.auth);
   const { stats, loading, error } = useSelector((state) => state.dashboard);
 
-  // console.log("token: ", token);
-
   useEffect(() => {
     if (!stats) dispatch(fetchDashboardKPIs());
   }, [dispatch, stats]);

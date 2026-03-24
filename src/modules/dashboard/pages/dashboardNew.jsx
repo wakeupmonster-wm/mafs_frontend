@@ -41,7 +41,7 @@ const DashboardNew = () => {
             System Overview
           </h1>
           <p className="text-gray-500 font-medium">
-            Monitoring the MAFS ecosystem health.
+            Monitoring the Keen As Mustard ecosystem health.
           </p>
         </div>
         <button className="flex items-center justify-center gap-2 bg-pink-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-pink-100 hover:bg-pink-700 transition-all active:scale-95">

@@ -1,23 +1,16 @@
 /* eslint-disable no-unused-vars */
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
-import googleIcon from "@/assets/svgs/google-icon.svg";
-import mafsIcon from "@/assets/svgs/mafs-icon.svg";
+import mustardIcon from "@/assets/web/mustardLogo2.webp";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "../schemas/auth.schemas";
 import { loginThunk } from "../store/auth.slice";
-import { Eye, EyeOff, Heart, Loader2, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { ROLES } from "@/constants/roles";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -72,11 +65,16 @@ export function LoginForm({ className, ...props }) {
       <FieldGroup>
         <div className="flex flex-col items-center gap-1 text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl">
-            <img src={mafsIcon} alt="Google" className="h-full w-full" />
+            <img
+              src={mustardIcon}
+              alt={mustardIcon}
+              loading="lazy"
+              className="h-full w-full"
+            />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-muted-foreground mt-2 text-balance">
-            Login to manage the MAFS ecosystem
+          <p className="text-muted-foreground mt-2 text-xs sm:text-sm text-pretty sm:text-balance">
+            Login to manage the Keen As Mustard ecosystem
           </p>
         </div>
 
@@ -91,11 +89,11 @@ export function LoginForm({ className, ...props }) {
                 id="email"
                 type="email"
                 {...register("email")}
-                placeholder="mafs@example.com"
-                className={`w-full px-9 py-5 bg-gray-50 border outline-none transition-all ${
+                placeholder="keenasmustard@example.com"
+                className={`w-full px-9 py-5 bg-gray-50 outline-none transition-all ${
                   errors.email
-                    ? "border-red-500 focus:ring-red-100"
-                    : "border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-50"
+                    ? "border-red-500 focus-visible:ring-red-100"
+                    : "focus:border-brand-aqua focus-visible:ring-brand-aqua/10"
                 }`}
               />
               {errors.email && (
@@ -127,8 +125,8 @@ export function LoginForm({ className, ...props }) {
                 placeholder="••••••••"
                 className={`w-full px-9 py-5 pr-12 bg-gray-50 border !outline-none transition-all ${
                   errors.password
-                    ? "border-red-500 focus:ring-red-100"
-                    : "border-gray-200 focus:border-pink-500 focus:ring-4 focus:ring-pink-50"
+                    ? "border-red-500 focus-visible:ring-red-100"
+                    : "focus:border-brand-aqua focus-visible:ring-brand-aqua/10"
                 }`}
               />
 
@@ -169,7 +167,13 @@ export function LoginForm({ className, ...props }) {
         </div>
 
         <Field>
-          <Button type="submit" disabled={loading} className={"py-5"}>
+          <Button
+            type="submit"
+            disabled={loading}
+            className={
+              "py-5 mb-5 bg-brand-aqua/25 hover:bg-brand-aqua/45 hover:shadow-md border border-brand-aqua text-black"
+            }
+          >
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" /> Logged in...
@@ -179,12 +183,12 @@ export function LoginForm({ className, ...props }) {
             )}
           </Button>
         </Field>
-        <FieldSeparator>Or continue with</FieldSeparator>
+        {/* <FieldSeparator>Or continue with</FieldSeparator> */}
         <Field>
-          <Button variant="outline" type="button">
+          {/* <Button variant="outline" type="button">
             <img src={googleIcon} alt="Google" className="h-6 w-6" />
             Login with Google
-          </Button>
+          </Button> */}
           {/* <FieldDescription className="text-center">
             Don&apos;t have an account?{" "}
             <Link to="#" className="no-underline underline-offset-auto">

@@ -151,7 +151,6 @@ export const getPrizeColumns = (onEdit, onDelete) => [
     id: "actions",
     cell: ({ row }) => {
       const prize = row.original;
-      //   console.log("prize column: ", prize);
 
       return (
         <DropdownMenu>

@@ -12,7 +12,10 @@ export const getALLUserListApi = async (
   search,
   accountStatus,
   isPremium,
-  last24Hours
+  last24Hours,
+  gender,
+  isDeactivated,
+  isScheduledForDeletion,
 ) => {
   // Construct the params object carefully
   const queryParams = {
@@ -22,6 +25,13 @@ export const getALLUserListApi = async (
     ...(accountStatus && { accountStatus }),
     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
     ...(last24Hours !== undefined && { last24Hours: String(last24Hours) }),
+    ...(gender !== undefined && { gender: String(gender) }),
+    ...(isDeactivated !== undefined && {
+      isDeactivated: String(isDeactivated),
+    }),
+    ...(isScheduledForDeletion !== undefined && {
+      isScheduledForDeletion: String(isScheduledForDeletion),
+    }),
   };
   try {
     const response = await apiConnector(
@@ -29,7 +39,7 @@ export const getALLUserListApi = async (
       USERENDPOINTS.GET_USERS,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -37,25 +47,10 @@ export const getALLUserListApi = async (
   }
 };
 
-// export const getALLUserListApi = async (
-//   page,
-//   limit,
-//   search,
-//   accountStatus,
-//   isPremium
-// ) => {
-//   const params = new URLSearchParams({
-//     page,
-//     limit,
-//     ...(search && { search }),
-//     ...(accountStatus && { accountStatus }),
-//     // Only add isPremium if it's explicitly true or false
-//     ...(isPremium !== undefined && { isPremium: String(isPremium) }),
-//   });
-
-//   const response = await axios.get(`/api/v1/admin/users?${params.toString()}`);
-//   return response.data;
-// };
+export const getUserData = async (userId) => {
+  const url = USERENDPOINTS.GET_USERDATA(userId);
+  return apiConnector("GET", url, {});
+};
 
 export const getAllPendingVerificationsApi = async (status = "pending") => {
   const urlWithFilter = `${USERENDPOINTS.GET_PENDING_KYC}?status=${status}`;

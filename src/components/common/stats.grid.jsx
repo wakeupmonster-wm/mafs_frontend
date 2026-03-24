@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+// import { format } from "date-fns";
 
 const itemVariants = {
   hidden: {
@@ -23,8 +23,7 @@ const itemVariants = {
 };
 
 const StatsGrid = ({ stats, colorMap, bgMap }) => {
-  console.log("stats: ", stats);
-
+  // console.log("stats: ", stats);
   return (
     <>
       {stats.map((stat, i) => (
@@ -33,8 +32,8 @@ const StatsGrid = ({ stats, colorMap, bgMap }) => {
           variants={itemVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
           className={cn(
-            "group relative p-6 rounded-3xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
-            bgMap[stat.color]
+            "group relative p-6 rounded-2xl border bg-gradient-to-br cursor-pointer transition-all duration-500",
+            bgMap[stat.color],
           )}
         >
           {/* Stat content remains the same */}
@@ -42,7 +41,7 @@ const StatsGrid = ({ stats, colorMap, bgMap }) => {
             <div
               className={cn(
                 "p-3 rounded-2xl bg-gradient-to-br border shadow-sm",
-                colorMap[stat.color]
+                colorMap[stat.color],
               )}
             >
               {stat.icon}

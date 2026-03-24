@@ -15,11 +15,6 @@ import {
 } from "lucide-react";
 
 import { PageHeader } from "@/components/common/headSubhead";
-import Prizes from "./Prizes";
-import Campaigns from "./Campaigns";
-import BulkCampaigns from "./BulkCampaigns";
-import PendingDeliveries from "./PendingDeliveries";
-import CampaignWinner from "./CampaignWinner";
 import PrizePage from "./prizes.page";
 import CampaignsPage from "./campaigns.page";
 import BulkCampaignsPage from "./bulk.campaign.page";
@@ -108,7 +103,7 @@ export default function GiveawayManagement() {
   return (
     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-8"
+        className="w-full mx-auto px-2 lg:px-4 space-y-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -155,13 +150,13 @@ export default function GiveawayManagement() {
                     "relative flex items-center gap-2 px-5 py-2.5 text-sm font-semibold transition-all duration-300 rounded-xl",
                     isActive
                       ? "text-brand-aqua"
-                      : "text-slate-500 hover:text-slate-700 hover:bg-slate-300/30"
+                      : "text-slate-500 hover:text-slate-700 hover:bg-slate-300/30",
                   )}
                 >
                   <t.icon
                     className={cn(
                       "w-4 h-4",
-                      isActive ? "text-brand-aqua" : "text-slate-400"
+                      isActive ? "text-brand-aqua" : "text-slate-400",
                     )}
                   />
                   {t.label}

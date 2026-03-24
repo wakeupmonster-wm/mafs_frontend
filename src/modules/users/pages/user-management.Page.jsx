@@ -20,11 +20,13 @@ import {
   bannedUserProfile,
   exportUsersStream,
   fetchUsers,
+  suspendUserProfile,
 } from "../store/user.slice";
 import { BanUserModal } from "../components/ban-user-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
+import { SuspendUserModal } from "../components/suspendUserModal";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -70,6 +72,8 @@ export default function UserManagementPage() {
 
   const [isBanModalOpen, setIsBanModalOpen] = useState(false);
   const [selectedUserForBan, setSelectedUserForBan] = useState(null);
+  const [isSuspendModalOpen, setIsSuspendModalOpen] = useState(false);
+  const [selectedUserForSuspend, setSelectedUserForSuspend] = useState(null);
 
   // Filter States
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
@@ -77,6 +81,10 @@ export default function UserManagementPage() {
   const [accountStatus, setAccountStatus] = useState("");
   const [isPremium, setIsPremium] = useState(undefined);
   const [last24HR, setLast24HR] = useState(undefined);
+  const [gender, setGender] = useState("");
+  const [isDeactivated, setIsDeactivated] = useState(undefined);
+  const [isScheduledForDeletion, setIsScheduledForDeletion] =
+    useState(undefined);
 
   // --- Optimized Stats Calculation ---
   const stats = useMemo(() => {
@@ -148,7 +156,7 @@ export default function UserManagementPage() {
         const link = document.createElement("a");
 
         link.href = url;
-        link.setAttribute("download", `MAFS_Users_${Date.now()}.csv`);
+        link.setAttribute("download", `Keen_Users_${Date.now()}.csv`);
         document.body.appendChild(link);
         link.click();
 
@@ -191,11 +199,24 @@ export default function UserManagementPage() {
           accountStatus,
           isPremium,
           last24Hours: last24HR,
-        })
+          gender,
+          isDeactivated,
+          isScheduledForDeletion,
+        }),
       );
     }, 500);
     return () => clearTimeout(delayDebounceFn);
-  }, [dispatch, pagination, globalFilter, accountStatus, isPremium, last24HR]);
+  }, [
+    dispatch,
+    pagination,
+    globalFilter,
+    accountStatus,
+    isPremium,
+    last24HR,
+    gender,
+    isDeactivated,
+    isScheduledForDeletion,
+  ]);
 
   const handleBanClick = (user) => {
     setSelectedUserForBan(user);
@@ -205,13 +226,40 @@ export default function UserManagementPage() {
   const handleBanConfirm = async (category, reason) => {
     try {
       await dispatch(
-        bannedUserProfile({ userId: selectedUserForBan?._id, category, reason })
+        bannedUserProfile({
+          userId: selectedUserForBan?._id,
+          category,
+          reason,
+        }),
       ).unwrap();
       toast.success("User has been restricted");
 
       setIsBanModalOpen(false);
     } catch (error) {
       toast.error(error || "Action failed");
+    }
+  };
+
+  const handleSuspendClick = (user) => {
+    setSelectedUserForSuspend(user);
+    setIsSuspendModalOpen(true);
+  };
+
+  const handleSuspendConfirm = async (reason, duration) => {
+    try {
+      await dispatch(
+        suspendUserProfile({
+          userId: selectedUserForSuspend?._id,
+          reason,
+          durationHours: Number(duration),
+        }),
+      ).unwrap();
+      toast.success("User Suspended", {
+        description: `Access restricted for ${duration} hours.`,
+      });
+      setIsSuspendModalOpen(false);
+    } catch (err) {
+      toast.error(err || "Failed to suspend user");
     }
   };
 
@@ -256,11 +304,11 @@ export default function UserManagementPage() {
               onClick={handleExport}
               disabled={exportLoading}
               className={cn(
-                "relative h-11 px-4 shadow-md rounded-lg font-semibold transition-all duration-300",
+                "relative h-11 px-6 shadow-md rounded-lg font-semibold transition-all duration-300",
                 "bg-green-200 hover:bg-green-100 border-green-500",
                 "text-slate-800 hover:text-green-700 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
                 "hover:border-indigo-200 active:scale-[0.98]",
-                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden"
+                "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden",
               )}
             >
               {/* Subtle Inner Glow on Hover */}
@@ -321,9 +369,27 @@ export default function UserManagementPage() {
               setLast24HR(val);
               setPagination((prev) => ({ ...prev, pageIndex: 0 }));
             },
+            gender,
+            setGender: (val) => {
+              setGender(val);
+              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+            },
+            isDeactivated,
+            setIsDeactivated: (val) => {
+              setIsDeactivated(val);
+              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+            },
+            isScheduledForDeletion,
+            setIsScheduledForDeletion: (val) => {
+              setIsScheduledForDeletion(val);
+              setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+            },
           }}
           isLoading={loading}
-          meta={{ onBan: (user) => handleBanClick(user) }}
+          meta={{
+            onBan: (user) => handleBanClick(user),
+            onSuspend: (user) => handleSuspendClick(user),
+          }}
         />
 
         {/* --- FLOATING PROGRESS OVERLAY (With AnimatePresence) --- */}
@@ -364,6 +430,13 @@ export default function UserManagementPage() {
           onClose={() => setIsBanModalOpen(false)}
           onConfirm={handleBanConfirm}
           userName={selectedUserForBan?.profile?.nickname || "User"}
+        />
+
+        <SuspendUserModal
+          isOpen={isSuspendModalOpen}
+          onClose={() => setIsSuspendModalOpen(false)}
+          onConfirm={handleSuspendConfirm}
+          userName={selectedUserForSuspend?.profile?.nickname}
         />
       </motion.div>
     </div>

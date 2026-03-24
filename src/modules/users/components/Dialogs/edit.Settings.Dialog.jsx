@@ -33,10 +33,9 @@ import {
   bannedUserProfile,
   unbanUserProfile,
   suspendUserProfile,
-   unsuspendUserProfile, 
+  fetchUserData,
 } from "../../store/user.slice";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 
 export const EditSettingsDialog = ({ userData }) => {
   const dispatch = useDispatch();
@@ -51,11 +50,8 @@ export const EditSettingsDialog = ({ userData }) => {
 
   // ✅ Reset everything when dialog opens/closes
   useEffect(() => {
-    if (isOpen) {
-      setStatus("");       // Reset to empty = placeholder visible
-      setReason("");
-    }
-  }, [isOpen]);
+    setStatus(currentStatus);
+  }, [currentStatus]);
 
   const handleSave = async () => {
     // ✅ Guard: Nothing selected
@@ -66,58 +62,47 @@ export const EditSettingsDialog = ({ userData }) => {
 
     setLoading(true);
     const nickname = userData?.profile?.nickname || "User";
- try {
-    // ✅ FIX: Alag-alag action based on CURRENT status
-    if (status === "active") {
-      // Restore karna hai - check kahan se aa raha hai
-      if (currentStatus === "banned") {
-        // ✅ Banned → Active = Unban API
-        await dispatch(unbanUserProfile(userData._id)).unwrap();
-        toast.success("Account Unbanned", {
-          description: `${nickname} ban has been lifted.`,
-        });
-      } else if (currentStatus === "suspended") {
-        // ✅ Suspended → Active = Unsuspend API
-        await dispatch(unsuspendUserProfile(userData._id)).unwrap();
-        toast.success("Suspension Lifted", {
-          description: `${nickname} can now access their profile.`,
-        });
-      }
-    } else if (status === "banned") {
-      // ✅ Ban karna hai
-      await dispatch(
-        bannedUserProfile({
-          userId: userData._id,
-          category: "Administrative",
-          reason: reason || "Manual ban by admin",
-        })
-      ).unwrap();
-      toast.success("User Banned", {
-        description: `${nickname} is now restricted.`,
-      });
-    } else if (status === "suspended") {
-      // ✅ Suspend karna hai
-      const hours = 24;
-      await dispatch(
-        suspendUserProfile({
-          userId: userData._id,
-          reason: reason || "Temporary suspension",
-          durationHours: hours,
-        })
-      ).unwrap();
-      toast.success("User Suspended", {
-        description: `Access restricted for ${hours} hours.`,
-      });
-    }
 
-    setIsOpen(false);
-    setReason("");
-  } catch (err) {
-    toast.error(err || "Update failed");
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      // FIX: Corrected logical comparison
+      if (
+        (currentStatus === "banned" || currentStatus === "suspended") &&
+        status === "active"
+      ) {
+        await dispatch(unbanUserProfile(userData._id)).unwrap();
+        toast.success("Account Restored");
+      } else if (status === "banned") {
+        await dispatch(
+          bannedUserProfile({
+            userId: userData._id,
+            category: "Administrative",
+            reason: reason || "Manual ban by admin",
+          }),
+        ).unwrap();
+        toast.success("User Banned");
+      } else if (status === "suspended") {
+        const hours = 24;
+        await dispatch(
+          suspendUserProfile({
+            userId: userData._id,
+            reason: reason || "Temporary suspension",
+            durationHours: hours,
+          }),
+        ).unwrap();
+        toast.success("User Suspended");
+      }
+
+      // 🔥 RE-FETCH the fresh data for the profile page
+      await dispatch(fetchUserData(userData._id));
+
+      setIsOpen(false);
+      setReason("");
+    } catch (err) {
+      toast.error(err || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Status config helper
   const getStatusConfig = (val) => {
@@ -177,7 +162,7 @@ export const EditSettingsDialog = ({ userData }) => {
                 "p-2 rounded-lg",
                 config.bg,
                 config.color,
-                status === "suspended" && "animate-pulse"
+                status === "suspended" && "animate-pulse",
               )}
             >
               {React.cloneElement(config.icon, { size: 20 })}
@@ -272,63 +257,39 @@ export const EditSettingsDialog = ({ userData }) => {
               </SelectContent>
             </Select>
 
-            {/* ✅ CONDITIONAL: Show placeholder OR status description */}
-            {!status ? (
-              // ===== PLACEHOLDER STATE: When nothing is selected =====
-              <div
-                className={cn(
-                  "p-4 rounded-lg border-2 border-dashed border-slate-200",
-                  "bg-slate-50/50 flex flex-col items-center justify-center",
-                  "text-center gap-2 py-6"
-                )}
-              >
-                <div className="p-2.5 bg-white rounded-full border border-slate-200 shadow-sm">
-                  <IconInfoCircle size={22} className="text-slate-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-slate-500">
-                    Select an action above
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-1 max-w-[250px] leading-relaxed">
-                    Choose to suspend or ban this account. The impact details
-                    will appear here once you make a selection.
-                  </p>
-                </div>
+            {/* Dynamic Status Description */}
+            <div
+              className={cn(
+                "p-3 rounded-lg border flex items-start gap-3 transition-colors",
+                config.bg,
+                config.border,
+              )}
+            >
+              <IconAlertCircle
+                className={cn("shrink-0 mt-0.5", config.color)}
+                size={16}
+              />
+              <div className="space-y-1">
+                <p
+                  className={cn(
+                    "text-xs font-bold leading-none capitalize",
+                    config.color,
+                  )}
+                >
+                  Targeting: {status}
+                </p>
+                <p className="text-[11px] text-muted-foreground leading-snug">
+                  {status === "active" &&
+                    "Restores all login privileges. The user will be able to swipe, match, and chat immediately."}
+                  {status === "banned" &&
+                    "Revokes all access. User's profile will be hidden and they will be force-logged out."}
+                  {status === "suspended" &&
+                    "Temporary restriction. User remains in database but cannot perform matches or chats."}
+                  {status === "deactivated" &&
+                    "Account remains but is inactive. Can be reactivated by the user manually."}
+                </p>
               </div>
-            ) : (
-              // ===== ACTIVE STATE: When something is selected =====
-              <div
-                className={cn(
-                  "p-3 rounded-lg border flex items-start gap-3 transition-all",
-                  "animate-in fade-in slide-in-from-top-2 duration-300",
-                  config.bg,
-                  config.border
-                )}
-              >
-                <IconAlertCircle
-                  className={cn("shrink-0 mt-0.5", config.color)}
-                  size={16}
-                />
-                <div className="space-y-1">
-                  <p
-                    className={cn(
-                      "text-xs font-bold leading-none capitalize",
-                      config.color
-                    )}
-                  >
-                    Action: {status}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground leading-snug">
-                    {status === "active" &&
-                      "Restores all login privileges. The user will be able to swipe, match, and chat immediately."}
-                    {status === "banned" &&
-                      "Revokes all access. User's profile will be hidden and they will be force-logged out."}
-                    {status === "suspended" &&
-                      "Temporary restriction. User remains in database but cannot perform matches or chats."}
-                  </p>
-                </div>
-              </div>
-            )}
+            </div>
 
             {/* Reason textarea - only when ban/suspend selected */}
             {(status === "banned" || status === "suspended") && (
@@ -370,10 +331,10 @@ export const EditSettingsDialog = ({ userData }) => {
                 : status === "banned"
                 ? "bg-red-600 hover:bg-red-700"
                 : status === "active"
-                ? "bg-green-600 hover:bg-green-700"
-                : status === "suspended"
-                ? "bg-amber-600 hover:bg-amber-700"
-                : ""
+                  ? "bg-green-600 hover:bg-green-700"
+                  : status === "suspended"
+                    ? "bg-amber-600 hover:bg-amber-700"
+                    : "",
             )}
           >
             {loading ? (

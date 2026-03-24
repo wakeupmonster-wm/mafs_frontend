@@ -26,10 +26,8 @@ export default function RequestResetEmailForm() {
     try {
       // Ensure 'data.email' is what your API expects
       const response = await dispatch(
-        requestOtpThunk({ email: data.email })
+        requestOtpThunk({ email: data.email }),
       ).unwrap();
-
-      // console.log("Requesting email response:", response);
 
       // Pass the email to the next route
       navigate(response.screen || "/auth/forgot-password", {
@@ -75,7 +73,11 @@ export default function RequestResetEmailForm() {
           )}
         </Field>
 
-        <Button type="submit" className="w-full py-6" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          className="py-5 mb-5 bg-brand-aqua/25 hover:bg-brand-aqua/45 hover:shadow-md border border-brand-aqua text-black"
+          disabled={isSubmitting}
+        >
           {isSubmitting ? "Sending..." : "Send Reset Link"}
         </Button>
 

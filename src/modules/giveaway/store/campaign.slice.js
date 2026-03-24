@@ -19,10 +19,8 @@ export const fetchCampaigns = createAsyncThunk(
         page,
         limit,
         search,
-        drawStatus
+        drawStatus,
       );
-
-      // console.log("campaign response: ", response);
 
       if (response && response.success) {
         return {
@@ -37,12 +35,12 @@ export const fetchCampaigns = createAsyncThunk(
       }
 
       return rejectWithValue(
-        response.message || "Failed to fetch pending campaigns"
+        response.message || "Failed to fetch pending campaigns",
       );
     } catch (err) {
       return rejectWithValue("Failed to fetch campaigns");
     }
-  }
+  },
 );
 
 export const participantsCampaign = createAsyncThunk(
@@ -53,10 +51,8 @@ export const participantsCampaign = createAsyncThunk(
         campaignId,
         page,
         limit,
-        search
+        search,
       );
-
-      console.log("response: ", response);
 
       if (response && response.success) {
         return {
@@ -70,12 +66,12 @@ export const participantsCampaign = createAsyncThunk(
         };
       }
       return rejectWithValue(
-        response.message || "Failed to fetch pending campaigns"
+        response.message || "Failed to fetch pending campaigns",
       );
     } catch (err) {
       return rejectWithValue("Failed to fetch campaigns");
     }
-  }
+  },
 );
 
 export const createCampaign = createAsyncThunk(
@@ -86,10 +82,10 @@ export const createCampaign = createAsyncThunk(
       return res.data;
     } catch (err) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to create campaign"
+        err.response?.data?.message || "Failed to create campaign",
       );
     }
-  }
+  },
 );
 
 export const toggleCampaignStatus = createAsyncThunk(
@@ -103,7 +99,7 @@ export const toggleCampaignStatus = createAsyncThunk(
     } catch (err) {
       return rejectWithValue(`Failed to ${type} campaign`);
     }
-  }
+  },
 );
 
 export const updateCampaign = createAsyncThunk(
@@ -115,10 +111,10 @@ export const updateCampaign = createAsyncThunk(
       return res.data;
     } catch (e) {
       return rejectWithValue(
-        e.response?.data?.message || "Failed to update campaign"
+        e.response?.data?.message || "Failed to update campaign",
       );
     }
-  }
+  },
 );
 
 export const disableCampaign = createAsyncThunk(
@@ -130,7 +126,7 @@ export const disableCampaign = createAsyncThunk(
     } catch {
       return rejectWithValue("Failed to disable campaign");
     }
-  }
+  },
 );
 
 export const pauseCampaign = createAsyncThunk(
@@ -142,7 +138,7 @@ export const pauseCampaign = createAsyncThunk(
     } catch {
       return rejectWithValue("Failed to pause campaign");
     }
-  }
+  },
 );
 
 export const activateCampaign = createAsyncThunk(
@@ -150,7 +146,7 @@ export const activateCampaign = createAsyncThunk(
   async (id) => {
     await activateCampaignApi(id);
     return id;
-  }
+  },
 );
 
 export const deleteCampaign = createAsyncThunk(
@@ -162,7 +158,7 @@ export const deleteCampaign = createAsyncThunk(
     } catch (e) {
       return rejectWithValue("Failed to delete campaign");
     }
-  }
+  },
 );
 
 const campaignSlice = createSlice({
@@ -247,7 +243,7 @@ const campaignSlice = createSlice({
       .addCase(updateCampaign.fulfilled, (s, a) => {
         s.loading = false;
         s.campaigns = s.campaigns.map((c) =>
-          c._id === a.payload._id ? a.payload : c
+          c._id === a.payload._id ? a.payload : c,
         );
       })
       .addCase(updateCampaign.rejected, (s, a) => {
@@ -275,7 +271,7 @@ const campaignSlice = createSlice({
       .addCase(deleteCampaign.fulfilled, (state, action) => {
         state.loading = false;
         state.campaigns = state.campaigns.filter(
-          (c) => c._id !== action.payload
+          (c) => c._id !== action.payload,
         );
 
         // // Also remove winner data for deleted campaign
