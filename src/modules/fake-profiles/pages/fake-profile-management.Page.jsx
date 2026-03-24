@@ -257,6 +257,11 @@ export default function FakeProfileManagementPage() {
         animate="visible"
         variants={containerVariants}
       >
+        {loading && (
+          <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
+            <PreLoader />
+          </div>
+        )}
         {/* ─── HEADER ─── */}
         <motion.header variants={itemVariants} className="flex flex-col gap-3">
           <div className="flex md:items-center justify-between gap-3">
@@ -401,11 +406,11 @@ export default function FakeProfileManagementPage() {
         {/* ─── DATA TABLE ─── */}
         <motion.div variants={itemVariants}>
           <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden relative min-h-[400px]">
-            {loading && (
+            {/* {loading && (
               <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
                 <PreLoader />
               </div>
-            )}
+            )} */}
             <Table>
               <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (

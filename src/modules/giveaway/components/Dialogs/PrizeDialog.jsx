@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { apiConnector } from "@/services/axios/axios.connector";
+import { SUBSCRIPTION_ENDPOINTS } from "@/services/api-enpoints/subscriptions.endpoints";
 
 export const PrizeDialog = ({
   isOpen,
@@ -29,10 +31,41 @@ export const PrizeDialog = ({
   isEditing,
 }) => {
   const [errors, setErrors] = useState({});
+  const [products, setProducts] = useState([]);
+  const [fetchingProducts, setFetchingProducts] = useState(false);
 
-  // Clear errors when dialog opens/closes
+  // Clear errors when dialog opens/closes and fetch dropdown if needed
   useEffect(() => {
-    if (!isOpen) setErrors({});
+    if (!isOpen) {
+      setErrors({});
+    } else {
+      const fetchProducts = async () => {
+        try {
+          if (products.length > 0) return; // avoid refetch if already have
+          setFetchingProducts(true);
+          const res = await apiConnector("GET", SUBSCRIPTION_ENDPOINTS.LIST_PRODUCTS);
+          let fetchedProducts = [];
+          
+          if (res && res.data) {
+            fetchedProducts = res.data;
+          } else if (Array.isArray(res)) {
+            fetchedProducts = res;
+          } else if (res && res.products) {
+            fetchedProducts = res.products;
+          }
+
+          if (fetchedProducts?.length > 0) {
+            setProducts(fetchedProducts.filter((p) => p.type === "SUBSCRIPTION"));
+          }
+        } catch (e) {
+          console.error("Failed to fetch products:", e);
+        } finally {
+          setFetchingProducts(false);
+        }
+      };
+      // Only fetch if they aren't fetched yet or we want fresh.
+      fetchProducts();
+    }
   }, [isOpen]);
 
   const validate = () => {
@@ -41,10 +74,17 @@ export const PrizeDialog = ({
     if (!form.title?.trim()) newErrors.title = "Prize title is required";
     if (!form.type) newErrors.type = "Please select a prize type";
 
-    if (!form.value || isNaN(form.value)) {
-      newErrors.value = "Valid value is required";
-    } else if (Number(form.value) <= 0) {
-      newErrors.value = "Value must be greater than 0";
+    if (form.type === "FREE_PREMIUM") {
+      if (!form.planType) newErrors.planType = "Please select a plan type";
+      if (!form.durationInDays || isNaN(form.durationInDays) || Number(form.durationInDays) <= 0) {
+        newErrors.durationInDays = "Valid duration is required";
+      }
+    } else {
+      if (!form.value || isNaN(form.value)) {
+        newErrors.value = "Valid value is required";
+      } else if (Number(form.value) <= 0) {
+        newErrors.value = "Value must be greater than 0";
+      }
     }
 
     if (!form.spinWheelLabel?.trim()) {
@@ -110,7 +150,14 @@ export const PrizeDialog = ({
               </Label>
               <Select
                 value={form.type}
-                onValueChange={(v) => setForm({ ...form, type: v })}
+                onValueChange={(v) => {
+                  if (v === form.type) return;
+                  if (v === "FREE_PREMIUM") {
+                    setForm({ ...form, type: v, value: "" });
+                  } else {
+                    setForm({ ...form, type: v, planType: "", durationInDays: "" });
+                  }
+                }}
               >
                 <SelectTrigger
                   className={cn("h-11", errors.type && "border-red-500")}
@@ -125,22 +172,71 @@ export const PrizeDialog = ({
               {errors.type && <ErrorMsg msg={errors.type} />}
             </div>
 
-            {/* Value */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold uppercase text-slate-500">
-                Value
-              </Label>
-              <Input
-                type="number"
-                value={form.value}
-                onChange={(e) => setForm({ ...form, value: e.target.value })}
-                className={cn(
-                  "h-11",
-                  errors.value && "border-red-500 focus-visible:ring-red-500"
-                )}
-              />
-              {errors.value && <ErrorMsg msg={errors.value} />}
-            </div>
+            {/* Value OR Plan / Duration based on Type */}
+            {form.type === "FREE_PREMIUM" ? (
+              <>
+                <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                  <Label className="text-xs font-bold uppercase text-slate-500">
+                    Plan Type
+                  </Label>
+                  <Select
+                    value={form.planType}
+                    onValueChange={(v) => setForm({ ...form, planType: v })}
+                    disabled={fetchingProducts}
+                  >
+                    <SelectTrigger
+                      className={cn("h-11", errors.planType && "border-red-500")}
+                    >
+                      <SelectValue placeholder={fetchingProducts ? "Loading..." : "Select plan"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {products.map((p, idx) => {
+                        const planValue = p.planType || p.productKey || p.name || p.id || String(idx);
+                        return (
+                          <SelectItem key={idx} value={planValue}>
+                            {p.displayName || p.name || planValue} - {p.displayPrice || p.price || 0}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  {errors.planType && <ErrorMsg msg={errors.planType} />}
+                </div>
+
+                <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                  <Label className="text-xs font-bold uppercase text-slate-500">
+                    Duration in Days
+                  </Label>
+                  <Input
+                    type="number"
+                    value={form.durationInDays}
+                    onChange={(e) => setForm({ ...form, durationInDays: e.target.value })}
+                    className={cn(
+                      "h-11",
+                      errors.durationInDays && "border-red-500 focus-visible:ring-red-500"
+                    )}
+                    placeholder="e.g. 10"
+                  />
+                  {errors.durationInDays && <ErrorMsg msg={errors.durationInDays} />}
+                </div>
+              </>
+            ) : (
+              <div className="space-y-1.5 col-span-2 sm:col-span-1">
+                <Label className="text-xs font-bold uppercase text-slate-500">
+                  Value
+                </Label>
+                <Input
+                  type="number"
+                  value={form.value}
+                  onChange={(e) => setForm({ ...form, value: e.target.value })}
+                  className={cn(
+                    "h-11",
+                    errors.value && "border-red-500 focus-visible:ring-red-500"
+                  )}
+                />
+                {errors.value && <ErrorMsg msg={errors.value} />}
+              </div>
+            )}
           </div>
 
           {/* Spin Wheel Label */}
@@ -157,7 +253,7 @@ export const PrizeDialog = ({
               className={cn(
                 "h-11",
                 errors.spinWheelLabel &&
-                  "border-red-500 focus-visible:ring-red-500"
+                "border-red-500 focus-visible:ring-red-500"
               )}
             />
             {errors.spinWheelLabel && <ErrorMsg msg={errors.spinWheelLabel} />}
@@ -177,7 +273,7 @@ export const PrizeDialog = ({
               className={cn(
                 "h-11",
                 errors.supportiveItems &&
-                  "border-amber-400 focus-visible:ring-amber-400"
+                "border-amber-400 focus-visible:ring-amber-400"
               )}
             />
             <p className="text-[10px] text-slate-400 italic">

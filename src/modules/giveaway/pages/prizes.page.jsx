@@ -251,7 +251,7 @@ export default function PrizePage() {
   } = useSelector((s) => s.prize);
 
 
-  console.log("Prizes from prize page",prizes)
+  console.log("Prizes from prize page", prizes)
 
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [globalFilter, setGlobalFilter] = useState("");
@@ -262,6 +262,8 @@ export default function PrizePage() {
     title: "",
     type: "",
     value: "",
+    planType: "",
+    durationInDays: "",
     spinWheelLabel: "",
     supportiveItems: "",
   });
@@ -296,6 +298,8 @@ export default function PrizePage() {
       title: "",
       type: "",
       value: "",
+      planType: "",
+      durationInDays: "",
       spinWheelLabel: "",
       supportiveItems: "",
     });
@@ -308,6 +312,8 @@ export default function PrizePage() {
       title: prize.title || "",
       type: prize.type || "",
       value: prize.value ? prize.value.toString() : "",
+      planType: prize.planType || "",
+      durationInDays: prize.durationInDays ? prize.durationInDays.toString() : "",
       spinWheelLabel: prize.spinWheelLabel || "",
       // ✅ Add Optional Chaining and a fallback empty string
       supportiveItems: prize.supportiveItems
@@ -320,14 +326,25 @@ export default function PrizePage() {
 
   const handleSubmit = async () => {
     // 1. Prepare the data payload
-    const data = {
-      ...form,
-      value: parseFloat(form.value),
-      supportiveItems: form.supportiveItems
-        .split(",")
-        .map((i) => i.trim())
-        .filter((i) => i !== ""),
+    const payload = { ...form };
+    const supportiveItems = payload.supportiveItems
+      .split(",")
+      .map((i) => i.trim())
+      .filter((i) => i !== "");
+
+    let data = {
+      title: payload.title,
+      type: payload.type,
+      spinWheelLabel: payload.spinWheelLabel,
+      supportiveItems,
     };
+
+    if (payload.type === "FREE_PREMIUM") {
+      data.planType = payload.planType;
+      data.durationInDays = parseInt(payload.durationInDays, 10);
+    } else {
+      data.value = parseFloat(payload.value);
+    }
 
     try {
       if (editingId) {
