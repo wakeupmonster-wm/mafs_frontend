@@ -8,6 +8,7 @@ import {
   markAsDelivered,
 } from "../store/delivery.slice";
 import { getDeliveryColumns } from "@/components/columns/deliveries.columns";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function PendingDeliveriesPage() {
   const dispatch = useDispatch();
@@ -74,7 +75,12 @@ export default function PendingDeliveriesPage() {
   );
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="relative p-4 space-y-6 min-h-[500px]">
+      {loading && (
+        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
+          <PreLoader />
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">

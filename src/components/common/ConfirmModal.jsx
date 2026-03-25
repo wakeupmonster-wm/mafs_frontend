@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { AlertTriangle, X } from "lucide-react";
+import { createPortal } from "react-dom";
+import { AlertTriangle, X, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ConfirmModal = ({
   isOpen,
@@ -8,86 +10,96 @@ const ConfirmModal = ({
   title = "Are you sure?",
   message = "This action cannot be undone.",
   confirmText = "Delete",
-  type = "danger", // danger or warning
+  type = "danger", // danger, warning, or brand
+  loading = false,
 }) => {
-  const modalRef = useRef(); // 1. Correctly name the ref
+  const modalRef = useRef();
 
   useEffect(() => {
-    // 2. Define the click handler
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
       }
     };
 
-    // 3. Only add the listener if the modal is open
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
-    // 4. Cleanup the listener when component unmounts or closes
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen, onClose]); // Dependencies
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed -inset-56 z-[100] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+  // Determine header color based on type
+  const headerStyle =
+    type === "danger"
+      ? "bg-red-600 text-white"
+      : type === "brand"
+      ? "bg-brand-aqua text-white"
+      : "bg-orange-500 text-white";
+
+  const buttonStyle =
+    type === "danger"
+      ? "bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-100"
+      : type === "brand"
+      ? "bg-brand-aqua hover:bg-brand-aqua/90 text-white shadow-lg shadow-brand-aqua/20"
+      : "bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-100";
+
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         ref={modalRef}
-        className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-white w-full max-w-[450px] rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col"
       >
-        <div className="relative p-6 text-center">
-          {/* Close Button */}
+        {/* Header - matching Dialog UI */}
+        <div className={`p-5 px-6 ${headerStyle} flex items-center justify-between`}>
+          <h3 className="text-xl font-bold tracking-tight flex items-center gap-2">
+            {type === "danger" && <Trash2 className="h-5 w-5" />}
+            {type === "warning" && <AlertTriangle className="h-5 w-5" />}
+            {title}
+          </h3>
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 text-gray-400 hover:bg-gray-100 rounded-full transition-colors"
+            className="text-white/70 hover:text-white rounded-full transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
-
-          {/* Icon */}
-          <div
-            className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 ${
-              type === "danger"
-                ? "bg-red-50 text-red-600"
-                : "bg-orange-50 text-orange-600"
-            }`}
-          >
-            <AlertTriangle className="w-8 h-8" />
-          </div>
-
-          {/* Content */}
-          <h3 className="text-xl font-black text-gray-900">{title}</h3>
-          <p className="text-gray-500 mt-2 font-medium">{message}</p>
         </div>
 
-        {/* Actions */}
-        <div className="flex gap-3 p-6 bg-gray-50/50 border-t border-gray-100">
-          <button
+        {/* Content */}
+        <div className="p-6 bg-white min-h-[100px] flex items-center">
+          <p className="text-slate-600 font-medium text-[15px] leading-relaxed">
+            {message}
+          </p>
+        </div>
+
+        {/* Actions - matching Dialog UI */}
+        <div className="p-6 bg-slate-50 border-t flex items-center gap-3 justify-end">
+          <Button
+            variant="ghost"
             onClick={onClose}
-            className="flex-1 px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
+            className="font-semibold text-slate-500"
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => {
-              onConfirm();
-              onClose();
+              if (!loading) {
+                onConfirm();
+              }
             }}
-            className={`flex-1 px-4 py-3 text-white rounded-xl font-bold shadow-lg transition-all active:scale-[0.98] ${
-              type === "danger"
-                ? "bg-red-600 hover:bg-red-700 shadow-red-100"
-                : "bg-orange-500 hover:bg-orange-600 shadow-orange-100"
-            }`}
+            disabled={loading}
+            className={`min-w-[120px] h-11 ${buttonStyle}`}
           >
-            {confirmText}
-          </button>
+            {loading ? "..." : confirmText}
+          </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

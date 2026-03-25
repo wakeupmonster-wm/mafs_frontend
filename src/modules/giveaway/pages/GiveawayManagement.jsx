@@ -85,7 +85,7 @@ export default function GiveawayManagement() {
         return {
           count: partipants?.length || 0,
           label: "Total Participants",
-          icon: <Award className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
+          icon: <Users className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
         };
       default:
         return {
@@ -187,15 +187,10 @@ export default function GiveawayManagement() {
             transition={{ duration: 0.2 }}
           >
             <main className="relative h-max bg-white/40 backdrop-blur-sm rounded-3xl border border-slate-200/80 p-1 md:p-2 shadow-sm">
-              {/* {tab === "prizes" && <Prizes />} */}
               {tab === "prizes" && <PrizePage />}
-              {/* {tab === "campaigns" && <Campaigns />} */}
               {tab === "campaigns" && <CampaignsPage />}
-              {/* {tab === "bulk" && <BulkCampaigns />} */}
               {tab === "bulk" && <BulkCampaignsPage />}
-              {/* {tab === "deliveries" && <PendingDeliveries />} */}
               {tab === "deliveries" && <PendingDeliveriesPage />}
-              {/* {tab === "winner" && <CampaignWinner />} */}
               {tab === "winner" && <CampaignWinnerPage />}
               {tab === "participants" && <ParticipantsPage />}
             </main>

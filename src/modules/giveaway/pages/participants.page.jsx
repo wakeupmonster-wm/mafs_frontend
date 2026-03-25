@@ -6,6 +6,7 @@ import { participantsCampaign } from "../store/campaign.slice";
 import { isSameDay, parseISO } from "date-fns";
 import { fetchWinner } from "../store/winner.slice";
 import { getParticipantsColumns } from "@/components/columns/participants.columns";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function ParticipantsPage() {
   const dispatch = useDispatch();
@@ -58,8 +59,8 @@ export default function ParticipantsPage() {
 
   // 3. Fetch Participants (Debounced)
   useEffect(() => {
-    // OPTIONAL: Prevent calling API if a date is selected but no campaign ID is found
-    if (date && !campId) return;
+    // Prevent calling API with null/undefined campaignId
+    if (!campId) return;
 
     const delayDebounceFn = setTimeout(() => {
       dispatch(
@@ -84,25 +85,24 @@ export default function ParticipantsPage() {
 
   const columns = useMemo(() => getParticipantsColumns(), []);
 
-  {
-    date && !campId && !loading && (
-      <p className="text-sm text-red-500 font-medium animate-pulse">
-        No campaign found for the selected date.
-      </p>
-    );
-  }
+
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="relative p-4 space-y-6 min-h-[500px]">
+      {loading && (
+        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
+          <PreLoader />
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
-            <Users className="h-6 w-6 text-white animate-pulse" />
+            <Users className="h-5 w-5 text-white" />
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold">Campaign Participants</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold tracking-tight">Campaign Participants</h1>
+            <p className="text-sm text-slate-500">
               Track all campaign participants
             </p>
           </div>

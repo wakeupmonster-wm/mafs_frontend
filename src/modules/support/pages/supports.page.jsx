@@ -381,7 +381,12 @@ export default function SupportTicketsPage() {
         setSelectedTicket(null);
 
         dispatch(
-          fetchMyTickets({ page: pagination.page, limit: pagination.limit }),
+          fetchMyTickets({ 
+            page: pagination.pageIndex + 1, 
+            limit: pagination.pageSize,
+            search: globalFilter,
+            status: statusFilter,
+          }),
         );
 
         setTimeout(() => dispatch(clearSupportStatus()), 3000);

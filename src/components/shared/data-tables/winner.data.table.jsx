@@ -291,9 +291,9 @@ export default function WinnerDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <TableLoader text="Fetching Campaigns..." />
+                    <TableLoader text="Fetching Winners..." />
                   ) : (
-                    <DataNotFound message="No campaigns found" />
+                    <DataNotFound message="No winners found" />
                   )}
                 </TableCell>
               </TableRow>

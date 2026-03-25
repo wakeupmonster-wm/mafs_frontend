@@ -168,6 +168,23 @@ const supportSlice = createSlice({
       .addCase(adminReplyToTicket.fulfilled, (s, a) => {
         s.loading = false;
         s.successMessage = a.payload?.message || "Reply sent";
+
+        // Optimistically update the ticket in the local list
+        if (a.meta && a.meta.arg) {
+          const { ticketId, reply, status } = a.meta.arg;
+          if (s.tickets && s.tickets.length > 0) {
+            const ticketIndex = s.tickets.findIndex(t => t._id === ticketId);
+            if (ticketIndex !== -1) {
+              if (status) s.tickets[ticketIndex].status = status;
+              if (reply !== undefined) s.tickets[ticketIndex].adminReply = reply;
+            }
+          }
+          
+          if (s.selectedTicket && s.selectedTicket._id === ticketId) {
+            if (status) s.selectedTicket.status = status;
+            if (reply !== undefined) s.selectedTicket.adminReply = reply;
+          }
+        }
       })
       .addCase(adminReplyToTicket.rejected, (s, a) => {
         s.loading = false;

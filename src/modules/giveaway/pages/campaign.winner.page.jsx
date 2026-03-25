@@ -4,6 +4,7 @@ import { Award, CheckCircle2, Clock, Layers, Users } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { fetchWinner } from "../store/winner.slice";
 import { useDispatch, useSelector } from "react-redux";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function CampaignWinnerPage() {
   const dispatch = useDispatch();
@@ -77,15 +78,20 @@ export default function CampaignWinnerPage() {
   ];
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="relative p-4 space-y-6 min-h-[500px]">
+      {loading && (
+        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
+          <PreLoader />
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
-            <Award className="h-5 w-5 text-white animate-pulse" />
+            <Award className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Campaign Winners</h1>
-            <p className="text-sm text-gray-500">Track all giveaway results</p>
+            <h1 className="text-2xl font-bold tracking-tight">Campaign Winners</h1>
+            <p className="text-sm text-slate-500">Track all giveaway results</p>
           </div>
         </div>
       </div>

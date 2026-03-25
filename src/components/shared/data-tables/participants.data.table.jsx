@@ -187,9 +187,9 @@ export default function ParticipantsDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <TableLoader text="Fetching Campaigns..." />
+                    <TableLoader text="Fetching Participants..." />
                   ) : (
-                    <DataNotFound message="No campaigns found" />
+                    <DataNotFound message="No participants found" />
                   )}
                 </TableCell>
               </TableRow>

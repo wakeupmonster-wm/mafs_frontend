@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Calendar, AlertCircle, CheckCircle } from "lucide-react";
 import BulkSummary from "../components/BulkSummary";
+import { PreLoader } from "@/app/loader/preloader";
 import BulkForm from "../components/BulkForm";
 
 export default function BulkCampaignsPage() {
@@ -58,7 +59,12 @@ export default function BulkCampaignsPage() {
   };
 
   return (
-    <div className="p-4 flex justify-center">
+    <div className="relative p-4 flex justify-center min-h-[500px]">
+      {(loading || bulkCampaignLoading) && (
+        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
+          <PreLoader />
+        </div>
+      )}
       <Card className="w-full max-w-3xl shadow-lg border-none">
         <CardHeader className="bg-slate-50/50 border-b">
           <CardTitle className="flex items-center gap-2 text-xl">

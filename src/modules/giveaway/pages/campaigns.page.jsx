@@ -13,6 +13,7 @@ import {
 import { campaignColumns } from "@/components/columns/campaignColumns";
 import CampaignDialog from "../components/Dialogs/CampaignDialog";
 import { fetchPrizes } from "../store/prizes.slice";
+import { PreLoader } from "@/app/loader/preloader";
 import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
 import { format, isValid, parseISO } from "date-fns";
@@ -65,7 +66,7 @@ export default function CampaignsPage() {
           drawStatus,
         }),
       );
-    }, 500);
+    }, 400);
     return () => clearTimeout(delayDebounceFn);
   }, [
     dispatch,
@@ -156,15 +157,20 @@ export default function CampaignsPage() {
   );
 
   return (
-    <div className="p-4 space-y-6">
+    <div className="relative p-4 space-y-6 min-h-[500px]">
+      {loading && (
+        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
+          <PreLoader />
+        </div>
+      )}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
             <Megaphone className="h-5 w-5 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Campaigns</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold tracking-tight">Campaigns</h1>
+            <p className="text-sm text-slate-500">
               Manage your giveaway campaigns
             </p>
           </div>
@@ -207,16 +213,16 @@ export default function CampaignsPage() {
       {/* Dialogs */}
       <CampaignDialog
         isOpen={isDialogOpen}
-        onClose={() => {
-          setIsDialogOpen(false);
-          resetForm();
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) resetForm();
         }}
         form={form}
         setForm={setForm}
         prizes={prizes}
-        submit={handleSubmit}
+        onSubmit={handleSubmit}
         loading={loading}
-        editMode={!!editingId}
+        isEditing={!!editingId}
       />
 
       {/* Confirm Delete Dialog */}

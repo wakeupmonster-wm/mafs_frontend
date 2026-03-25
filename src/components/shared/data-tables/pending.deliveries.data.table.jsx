@@ -294,9 +294,9 @@ export default function PendingDeliveriesDataTables({
                   className="h-64 text-center"
                 >
                   {isLoading ? (
-                    <TableLoader text="Fetching Campaigns..." />
+                    <TableLoader text="Fetching Deliveries..." />
                   ) : (
-                    <DataNotFound message="No campaigns found" />
+                    <DataNotFound message="No deliveries found" />
                   )}
                 </TableCell>
               </TableRow>

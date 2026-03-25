@@ -118,7 +118,7 @@ export const PrizeDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[500px] gap-0 p-0 overflow-hidden border-none shadow-2xl">
-        <DialogHeader className="p-6 bg-slate-900 text-white">
+        <DialogHeader className="p-6 bg-brand-aqua text-white">
           <DialogTitle className="text-xl font-bold tracking-tight">
             {isEditing ? "Update Prize Details" : "Create New Prize Asset"}
           </DialogTitle>
@@ -296,7 +296,7 @@ export const PrizeDialog = ({
           <Button
             onClick={handleAction}
             disabled={loading}
-            className="bg-slate-900 hover:bg-slate-800 text-white min-w-[140px] h-11 shadow-lg shadow-slate-200"
+            className="bg-brand-aqua hover:bg-brand-aqua/90 text-white min-w-[140px] h-11 shadow-lg shadow-brand-aqua/20"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
