@@ -15,10 +15,10 @@ export const fetchPrivacyPolicy = createAsyncThunk(
         : rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to fetch"
+        error.response?.data?.message || "Failed to fetch",
       );
     }
-  }
+  },
 );
 
 // Update the policy
@@ -33,7 +33,7 @@ export const updatePrivacyPolicy = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Update failed");
     }
-  }
+  },
 );
 
 const privacySlice = createSlice({

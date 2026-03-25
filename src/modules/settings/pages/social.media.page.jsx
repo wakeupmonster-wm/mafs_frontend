@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Save, Share2 } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Loader2, Save, Share2 } from "lucide-react";
 import { SocialInput } from "../components/SocialInput";
 import {
   FaFacebook,
@@ -9,15 +9,96 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { PageHeader } from "@/components/common/headSubhead";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearSocialMediaStatus,
+  fetchSocialMedia,
+  updateSocialMediaAction,
+} from "../store/social.media.slice";
+import { toast } from "sonner";
+
+// 1. Move config outside to avoid re-renders
+const PLATFORM_CONFIG = {
+  facebook: {
+    label: "Facebook URL",
+    title: "Facebook",
+    icon: <FaFacebook size={20} className="text-blue-600" />,
+    iconKey: "facebook",
+    placeholder: "https://facebook.com/...",
+    order: 1,
+  },
+  twitter: {
+    label: "Twitter URL",
+    title: "X (Twitter)",
+    icon: <FaTwitter size={18} className="text-sky-400" />,
+    iconKey: "twitter",
+    placeholder: "https://twitter.com/...",
+    order: 2,
+  },
+  youtube: {
+    label: "YouTube URL",
+    title: "YouTube",
+    icon: <FaYoutube size={18} className="text-red-500" />,
+    iconKey: "youtube",
+    placeholder: "https://youtube.com/...",
+    order: 3,
+  },
+  instagram: {
+    label: "Instagram URL",
+    title: "Instagram",
+    icon: <FaInstagram size={18} className="text-pink-500" />,
+    iconKey: "instagram",
+    placeholder: "https://instagram.com/...",
+    order: 4,
+  },
+  telegram: {
+    label: "Telegram URL",
+    title: "Telegram",
+    icon: <FaTelegram size={18} className="text-blue-400" />,
+    iconKey: "telegram",
+    placeholder: "https://t.me/...",
+    order: 5,
+  },
+};
 
 export default function SocialMediaPage() {
+  const dispatch = useDispatch();
+  const { list, loading, error, successMessage } = useSelector(
+    (state) => state.socialMedia,
+  );
+
   const [socialLinks, setSocialLinks] = useState({
-    facebook: "https://web.facebook.com/keenasmustard",
+    facebook: "",
     twitter: "",
-    youtube: "https://www.youtube.com/channel/UCW1-o84XTDfAkHidhYE1clg",
-    instagram: "https://www.instagram.com/keenasmustard",
-    telegram: "https://t.me/+AsT66ANEu1hhZjY1",
+    youtube: "",
+    instagram: "",
+    telegram: "",
   });
+
+  // Sync Logic
+  useEffect(() => {
+    if (list?.socialMedia && Array.isArray(list.socialMedia)) {
+      const updatedLinks = {};
+      list.socialMedia.forEach((item) => {
+        if (item.platform) {
+          updatedLinks[item.platform] = item.url || "";
+        }
+      });
+      setSocialLinks((prev) => ({ ...prev, ...updatedLinks }));
+    }
+  }, [list]);
+
+  // Toast Logic
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearSocialMediaStatus());
+    }
+    if (error) {
+      toast.error(error);
+      dispatch(clearSocialMediaStatus());
+    }
+  }, [successMessage, error, dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,12 +106,30 @@ export default function SocialMediaPage() {
   };
 
   const handleSave = () => {
-    console.log("Saving Social Links:", socialLinks);
+    // 2. Transform into the exact object format required by backend
+    const payload = Object.keys(PLATFORM_CONFIG).map((key) => {
+      const config = PLATFORM_CONFIG[key];
+      return {
+        platform: key,
+        title: config.title,
+        url: socialLinks[key] || "",
+        icon: config.iconKey,
+        isActive: true, // Backend logic ke according true set kar rahe hain
+        order: config.order,
+      };
+    });
+
+    console.log("Final Payload: ", payload);
+    dispatch(updateSocialMediaAction(payload));
+    dispatch(fetchSocialMedia());
   };
+
+  useEffect(() => {
+    dispatch(fetchSocialMedia());
+  }, [dispatch]);
 
   return (
     <main className="flex-1 p-6 pb-20 w-full">
-      {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
         <PageHeader
           heading="Social Media"
@@ -40,59 +139,31 @@ export default function SocialMediaPage() {
         />
 
         <button
-          className="flex items-center gap-2 bg-brand-aqua/50 hover:bg-brand-aqua/60 text-black text-sm px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-slate-400/50"
+          disabled={loading}
+          className="flex items-center gap-2 bg-brand-aqua/80 hover:bg-brand-aqua text-slate-900 text-sm px-6 py-2.5 rounded-lg font-bold transition-all shadow-md disabled:opacity-50"
           onClick={handleSave}
         >
-          <Save size={16} /> Save
+          {loading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : (
+            <Save size={16} />
+          )}
+          Save Changes
         </button>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Input Fields */}
-        <SocialInput
-          label="Facebook URL"
-          name="facebook"
-          value={socialLinks.facebook}
-          onChange={handleInputChange}
-          placeholder="https://facebook.com/yourpage"
-          icon={<FaFacebook size={18} className="text-blue-500" />}
-        />
-
-        <SocialInput
-          label="Twitter URL"
-          name="twitter"
-          value={socialLinks.twitter}
-          onChange={handleInputChange}
-          placeholder="https://twitter.com/yourhandle"
-          icon={<FaTwitter size={18} className="text-sky-400" />}
-        />
-
-        <SocialInput
-          label="YouTube URL"
-          name="youtube"
-          value={socialLinks.youtube}
-          onChange={handleInputChange}
-          placeholder="https://youtube.com/c/yourchannel"
-          icon={<FaYoutube size={18} className="text-red-500" />}
-        />
-
-        <SocialInput
-          label="Instagram URL"
-          name="instagram"
-          value={socialLinks.instagram}
-          onChange={handleInputChange}
-          placeholder="https://instagram.com/yourprofile"
-          icon={<FaInstagram size={18} className="text-pink-500" />}
-        />
-
-        <SocialInput
-          label="Telegram URL"
-          name="telegram"
-          value={socialLinks.telegram}
-          onChange={handleInputChange}
-          placeholder="https://t.me/yourgroup"
-          icon={<FaTelegram size={18} className="text-blue-400" />}
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {Object.entries(PLATFORM_CONFIG).map(([key, config]) => (
+          <SocialInput
+            key={key}
+            label={config.label}
+            name={key}
+            value={socialLinks[key] || ""}
+            onChange={handleInputChange}
+            placeholder={config.placeholder}
+            icon={config.icon}
+          />
+        ))}
       </div>
     </main>
   );
