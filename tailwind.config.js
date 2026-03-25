@@ -20,7 +20,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        jakarta: ['Plus Jakarta Sans"', "sans-serif"],
+        jakarta: ["Plus Jakarta Sans", "sans-serif"],
       },
       colors: {
         background: "hsl(var(--background))",
