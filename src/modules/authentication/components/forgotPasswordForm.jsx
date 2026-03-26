@@ -59,16 +59,16 @@ export default function ForgotPasswordForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <div className="text-center">
         <h1 className="text-2xl font-bold text-grey-900">Set New Password</h1>
-        <p className="text-grey-500 text-sm mt-2">
+        <p className="text-grey-800 text-sm font-medium mt-2">
           Choose a strong password for your account.
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mt-5">
         {/* New Password Field */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-grey-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
             <Input
               {...register("password")}
               type={showNewPassword ? "text" : "password"}
@@ -85,9 +85,9 @@ export default function ForgotPasswordForm() {
               tabIndex="-1" // Prevents tabbing to the eye icon before the next field
             >
               {showNewPassword ? (
-                <EyeOff className="h-5 w-5" />
+                <EyeOff className="h-4 w-4 text-brand-aqua" />
               ) : (
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4 text-brand-aqua" />
               )}
             </button>
           </div>
@@ -101,7 +101,7 @@ export default function ForgotPasswordForm() {
         {/* Confirm Password Field */}
         <div className="space-y-1">
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-grey-400" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
             <Input
               {...register("confirmPassword")}
               type={showConfirmPassword ? "text" : "password"}
@@ -120,9 +120,9 @@ export default function ForgotPasswordForm() {
               tabIndex="-1" // Prevents tabbing to the eye icon before the next field
             >
               {showConfirmPassword ? (
-                <EyeOff className="h-5 w-5" />
+                <EyeOff className="h-4 w-4 text-brand-aqua" />
               ) : (
-                <Eye className="h-5 w-5" />
+                <Eye className="h-4 w-4 text-brand-aqua" />
               )}
             </button>
           </div>

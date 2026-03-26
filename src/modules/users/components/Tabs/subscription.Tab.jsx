@@ -112,7 +112,7 @@ export const SubscriptionTab = ({ userData, subscription }) => {
       className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 outline-none"
     >
       {/* STATUS BANNER */}
-      <div className="p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group">
+      <div className="p-6 rounded-[1.5rem] border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md relative overflow-hidden group">
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-5">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center border border-slate-100">
@@ -163,7 +163,7 @@ export const SubscriptionTab = ({ userData, subscription }) => {
       {/* CARDS GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* GRANT SUBSCRIPTION */}
-        <Card className="rounded-[2rem] border border-brand-aqua/20 shadow-xl shadow-brand-aqua/5 overflow-hidden bg-white">
+        <Card className="rounded-[1.5rem] border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden bg-white">
           <CardHeader className="p-6 pb-4">
             <CardTitle className="text-sm font-black flex items-center gap-2 text-slate-900">
               <Crown className="w-5 h-5 text-brand-aqua" />
@@ -256,7 +256,7 @@ export const SubscriptionTab = ({ userData, subscription }) => {
         </Card>
 
         {/* GRANT CONSUMABLES */}
-        <Card className="rounded-[2rem] border border-brand-aqua/20 shadow-xl shadow-brand-aqua/5 overflow-hidden bg-white">
+        <Card className="rounded-[1.5rem] border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden bg-white">
           <CardHeader className="p-6 pb-4">
             <CardTitle className="text-sm font-black flex items-center gap-2 text-slate-900">
               <Gem className="w-5 h-5 text-brand-aqua" />

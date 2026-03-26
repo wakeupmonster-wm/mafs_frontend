@@ -71,6 +71,7 @@ const containerVariants = {
     transition: { staggerChildren: 0.08, delayChildren: 0.15 },
   },
 };
+
 const itemVariants = {
   hidden: { opacity: 0, y: 20, scale: 0.97 },
   visible: {
@@ -109,7 +110,7 @@ export default function FakeProfileManagementPage() {
   useEffect(() => {
     // Optional: If you want search to reset pagination, do it ONLY if pageIndex is NOT already 0
     if (search && pagination.pageIndex !== 0) {
-      setPagination(p => ({ ...p, pageIndex: 0 }));
+      setPagination((p) => ({ ...p, pageIndex: 0 }));
     }
 
     const delayDebounceFn = setTimeout(() => {
@@ -213,7 +214,7 @@ export default function FakeProfileManagementPage() {
   // ─── Table columns ───
   const columns = useMemo(
     () => fakeProfileColumns(handleToggleStatus, handleDeleteClick),
-    []
+    [],
   );
 
   // ─── TanStack Table ───
@@ -240,12 +241,15 @@ export default function FakeProfileManagementPage() {
   // ─── Color maps ───
   const colorMap = {
     blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald: "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    emerald:
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
     rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
   };
+
   const bgMap = {
     blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    emerald: "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
     rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
   };
 
@@ -268,11 +272,15 @@ export default function FakeProfileManagementPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPagination((prev) => ({ ...prev, pageIndex: 0 }))}
+                onClick={() =>
+                  setPagination((prev) => ({ ...prev, pageIndex: 0 }))
+                }
                 disabled={loading}
                 className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
               >
-                <IconRefresh className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")} />
+                <IconRefresh
+                  className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
+                />
                 Refresh
               </Button>
               <Button
@@ -288,7 +296,10 @@ export default function FakeProfileManagementPage() {
         </motion.header>
 
         {/* ─── STATS GRID ─── */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+        >
           <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
         </motion.div>
 
@@ -325,11 +336,30 @@ export default function FakeProfileManagementPage() {
               <div className="hidden sm:flex flex-1 items-center justify-end gap-1.5 overflow-x-hidden min-w-0">
                 <AnimatePresence mode="popLayout">
                   {statusFilter && (
-                    <motion.div key="status-chip" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="shrink-0">
-                      <Badge variant="secondary" className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap">
-                        <span className="text-[10px] font-bold uppercase opacity-50">Status:</span>
-                        <span className="capitalize text-xs">{statusFilter}</span>
-                        <button onClick={() => { setStatusFilter(""); setPagination((p) => ({ ...p, pageIndex: 0 })); }} className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors">
+                    <motion.div
+                      key="status-chip"
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      className="shrink-0"
+                    >
+                      <Badge
+                        variant="secondary"
+                        className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                      >
+                        <span className="text-[10px] font-bold uppercase opacity-50">
+                          Status:
+                        </span>
+                        <span className="capitalize text-xs">
+                          {statusFilter}
+                        </span>
+                        <button
+                          onClick={() => {
+                            setStatusFilter("");
+                            setPagination((p) => ({ ...p, pageIndex: 0 }));
+                          }}
+                          className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        >
                           <IconX size={12} />
                         </button>
                       </Badge>
@@ -350,17 +380,33 @@ export default function FakeProfileManagementPage() {
                       variant="outline"
                       className={cn(
                         "h-9 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
-                        hasActiveFilter && "border-brand-aqua ring-1 ring-brand-aqua"
+                        hasActiveFilter &&
+                          "border-brand-aqua ring-1 ring-brand-aqua",
                       )}
                     >
-                      <IconFilter strokeWidth={2.5} className={cn("h-5 w-5", hasActiveFilter ? "text-brand-aqua" : "text-brand-aqua/60")} />
-                      <span className="text-sm font-medium text-slate-700">Filters</span>
+                      <IconFilter
+                        strokeWidth={2.5}
+                        className={cn(
+                          "h-5 w-5",
+                          hasActiveFilter
+                            ? "text-brand-aqua"
+                            : "text-brand-aqua/60",
+                        )}
+                      />
+                      <span className="text-sm font-medium text-slate-700">
+                        Filters
+                      </span>
                       {hasActiveFilter && (
-                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">1</span>
+                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                          1
+                        </span>
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56 p-2 shadow-xl border-slate-200">
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-56 p-2 shadow-xl border-slate-200"
+                  >
                     <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                       Account Status
                     </DropdownMenuLabel>
@@ -370,7 +416,9 @@ export default function FakeProfileManagementPage() {
                         className="capitalize"
                         checked={statusFilter === status}
                         onCheckedChange={() => {
-                          setStatusFilter(statusFilter === status ? "" : status);
+                          setStatusFilter(
+                            statusFilter === status ? "" : status,
+                          );
                           setPagination((p) => ({ ...p, pageIndex: 0 }));
                         }}
                       >
@@ -411,8 +459,14 @@ export default function FakeProfileManagementPage() {
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      <TableHead
+                        key={header.id}
+                        className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs"
+                      >
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                       </TableHead>
                     ))}
                   </TableRow>
@@ -424,15 +478,23 @@ export default function FakeProfileManagementPage() {
                     <TableRow key={row.id} className="hover:bg-slate-50/50">
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="py-2.5">
-                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
                         </TableCell>
                       ))}
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={columns.length} className="h-56 text-center">
-                      {!loading && <DataNotFound message="No fake profiles found" />}
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-56 text-center"
+                    >
+                      {!loading && (
+                        <DataNotFound message="No fake profiles found" />
+                      )}
                     </TableCell>
                   </TableRow>
                 )}
@@ -449,7 +511,9 @@ export default function FakeProfileManagementPage() {
             </div>
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="flex items-center gap-1.5">
-                <Label className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase">Rows</Label>
+                <Label className="hidden sm:block text-[10px] font-bold text-slate-400 uppercase">
+                  Rows
+                </Label>
                 <Select
                   value={`${pagination.pageSize}`}
                   onValueChange={(value) => {
@@ -461,7 +525,9 @@ export default function FakeProfileManagementPage() {
                   </SelectTrigger>
                   <SelectContent>
                     {[10, 20, 50, 100].map((size) => (
-                      <SelectItem key={size} value={`${size}`}>{size}</SelectItem>
+                      <SelectItem key={size} value={`${size}`}>
+                        {size}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -471,19 +537,30 @@ export default function FakeProfileManagementPage() {
                   variant="outline"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={() => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex - 1 }))}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: prev.pageIndex - 1,
+                    }))
+                  }
                   disabled={!serverPagination?.hasPrevPage}
                 >
                   <IconChevronLeft size={14} />
                 </Button>
                 <div className="text-xs font-semibold px-2">
-                  {serverPagination?.page || 1} / {serverPagination?.totalPages || 1}
+                  {serverPagination?.page || 1} /{" "}
+                  {serverPagination?.totalPages || 1}
                 </div>
                 <Button
                   variant="outline"
                   size="icon"
                   className="h-7 w-7"
-                  onClick={() => setPagination((prev) => ({ ...prev, pageIndex: prev.pageIndex + 1 }))}
+                  onClick={() =>
+                    setPagination((prev) => ({
+                      ...prev,
+                      pageIndex: prev.pageIndex + 1,
+                    }))
+                  }
                   disabled={!serverPagination?.hasNextPage}
                 >
                   <IconChevronRight size={14} />
@@ -502,7 +579,10 @@ export default function FakeProfileManagementPage() {
 
         <ConfirmModal
           isOpen={isDeleteModalOpen}
-          onClose={() => { setIsDeleteModalOpen(false); setDeleteTargetId(null); }}
+          onClose={() => {
+            setIsDeleteModalOpen(false);
+            setDeleteTargetId(null);
+          }}
           onConfirm={handleDeleteConfirm}
           title="Delete Fake Profile?"
           message="This action is permanent and cannot be undone. The profile will be completely removed from the system."

@@ -164,7 +164,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 export const ReportsSection = ({ reports, count }) => {
   // 1. Reports ko filter karein

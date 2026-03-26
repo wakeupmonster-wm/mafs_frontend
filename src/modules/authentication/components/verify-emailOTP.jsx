@@ -85,16 +85,20 @@ export default function VerifyEmailOtp() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 mt-5">
         <div className="flex justify-center">
           <InputOTP
             maxLength={6}
             value={otp}
             onChange={(value) => setOtp(value)} // shadcn InputOTP returns value directly, not event
           >
-            <InputOTPGroup className="gap-[14px]">
+            <InputOTPGroup className="gap-[10px] sm:gap-[14px]">
               {[...Array(6)].map((_, i) => (
-                <InputOTPSlot key={i} index={i} className="w-14 h-14 text-lg" />
+                <InputOTPSlot
+                  key={i}
+                  index={i}
+                  className="w-11 h-12 sm:w-14 sm:h-14 text-lg"
+                />
               ))}
             </InputOTPGroup>
           </InputOTP>

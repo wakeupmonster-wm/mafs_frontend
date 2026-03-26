@@ -49,7 +49,7 @@ export const DiscoveryTab = ({ discovery }) => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* LEFT & CENTER COLUMN: DISCOVERY SETTINGS (Spans 2 columns on XL) */}
         <div className="xl:col-span-2 space-y-6">
-          <Card className="border-slate-200 shadow-sm overflow-hidden rounded-3xl">
+          <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden rounded-3xl">
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-4 px-8">
               <CardTitle className="flex items-center gap-3 text-lg font-bold text-slate-800">
                 <div className="p-2 bg-brand-aqua rounded-xl shadow-lg shadow-brand-aqua/20">

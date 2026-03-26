@@ -8,7 +8,7 @@ import {
   Mars,
   User,
 } from "lucide-react";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 export const getParticipantsColumns = () => [
   {

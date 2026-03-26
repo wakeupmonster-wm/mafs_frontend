@@ -176,7 +176,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
         <div className="grid grid-cols-12 gap-6">
           {/* LEFT COLUMN: IDENTITY SUMMARY */}
           <div className="col-span-12 lg:col-span-4 xl:col-span-3">
-            <Card className="shadow-sm border-slate-200">
+            <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
               <CardContent className="pt-8 flex flex-col items-center text-center px-6">
                 <Dialog>
                   <DialogTrigger asChild>
@@ -608,7 +608,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
           <div className="col-span-12 lg:col-span-8 xl:col-span-9 space-y-6">
             <div className="flex flex-col lg:flex-row gap-4 w-full">
               {/* ACCOUNT CONNECTIVITY CARD */}
-              <Card className="flex-[3] p-6 shadow-sm border-slate-200 flex flex-col justify-center">
+              <Card className="flex-[3] p-6 border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md flex flex-col justify-center">
                 <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
                   Account Connectivity
                 </h3>
@@ -679,7 +679,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
               </Card>
 
               {/* PROFILE QUALITY CARD */}
-              <Card className="flex-1 p-6 shadow-sm border-slate-200">
+              <Card className="flex-1 p-6 border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
                 <div className="flex justify-between items-start">
                   <h3 className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
                     Profile Quality
@@ -708,7 +708,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
             </div>
 
             {/* BIO SECTION */}
-            <Card className="overflow-hidden shadow-sm border-slate-200 bg-white rounded-xl py-1 pb-5 gap-2">
+            <Card className="overflow-hidden border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md bg-white rounded-xl py-1 pb-5 gap-2">
               {/* HEADER: Clean & Minimal */}
               <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 py-5 px-6 bg-slate-50/30">
                 <CardTitle className="text-sm font-bold text-slate-800 flex items-center gap-2.5">

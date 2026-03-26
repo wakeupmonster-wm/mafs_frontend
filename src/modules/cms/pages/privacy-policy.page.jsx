@@ -100,7 +100,7 @@ export default function PrivacyAndPolicyPage() {
             ) : (
               <Save className="w-4 h-4 mr-2" />
             )}
-            {isSaving ? "Saving..." : "Publish Changes"}
+            {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
       </div>

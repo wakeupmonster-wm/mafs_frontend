@@ -11,15 +11,13 @@ import {
   IconUserCheck,
   IconUserPlus,
   IconSettings,
-  IconHelp,
 } from "@tabler/icons-react";
-import { Trophy } from "lucide-react";
 
 const navigationData = {
   user: {
     name: "Admin",
-    email: "admin@example.com",
-    avatar: "/avatars/admin.jpg",
+    email: "admin@keenasmustard.com",
+    avatar: "/assets/web/dummyImg.webp",
   },
   navMain: [
     {
@@ -94,12 +92,12 @@ const navigationData = {
         },
       ],
     },
-    {
-      title: "Entitlements",
-      url: "/admin/management/entitlements",
-      icon: IconGift,
-      badge: null,
-    },
+    // {
+    //   title: "Entitlements",
+    //   url: "/admin/management/entitlements",
+    //   icon: IconGift,
+    //   badge: null,
+    // },
     {
       title: "Notifications",
       url: "/admin/management/all-notifications",
@@ -155,6 +153,7 @@ const navigationData = {
   navPlateform: [
     {
       title: "CMS",
+      url: "/admin/cms/faqs",
       icon: IconFileText,
       items: [
         {
@@ -173,6 +172,7 @@ const navigationData = {
     },
     {
       title: "Settings",
+      url: "/admin/settings/general",
       icon: IconSettings,
       items: [
         {

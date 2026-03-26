@@ -83,7 +83,7 @@ export default function SubscriptionPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { dashboardStats, dashboardLoading } = useSelector(
-    (state) => state.subscription
+    (state) => state.subscription,
   );
 
   const [lastRefresh, setLastRefresh] = useState(null);
@@ -239,7 +239,7 @@ export default function SubscriptionPage() {
                 transition={{ delay: i * 0.1 }}
                 className={cn(
                   "flex items-center gap-3 p-4 rounded-[1.5rem] border transition-all",
-                  card.bg
+                  card.bg,
                 )}
               >
                 <div
@@ -409,12 +409,12 @@ export default function SubscriptionPage() {
                 <div className="space-y-4 pt-2">
                   {["android", "ios", "admin_granted"].map((platformId) => {
                     const platformData = dashboardStats?.platformMix?.find(
-                      (p) => p._id === platformId
+                      (p) => p._id === platformId,
                     ) || { _id: platformId, count: 0 };
                     const total =
                       dashboardStats?.platformMix?.reduce(
                         (acc, curr) => acc + (curr.count || 0),
-                        0
+                        0,
                       ) || 0;
                     const percentage =
                       total > 0 ? ((platformData.count || 0) / total) * 100 : 0;
@@ -433,10 +433,10 @@ export default function SubscriptionPage() {
                                 isAndroid
                                   ? "bg-emerald-50 border-emerald-100 text-emerald-600"
                                   : isIOS
-                                  ? "bg-slate-50 border-slate-200 text-slate-700"
-                                  : isAdmin
-                                  ? "bg-purple-50 border-purple-100 text-purple-600"
-                                  : "bg-blue-50 border-blue-100 text-blue-600"
+                                    ? "bg-slate-50 border-slate-200 text-slate-700"
+                                    : isAdmin
+                                      ? "bg-purple-50 border-purple-100 text-purple-600"
+                                      : "bg-blue-50 border-blue-100 text-blue-600",
                               )}
                             >
                               {isAndroid ? (
@@ -469,10 +469,10 @@ export default function SubscriptionPage() {
                               isAndroid
                                 ? "bg-emerald-500"
                                 : isIOS
-                                ? "bg-slate-800"
-                                : isAdmin
-                                ? "bg-purple-500"
-                                : "bg-blue-500"
+                                  ? "bg-slate-800"
+                                  : isAdmin
+                                    ? "bg-purple-500"
+                                    : "bg-blue-500",
                             )}
                           />
                         </div>
@@ -540,7 +540,7 @@ export default function SubscriptionPage() {
                       "text-[10px] font-black uppercase tracking-widest border px-3 py-1 rounded-full",
                       milestone.isActive
                         ? "bg-emerald-50 text-emerald-600 border-emerald-200"
-                        : "bg-slate-50 text-slate-400 border-slate-200"
+                        : "bg-slate-50 text-slate-400 border-slate-200",
                     )}
                   >
                     {milestone.isActive ? "Active" : "Inactive"}
@@ -592,12 +592,12 @@ export default function SubscriptionPage() {
           (() => {
             const totalSales = dashboardStats.bestSellingProducts.reduce(
               (sum, p) => sum + (p.salesCount || 0),
-              0
+              0,
             );
             const maxSales = Math.max(
               ...dashboardStats.bestSellingProducts.map(
-                (p) => p.salesCount || 0
-              )
+                (p) => p.salesCount || 0,
+              ),
             );
 
             return (
@@ -650,14 +650,14 @@ export default function SubscriptionPage() {
                         transition={{ delay: idx * 0.08 }}
                         className={cn(
                           "grid grid-cols-[40px_1fr_100px_80px] gap-4 items-center px-5 py-3.5 rounded-xl transition-all hover:bg-brand-aqua/5",
-                          idx % 2 === 0 ? "bg-slate-50/60" : "bg-transparent"
+                          idx % 2 === 0 ? "bg-slate-50/60" : "bg-transparent",
                         )}
                       >
                         {/* Rank */}
                         <span
                           className={cn(
                             "text-sm font-black tabular-nums",
-                            idx === 0 ? "text-brand-aqua" : "text-slate-400"
+                            idx === 0 ? "text-brand-aqua" : "text-slate-400",
                           )}
                         >
                           {String(idx + 1).padStart(2, "0")}

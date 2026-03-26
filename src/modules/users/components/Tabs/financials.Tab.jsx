@@ -35,7 +35,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
       {/* 1. SUBSCRIPTION OVERVIEW (4/12) */}
       <Card
         className={cn(
-          "lg:col-span-4 border shadow-md overflow-hidden relative transition-all duration-300",
+          "lg:col-span-4 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden relative transition-all duration-300",
           isPremiumActive
             ? "bg-slate-900 text-white shadow-brand-aqua"
             : "bg-brand-aqua/5 text-slate-900 border-brand-aqua",
@@ -133,7 +133,9 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
             <div className="flex justify-between items-center p-1 px-3">
               <span className="text-sm opacity-70">Member Since</span>
               <span className="text-sm font-bold">
-                {account?.createdAt ? format(new Date(account.createdAt), "MMM dd, yyyy") : "N/A"}
+                {account?.createdAt
+                  ? format(new Date(account.createdAt), "MMM dd, yyyy")
+                  : "N/A"}
               </span>
             </div>
           </div>
@@ -166,7 +168,7 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
       </Card>
 
       {/* 2. TRANSACTION HISTORY (8/12) */}
-      <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden flex flex-col">
+      <Card className="lg:col-span-8 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 border-b border-slate-100 py-4 px-6">
           <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
             <IconHistory size={18} className="text-indigo-500" /> Payment
@@ -212,9 +214,9 @@ export const FinancialsTab = ({ account, transactions, subscription }) => {
                       className="group hover:bg-slate-50/80 transition-colors"
                     >
                       <td className="px-6 py-4 font-medium text-slate-600">
-                        {txn?.occurredAt 
-                           ? format(new Date(txn.occurredAt), "dd MMM yyyy") 
-                           : "N/A"}
+                        {txn?.occurredAt
+                          ? format(new Date(txn.occurredAt), "dd MMM yyyy")
+                          : "N/A"}
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-1 text-slate-900 font-mono text-xs font-bold group-hover:text-indigo-600 transition-colors">

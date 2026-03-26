@@ -263,7 +263,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               form.newPassword !== form.confirmPassword ||
               !form.newPassword
             }
-            className="h-14 w-full bg-brand-aqua/25 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-700 rounded-xl font-black text-sm shadow-[0_10px_20px_-10px_rgba(70,199,205,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(70,199,205,0.6)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:opacity-30 disabled:grayscale disabled:hover:translate-y-0"
+            className="h-14 w-full bg-brand-aqua/25 disabled:bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-700 rounded-xl font-black text-sm shadow-[0_10px_20px_-10px_rgba(70,199,205,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(70,199,205,0.6)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:hover:translate-y-0"
           >
             {loading ? (
               <div className="flex items-center gap-3">

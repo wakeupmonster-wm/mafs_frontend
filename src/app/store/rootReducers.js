@@ -20,6 +20,7 @@ import accountReducer from "@/modules/accounts/store/account.slice";
 import subscriptionReducer from "@/modules/subsciptions/store/subscription.slice";
 import fakeProfilesReducer from "@/modules/fake-profiles/store/fake-profile.slice";
 import socialMediaReducer from "@/modules/settings/store/social.media.slice";
+import generalSettingsReducer from "@/modules/settings/store/general.slice";
 
 export const rootReducer = combineReducers({
   auth: authReducer,
@@ -43,4 +44,5 @@ export const rootReducer = combineReducers({
   termsAndcondition: termConditionReducer,
   fakeProfiles: fakeProfilesReducer,
   socialMedia: socialMediaReducer,
+  generalSettings: generalSettingsReducer,
 });

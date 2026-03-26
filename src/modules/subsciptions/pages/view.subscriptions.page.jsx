@@ -37,7 +37,7 @@ import {
   fetchUserDetails,
 } from "../store/subcription.slices";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { IoLogoApple } from "react-icons/io5";
@@ -142,7 +142,7 @@ export default function ViewSubscriptionsPage() {
                         "absolute bottom-0 right-1 p-1 rounded-full border-2 border-white shadow-lg",
                         userData?.status === "ACTIVE"
                           ? "bg-emerald-500"
-                          : "bg-slate-400"
+                          : "bg-slate-400",
                       )}
                     >
                       <CheckCircle2 className="w-3 h-3 text-white" />
@@ -169,7 +169,7 @@ export default function ViewSubscriptionsPage() {
                       "flex items-center gap-1.5 px-3 py-1 font-bold shadow-sm ring-1 ring-inset",
                       userData?.platform === "ios"
                         ? "bg-slate-900 text-white ring-slate-800" // iOS: Dark premium look
-                        : "bg-emerald-50 text-emerald-700 ring-emerald-100" // Android: Play Store green feel
+                        : "bg-emerald-50 text-emerald-700 ring-emerald-100", // Android: Play Store green feel
                     )}
                   >
                     <PlatformIcon
@@ -177,7 +177,7 @@ export default function ViewSubscriptionsPage() {
                         "w-3.5 h-3.5",
                         userData?.platform === "ios"
                           ? "text-white"
-                          : "text-emerald-600"
+                          : "text-emerald-600",
                       )}
                     />
                     {userData?.platform === "ios" ? "IOS" : "Android"}
@@ -216,7 +216,7 @@ export default function ViewSubscriptionsPage() {
                     "font-black uppercase text-xs tracking-tighter",
                     userData?.environment === "sandbox"
                       ? "bg-amber-100 text-amber-700 hover:bg-amber-100"
-                      : "bg-indigo-600 text-white"
+                      : "bg-indigo-600 text-white",
                   )}
                 >
                   {userData?.environment}
@@ -232,7 +232,7 @@ export default function ViewSubscriptionsPage() {
                     "text-sm font-black",
                     userData?.status === "ACTIVE"
                       ? "text-emerald-600"
-                      : "text-slate-500"
+                      : "text-slate-500",
                   )}
                 >
                   {userData?.status}
@@ -247,7 +247,7 @@ export default function ViewSubscriptionsPage() {
           <KPICard
             title="Lifetime Value"
             value={`$${(summary?.totalPaid - summary?.totalRefunded).toFixed(
-              2
+              2,
             )}`}
             icon={DollarSign}
             color="emerald"
@@ -349,7 +349,7 @@ export default function ViewSubscriptionsPage() {
                           {userData?.startedAt
                             ? format(
                                 new Date(userData.startedAt),
-                                "MMM dd, yyyy"
+                                "MMM dd, yyyy",
                               )
                             : "-"}
                         </p>
@@ -363,7 +363,7 @@ export default function ViewSubscriptionsPage() {
                           {userData?.expiresAt
                             ? format(
                                 new Date(userData.expiresAt),
-                                "MMM dd, yyyy"
+                                "MMM dd, yyyy",
                               )
                             : "-"}
                         </p>
@@ -558,7 +558,7 @@ const KPICard = ({ title, value, icon: Icon, color, description }) => {
     <Card
       className={cn(
         "rounded-2xl border shadow-md py-4 bg-gradient-to-br",
-        bgMap[color]
+        bgMap[color],
       )}
     >
       <CardContent className="p-4 flex items-center gap-4">
@@ -566,7 +566,7 @@ const KPICard = ({ title, value, icon: Icon, color, description }) => {
         <div
           className={cn(
             "p-3 rounded-2xl bg-gradient-to-br border shadow-sm",
-            colorMap[color]
+            colorMap[color],
           )}
         >
           <Icon size={22} strokeWidth={2.5} />

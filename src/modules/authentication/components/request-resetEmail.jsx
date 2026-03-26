@@ -50,7 +50,7 @@ export default function RequestResetEmailForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Forgot Password?</h1>
-        <p className="text-muted-foreground">
+        <p className="text-slate-700">
           Enter your email to receive an OTP code.
         </p>
       </div>
@@ -59,7 +59,7 @@ export default function RequestResetEmailForm() {
         <Field>
           <FieldLabel>Email Address</FieldLabel>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
             <Input
               {...register("email")}
               placeholder="name@example.com"
@@ -83,7 +83,7 @@ export default function RequestResetEmailForm() {
 
         <Link
           to="/auth/login"
-          className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+          className="flex items-center justify-center gap-2 text-sm text-slate-700 hover:text-brand-aqua transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Login
         </Link>

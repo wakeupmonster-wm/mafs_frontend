@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge"; // Assuming shadcn/ui
 import { Button } from "@/components/ui/button";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { format, formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";

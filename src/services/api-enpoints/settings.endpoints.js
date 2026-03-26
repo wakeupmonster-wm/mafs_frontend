@@ -6,3 +6,9 @@ export const SOCIAL_ENDPOINTS = {
   GET_SOCIAL_MEDIA: `${BASE_URL}/api/v1/app-settings/social-links`,
   UPDATE_SOCIAL_MEDIA: `${BASE_URL}/api/v1/app-settings/social-links`,
 };
+
+/*===================== GENERAL SETTINGS ENDPOINTS =====================*/
+export const GENERAL_ENDPOINTS = {
+  GET_GENERAL_SETTING: `${BASE_URL}/api/v1/app-settings/general`,
+  UPDATE_GENERAL_SETTING: `${BASE_URL}/api/v1/app-settings/general`,
+};

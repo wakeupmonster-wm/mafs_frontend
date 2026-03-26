@@ -25,8 +25,8 @@ import { ZoomableImage } from "./zoomable.image";
 import ConfirmKycActionModal from "../pages/ConfirmKycActionModal";
 import { cn } from "@/lib/utils";
 import { Check, X } from "lucide-react";
-import dummyImg from "@/assets/images/dummyImg.jpg";
-import dummyID from "@/assets/images/dummyIDCard.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
+import dummyID from "@/assets/web/dummyIDCard.webp";
 
 const VerificationCard = ({
   verification,
@@ -65,7 +65,7 @@ const VerificationCard = ({
     currentStatus === "not_started";
 
   return (
-    <Card className="relative overflow-hidden border-slate-200/60 bg-white/70 backdrop-blur-md shadow-sm transition-all hover:shadow-md">
+    <Card className="relative overflow-hidden border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md bg-white/70 backdrop-blur-md transition-all hover:shadow-md">
       {/* Decorative Status Line */}
       <div
         className={cn(

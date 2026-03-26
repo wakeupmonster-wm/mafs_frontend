@@ -19,7 +19,7 @@ import { NavPlateform } from "./navigations/nav-plateform";
 import { NavManagements } from "./navigations/nav-managements";
 import navigationData from "@/app/data/navigation";
 import { Link } from "react-router-dom";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProfile } from "@/modules/accounts/store/account.slice";
 import { useMemo } from "react";
@@ -91,7 +91,7 @@ export function AppSidebar({ ...props }) {
             {/* 3. Trigger button hamesha dikhega, collapsed mode mein center ho jayega */}
             <SidebarTrigger
               className={cn(
-                "-ml-1 text-slate-500 hover:bg-slate-100",
+                "-ml-1 mr-2 text-slate-500 hover:bg-slate-100",
                 !open && "mx-auto ml-0", // Collapsed hone par center align karne ke liye
               )}
             />

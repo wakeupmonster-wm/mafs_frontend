@@ -21,7 +21,7 @@ import ConfirmModal from "@/components/common/ConfirmModal";
 import { toast } from "sonner";
 import { deleteUserPhoto, fetchUserData } from "../../store/user.slice";
 import { cn } from "@/lib/utils";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 export const GallleryTab = ({ photos = [], userId }) => {
   const dispatch = useDispatch();
@@ -63,7 +63,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
     <>
       <TabsContent value="gallery" className="mt-6 space-y-4">
         {/* GALLERY HEADER & BULK ACTIONS */}
-        <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
           <div>
             <h3 className="text-sm font-bold text-slate-900">User Gallery</h3>
             <p className="text-xs text-slate-500">

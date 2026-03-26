@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 /**
  * IMPORTANT: The correct ID to use for toggle/delete is `user.profile.id`
@@ -34,7 +34,11 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
-      return <div className="w-8 text-center font-medium text-xs">{serialNumber}</div>;
+      return (
+        <div className="w-8 text-center font-medium text-xs">
+          {serialNumber}
+        </div>
+      );
     },
     enableSorting: false,
   },
@@ -66,7 +70,9 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
               {nickname.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="font-semibold text-[11px] truncate max-w-[120px]">{nickname}</span>
+          <span className="font-semibold text-[11px] truncate max-w-[120px]">
+            {nickname}
+          </span>
         </div>
       );
     },
@@ -92,7 +98,9 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
       return (
         <div className="flex items-center gap-1.5" title={email}>
           <Mail className="h-3 w-3 text-brand-aqua/80 shrink-0" />
-          <span className="text-[10px] lowercase text-slate-500 max-w-[120px] truncate block">{email}</span>
+          <span className="text-[10px] lowercase text-slate-500 max-w-[120px] truncate block">
+            {email}
+          </span>
         </div>
       );
     },
@@ -151,10 +159,10 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
     header: () => <span className="text-xs">Actions</span>,
     cell: ({ row }) => {
       // The correct ID per backend: user.profile.id
+      const navigate = useNavigate();
       const profileId = row.original.user?.profile?.id;
       const status = row.original.user?.account?.status;
-      const userData = row.original.user;
-      const navigate = useNavigate();
+      const userId = profileId;
 
       return (
         <DropdownMenu>
@@ -166,8 +174,8 @@ export const fakeProfileColumns = (handleToggleStatus, handleDelete) => [
           <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem
               onClick={() =>
-                navigate(`/admin/management/users-management/view-profile`, {
-                  state: { userData },
+                navigate(`../users-management/view-profile`, {
+                  state: { userId },
                 })
               }
               className="flex items-center gap-2 text-xs"

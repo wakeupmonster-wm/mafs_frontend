@@ -23,7 +23,9 @@ export default function OTPForm({ ...props }) {
     <Card {...props}>
       <CardHeader className="text-center">
         <CardTitle className="text-xl">Enter verification code</CardTitle>
-        <CardDescription>We sent a 6-digit code to your email.</CardDescription>
+        <CardDescription className={"text-slate-700"}>
+          We sent a 6-digit code to your email.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form>
@@ -47,7 +49,7 @@ export default function OTPForm({ ...props }) {
               </FieldDescription>
             </Field>
             <Button type="submit">Verify</Button>
-            <FieldDescription className="text-center">
+            <FieldDescription className="text-center text-slate-700">
               Didn&apos;t receive the code? <a href="#">Resend</a>
             </FieldDescription>
           </FieldGroup>
