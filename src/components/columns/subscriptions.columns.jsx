@@ -35,7 +35,7 @@ import {
 } from "../ui/tooltip";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { GrAndroid } from "react-icons/gr";
 import { AiFillAndroid } from "react-icons/ai";
 

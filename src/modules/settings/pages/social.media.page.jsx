@@ -88,10 +88,10 @@ export default function SocialMediaPage() {
     }
   }, [list]);
 
-  // Toast Logic
   useEffect(() => {
     if (successMessage) {
       toast.success(successMessage);
+      dispatch(fetchSocialMedia());
       dispatch(clearSocialMediaStatus());
     }
     if (error) {
@@ -106,7 +106,6 @@ export default function SocialMediaPage() {
   };
 
   const handleSave = () => {
-    // 2. Transform into the exact object format required by backend
     const payload = Object.keys(PLATFORM_CONFIG).map((key) => {
       const config = PLATFORM_CONFIG[key];
       return {
@@ -114,14 +113,13 @@ export default function SocialMediaPage() {
         title: config.title,
         url: socialLinks[key] || "",
         icon: config.iconKey,
-        isActive: true, // Backend logic ke according true set kar rahe hain
+        isActive: true,
         order: config.order,
       };
     });
 
-    console.log("Final Payload: ", payload);
+    // console.log("Final Payload: ", payload);
     dispatch(updateSocialMediaAction(payload));
-    dispatch(fetchSocialMedia());
   };
 
   useEffect(() => {

@@ -26,12 +26,14 @@ export function NavPlateform({ items }) {
   }
 
   return (
-    <SidebarGroup className={"group-data-[collapsible=icon]:mt-3"}>
+    // <SidebarGroup className={"group-data-[collapsible=icon]:mt-3"}>
+    <SidebarGroup className={"py-1"}>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
-      <SidebarMenu className={"gap-0"}>
+      {/* <SidebarMenu className={"gap-0"}> */}
+      <SidebarMenu className={"gap-1"}>
         {items.map((item) => {
-          const Icon = item.icon;
           const isActive = location.pathname === item.url;
+          const Icon = item.icon;
           const hasActiveChild = item.items?.some(
             (subItem) => location.pathname === subItem.url,
           );
@@ -43,55 +45,77 @@ export function NavPlateform({ items }) {
               defaultOpen={hasActiveChild}
               className="group/collapsible"
             >
-              <SidebarMenuItem>
+              <SidebarMenuItem key={item.title}>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
+                    asChild
                     tooltip={item.title}
                     className={cn(
                       "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
                       "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
-                      isActive && !hasActiveChild &&
-                        "!bg-brand-aqua/10 text-brand-aqua border border-brand-aqua/50"
+                      isActive &&
+                        !hasActiveChild &&
+                        "!bg-brand-aqua/10 border border-brand-aqua/50",
                     )}
                   >
-                    {/* Icon with Dynamic Coloring */}
-                    <div
-                      className={cn(
-                        "flex size-7 items-center justify-center rounded-lg transition-all duration-300",
-                        hasActiveChild
-                          ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
-                          : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
-                      )}
+                    <Link
+                      to={item.url}
+                      className="flex items-center gap-3 text-xs"
                     >
-                      <Icon className="size-4" />
-                    </div>
-
-                    <span className="flex-1 truncate text-xs tracking-tight">
-                      {item.title}
-                    </span>
-
-                    {/* Dynamic Badge */}
-                    {item.badge && (
-                      <Badge
-                        variant={item.badgeVariant || "secondary"}
+                      {/* Icon with Dynamic Coloring */}
+                      <div
                         className={cn(
-                          "h-5 min-w-5 px-1.5 text-[10px] font-bold rounded-full",
-                          item.badgeVariant === "destructive" &&
-                            "animate-pulse",
+                          "flex size-7 items-center justify-center rounded-lg transition-all duration-300",
+                          hasActiveChild
+                            ? "text-brand-aqua shadow-lg shadow-blue-500/40" // Added slight tilt for "pop"
+                            : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
                         )}
                       >
-                        {item.badge}
-                      </Badge>
-                    )}
+                        <Icon className="size-4" />
+                      </div>
 
-                    <ChevronRight className="ml-1 size-4 opacity-60 transition-transform duration-300 group-data-[state=open]/collapsible:rotate-90" />
+                      <span className="flex-1 truncate text-xs tracking-tight">
+                        {item.title}
+                      </span>
+
+                      {isActive && !hasActiveChild && (
+                        <motion.div
+                          layoutId="active-dot"
+                          className="size-1 rounded-full bg-brand-aqua shadow-[0_0_8px_rgba(var(--brand-aqua-rgb),0.8)]"
+                        />
+                      )}
+
+                      {/* Badge for notifications */}
+                      {item.badge && (
+                        <Badge
+                          variant={item.badgeVariant || "secondary"}
+                          className={cn(
+                            "h-5 min-w-5 px-1.5 text-[10px] font-semibold",
+                            item.badgeVariant === "destructive" &&
+                              "animate-pulse",
+                          )}
+                        >
+                          {item.badge}
+                        </Badge>
+                      )}
+
+                      <ChevronRight
+                        className={cn(
+                          "size-4 transition-all duration-200",
+                          isActive
+                            ? "opacity-100 translate-x-0"
+                            : "opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0",
+                        )}
+                      />
+                    </Link>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
 
                 <CollapsibleContent>
-                  <SidebarMenuSub className="ml-6 mt-1 flex flex-col gap-1 border-l border-slate-200/60 pl-2">
+                  <SidebarMenuSub className="ml-6 flex flex-col gap-1 border-l border-slate-200/60 pl-2">
                     {item.items?.map((subItem) => {
                       const isActive = location.pathname === subItem.url;
+                      const SubIcon = subItem.icon;
                       return (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton
@@ -107,9 +131,32 @@ export function NavPlateform({ items }) {
                           >
                             <Link
                               to={subItem.url}
-                              className="flex items-center justify-between w-full"
+                              className="flex items-center w-full"
                             >
-                              <span className="text-xs">{subItem.title}</span>
+                              {SubIcon ? (
+                                <div
+                                  className={cn(
+                                    "flex size-4 items-center justify-center rounded-lg transition-all duration-300",
+                                    hasActiveChild
+                                      ? "bg-brand-aqua/20 text-brand-aqua shadow-lg shadow-gray-300 scale-105"
+                                      : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
+                                  )}
+                                >
+                                  <SubIcon className="size-5" />
+                                </div>
+                              ) : (
+                                <div
+                                  className={cn(
+                                    "size-1.5 rounded-full mr-1 transition-all duration-300",
+                                    isActive
+                                      ? "bg-brand-aqua"
+                                      : "bg-slate-300 group-hover:bg-brand-aqua/50",
+                                  )}
+                                />
+                              )}
+                              <span className="text-[11px]">
+                                {subItem.title}
+                              </span>
                               {isActive && (
                                 <motion.div
                                   layoutId="active-dot"

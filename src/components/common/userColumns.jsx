@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { IconStarFilled } from "@tabler/icons-react";
 import { useNavigate } from "react-router";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { toast } from "sonner";
 
 // Helper for Completion Colors

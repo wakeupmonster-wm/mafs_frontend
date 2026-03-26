@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  getSocialMediaApi,
-  updateSocialMediaApi,
-} from "../services/social.media.service";
+  getGeneralSettingApi,
+  updateGeneralSettingApi,
+} from "../services/general.service";
 
-export const fetchSocialMedia = createAsyncThunk(
-  "socialMedia/fetchSocialMedia",
+export const fetchGeneralSettings = createAsyncThunk(
+  "generalSettings/fetchGeneralSettings",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await getSocialMediaApi();
-      console.log("Res: ", res);
+      const res = await getGeneralSettingApi();
       return res.data;
     } catch (e) {
       return rejectWithValue(e.response?.data?.message || "Failed to fetch");
@@ -17,14 +16,11 @@ export const fetchSocialMedia = createAsyncThunk(
   },
 );
 
-export const updateSocialMediaAction = createAsyncThunk(
-  "socialMedia/updateSocialMedia",
+export const updateGeneralSettingsAction = createAsyncThunk(
+  "generalSettings/updateGeneralSettings",
   async (payload, { rejectWithValue }) => {
     try {
-      // FIX: Calling the service API, not the thunk itself
-      const res = await updateSocialMediaApi({
-        socialMedia: payload,
-      });
+      const res = await updateGeneralSettingApi(payload);
       return {
         data: res.data,
         message: res?.message || "Updated successfully",
@@ -43,12 +39,11 @@ const initialState = {
 };
 
 // --- Slice ---
-
-const socialMediaSlice = createSlice({
-  name: "socialMedia",
+const generalSettingsSlice = createSlice({
+  name: "generalSettings",
   initialState,
   reducers: {
-    clearSocialMediaStatus: (state) => {
+    clearGeneralSettingsStatus: (state) => {
       state.error = null;
       state.successMessage = null;
     },
@@ -56,35 +51,36 @@ const socialMediaSlice = createSlice({
   extraReducers: (builder) => {
     builder
       // Fetch List
-      .addCase(fetchSocialMedia.pending, (state) => {
+      .addCase(fetchGeneralSettings.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchSocialMedia.fulfilled, (state, action) => {
+      .addCase(fetchGeneralSettings.fulfilled, (state, action) => {
         state.loading = false;
         state.list = action.payload?.data?.socialMedia || action.payload || [];
       })
-      .addCase(fetchSocialMedia.rejected, (state, action) => {
+      .addCase(fetchGeneralSettings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
       // Update
-      .addCase(updateSocialMediaAction.pending, (state) => {
+      .addCase(updateGeneralSettingsAction.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.successMessage = null;
       })
-      .addCase(updateSocialMediaAction.fulfilled, (state, action) => {
+      .addCase(updateGeneralSettingsAction.fulfilled, (state, action) => {
         state.loading = false;
         state.successMessage = action.payload.message;
+        state.list = action.payload.data;
       })
-      .addCase(updateSocialMediaAction.rejected, (state, action) => {
+      .addCase(updateGeneralSettingsAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export const { clearSocialMediaStatus } = socialMediaSlice.actions;
-export default socialMediaSlice.reducer;
+export const { clearGeneralSettingsStatus } = generalSettingsSlice.actions;
+export default generalSettingsSlice.reducer;

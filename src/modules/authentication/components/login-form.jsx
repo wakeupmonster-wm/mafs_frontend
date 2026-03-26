@@ -73,7 +73,7 @@ export function LoginForm({ className, ...props }) {
             />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-muted-foreground mt-2 text-xs sm:text-sm text-pretty sm:text-balance">
+          <p className="text-gray-600 mt-2 text-xs sm:text-sm text-pretty sm:text-balance">
             Login to manage the Keen As Mustard ecosystem
           </p>
         </div>
@@ -84,7 +84,7 @@ export function LoginForm({ className, ...props }) {
               Email
             </FieldLabel>
             <div className="relative">
-              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-5 h-5 text-gray-400" />
+              <Mail className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-aqua" />
               <Input
                 id="email"
                 type="email"
@@ -116,7 +116,7 @@ export function LoginForm({ className, ...props }) {
             </div>
 
             <div className="relative">
-              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-2 top-1/2 -translate-y-[45%] w-4 h-4 text-brand-aqua" />
               <Input
                 id="password"
                 // Dynamic type based on state
@@ -137,9 +137,9 @@ export function LoginForm({ className, ...props }) {
                 tabIndex="-1" // Prevents tabbing to the eye icon before the next field
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
+                  <EyeOff className="h-4 w-4 text-brand-aqua" />
                 ) : (
-                  <Eye className="h-5 w-5" />
+                  <Eye className="h-4 w-4 text-brand-aqua" />
                 )}
               </button>
             </div>

@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSelector } from "react-redux";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { useNavigate } from "react-router-dom";
 import {
   Tooltip,

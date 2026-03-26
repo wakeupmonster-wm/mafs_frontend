@@ -2,7 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AlertCircle, AlertTriangle, Eye, Flag, Info } from "lucide-react";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 export const reportColumns = (navigate) => [
   {

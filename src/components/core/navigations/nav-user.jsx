@@ -26,7 +26,7 @@ import { Link, useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 import { logout } from "@/modules/authentication/store/auth.slice";
 import { toast } from "sonner";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();

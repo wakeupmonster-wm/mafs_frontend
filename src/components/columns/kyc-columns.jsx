@@ -19,7 +19,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { useNavigate } from "react-router";
 import { IconCalendar } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";

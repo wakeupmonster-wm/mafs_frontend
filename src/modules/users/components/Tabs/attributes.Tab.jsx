@@ -35,7 +35,7 @@ export const AttributesTab = ({ attributes }) => {
       value="attributes"
       className="mt-6 animate-in fade-in slide-in-from-top-2 duration-500"
     >
-      <Card className="border border-slate-200 gap-4 py-2 shadow-xl overflow-hidden rounded-3xl bg-white">
+      <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md gap-4 py-2 overflow-hidden rounded-3xl bg-white">
         <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 py-4 px-8">
           <CardTitle className="flex items-center gap-4 text-2xl font-black text-slate-800 tracking-tight">
             <div className="relative">

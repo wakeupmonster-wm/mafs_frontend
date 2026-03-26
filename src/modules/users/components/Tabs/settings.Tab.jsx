@@ -98,9 +98,9 @@ export const SettingsTab = ({ userData }) => {
         {/* <EditSettingsDialog userData={userData} /> */}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 pb-10 gap-6">
         {/* 2. GOVERNANCE & STATUS CARD */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconUserShield className="text-indigo-500" size={18} /> Account
@@ -178,7 +178,7 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 3. NOTIFICATIONS & PREFERENCES */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconBellRinging className="text-blue-500" size={18} />{" "}
@@ -224,7 +224,7 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 4. DISCOVERY SETTINGS */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconMapPin className="text-orange-500" size={18} /> Discovery
@@ -271,7 +271,7 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 5. ACCESS & TRUST CARD */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden gap-2 py-4">
+        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-emerald-500" size={18} /> Access &
@@ -295,7 +295,7 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 6. PRIVACY & RESTRICTIONS */}
-        <Card className="border-slate-200 shadow-sm overflow-hidden lg:col-span-2 gap-2">
+        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden lg:col-span-2 gap-2">
           <CardHeader className="border-b border-slate-50 bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-rose-500" size={18} /> Restricted
@@ -424,7 +424,7 @@ export const SettingsTab = ({ userData }) => {
       </div>
 
       {/* 7. DANGER ZONE */}
-      <div className="pt-6">
+      {/* <div className="pt-6">
         <div className="flex items-center gap-2 mb-4 px-1">
           <div className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
           <h4 className="text-xs font-black uppercase tracking-widest text-rose-600">
@@ -469,7 +469,7 @@ export const SettingsTab = ({ userData }) => {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </div> */}
     </TabsContent>
   );
 };

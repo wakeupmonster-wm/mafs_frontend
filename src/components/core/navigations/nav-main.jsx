@@ -17,8 +17,8 @@ export function NavMain({ items }) {
   }
 
   return (
-    <SidebarGroup className={"items-center mt-2"}>
-      <SidebarMenu className={"gap-1"}>
+    <SidebarGroup className={"items-center mt-1"}>
+      <SidebarMenu className={"gap-0"}>
         {items.map((item) => {
           const isActive = location.pathname === item.url;
           const Icon = item.icon;
@@ -30,12 +30,12 @@ export function NavMain({ items }) {
                 isActive={isActive}
                 tooltip={item.title}
                 className={cn(
-                  "group relative h-10 w-full transition-all duration-300 rounded-lg px-2",
+                  "group relative h-9 w-full transition-all duration-300 rounded-lg px-2",
                   "hover:bg-slate-100/80 active:scale-[0.98]", // Added click compression
                   isActive && "!bg-brand-aqua/10 border border-brand-aqua/50",
                 )}
               >
-                <Link to={item.url} className="flex items-center gap-3 text-xs">
+                <Link to={item.url} className="flex items-center gap-2 text-xs">
                   <div
                     className={cn(
                       "flex size-[22px] items-center justify-center rounded-sm transition-all duration-300",

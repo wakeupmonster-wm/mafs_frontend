@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
-import dummyImg from "@/assets/images/dummyImg.jpg";
+import dummyImg from "@/assets/web/dummyImg.webp";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 
@@ -75,7 +75,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
         ].map((stat, i) => (
           <Card
             key={i}
-            className="border-none shadow-sm bg-white overflow-hidden group"
+            className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md bg-white overflow-hidden group"
           >
             <CardContent className="p-0">
               <div className="flex items-center p-4 gap-4">
@@ -110,7 +110,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* 2. RECENT MATCHES TIMELINE (8/12) */}
-        <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden">
+        <Card className="lg:col-span-8 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden">
           <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 bg-slate-50/30 py-4 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconMessage2 size={18} className="text-emerald-500" /> Recent
@@ -152,7 +152,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                         <p className="text-xs text-slate-400 font-medium">
                           {match.matchedAt
                             ? formatDistanceToNow(new Date(match.matchedAt)) +
-                            " ago"
+                              " ago"
                             : "Unknown date"}
                         </p>
                       </div>
@@ -187,7 +187,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
 
         {/* 3. INSIGHTS & CONVERSION RATE (4/12) */}
         <div className="lg:col-span-4 space-y-6">
-          <Card className="border-slate-200 shadow-sm">
+          <Card className="border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
                 <IconTrendingUp size={18} className="text-brand-aqua" />{" "}
@@ -224,9 +224,9 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                     <span className="text-xs font-bold text-slate-900">
                       {stats.totalLikes > 0
                         ? (
-                          (stats.totalMatches / stats.totalLikes) *
-                          100
-                        ).toFixed(1)
+                            (stats.totalMatches / stats.totalLikes) *
+                            100
+                          ).toFixed(1)
                         : 0}
                       %
                     </span>
@@ -238,9 +238,9 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                     <span className="text-xs font-bold text-slate-900">
                       {stats.totalLikes > 0
                         ? (
-                          (stats.totalSuperLikes / stats.totalLikes) *
-                          100
-                        ).toFixed(1)
+                            (stats.totalSuperLikes / stats.totalLikes) *
+                            100
+                          ).toFixed(1)
                         : 0}
                       %
                     </span>
@@ -250,7 +250,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-brand-aqua border-none shadow-lg shadow-indigo-100 p-6 text-white overflow-hidden relative">
+          <Card className="bg-brand-aqua/90 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md p-6 text-white overflow-hidden relative">
             <div className="relative z-10">
               <h4 className="text-sm font-bold opacity-80">Moderator Tip</h4>
               <p className="text-xs mt-2 leading-relaxed">

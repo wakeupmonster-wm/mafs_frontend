@@ -159,7 +159,7 @@ export default function PendingDeliveriesDataTables({
                     className={cn(
                       "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                        "border-brand-aqua ring-1 ring-brand-aqua",
                     )}
                   >
                     <IconFilter
@@ -168,7 +168,7 @@ export default function PendingDeliveriesDataTables({
                         "h-6 w-6",
                         hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
+                          : "text-brand-aqua/60",
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">
@@ -262,7 +262,7 @@ export default function PendingDeliveriesDataTables({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -271,7 +271,7 @@ export default function PendingDeliveriesDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -281,7 +281,7 @@ export default function PendingDeliveriesDataTables({
                     <TableCell key={cell.id} className="py-3 pl-10">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import z from "zod";
 import { Save, ShieldCheck } from "lucide-react"; // Icons ke liye
 import { PageHeader } from "@/components/common/headSubhead";
@@ -7,10 +7,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { RenderField } from "../components/render.field";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearGeneralSettingsStatus,
+  fetchGeneralSettings,
+  updateGeneralSettingsAction,
+} from "../store/general.slice";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   siteName: z.string().min(1, "App name is required"),
-  tagline: z.string().optional(),
   timezone: z.string().min(1, "Timezone is required"),
   termsUrl: z.string().url("Invalid URL").optional(),
   privacyUrl: z.string().url("Invalid URL").optional(),
@@ -19,24 +25,77 @@ const formSchema = z.object({
 });
 
 export default function GeneralPage() {
+  const dispatch = useDispatch();
+  const {
+    list: settings,
+    successMessage,
+    error,
+    loading,
+  } = useSelector((state) => state.generalSettings);
+  const [selectedFile, setSelectedFile] = useState(null); // Logo file ke liye
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      siteName: "Keen As Mustard",
-      tagline: "the free streaming music player",
-      timezone: "Asia/Bangkok",
-      termsUrl: "https://www.keenasmustard.com.au/terms-conditions",
-      privacyUrl: "https://www.keenasmustard.com.au/privacy-policy",
-      playStore:
-        "https://play.google.com/store/apps/details?id=com.keenasmustard.com.au",
-      appStore: "https://apps.apple.com/au/app/keen-as-mustard/id6751287866",
+      siteName: "",
+      timezone: "Asia/Sydney",
+      termsUrl: "",
+      privacyUrl: "",
+      playStore: "",
+      appStore: "",
     },
   });
 
-  const handleSave = () => {
-    console.log("Saving General Config:", form.getValues());
-    // Yahan aapki Axios API call aayegi
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(fetchGeneralSettings());
+      dispatch(clearGeneralSettingsStatus());
+    }
+    if (error) {
+      toast.error(error);
+      dispatch(clearGeneralSettingsStatus());
+    }
+  }, [successMessage, error, dispatch]);
+
+  // 2. Data aane par Form reset karein
+  useEffect(() => {
+    if (settings && Object.keys(settings).length > 0) {
+      form.reset({
+        siteName: settings?.value?.appName || "",
+        timezone: settings?.value?.timezone || "Asia/Sydney",
+        termsUrl: settings?.value?.termsUrl || "",
+        privacyUrl: settings?.value?.privacyUrl || "",
+        playStore: settings?.value?.playStoreUrl || "",
+        appStore: settings?.value?.appStoreUrl || "",
+      });
+    }
+  }, [settings, form]);
+
+  // Unified submit handler
+  const onSubmit = async (values) => {
+    const formData = new FormData();
+    formData.append("appName", values.siteName);
+    formData.append("timezone", values.timezone);
+    formData.append("termsUrl", values.termsUrl || "");
+    formData.append("privacyUrl", values.privacyUrl || "");
+    formData.append("playStoreUrl", values.playStore || "");
+    formData.append("appStoreUrl", values.appStore || "");
+
+    // Logic for logo
+    formData.append("logoUrl", settings?.value?.logo || "");
+    if (selectedFile) {
+      formData.append("logo", selectedFile);
+    }
+
+    // Now dispatch actually works!
+    dispatch(updateGeneralSettingsAction(formData));
   };
+
+  // 1. Fetch data on Mount
+  useEffect(() => {
+    dispatch(fetchGeneralSettings());
+  }, [dispatch]);
 
   return (
     <div className="flex min-h-screen text-gray-300 font-sans">
@@ -52,14 +111,14 @@ export default function GeneralPage() {
 
           <button
             className="flex items-center gap-2 bg-brand-aqua/50 hover:bg-brand-aqua/60 text-black text-sm px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-slate-400/50"
-            onClick={handleSave}
+            onClick={form.handleSubmit(onSubmit)}
           >
-            <Save size={16} /> Save
+            <Save size={16} /> {loading ? "Saving..." : "Save"}
           </button>
         </header>
 
         <Form {...form}>
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
             <RenderField
               control={form.control}
               name="siteName"
@@ -69,9 +128,12 @@ export default function GeneralPage() {
             />
 
             {/* Logo Section */}
-            <LogoUpload />
+            <LogoUpload
+              currentLogo={settings?.value?.logo}
+              onFileSelect={(file) => setSelectedFile(file)}
+            />
 
-            <RenderField
+            {/* <RenderField
               control={form.control}
               name="timezone"
               label="Timezone"
@@ -81,7 +143,7 @@ export default function GeneralPage() {
                 { label: "Asia/Kolkata", value: "Asia/Kolkata" },
                 { label: "Asia/Sydney", value: "Asia/Sydney" },
               ]}
-            />
+            /> */}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <RenderField
