@@ -30,12 +30,13 @@ export default function PrizePage() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState({
     title: "",
-    type: "",
+    type: "GIFT_CARD",
     value: "",
     planType: "",
     durationInDays: "",
     spinWheelLabel: "",
-    supportiveItems: "",
+    description: "",
+    supportiveItems: [],
   });
   const [confirmConfig, setConfirmConfig] = useState({
     isOpen: false,
@@ -66,12 +67,13 @@ export default function PrizePage() {
   const resetForm = () => {
     setForm({
       title: "",
-      type: "",
+      type: "GIFT_CARD",
       value: "",
       planType: "",
       durationInDays: "",
       spinWheelLabel: "",
-      supportiveItems: "",
+      description: "",
+      supportiveItems: [],
     });
     setEditingId(null);
   };
@@ -84,9 +86,10 @@ export default function PrizePage() {
       planType: prize.planType || "",
       durationInDays: prize.durationInDays ? prize.durationInDays.toString() : "",
       spinWheelLabel: prize.spinWheelLabel || "",
-      supportiveItems: prize.supportiveItems
-        ? prize.supportiveItems.join(", ")
-        : "",
+      description: prize.description || "",
+      supportiveItems: Array.isArray(prize.supportiveItems) 
+        ? prize.supportiveItems 
+        : [],
     });
     setEditingId(prize._id);
     setIsDialogOpen(true);
@@ -94,23 +97,27 @@ export default function PrizePage() {
 
   const handleSubmit = async () => {
     const payload = { ...form };
-    const supportiveItems = payload.supportiveItems
-      .split(",")
-      .map((i) => i.trim())
-      .filter((i) => i !== "");
+    const supportiveItems = Array.isArray(payload.supportiveItems)
+      ? payload.supportiveItems.map((i) => i.trim()).filter((i) => i !== "")
+      : [];
 
     let data = {
       title: payload.title,
-      type: payload.type,
+      type: payload.type || "GIFT_CARD",
       spinWheelLabel: payload.spinWheelLabel,
       supportiveItems,
     };
 
-    if (payload.type === "FREE_PREMIUM") {
-      data.planType = payload.planType;
-      data.durationInDays = parseInt(payload.durationInDays, 10);
-    } else {
+    // if (payload.type === "FREE_PREMIUM") {
+    //   data.planType = payload.planType;
+    //   data.durationInDays = parseInt(payload.durationInDays, 10);
+    // } else {
       data.value = parseFloat(payload.value);
+    // }
+
+    // New GIFT_CARD fields
+    if (payload.description?.trim()) {
+      data.description = payload.description.trim();
     }
 
     try {
@@ -153,7 +160,7 @@ export default function PrizePage() {
       toast.error(err || "Failed to delete prize");
     }
   };
-
+  
   return (
     <div className="relative p-4 space-y-6 min-h-[500px]">
       {loading && (

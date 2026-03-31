@@ -12,7 +12,7 @@ export const notificationHistory = createAsyncThunk(
         e.response?.data?.message || "Failed to fetch notification history",
       );
     }
-  },
+  },  
 );
 
 export const broadcastNotification = createAsyncThunk(

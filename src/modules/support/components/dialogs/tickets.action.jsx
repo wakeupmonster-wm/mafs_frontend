@@ -33,7 +33,7 @@ export const TicketAction = ({
     >
       <DialogContent className="max-w-md gap-2 p-0 overflow-hidden border border-grey-900 shadow-2xl">
         {/* Colorful Header Strip */}
-        <div className="bg-gray-900 shadow-lg px-6 py-4 flex items-center gap-3">
+        <div className="bg-brand-aqua shadow-lg px-6 py-4 flex items-center gap-3">
           <div className="p-2 bg-white/10 rounded-lg">
             <MessageSquare className="w-5 h-5 text-white" />
           </div>
@@ -41,8 +41,8 @@ export const TicketAction = ({
             <DialogTitle className="text-white text-lg font-semibold">
               Update Ticket
             </DialogTitle>
-            <p className="text-gray-400 text-[11px] uppercase tracking-wider font-medium">
-              Ref. ID: {selectedTicket?._id?.slice(-8)}
+            <p className="text-white text-[11px] uppercase tracking-wider font-medium">
+              Ticket-ID: {selectedTicket?.ticketId || selectedTicket?._id?.slice(-8)}
             </p>
           </div>
         </div>

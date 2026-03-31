@@ -46,6 +46,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { TableLoader } from "@/app/loader/table.loader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
+import { PreLoader } from "@/app/loader/preloader";
 
 export default function SupportTicketsDataTables({
   columns,
@@ -274,12 +275,17 @@ export default function SupportTicketsDataTables({
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody
-            className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
-            )}
-          >
-            {table.getRowModel().rows?.length ? (
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-60 p-0 text-center relative"
+                >
+                  <PreLoader />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-slate-50/50">
                   {row.getVisibleCells().map((cell) => (
@@ -298,11 +304,7 @@ export default function SupportTicketsDataTables({
                   colSpan={columns.length}
                   className="h-60 text-center"
                 >
-                  {isLoading ? (
-                    <TableLoader text="Fetching data..." />
-                  ) : (
-                    <DataNotFound message={"No support tickets found."} />
-                  )}
+                  <DataNotFound message={"No support tickets found."} />
                 </TableCell>
               </TableRow>
             )}

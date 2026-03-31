@@ -191,11 +191,11 @@ export default function SubscriberManagementPage() {
 
     return (
         <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative font-jakarta">
-             {loading && (
-                            <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px]">
-                                <PreLoader />
-                            </div>
-                        )}
+            {loading && (
+                <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px]">
+                    <PreLoader />
+                </div>
+            )}
             <motion.div
                 className="@container/main space-y-4"
                 initial="hidden"

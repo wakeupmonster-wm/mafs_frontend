@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
+import { PreLoader } from "@/app/loader/preloader";
 
 import {
   broadcastNotification,
@@ -38,11 +39,12 @@ export default function NotificationManagementPages() {
 
   const [form, setForm] = useState({
     notificationType: "broadcast",
-    target: "all_users",
+    target: "all",
     campaignName: "",
     title: "",
     message: "",
-    cta: "",
+    ctaLabel: "",
+    ctaAction: "",
     daysBeforeExpiry: "",
   });
 
@@ -50,17 +52,37 @@ export default function NotificationManagementPages() {
     setForm((p) => ({ ...p, [key]: value }));
   };
 
+  const buildCta = () => {
+    if (!form.ctaLabel || !form.ctaAction) return undefined;
+    return { label: form.ctaLabel, action: form.ctaAction };
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.campaignName || !form.title || !form.message) return;
 
+    const base = { campaignName: form.campaignName, title: form.title, message: form.message };
+    const cta = buildCta();
+
     const actions = {
-      broadcast: () => broadcastNotification({ ...form }),
-      premium: () => sendNotificationToPremiumUsers({ ...form }),
+      broadcast: () =>
+        broadcastNotification({
+          ...base,
+          target: form.target,
+          ...(cta && { cta }),
+        }),
+      premium: () =>
+        sendNotificationToPremiumUsers({
+          ...base,
+          sendNow: true,
+          ...(cta && { cta }),
+        }),
       expiry: () =>
         createPremiumExpiryCampaign({
-          ...form,
+          ...base,
           daysBeforeExpiry: Number(form.daysBeforeExpiry),
+          auto: true,
+          ...(cta && { cta }),
         }),
     };
 
@@ -70,6 +92,11 @@ export default function NotificationManagementPages() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8">
+      {loading && (
+        <div className="fixed inset-0 z-[100]">
+          <PreLoader />
+        </div>
+      )}
       <div className="max-w-6xl mx-auto space-y-8">
         {/* ENHANCED HEADER */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -138,11 +165,11 @@ export default function NotificationManagementPages() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all_users">All Community</SelectItem>
-                        <SelectItem value="free_users">
+                        <SelectItem value="all">All Community</SelectItem>
+                        <SelectItem value="free">
                           Standard Tier
                         </SelectItem>
-                        <SelectItem value="premium_users">
+                        <SelectItem value="premium">
                           Pro Tier Only
                         </SelectItem>
                       </SelectContent>
@@ -182,10 +209,25 @@ export default function NotificationManagementPages() {
                   <div className="flex gap-4">
                     <div className="flex-1">
                       <Input
-                        placeholder="CTA Link (https://...)"
-                        value={form.cta}
-                        onChange={(e) => handleChange("cta", e.target.value)}
+                        placeholder="CTA Button Text (Optional)"
+                        value={form.ctaLabel}
+                        onChange={(e) => handleChange("ctaLabel", e.target.value)}
                       />
+                    </div>
+                    <div className="flex-1">
+                      <Select
+                        value={form.ctaAction}
+                        onValueChange={(v) => handleChange("ctaAction", v)}
+                      >
+                        <SelectTrigger className="bg-slate-50/50">
+                          <SelectValue placeholder="CTA Action" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="OPEN_APP">Open App</SelectItem>
+                          <SelectItem value="BUY_PREMIUM">Buy Premium</SelectItem>
+                          <SelectItem value="OPEN_CHAT">Open Chat</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     {form.notificationType === "expiry" && (
                       <div className="w-32">

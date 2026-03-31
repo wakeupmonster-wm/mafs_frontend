@@ -22,7 +22,10 @@ import {
   AlertCircle,
   CheckCircle2,
   ShieldCheck,
+  Zap,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { PreLoader } from "@/app/loader/preloader";
 
 import {
   broadcastNotification,
@@ -44,12 +47,17 @@ export default function NotificationManagementPages() {
   const [localLoading, setLocalLoading] = useState(false);
   const [form, setForm] = useState({
     notificationType: "broadcast",
-    target: "all_users",
+    target: "all",
     campaignName: "",
     title: "",
     message: "",
-    cta: "",
+    // CTA as object matching backend: { label, action }
+    ctaLabel: "",
+    ctaAction: "",
     daysBeforeExpiry: "",
+    auto: true,
+    sendNow: true,
+    scheduleAt: "",
     emailSubject: "",
     emailBody: "",
   });
@@ -57,110 +65,79 @@ export default function NotificationManagementPages() {
   const update = (k, v) => setForm((p) => ({ ...p, [k]: v }));
   const isLoading = reduxLoading || localLoading;
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
+  // Build CTA object only if label is provided
+  const buildCta = () => {
+    if (!form.ctaLabel || !form.ctaAction) return undefined;
+    return { label: form.ctaLabel, action: form.ctaAction };
+  };
 
-  //   if (!form.campaignName) return toast.error("Campaign name is required");
+  // Build CLEAN payload per campaign type — only send what backend expects
+  const buildPayload = () => {
+    const base = { campaignName: form.campaignName };
 
-  //   // --- EMAIL CAMPAIGN LOGIC ---
-  //   if (form.notificationType === "email") {
-  //     if (!form.emailSubject || !form.emailBody)
-  //       return toast.error("Email fields are required");
+    switch (form.notificationType) {
+      case "broadcast":
+        return {
+          ...base,
+          title: form.title,
+          message: form.message,
+          target: form.target,
+          ...(buildCta() && { cta: buildCta() }),
+        };
 
-  //     setLocalLoading(true);
-  //     try {
-  //       const token = localStorage.getItem("access_Token");
-  //       const res = await fetch(
-  //         "https://api.matchatfirstswipe.com.au/api/v1/admin/notification/broadcastemail",
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //           body: JSON.stringify({
-  //             campaignName: form.campaignName,
-  //             subject: form.emailSubject,
-  //             body: form.emailBody,
-  //             target:
-  //               form.target === "all_users"
-  //                 ? "all"
-  //                 : form.target === "free_users"
-  //                 ? "free"
-  //                 : "premium",
-  //           }),
-  //         }
-  //       );
-  //       const data = await res.json();
-  //       if (!data.success) throw new Error(data.message);
-  //       toast.success("Email campaign queued successfully");
-  //     } catch (err) {
-  //       toast.error(err.message || "Email sending failed");
-  //     } finally {
-  //       setLocalLoading(false);
-  //     }
-  //     return;
-  //   }
+      case "premium":
+        // No target field — backend hardcodes target: "premium"
+        return {
+          ...base,
+          title: form.title,
+          message: form.message,
+          sendNow: form.sendNow,
+          scheduleAt: form.sendNow ? null : form.scheduleAt || null,
+          ...(buildCta() && { cta: buildCta() }),
+        };
 
-  //   // --- PUSH NOTIFICATION LOGIC ---
-  //   if (!form.title || !form.message)
-  //     return toast.error("Title and Message are required");
+      case "expiry":
+        return {
+          ...base,
+          title: form.title,
+          message: form.message,
+          daysBeforeExpiry: Number(form.daysBeforeExpiry),
+          auto: form.auto,
+          ...(buildCta() && { cta: buildCta() }),
+        };
 
-  //   const actions = {
-  //     broadcast: () => broadcastNotification({ ...form }),
-  //     premium: () => sendNotificationToPremiumUsers({ ...form }),
-  //     expiry: () => {
-  //       if (!form.daysBeforeExpiry) throw new Error("Expiry days required");
-  //       return createPremiumExpiryCampaign({
-  //         ...form,
-  //         daysBeforeExpiry: Number(form.daysBeforeExpiry),
-  //       });
-  //     },
-  //   };
+      case "email":
+        return {
+          ...base,
+          emailSubject: form.emailSubject,
+          emailBody: form.emailBody,
+          target: form.target,
+        };
 
-  //   try {
-  //     dispatch(actions[form.notificationType]());
-  //     setTimeout(() => dispatch(clearNotificationStatus()), 4000);
-  //   } catch (err) {
-  //     toast.error(err.message);
-  //   }
-  // };
-
-  // const [form, setForm] = useState({
-  //   notificationType: "broadcast",
-  //   target: "all_users",
-  //   campaignName: "",
-  //   title: "",
-  //   message: "",
-  //   cta: "",
-  //   daysBeforeExpiry: "",
-  // });
-
-  const handleChange = (key, value) => {
-    setForm((p) => ({ ...p, [key]: value }));
+      default:
+        return base;
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Basic validation
     if (!form.campaignName) return;
 
-    // Email ke liye alag validation, Push ke liye alag
     if (form.notificationType === "email") {
       if (!form.emailSubject || !form.emailBody) return;
     } else {
       if (!form.title || !form.message) return;
     }
 
+    if (form.notificationType === "expiry" && !form.daysBeforeExpiry) return;
+
+    const payload = buildPayload();
+
     const actions = {
-      broadcast: () => broadcastNotification({ ...form }),
-      premium: () => sendNotificationToPremiumUsers({ ...form }),
-      expiry: () =>
-        createPremiumExpiryCampaign({
-          ...form,
-          daysBeforeExpiry: Number(form.daysBeforeExpiry),
-        }),
-      email: () => sendEmailCampaign(form),
+      broadcast: () => broadcastNotification(payload),
+      premium: () => sendNotificationToPremiumUsers(payload),
+      expiry: () => createPremiumExpiryCampaign(payload),
+      email: () => sendEmailCampaign(payload),
     };
 
     dispatch(actions[form.notificationType]());
@@ -169,6 +146,11 @@ export default function NotificationManagementPages() {
 
   return (
     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+      {isLoading && (
+        <div className="fixed inset-0 z-[100]">
+          <PreLoader />
+        </div>
+      )}
       <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* LEFT COLUMN: FORM */}
         <div className="lg:col-span-7 space-y-6">
@@ -238,11 +220,11 @@ export default function NotificationManagementPages() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all_users">All Community</SelectItem>
-                        <SelectItem value="free_users">
+                        <SelectItem value="all">All Community</SelectItem>
+                        <SelectItem value="free">
                           Free Tier Only
                         </SelectItem>
-                        <SelectItem value="premium_users">
+                        <SelectItem value="premium">
                           Premium Tier Only
                         </SelectItem>
                       </SelectContent>
@@ -304,23 +286,75 @@ export default function NotificationManagementPages() {
                       value={form.message}
                       onChange={(e) => update("message", e.target.value)}
                     />
-                    {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
-                    <Input
-                      placeholder="Action Link (Optional)"
-                      value={form.cta}
-                      onChange={(e) => update("cta", e.target.value)}
-                    />
-                    {form.notificationType === "expiry" && (
+                    {/* CTA: label + action dropdown (backend expects object) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
-                        type="number"
-                        placeholder="Days before expiry"
-                        value={form.daysBeforeExpiry}
-                        onChange={(e) =>
-                          update("daysBeforeExpiry", e.target.value)
-                        }
+                        placeholder="CTA Button Text (Optional)"
+                        value={form.ctaLabel}
+                        onChange={(e) => update("ctaLabel", e.target.value)}
                       />
+                      <Select
+                        value={form.ctaAction}
+                        onValueChange={(v) => update("ctaAction", v)}
+                      >
+                        <SelectTrigger className="bg-slate-50">
+                          <SelectValue placeholder="CTA Action" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="OPEN_APP">Open App</SelectItem>
+                          <SelectItem value="BUY_PREMIUM">Buy Premium</SelectItem>
+                          <SelectItem value="OPEN_CHAT">Open Chat</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Expiry-specific fields */}
+                    {form.notificationType === "expiry" && (
+                      <div className="space-y-4">
+                        <Input
+                          type="number"
+                          placeholder="Days before expiry (e.g. 3)"
+                          value={form.daysBeforeExpiry}
+                          onChange={(e) =>
+                            update("daysBeforeExpiry", e.target.value)
+                          }
+                        />
+                        <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                          <div>
+                            <p className="text-sm font-medium text-slate-700">Auto Send via CRON</p>
+                            <p className="text-xs text-slate-400">Automatically send when users match expiry window</p>
+                          </div>
+                          <Switch
+                            checked={form.auto}
+                            onCheckedChange={(v) => update("auto", v)}
+                          />
+                        </div>
+                      </div>
                     )}
-                    {/* </div> */}
+
+                    {/* Premium-specific fields */}
+                    {form.notificationType === "premium" && (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                          <div>
+                            <p className="text-sm font-medium text-slate-700">Send Immediately</p>
+                            <p className="text-xs text-slate-400">Toggle off to schedule for later</p>
+                          </div>
+                          <Switch
+                            checked={form.sendNow}
+                            onCheckedChange={(v) => update("sendNow", v)}
+                          />
+                        </div>
+                        {!form.sendNow && (
+                          <Input
+                            type="datetime-local"
+                            placeholder="Schedule date & time"
+                            value={form.scheduleAt}
+                            onChange={(e) => update("scheduleAt", e.target.value)}
+                          />
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </div>
@@ -406,11 +440,10 @@ export default function NotificationManagementPages() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
-                className={`p-4 rounded-xl flex items-center gap-3 border ${
-                  successMessage
-                    ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                    : "bg-rose-50 border-rose-200 text-rose-800"
-                }`}
+                className={`p-4 rounded-xl flex items-center gap-3 border ${successMessage
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+                  : "bg-rose-50 border-rose-200 text-rose-800"
+                  }`}
               >
                 {successMessage ? (
                   <CheckCircle2 className="text-emerald-500" />

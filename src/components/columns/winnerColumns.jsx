@@ -7,9 +7,34 @@ import {
   CheckCircle,
   AlertCircle,
   ArrowUpDown,
+  Type,
 } from "lucide-react";
 
-export const getWinnerColumns = () => [
+export const getWinnerColumns = (page = 1, limit = 10) => [
+  {
+    id: "serialNumber",
+    header: "S.No",
+    cell: ({ row }) => (
+      <span className="text-xs font-bold">
+        {(page - 1) * limit + row.index + 1}.
+      </span>
+    ),
+  },
+  {
+    accessorKey: "title",
+    header: "Campaign Name",
+    cell: ({ row }) => {
+      const title = row.original?.title;
+      return (
+        <div className="flex items-center gap-2 group">
+          {/* <Type className="h-4 w-4 text-brand-aqua transition-transform group-hover:scale-110" /> */}
+          <span className="font-bold text-slate-900 truncate max-w-[150px]">
+            {title || "Untitled Campaign"}
+          </span>
+        </div>
+      );
+    },
+  },
   {
     accessorKey: "date",
     header: ({ column }) => (
@@ -113,9 +138,8 @@ export const getWinnerColumns = () => [
 
       return (
         <span
-          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-            styles[status] || "bg-gray-50 text-gray-600"
-          }`}
+          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${styles[status] || "bg-gray-50 text-gray-600"
+            }`}
         >
           {status === "COMPLETED" ? (
             <CheckCircle className="h-3 w-3" />

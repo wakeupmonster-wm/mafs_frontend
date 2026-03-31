@@ -10,7 +10,7 @@ export const fetchWinner = createAsyncThunk(
       if (response && response.success) {
         return {
           winner: response.data || [],
-          stats: response.statsKPI || [],
+          stats: response.stats || {},
           pagination: {
             page: response.pagination.page,
             limit: response.pagination.limit,
@@ -35,7 +35,7 @@ const winnerSlice = createSlice({
   name: "winner",
   initialState: {
     winner: [],
-    stats: [],
+    stats: {},
     loading: false,
     error: null,
     pagination: { page: 1, limit: 10, total: 0, totalPages: 0 },

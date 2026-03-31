@@ -1,5 +1,4 @@
 import { React, useState } from "react";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -158,7 +157,7 @@ export default function PrizesDataTable({
                     className={cn(
                       "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                      "border-brand-aqua ring-1 ring-brand-aqua"
                     )}
                   >
                     <IconFilter
@@ -188,7 +187,7 @@ export default function PrizesDataTable({
                   <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
                     Prizes Type
                   </DropdownMenuLabel>
-                  {["GIFT_CARD", "FREE_PREMIUM"].map((status) => (
+                  {["GIFT_CARD"].map((status) => (
                     <DropdownMenuCheckboxItem
                       key={status}
                       className="capitalize"

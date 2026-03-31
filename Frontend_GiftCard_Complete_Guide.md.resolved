@@ -1,0 +1,163 @@
+# 🎁 Frontend Guide: GIFT_CARD Prize - Complete Implementation
+
+## Overview
+Ab humara system sirf **GIFT_CARD** type support karta hai. Neeche step-by-step har UI screen ka breakdown hai ki kya dikhana hai, kya bhejana hai, aur kaise handle karna hai.
+
+---
+
+## 1. CREATE PRIZE Screen (`/admin/giveaway/prizes` → Create Button)
+
+### API: `POST /api/v1/admin/giveaway/prizes`
+
+### UI Elements (Form Fields):
+
+| # | Field | Type | Required | Notes |
+|---|---|---|---|---|
+| 1 | **Title** | Text Input | ✅ Yes | Prize ka naam (e.g., "$50 Amazon Gift Card") |
+| 2 | **Type** | Dropdown (Disabled/Hidden) | ✅ Yes | Hamesha `"GIFT_CARD"` bhejo. Dropdown dikhane ki zarurat nahi, ya sirf ek option dikha do |
+| 3 | **Value** | Number Input | ✅ Yes | Dollar value (e.g., 50, 100) |
+| 4 | **Spin Wheel Label** | Text Input | ✅ Yes | Spin wheel mein kya dikhega (e.g., "Gift Card!") |
+| 5 | **Description** | Textarea | ❌ Optional | Short info about the prize |
+| 6 | **Gift Card Expiry Date** | Date Picker | ❌ Optional (but Recommended) | Voucher ki expiry date. Calendar UI dikhao |
+| 7 | **Supportive Items** | Dynamic List (Add/Remove) | ❌ Optional | Extra perks jo prize ke sath milenge. Har ek item ek text input. "+" button se add, "×" button se remove. (e.g., "Sticker Pack", "Bonus 10% Credit") |
+
+### Example Payload:
+```json
+{
+  "title": "$50 Amazon Gift Card",
+  "type": "GIFT_CARD",
+  "value": 50,
+  "spinWheelLabel": "Gift Card!",
+  "description": "Redeem on Amazon Australia",
+  "giftCardExpiryDate": "2026-06-30",
+  "supportiveItems": ["Sticker Pack", "Bonus 10% Credit"]
+}
+```
+
+### ⚠️ Important Notes:
+- `type` field hamesha `"GIFT_CARD"` hi bhejni hai (hardcode kar do frontend me)
+- **Expiry Date** ke liye Date Picker lagao. Agar Admin blank chhode toh `null` bhejo
+- **Value** field mein sirf number allow karo (No $ sign, no commas)
+- **Supportive Items** ek array of strings hai. Agar admin koi extra item na daale toh empty array `[]` bhejo
+
+---
+
+## 2. PRIZE LIST Screen (Table View)
+
+### API: `GET /api/v1/admin/giveaway/prizes`
+
+### Table Columns:
+
+| Column | Source Field | Format |
+|---|---|---|
+| Prize Name | `title` | As-is |
+| Type | `type` | Badge: "Gift Card" (Green badge) |
+| Value | `value` | `$${value}` format |
+| Expiry | `giftCardExpiryDate` | Date format: "30 June 2026". Agar `null` hai toh "No Expiry" dikhao |
+| Status | `isActive` | Toggle / Active-Inactive badge |
+
+### Expiry Date UI Tip:
+- Agar `giftCardExpiryDate` past date hai (expired), toh **RED badge** dikhao: "⚠️ Expired"
+- Agar future date hai, toh **GREEN badge**: "Valid until 30 Jun 2026"
+- Agar `null` hai, toh **GRAY badge**: "No Expiry Set"
+
+---
+
+## 3. MARK AS DELIVERED Screen (Delivery Modal/Panel)
+
+Ye sabse important part hai. Jab admin "Deliver" button click kare, ek Modal/Panel khulna chahiye jisme ye fields hon:
+
+### API: `POST /api/v1/admin/giveaway/mark-as-deliver`
+
+### UI Elements (Modal/Panel):
+
+| # | Field | Type | Required | Notes |
+|---|---|---|---|---|
+| 1 | **Voucher Code** | Text Input | ✅ **MANDATORY** | Admin yahan gift card ka actual code paste karega. Backend reject kar dega agar blank bheja toh |
+| 2 | **Actual Value** | Number Input | ❌ Optional | Agar delivered value original se alag hai toh (e.g., partial delivery) |
+| 3 | **Email Subject** | Text Input | ❌ Optional | Custom email subject line |
+| 4 | **Email Title** | Text Input | ❌ Optional | Email ke andar main heading |
+| 5 | **Email Description** | Textarea | ❌ Optional | Email body description |
+| 6 | **Redemption Steps** | Dynamic List (Add/Remove) | ❌ Optional | Steps array, har ek step ek text input. "+" button se add, "×" button se remove |
+
+### Example Payload:
+```json
+{
+  "winHistoryId": "65b...",
+  "deliveryNotes": "AMZN-XXXX-YYYY-ZZZZ",
+  "actualDeliveredValue": 50,
+  "emailTemplate": {
+    "subject": "🎉 Your $50 Amazon Gift Card is Here!",
+    "title": "Congratulations! Your Prize Awaits",
+    "description": "We're thrilled to deliver your weekly giveaway prize.",
+    "steps": [
+      "Visit amazon.com.au and sign in",
+      "Go to Account → Gift Cards → Redeem",
+      "Enter the code shown above",
+      "Your balance will be updated instantly!"
+    ]
+  }
+}
+```
+
+### ⚠️ Critical Behaviors:
+
+**A. Voucher Code Validation (Frontend + Backend):**
+- Frontend: "Deliver" button **disabled** rakhna jab tak Voucher Code field blank hai
+- Backend: Agar `deliveryNotes` blank aaya → `400 Error` return hoga:
+  ```json
+  { "success": false, "message": "Voucher/Gift Card code (deliveryNotes) is required for GIFT_CARD prizes." }
+  ```
+- Frontend ko ye error toast mein dikhana hai
+
+**B. Email Template (Optional but Powerful):**
+- Agar Admin ne koi bhi email field fill nahi ki → Backend apna **default template** use karega (automatic)
+- Agar Admin ne fields fill ki → Backend us **custom template** ko use karega
+- Toh frontend mein ek collapsible section rakh sakte ho: **"✉️ Customize Email (Optional)"** jo click par expand ho
+
+**C. Response Handling - `emailSent` Flag (NEW!):**
+```json
+{
+  "success": true,
+  "message": "Prize marked as delivered and email sent successfully",
+  "emailSent": true,
+  "data": { "deliveredAt": "2026-03-27T..." }
+}
+```
+- Agar `emailSent: true` → Green Toast: "✅ Delivered & Email Sent!"
+- Agar `emailSent: false` → Orange/Warning Toast: "⚠️ Prize Delivered, but Email Failed! Please notify user manually."
+
+---
+
+## 4. PENDING DELIVERIES Table
+
+### API: `GET /api/v1/admin/giveaway/deliveries/pending`
+
+### Recommended Table Columns:
+
+| Column | Source | Notes |
+|---|---|---|
+| User | `user.nickname`, `user.email` | Avatar + Name |
+| Prize | `prize.title` | Prize naam |
+| Value | `prize.value` | `$${value}` |
+| Won On | `wonAt` | Date format |
+| Claimed On | `claimedAt` | Date format |
+| Expiry | `prize.giftCardExpiryDate` | RED if expired, GREEN if valid |
+| Status | `deliveryStatus` | Badge: PENDING (Yellow), DELIVERED (Green) |
+| Actions | - | "Deliver" button → Opens delivery modal |
+
+---
+
+## Quick Reference: All API Endpoints
+
+| Action | Method | Endpoint | Key Fields |
+|---|---|---|---|
+| Create Prize | POST | `/api/v1/admin/giveaway/prizes` | title, type, value, spinWheelLabel, giftCardExpiryDate, supportiveItems |
+| List Prizes | GET | `/api/v1/admin/giveaway/prizes` | - |
+| Deliver Prize | POST | `/api/v1/admin/giveaway/mark-as-deliver` | winHistoryId, deliveryNotes (required!), emailTemplate |
+| Pending List | GET | `/api/v1/admin/giveaway/deliveries/pending` | page, limit |
+| Delivered List | GET | `/api/v1/admin/giveaway/deliveries/completed` | page, limit |
+
+---
+
+Bhai ye guide follow karke frontend team cleanly implement kar payegi. Koi doubt ho toh reach out karna! 🚀

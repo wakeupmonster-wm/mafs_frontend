@@ -145,6 +145,9 @@ const PendingDeliveriesPage = lazy(
 const ParticipantsPage = lazy(
   () => import("@/modules/giveaway/pages/participants.page"),
 );
+const ViewCampaignDetailPage = lazy(
+  () => import("@/modules/giveaway/pages/view.campaign.detail.page"),
+);
 
 import { PreLoader } from "../loader/preloader";
 import GeneralPage from "@/modules/settings/pages/general.page";
@@ -337,6 +340,14 @@ export const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<PreLoader />}>
                     <ParticipantsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "view-campaign/:campaignId",
+                element: (
+                  <Suspense fallback={<PreLoader />}>
+                    <ViewCampaignDetailPage />
                   </Suspense>
                 ),
               },

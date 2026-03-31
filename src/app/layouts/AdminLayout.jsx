@@ -5,6 +5,8 @@ import { AppSidebar } from "@/components/core/appSideBar";
 import { SiteHeader } from "@/components/core/siteHeader";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ROLES } from "@/constants/roles";
+import GlobalCampaignAlert from "@/components/common/GlobalCampaignAlert";
+
 
 export default function AdminLayout() {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function AdminLayout() {
 
   return (
     <SidebarProvider>
+      <GlobalCampaignAlert />
       {/* 1. The Sidebar remains fixed on the left */}
       <AppSidebar />
       {/* 2. The Inset area creates the "frame" for your content */}

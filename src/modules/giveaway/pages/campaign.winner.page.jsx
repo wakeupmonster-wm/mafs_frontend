@@ -43,7 +43,10 @@ export default function CampaignWinnerPage() {
     statusFilter,
   ]);
 
-  const columns = useMemo(() => getWinnerColumns(), []);
+  const columns = useMemo(
+    () => getWinnerColumns(pagination.pageIndex + 1, pagination.pageSize),
+    [pagination.pageIndex, pagination.pageSize]
+  );
 
   // --- Stats Configuration ---
   const statCards = [
@@ -131,7 +134,7 @@ export default function CampaignWinnerPage() {
             setGlobalFilter(val);
             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
           }}
-          searchPlaceholder="Search by prize title, phone, email..."
+          searchPlaceholder="Search by campaign name, prize, phone..."
           filters={{
             statusFilter,
             setStatusFilter: (val) => {

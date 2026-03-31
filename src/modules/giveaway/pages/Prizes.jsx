@@ -592,9 +592,8 @@ export default function Prizes() {
                       {filteredPrizes.map((p, index) => (
                         <tr
                           key={p._id}
-                          className={`transition-all duration-200 hover:bg-gray-50/80 hover:shadow-sm animate-in fade-in slide-in-from-bottom-1 ${
-                            editingId === p._id ? "bg-blue-50/30 shadow-sm" : ""
-                          }`}
+                          className={`transition-all duration-200 hover:bg-gray-50/80 hover:shadow-sm animate-in fade-in slide-in-from-bottom-1 ${editingId === p._id ? "bg-blue-50/30 shadow-sm" : ""
+                            }`}
                           style={{ animationDelay: `${index * 50}ms` }}
                         >
                           <td className="px-5 py-4">
@@ -634,7 +633,7 @@ export default function Prizes() {
                           </td>
                           <td className="px-5 py-4">
                             {p.supportiveItems &&
-                            p.supportiveItems.length > 0 ? (
+                              p.supportiveItems.length > 0 ? (
                               <div className="flex flex-wrap gap-1">
                                 {p.supportiveItems
                                   .slice(0, 2)
@@ -688,11 +687,10 @@ export default function Prizes() {
                   {filteredPrizes.map((p, index) => (
                     <div
                       key={p._id}
-                      className={`p-4 transition-all duration-200 hover:bg-gray-50/80 animate-in fade-in slide-in-from-bottom-2 ${
-                        editingId === p._id
-                          ? "bg-blue-50/30 border-l-4 border-blue-500"
-                          : ""
-                      }`}
+                      className={`p-4 transition-all duration-200 hover:bg-gray-50/80 animate-in fade-in slide-in-from-bottom-2 ${editingId === p._id
+                        ? "bg-blue-50/30 border-l-4 border-blue-500"
+                        : ""
+                        }`}
                       style={{ animationDelay: `${index * 50}ms` }}
                     >
                       <div className="flex items-start justify-between">

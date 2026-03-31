@@ -38,6 +38,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
+import { PreLoader } from "@/app/loader/preloader";
 
 export function ContactSupportPage() {
   const dispatch = useDispatch();
@@ -240,7 +241,7 @@ export function MyTicketsPage() {
   }, [dispatch, statusFilter, searchTerm]);
 
   const handleActionSubmit = async () => {
-    
+
     if (!reply.trim()) return toast.error("Please enter a reply");
 
     const res = await dispatch(
@@ -274,7 +275,7 @@ export function MyTicketsPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-gray-900 rounded-xl shadow-lg shadow-gray-200">
+            <div className="p-2.5 bg-brand-agua rounded-xl shadow-lg shadow-gray-200">
               <Inbox className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -337,8 +338,10 @@ export function MyTicketsPage() {
             <tbody className="divide-y divide-gray-50">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="py-20 text-center">
-                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
+                  <td colSpan={8} className="py-20">
+                    <div className="flex justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+                    </div>
                   </td>
                 </tr>
               ) : tickets?.length === 0 ? (
@@ -389,7 +392,7 @@ export function MyTicketsPage() {
                         {t.subject}
                       </div>
                       <div className="text-[11px] text-gray-400 uppercase">
-                        ID: {t._id.slice(-6)}
+                        ID: {t.ticketId || t._id.slice(-6)}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -432,8 +435,8 @@ export function MyTicketsPage() {
         {/* --- Mobile View (Cards) --- */}
         <div className="md:hidden space-y-4">
           {loading ? (
-            <div className="py-10 text-center">
-              <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-400" />
+            <div className="py-10 flex justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
             </div>
           ) : tickets?.length === 0 ? (
             <div className="py-10 text-center text-gray-500 bg-white rounded-lg border">
@@ -459,7 +462,7 @@ export function MyTicketsPage() {
                         {t.user?.nickname || "No Name"}
                       </span>
                       <span className="text-[10px] text-gray-500 uppercase font-mono italic">
-                        #{t._id.slice(-6)}
+                        #{t.ticketId || t._id.slice(-6)}
                       </span>
                     </div>
                   </div>
@@ -633,14 +636,7 @@ export function TicketDetailPage({ ticketId }) {
   };
 
   if (loading && !ticket) {
-    return (
-      <div className="min-h-screen bg-gray-50/50 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
-          <span className="text-sm text-gray-500">Loading ticket...</span>
-        </div>
-      </div>
-    );
+    return <PreLoader />;
   }
 
   if (error) {

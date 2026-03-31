@@ -381,8 +381,8 @@ export default function SupportTicketsPage() {
         setSelectedTicket(null);
 
         dispatch(
-          fetchMyTickets({ 
-            page: pagination.pageIndex + 1, 
+          fetchMyTickets({
+            page: pagination.pageIndex + 1,
             limit: pagination.pageSize,
             search: globalFilter,
             status: statusFilter,
@@ -441,7 +441,7 @@ export default function SupportTicketsPage() {
           <PageHeader
             heading="Support Management"
             icon={<Inbox className="w-9 h-9 text-white animate-pulse" />}
-            color="bg-red-500 shadow-red-500/20"
+            color="bg-brand-aqua shadow-brand-aqua-500/20"
             subheading="Track and manage customer queries."
           />
         </header>

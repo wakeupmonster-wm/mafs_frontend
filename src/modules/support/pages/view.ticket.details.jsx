@@ -334,7 +334,7 @@ export default function ViewTicketDetails() {
               {ticket.status.replace("_", " ")}
             </Badge>
             <span className="text-sm text-slate-600 font-semibold font-mono">
-              #{ticket._id.slice(-6)}
+              #{ticket.ticketId || ticket._id.slice(-6)}
             </span>
           </div>
         </div>
@@ -505,7 +505,7 @@ export default function ViewTicketDetails() {
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-slate-400">Support ID</span>
                 <span className="text-sm font-mono text-slate-700 break-all">
-                  {ticket._id}
+                  {ticket.ticketId || ticket._id}
                 </span>
               </div>
             </div>

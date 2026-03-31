@@ -338,7 +338,7 @@ export default function BulkCampaigns() {
             <p className="text-red-600 text-xs mt-1">{validationErrors.prizeId}</p>
           )}
         </div>
-
+        {/* 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Supportive Items <span className="text-gray-400">(Optional)</span>
@@ -357,7 +357,7 @@ export default function BulkCampaigns() {
           <p className="text-gray-500 text-xs mt-1">
             Separate items with commas
           </p>
-        </div>
+        </div> */}
       </div>
 
       <Button

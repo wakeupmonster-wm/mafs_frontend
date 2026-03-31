@@ -1,21 +1,14 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   bulkCreateCampaign,
   fetchPrizes,
   clearGiveawayStatus,
 } from "../store/giveaway.slice";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Calendar, AlertCircle, CheckCircle } from "lucide-react";
-import BulkSummary from "../components/BulkSummary";
+import { Layers } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";
 import BulkForm from "../components/BulkForm";
+import { toast } from "sonner";
 
 export default function BulkCampaignsPage() {
   const dispatch = useDispatch();
@@ -23,87 +16,91 @@ export default function BulkCampaignsPage() {
     prizes,
     loading,
     bulkCampaignLoading,
-    error,
-    successMessage,
-    bulkCampaignSummary,
   } = useSelector((s) => s.giveaway);
-
-  const [showSummary, setShowSummary] = useState(false);
 
   useEffect(() => {
     dispatch(fetchPrizes());
+    dispatch(clearGiveawayStatus());
   }, [dispatch]);
 
-  // Handle auto-clear and summary visibility
-  useEffect(() => {
-    if (successMessage || error) {
-      const timer = setTimeout(() => {
-        dispatch(clearGiveawayStatus());
-        setShowSummary(false);
-      }, 10000); // 10 seconds is usually enough for reading
-      return () => clearTimeout(timer);
+  const handleBulkSubmit = async (formData) => {
+    try {
+      const result = await dispatch(
+        bulkCreateCampaign({
+          ranges: [formData],
+          isActive: true,
+        })
+      ).unwrap();
+
+      const { summary, skippedDates } = result;
+      const created = summary?.created || 0;
+      const skipped = summary?.skipped || 0;
+
+      const skippedInfo = skippedDates
+        ?.map(
+          (d) =>
+            `${new Date(d.date).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}: ${d.reason}`
+        )
+        .join("\n");
+
+      if (created > 0 && skipped === 0) {
+        toast.success(`Successfully generated weekly campaigns for all Fridays in the selected range. (${created} total)`);
+      } else if (created > 0 && skipped > 0) {
+        toast.success(`Successfully generated weekly campaigns for all Fridays in the selected range. (${created} created, ${skipped} non-Fridays/duplicates ignored)`, {
+          description: skippedInfo,
+          duration: 8000,
+        });
+      } else {
+        toast.error(`No campaigns created. Ensure selected range includes Fridays.`, {
+          description: skippedInfo,
+          duration: 8000,
+        });
+      }
+    } catch (err) {
+      toast.error(err || "Bulk campaign creation failed");
+    } finally {
+      dispatch(clearGiveawayStatus());
     }
-  }, [successMessage, error, dispatch]);
-
-  useEffect(() => {
-    if (bulkCampaignSummary) setShowSummary(true);
-  }, [bulkCampaignSummary]);
-
-  const handleBulkSubmit = (formData) => {
-    dispatch(
-      bulkCreateCampaign({
-        ranges: [formData],
-        isActive: true,
-      })
-    );
   };
 
   return (
-    <div className="relative p-4 flex justify-center min-h-[500px]">
+    <div className="relative p-4 space-y-6 min-h-[500px]">
       {(loading || bulkCampaignLoading) && (
         <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center rounded-3xl">
           <PreLoader />
         </div>
       )}
-      <Card className="w-full max-w-3xl shadow-lg border-none">
-        <CardHeader className="bg-slate-50/50 border-b">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <Calendar className="w-6 h-6 text-primary" />
-            Bulk Create Campaigns
-          </CardTitle>
-          <CardDescription>
-            Schedule multiple giveaway campaigns across a specific date range.
-          </CardDescription>
-        </CardHeader>
 
-        <CardContent className="pt-2 pb-0 space-y-6">
-          {/* Feedback Messages */}
-          {successMessage && (
-            <div className="flex items-center gap-2 p-3 text-sm bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg">
-              <CheckCircle className="w-4 h-4" /> {successMessage}
-            </div>
-          )}
+      {/* Header - consistent with other sub-pages */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="bg-brand-aqua p-3 rounded-xl shadow-lg">
+            <Layers className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              Bulk Create Campaigns
+            </h1>
+            <p className="text-sm text-slate-500">
+              Schedule multiple giveaway campaigns across a date range
+            </p>
+          </div>
+        </div>
+      </div>
 
-          {error && (
-            <div className="flex items-center gap-2 p-3 text-sm bg-red-50 border border-red-200 text-red-800 rounded-lg">
-              <AlertCircle className="w-4 h-4" /> {error}
-            </div>
-          )}
-
-          {/* Creation Summary */}
-          {showSummary && bulkCampaignSummary && (
-            <BulkSummary summary={bulkCampaignSummary} />
-          )}
-
-          {/* Main Form Component */}
-          <BulkForm
-            prizes={prizes}
-            onSubmit={handleBulkSubmit}
-            isSubmitting={bulkCampaignLoading}
-            isPrizesLoading={loading}
-          />
-        </CardContent>
-      </Card>
+      {/* Form Card */}
+      <div className="max-w-2xl">
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div className="p-6">
+            <BulkForm
+              prizes={prizes}
+              onSubmit={handleBulkSubmit}
+              isSubmitting={bulkCampaignLoading}
+              isPrizesLoading={loading}
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

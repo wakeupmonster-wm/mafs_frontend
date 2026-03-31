@@ -143,9 +143,15 @@ export const pauseCampaign = createAsyncThunk(
 
 export const activateCampaign = createAsyncThunk(
   "giveaway/activateCampaign",
-  async (id) => {
-    await activateCampaignApi(id);
-    return id;
+  async (id, { rejectWithValue }) => {
+    try {
+      await activateCampaignApi(id);
+      return id;
+    } catch (e) {
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to activate campaign"
+      );
+    }
   },
 );
 
@@ -156,7 +162,9 @@ export const deleteCampaign = createAsyncThunk(
       await deleteCampaignApi(id);
       return id;
     } catch (e) {
-      return rejectWithValue("Failed to delete campaign");
+      return rejectWithValue(
+        e.response?.data?.message || "Failed to delete campaign"
+      );
     }
   },
 );

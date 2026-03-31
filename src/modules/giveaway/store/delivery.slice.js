@@ -38,12 +38,14 @@ export const fetchPendingDeliveries = createAsyncThunk(
 
 export const markAsDelivered = createAsyncThunk(
   "delivery/markDelivered",
-  async (id, { rejectWithValue }) => {
+  async ({ id, ...payload }, { rejectWithValue }) => {
     try {
-      const res = await markAsDeliveredApi(id);
-      return id;
+      const res = await markAsDeliveredApi(id, payload);
+      return { id, res: res.data || res };
     } catch (err) {
-      return rejectWithValue("Failed to mark delivered");
+      return rejectWithValue(
+        err?.response?.data?.message || "Failed to mark delivered"
+      );
     }
   },
 );
@@ -81,7 +83,7 @@ const deliverySlice = createSlice({
         s.error = a.payload;
       })
       .addCase(markAsDelivered.fulfilled, (s, a) => {
-        s.deliveries = s.deliveries.filter((item) => item._id !== a.payload);
+        s.deliveries = s.deliveries.filter((item) => item._id !== a.payload.id);
       });
   },
 });

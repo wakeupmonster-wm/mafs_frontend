@@ -16,10 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { apiConnector } from "@/services/axios/axios.connector";
 import { SUBSCRIPTION_ENDPOINTS } from "@/services/api-enpoints/subscriptions.endpoints";
+import { AnimatePresence, motion } from "framer-motion";
 
 export const PrizeDialog = ({
   isOpen,
@@ -45,7 +46,7 @@ export const PrizeDialog = ({
           setFetchingProducts(true);
           const res = await apiConnector("GET", SUBSCRIPTION_ENDPOINTS.LIST_PRODUCTS);
           let fetchedProducts = [];
-          
+
           if (res && res.data) {
             fetchedProducts = res.data;
           } else if (Array.isArray(res)) {
@@ -74,29 +75,26 @@ export const PrizeDialog = ({
     if (!form.title?.trim()) newErrors.title = "Prize title is required";
     if (!form.type) newErrors.type = "Please select a prize type";
 
-    if (form.type === "FREE_PREMIUM") {
-      if (!form.planType) newErrors.planType = "Please select a plan type";
-      if (!form.durationInDays || isNaN(form.durationInDays) || Number(form.durationInDays) <= 0) {
-        newErrors.durationInDays = "Valid duration is required";
-      }
-    } else {
-      if (!form.value || isNaN(form.value)) {
-        newErrors.value = "Valid value is required";
-      } else if (Number(form.value) <= 0) {
-        newErrors.value = "Value must be greater than 0";
-      }
+    // if (form.type === "FREE_PREMIUM") {
+    //   if (!form.planType) newErrors.planType = "Please select a plan type";
+    //   if (!form.durationInDays || isNaN(form.durationInDays) || Number(form.durationInDays) <= 0) {
+    //     newErrors.durationInDays = "Valid duration is required";
+    //   }
+    // } else {
+    if (!form.value || isNaN(form.value)) {
+      newErrors.value = "Valid value is required";
+    } else if (Number(form.value) <= 0) {
+      newErrors.value = "Value must be greater than 0";
     }
+    // }
 
     if (!form.spinWheelLabel?.trim()) {
       newErrors.spinWheelLabel = "Spin wheel label is required";
     }
 
-    // Optional: Validate supportive items if you want a minimum count
-    const items = form.supportiveItems
-      ?.split(",")
-      .filter((i) => i.trim() !== "");
-    if (!items || items.length < 2) {
-      newErrors.supportiveItems = "At least 2 supportive items are recommended";
+    // Validate supportive items (min 2 tags)
+    if (!form.supportiveItems || form.supportiveItems.length < 2) {
+      newErrors.supportiveItems = "At least 2 supportive items are required";
     }
 
     setErrors(newErrors);
@@ -117,7 +115,7 @@ export const PrizeDialog = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] gap-0 p-0 overflow-hidden border-none shadow-2xl">
+      <DialogContent className="sm:max-w-[500px] max-h-[85vh] overflow-y-auto gap-0 p-0 border-none shadow-2xl">
         <DialogHeader className="p-6 bg-brand-aqua text-white">
           <DialogTitle className="text-xl font-bold tracking-tight">
             {isEditing ? "Update Prize Details" : "Create New Prize Asset"}
@@ -148,7 +146,7 @@ export const PrizeDialog = ({
               <Label className="text-xs font-bold uppercase text-slate-500">
                 Type
               </Label>
-              <Select
+              {/* <Select
                 value={form.type}
                 onValueChange={(v) => {
                   if (v === form.type) return;
@@ -168,12 +166,18 @@ export const PrizeDialog = ({
                   <SelectItem value="FREE_PREMIUM">Free Premium</SelectItem>
                   <SelectItem value="GIFT_CARD">Gift Card</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
+
+              <Input
+                value="Gift Card"
+                disabled
+                className="h-11 bg-slate-50 font-medium text-slate-500 cursor-not-allowed border-slate-200"
+              />
               {errors.type && <ErrorMsg msg={errors.type} />}
             </div>
 
             {/* Value OR Plan / Duration based on Type */}
-            {form.type === "FREE_PREMIUM" ? (
+            {/* {form.type === "FREE_PREMIUM" ? (
               <>
                 <div className="space-y-1.5 col-span-2 sm:col-span-1">
                   <Label className="text-xs font-bold uppercase text-slate-500">
@@ -220,68 +224,122 @@ export const PrizeDialog = ({
                   {errors.durationInDays && <ErrorMsg msg={errors.durationInDays} />}
                 </div>
               </>
-            ) : (
-              <div className="space-y-1.5 col-span-2 sm:col-span-1">
-                <Label className="text-xs font-bold uppercase text-slate-500">
-                  Value
-                </Label>
-                <Input
-                  type="number"
-                  value={form.value}
-                  onChange={(e) => setForm({ ...form, value: e.target.value })}
-                  className={cn(
-                    "h-11",
-                    errors.value && "border-red-500 focus-visible:ring-red-500"
-                  )}
-                />
-                {errors.value && <ErrorMsg msg={errors.value} />}
-              </div>
-            )}
+            ) : ( */}
+            <div className="space-y-1.5 col-span-2 sm:col-span-1">
+              <Label className="text-xs font-bold uppercase text-slate-500">
+                Value
+              </Label>
+              <Input
+                type="number"
+                value={form.value}
+                onChange={(e) => setForm({ ...form, value: e.target.value })}
+                className={cn(
+                  "h-11",
+                  errors.value && "border-red-500 focus-visible:ring-red-500"
+                )}
+              />
+              {errors.value && <ErrorMsg msg={errors.value} />}
+            </div>
+            {/* )} */}
+
+
+            {/* Spin Wheel Label */}
+            <div className="space-y-1.5 col-span-2 sm:col-span-1">
+              <Label className="text-xs font-bold uppercase text-slate-500">
+                Spin Wheel Label
+              </Label>
+              <Input
+                value={form.spinWheelLabel}
+                placeholder="Display text on wheel"
+                onChange={(e) =>
+                  setForm({ ...form, spinWheelLabel: e.target.value })
+                }
+                className={cn(
+                  "h-11",
+                  errors.spinWheelLabel &&
+                  "border-red-500 focus-visible:ring-red-500"
+                )}
+              />
+              {errors.spinWheelLabel && <ErrorMsg msg={errors.spinWheelLabel} />}
+            </div>
           </div>
 
-          {/* Spin Wheel Label */}
+          {/* Description (Optional) */}
           <div className="space-y-1.5">
             <Label className="text-xs font-bold uppercase text-slate-500">
-              Spin Wheel Label
+              Description <span className="text-slate-400 normal-case font-normal">(Optional)</span>
             </Label>
-            <Input
-              value={form.spinWheelLabel}
-              placeholder="Display text on wheel"
+            <textarea
+              value={form.description || ""}
               onChange={(e) =>
-                setForm({ ...form, spinWheelLabel: e.target.value })
+                setForm({ ...form, description: e.target.value })
               }
-              className={cn(
-                "h-11",
-                errors.spinWheelLabel &&
-                "border-red-500 focus-visible:ring-red-500"
-              )}
+              placeholder="Short info about the prize, e.g. Redeem on Amazon Australia"
+              rows={2}
+              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-aqua/20 focus:border-brand-aqua resize-none"
             />
-            {errors.spinWheelLabel && <ErrorMsg msg={errors.spinWheelLabel} />}
           </div>
 
-          {/* Supportive Items */}
-          <div className="space-y-1.5">
-            <Label className="text-xs font-bold uppercase text-slate-500">
+
+          {/* Supportive Items (Tag System) */}
+          <div className="space-y-2">
+            <Label className="text-xs font-bold uppercase text-slate-500 flex justify-between">
               Supportive Items
+              <span className={cn("normal-case font-normal", form.supportiveItems?.length >= 2 ? "text-slate-400" : "text-amber-500")}>
+                {form.supportiveItems?.length || 0} items added (min 2)
+              </span>
             </Label>
-            <Input
-              value={form.supportiveItems}
-              onChange={(e) =>
-                setForm({ ...form, supportiveItems: e.target.value })
-              }
-              placeholder="Item 1, Item 2, Item 3"
-              className={cn(
-                "h-11",
-                errors.supportiveItems &&
-                "border-amber-400 focus-visible:ring-amber-400"
-              )}
-            />
+
+            <div className={cn(
+              "min-h-[44px] p-2 rounded-md border bg-white flex flex-wrap gap-2 transition-all focus-within:ring-2 focus-within:ring-brand-aqua/20 focus-within:border-brand-aqua",
+              errors.supportiveItems ? "border-red-500" : "border-slate-200"
+            )}>
+              <AnimatePresence>
+                {form.supportiveItems?.map((item, index) => (
+                  <motion.span
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    key={index}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-brand-aqua/10 text-brand-aqua text-xs font-bold border border-brand-aqua/20"
+                  >
+                    {item}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newItems = form.supportiveItems.filter((_, i) => i !== index);
+                        setForm({ ...form, supportiveItems: newItems });
+                      }}
+                      className="hover:text-red-500 transition-colors"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+
+              <input
+                className="flex-1 bg-transparent border-none outline-none text-sm min-w-[120px] h-7"
+                placeholder={form.supportiveItems?.length >= 2 ? "Add more..." : "Type and press Enter..."}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const val = e.target.value.trim();
+                    if (val && !form.supportiveItems.includes(val)) {
+                      setForm({
+                        ...form,
+                        supportiveItems: [...form.supportiveItems, val]
+                      });
+                      e.target.value = "";
+                    }
+                  }
+                }}
+              />
+            </div>
+            {errors.supportiveItems && <ErrorMsg msg={errors.supportiveItems} />}
             <p className="text-[10px] text-slate-400 italic">
-              Separate items with commas
+              Create tags by typing and pressing **Enter**.
             </p>
-            {errors.supportiveItems && (
-              <ErrorMsg msg={errors.supportiveItems} />
-            )}
           </div>
         </div>
 
@@ -294,6 +352,7 @@ export const PrizeDialog = ({
             Cancel
           </Button>
           <Button
+            type="button"
             onClick={handleAction}
             disabled={loading}
             className="bg-brand-aqua hover:bg-brand-aqua/90 text-white min-w-[140px] h-11 shadow-lg shadow-brand-aqua/20"

@@ -17,24 +17,20 @@ import {
 import { PageHeader } from "@/components/common/headSubhead";
 import PrizePage from "./prizes.page";
 import CampaignsPage from "./campaigns.page";
-import BulkCampaignsPage from "./bulk.campaign.page";
 import CampaignWinnerPage from "./campaign.winner.page";
 import PendingDeliveriesPage from "./pending.deliveries.page";
 import { useSelector } from "react-redux";
-import ParticipantsPage from "./participants.page";
 
 const TABS = [
   { key: "prizes", label: "Prizes", icon: GiftIcon },
   { key: "campaigns", label: "Campaigns", icon: LayoutDashboard },
-  { key: "bulk", label: "Bulk", icon: Layers },
   { key: "deliveries", label: "Deliveries", icon: Truck },
   { key: "winner", label: "Winners", icon: Crown },
-  { key: "participants", label: "Participants", icon: Users },
 ];
 
 export default function GiveawayManagement() {
   const { prizes } = useSelector((s) => s.prize);
-  const { campaigns, partipants } = useSelector((s) => s.campaign);
+  const { campaigns } = useSelector((s) => s.campaign);
   const { deliveries } = useSelector((s) => s.delivery);
   const { winner } = useSelector((s) => s.winner);
 
@@ -59,14 +55,6 @@ export default function GiveawayManagement() {
             <Megaphone className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
           ),
         };
-      case "bulk":
-        return {
-          count: campaigns?.length || 0,
-          label: "Total Campaigns",
-          icon: (
-            <Megaphone className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />
-          ),
-        };
       case "deliveries":
         return {
           count: deliveries?.length || 0,
@@ -80,12 +68,6 @@ export default function GiveawayManagement() {
           count: winner?.length || 0,
           label: "Total Winners",
           icon: <Award className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
-        };
-      case "participants":
-        return {
-          count: partipants?.length || 0,
-          label: "Total Participants",
-          icon: <Users className="w-5 h-5 text-brand-aqua" strokeWidth={2.5} />,
         };
       default:
         return {
@@ -189,10 +171,8 @@ export default function GiveawayManagement() {
             <main className="relative h-max bg-white/40 backdrop-blur-sm rounded-3xl border border-slate-200/80 p-1 md:p-2 shadow-sm">
               {tab === "prizes" && <PrizePage />}
               {tab === "campaigns" && <CampaignsPage />}
-              {tab === "bulk" && <BulkCampaignsPage />}
               {tab === "deliveries" && <PendingDeliveriesPage />}
               {tab === "winner" && <CampaignWinnerPage />}
-              {tab === "participants" && <ParticipantsPage />}
             </main>
           </motion.div>
         </AnimatePresence>

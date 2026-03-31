@@ -8,6 +8,8 @@ import {
   Edit,
   Trash,
   Sparkles,
+  AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +19,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { format, isPast } from "date-fns";
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +28,19 @@ import {
 } from "../ui/tooltip";
 
 export const getPrizeColumns = (onEdit, onDelete) => [
+  {
+    id: "serialNumber",
+    header: "S.No",
+    cell: ({ row, table }) => {
+      const pageIndex = table.getState().pagination.pageIndex;
+      const pageSize = table.getState().pagination.pageSize;
+      return (
+        <span className="text-xs font-bold">
+          {pageIndex * pageSize + row.index + 1}
+        </span>
+      );
+    },
+  },
   {
     accessorKey: "title",
     header: "Title",
@@ -55,9 +71,8 @@ export const getPrizeColumns = (onEdit, onDelete) => [
       return (
         <Badge
           variant="outline"
-          className={`${
-            styles[type] || "bg-gray-50"
-          } flex w-fit items-center gap-1`}
+          className={`${styles[type] || "bg-gray-50"
+            } flex w-fit items-center gap-1`}
         >
           {icons[type] || <Gift className="h-3.5 w-3.5" />}
           {type}
@@ -69,9 +84,10 @@ export const getPrizeColumns = (onEdit, onDelete) => [
     accessorKey: "value",
     header: "Value",
     cell: ({ row }) => (
-      <span className="font-medium text-gray-700">{row.getValue("value")}</span>
+      <span className="font-bold text-slate-900">${row.getValue("value")}</span>
     ),
   },
+
   {
     accessorKey: "spinWheelLabel",
     header: "Wheel Label",

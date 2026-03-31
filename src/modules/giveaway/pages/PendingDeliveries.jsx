@@ -115,6 +115,9 @@ export default function PendingDeliveries() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
+                  <th className="p-4 text-left font-semibold text-gray-700 w-16">
+                    S.No.
+                  </th>
                   <th className="p-4 text-left font-semibold text-gray-700">
                     User
                   </th>
@@ -140,8 +143,11 @@ export default function PendingDeliveries() {
                     className="hover:bg-gray-50 transition-all duration-200 animate-in fade-in slide-in-from-bottom-1"
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
+                    <td className="p-4 font-medium text-gray-600">
+                      {(index + 1).toString().padStart(2, '0')}
+                    </td>
                     <td className="p-4 font-medium text-gray-800">
-                      {d.userId?.phone || d.userId?.email || "-"}
+                      {d.userId?.email || d.userId?.phone || "-"}
                     </td>
 
                     <td className="p-4">

@@ -180,9 +180,10 @@ export const getPendingDeliveriesApi = async (
   }
 };
 
-export const markAsDeliveredApi = (winHistoryId) => {
+export const markAsDeliveredApi = (winHistoryId, payload) => {
   return apiConnector("POST", GIVEAWAYS_ENDPOINTS.MARK_DELIVERED, {
     winHistoryId,
+    ...payload,
   });
 };
 

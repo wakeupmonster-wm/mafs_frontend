@@ -150,11 +150,10 @@ export default function CampaignWinner() {
                     size="sm"
                     variant={filter === f ? "default" : "outline"}
                     onClick={() => setFilter(f)}
-                    className={`transition-all duration-200 hover:scale-105 ${
-                      filter === f
+                    className={`transition-all duration-200 hover:scale-105 ${filter === f
                         ? "bg-gray-900 hover:bg-gray-800 shadow-md"
                         : "border-gray-300 hover:bg-gray-50"
-                    }`}
+                      }`}
                     style={{ animationDelay: `${idx * 50}ms` }}
                   >
                     {f === "ALL" && <Trophy className="w-3 h-3 mr-1.5" />}
