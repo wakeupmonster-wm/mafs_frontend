@@ -8,11 +8,11 @@ const TicketDetailPage = lazy(() =>
   })),
 );
 
-const ProfileReviewDetailPage = lazy(() =>
-  import("@/modules/profileReview/pages/ProfileReviewPages").then((m) => ({
-    default: m.ProfileReviewDetailPage,
-  })),
-);
+// const ProfileReviewDetailPage = lazy(() =>
+//   import("@/modules/profileReview/pages/ProfileReviewPages").then((m) => ({
+//     default: m.ProfileReviewDetailPage,
+//   })),
+// );
 
 const ChatReviewDetail = lazy(
   () => import("@/modules/chatManagement/pages/ChatReviewDetail"),
@@ -25,10 +25,10 @@ export function TicketWrapper() {
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
-export function ProfileReviewWrapper() {
-  const { userId } = useParams();
-  return <ProfileReviewDetailPage userId={userId} />;
-}
+// export function ProfileReviewWrapper() {
+//   const { userId } = useParams();
+//   return <ProfileReviewDetailPage userId={userId} />;
+// }
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function ChatReviewWrapper() {

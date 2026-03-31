@@ -62,7 +62,7 @@ export default function RequestResetEmailForm() {
             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-aqua" />
             <Input
               {...register("email")}
-              placeholder="name@example.com"
+              placeholder="keenasmustard@gmail.com.au"
               className="pl-10 py-6"
             />
           </div>

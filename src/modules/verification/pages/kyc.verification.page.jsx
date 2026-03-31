@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Users } from "lucide-react";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -238,9 +238,12 @@ export default function KYCVerificationPage() {
             subheading="Manage user identity documents."
           />
           <Badge
-            variant="secondary"
-            className="bg-brand-aqua/20 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
+            variant="outline"
+            //old   className="bg-brand-aqua/20 border border-brand-aqua text-slate-800 font-semibold gap-2 h-11 px-4 shadow-sm shadow-neutral-400"
+            // >
+            className="cursor-pointer bg-white hover:bg-brand-aqua text-slate-500 hover:text-white rounded-xl border font-semibold shadow-sm transition-all duration-300 gap-2 h-9 px-3"
           >
+            <Users className="mr-0.5 h-4 w-4" strokeWidth={2.5} />
             {reduxPagination?.total ?? 0} Total Requests
           </Badge>
         </header>
@@ -265,7 +268,7 @@ export default function KYCVerificationPage() {
             setGlobalFilter(val);
             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
           }}
-          searchPlaceholder="Search by nickname, email..."
+          searchPlaceholder="Search by user, phone, email..."
           filters={{
             statusFilter,
             setStatusFilter: (val) => {

@@ -173,7 +173,7 @@ quick decision-making without horizontal scrolling.
 
 | #   | Column Name        | Data Source                                   | UI Representation                    | Why It Matters                 |
 | :-- | :----------------- | :-------------------------------------------- | :----------------------------------- | :----------------------------- |
-| 1   | **Select / S.No**  | —                                             | Checkbox + Serial No.                | Bulk actions & quick reference |
+| 1   | **Select / Sr.No.**  | —                                             | Checkbox + Serial No.                | Bulk actions & quick reference |
 | 2   | **User ⭐**        | `profile.nickname`, `account.email`, `avatar` | Avatar + Name (bold) + Email (muted) | Identity at a glance           |
 | 3   | **Role**           | `role`                                        | Badge (USER / ADMIN)                 | Access & permission clarity    |
 | 4   | **Joined Date**    | `account.createdAt`                           | DD MMM YYYY + Tooltip                | Trust & lifecycle context      |

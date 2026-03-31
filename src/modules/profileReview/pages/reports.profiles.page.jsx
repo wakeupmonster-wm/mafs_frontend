@@ -15,6 +15,7 @@ import {
   IconLoader,
   IconSparkles,
 } from "@tabler/icons-react";
+// import { bgMap, colorMap } from "@/constants/colors";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -126,12 +127,11 @@ export default function ReportsProfilesPage() {
   }, [list, pagination?.total]);
 
   const colorMap = {
-    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald:
-      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-    red: "from-red-500/40 to-red-600/5 text-red-600 border-red-100",
+    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 ",
+    emerald: "from-emerald-500/40 to-emerald-600/5 text-emerald-600",
+    amber: "from-amber-500/40 to-amber-600/5 text-yellow-600 ",
+    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 ",
+    red: "from-red-500/40 to-red-600/5 text-red-600 ",
   };
 
   const bgMap = {
@@ -144,8 +144,9 @@ export default function ReportsProfilesPage() {
     red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
   };
 
+  // bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <motion.div
         className="space-y-6"
         initial="hidden"
@@ -156,7 +157,7 @@ export default function ReportsProfilesPage() {
           <PageHeader
             heading="Reported Profiles"
             icon={<ShieldAlert className="w-9 h-9 text-white animate-pulse" />}
-            color="bg-red-500 shadow-red-500/20"
+            color="bg-red-500"
             subheading="Review and manage user safety reports."
           />
         </header>

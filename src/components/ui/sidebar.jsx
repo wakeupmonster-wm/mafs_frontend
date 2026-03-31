@@ -449,7 +449,7 @@ const SidebarMenu = React.forwardRef(({ className, ...props }, ref) => (
     data-sidebar="menu"
     className={cn(
       "flex w-full min-w-0 flex-col gap-2",
-      "group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-3",
+      "group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:gap-4",
       className,
     )}
     {...props}
@@ -479,7 +479,7 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: "h-8 text-sm",
         sm: "h-7 text-xs",
-        lg: "h-14 text-sm group-data-[collapsible=icon]:!p-0",
+        lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
       },
     },
     defaultVariants: {

@@ -14,6 +14,7 @@ import {
   updateGeneralSettingsAction,
 } from "../store/general.slice";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   siteName: z.string().min(1, "App name is required"),
@@ -104,17 +105,17 @@ export default function GeneralPage() {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
           <PageHeader
             heading="General"
-            icon={<ShieldCheck className="w-9 h-9 text-white animate-pulse" />}
-            color="bg-brand-aqua shadow-brand-aqua/30"
+            icon={<ShieldCheck className="w-6 h-6 text-white" />}
+            color="bg-brand-aqua"
             subheading="Update your site's branding, social links, and legal policies."
           />
 
-          <button
-            className="flex items-center gap-2 bg-brand-aqua/50 hover:bg-brand-aqua/60 text-black text-sm px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-slate-400/50"
+          <Button
+            className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
             onClick={form.handleSubmit(onSubmit)}
           >
             <Save size={16} /> {loading ? "Saving..." : "Save"}
-          </button>
+          </Button>
         </header>
 
         <Form {...form}>

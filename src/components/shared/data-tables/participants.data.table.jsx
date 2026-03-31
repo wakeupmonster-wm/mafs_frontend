@@ -91,10 +91,9 @@ export default function ParticipantsDataTables({
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors duration-200"
-                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>
@@ -118,7 +117,7 @@ export default function ParticipantsDataTables({
                   variant={"outline"}
                   className={cn(
                     "w-max justify-start text-left font-normal border-brand-aqua/50 shadow-sm",
-                    !filters.date && "text-muted-foreground"
+                    !filters.date && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4 text-brand-aqua" />
@@ -155,7 +154,7 @@ export default function ParticipantsDataTables({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -164,7 +163,7 @@ export default function ParticipantsDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -174,7 +173,7 @@ export default function ParticipantsDataTables({
                     <TableCell key={cell.id} className="py-3 pl-10">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

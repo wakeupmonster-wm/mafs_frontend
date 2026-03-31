@@ -6,9 +6,7 @@ import {
   IconAlertTriangle,
   IconBan,
   IconCrown,
-  IconFileExcel,
   IconLoader,
-  IconLoader2,
   IconUserCheck,
   IconUsers,
 } from "@tabler/icons-react";
@@ -27,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
 import { SuspendUserModal } from "../components/suspendUserModal";
+import { bgMap, colorMap } from "@/constants/colors";
+import { Download, Loader2 } from "lucide-react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -36,25 +36,6 @@ const containerVariants = {
       // Controls the speed of the "wave" between cards
       staggerChildren: 0.1,
       delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: {
-    opacity: 0,
-    y: 25, // Start lower for a more pronounced "wave" up
-    scale: 0.95,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15, // Lower damping = more "wave" bounce
-      mass: 1,
     },
   },
 };
@@ -263,29 +244,8 @@ export default function UserManagementPage() {
     }
   };
 
-  const colorMap = {
-    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald:
-      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-    orange:
-      "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
-  };
-
-  const bgMap = {
-    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    emerald:
-      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-    amber:
-      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
-    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
-    orange:
-      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
-  };
-
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen py-4 px-5 bg-slate-50 pb-8">
       <motion.div
         className="@container/main space-y-6"
         initial="hidden"
@@ -304,25 +264,15 @@ export default function UserManagementPage() {
               onClick={handleExport}
               disabled={exportLoading}
               className={cn(
-                "relative h-11 px-6 shadow-md rounded-lg font-semibold transition-all duration-300",
-                "bg-green-200 hover:bg-green-100 border-green-500",
-                "text-slate-800 hover:text-green-700 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_-6px_rgba(79,70,229,0.15)]",
-                "hover:border-indigo-200 active:scale-[0.98]",
+                "relative h-9 p-4 rounded-md shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white border hover:border-brand-aqua transition-all duration-300",
                 "disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 group overflow-hidden",
               )}
             >
-              {/* Subtle Inner Glow on Hover */}
-              <span className="absolute inset-0 bg-gradient-to-tr from-indigo-50/0 via-indigo-50/0 to-indigo-50/50 opacity-0 group-hover:opacity-100 transition-opacity" />
-
               <div className="relative flex items-center justify-center">
                 {exportLoading ? (
-                  <IconLoader2 className="mr-2.5 h-4 w-4 animate-spin text-green-600" />
+                  <Loader2 className="mr-2.5 h-4 w-4 animate-spin text-brand-aqua" />
                 ) : (
-                  <IconFileExcel
-                    width={0}
-                    height={0}
-                    className="mr-2.5 !h-6 !w-6 text-slate-800 group-hover:text-green-500 transition-colors duration-300"
-                  />
+                  <Download className="mr-1.5 h-4 w-4" />
                 )}
 
                 <span className="tracking-tight">

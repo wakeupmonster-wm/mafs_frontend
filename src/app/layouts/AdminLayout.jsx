@@ -21,8 +21,9 @@ export default function AdminLayout() {
     <SidebarProvider>
       {/* 1. The Sidebar remains fixed on the left */}
       <AppSidebar />
+
       {/* 2. The Inset area creates the "frame" for your content */}
-      <SidebarInset className="flex flex-1 flex-col min-w-0 bg-slate-50/50 overflow-hidden">
+      <SidebarInset className="flex h-screen flex-1 flex-col min-w-0 bg-slate-50/50 overflow-hidden">
         <SiteHeader />
 
         {/* 3. The Main content area with proper max-width for readability */}

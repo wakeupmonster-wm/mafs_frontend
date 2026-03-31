@@ -1,4 +1,12 @@
-import { ArrowUpDown, Mail, MoreHorizontal, Phone } from "lucide-react";
+import {
+  ArrowUpDown,
+  Ban,
+  CirclePause,
+  Eye,
+  Mail,
+  MoreHorizontal,
+  Phone,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -6,6 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
@@ -22,33 +31,10 @@ const getCompletionColor = (val) => {
 };
 
 export const userColumns = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
-
   // S/No Column
   {
     id: "sno",
-    header: () => <div className="w-10 text-center text-xs">S.no</div>,
+    header: () => <div className="w-10 text-center text-xs">Sr.No.</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
@@ -84,7 +70,9 @@ export const userColumns = [
             <AvatarImage src={avatar} alt={nickname} />
             <AvatarFallback>{nickname.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
-          <span className="font-bold text-[11px] truncate">{nickname}</span>
+          <span className="capitalize font-bold text-[11px] truncate">
+            {nickname}
+          </span>
         </div>
       );
     },
@@ -94,8 +82,12 @@ export const userColumns = [
     accessorKey: "account.phone",
     header: "Phone",
     cell: ({ row }) => {
+      const phone = row.original.account?.phone;
+      if (!phone)
+        return <span className="text-slate-400 text-xs italic">-</span>;
+
       const copyToClipboard = () => {
-        navigator.clipboard.writeText(row.original.account?.phone);
+        navigator.clipboard.writeText(phone);
         toast.success("Phone number copied!");
       };
       return (
@@ -103,8 +95,8 @@ export const userColumns = [
           onClick={copyToClipboard}
           className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
         >
-          <Phone className="w-3.5 h-3.5" />
-          {row.original.account?.phone || "—"}
+          <Phone className="w-3 h-3 mr-1.5 text-brand-aqua/80 shrink-0" />
+          {phone}
         </div>
       );
     },
@@ -113,12 +105,27 @@ export const userColumns = [
   {
     accessorKey: "account.email",
     header: "Email",
-    cell: ({ row }) => (
-      <div className="flex items-center cursor-pointer gap-2 text-foreground text-[11px]">
-        <Mail className="w-3.5 h-3.5" />
-        {row.original.account?.email || "-"}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const email = row.original.account?.email;
+      if (!email)
+        return <span className="text-slate-400 text-xs italic">-</span>;
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(email);
+        toast.success("Email copied!");
+      };
+      return (
+        <div
+          onClick={copyToClipboard}
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
+          title={email}
+        >
+          <Mail className="w-3 h-3 mr-1.5 text-brand-aqua/80 shrink-0" />
+          <span className="text-xs lowercase text-slate-500 max-w-[120px] truncate block">
+            {email}
+          </span>
+        </div>
+      );
+    },
   },
   // Age Column
   {
@@ -181,10 +188,10 @@ export const userColumns = [
     cell: ({ row }) => {
       const status = row.original.account?.status;
       return (
-        <div className="flex gap-1 italic">
+        <div className="flex gap-1">
           <Badge
             variant={status === "active" ? "default" : "destructive"}
-            className="capitalize px-1.5"
+            className="uppercase px-1.5 bg-brand-aqua rounded-xl"
           >
             {status}
           </Badge>
@@ -270,41 +277,55 @@ export const userColumns = [
       const onSuspend = table.options.meta?.onSuspend;
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="text-xs font-medium text-primary"
-              onClick={() =>
-                navigate(`./view-profile`, {
-                  state: { userId },
-                })
-              }
+        <div className="text-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+              >
+                <MoreHorizontal className="h-4 w-4 text-slate-500" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-44 p-2 rounded-2xl border-slate-300 shadow-xl"
             >
-              View Profile
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-xs font-medium text-destructive"
-              onClick={() => {
-                onBan(user); // Call the function passed via meta
-              }}
-            >
-              Ban Account
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="text-xs font-medium text-orange-600"
-              onClick={() => {
-                onSuspend(user); // Call the function passed via meta
-              }}
-            >
-              Suspend Account
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-2 py-1.5">
+                Actions
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-brand-aqua/10 focus:text-brand-aqua text-slate-500 font-semibold text-xs"
+                onClick={() =>
+                  navigate(`./view-profile`, {
+                    state: { userId },
+                  })
+                }
+              >
+                <Eye className="w-4 h-4" />
+                View Profile
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer font-semibold rounded-xl text-red-800 focus:bg-red-500/10 focus:text-red-500"
+                onClick={() => {
+                  onBan(user); // Call the function passed via meta
+                }}
+              >
+                <Ban className="w-3.5 h-3.5" />
+                Ban Account
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-xs cursor-pointer font-semibold rounded-xl text-yellow-800 focus:bg-yellow-500/10 focus:text-yellow-500"
+                onClick={() => {
+                  onSuspend(user); // Call the function passed via meta
+                }}
+              >
+                <CirclePause className="w-3.5 h-3.5" />
+                Suspend Account
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

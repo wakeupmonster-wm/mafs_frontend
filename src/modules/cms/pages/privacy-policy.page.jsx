@@ -85,7 +85,7 @@ export default function PrivacyAndPolicyPage() {
           <PageHeader
             heading="Privacy & Policy"
             icon={<ShieldCheck className="w-6 h-6 text-white" />}
-            color="bg-brand-aqua shadow-xl shadow-cyan-100"
+            color="bg-brand-aqua"
             subheading="Update user data protection guidelines."
           />
 
@@ -93,12 +93,12 @@ export default function PrivacyAndPolicyPage() {
             onClick={handleUpdate}
             disabled={isSaving}
             // className="w-full sm:w-auto bg-brand-aqua hover:bg-brand-aqua/80 text-white px-6 h-11 rounded-lg shadow-md transition-all active:scale-95"
-            className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-10 px-4 shadow-sm shadow-neutral-400"
+            className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white gap-2 h-9 px-4 shadow-sm"
           >
             {isSaving ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
             ) : (
-              <Save className="w-4 h-4 mr-2" />
+              <Save className="w-3.5 h-3.5 mr-1" />
             )}
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
@@ -119,7 +119,7 @@ export default function PrivacyAndPolicyPage() {
                 onChange={(e) =>
                   setPageData({ ...pageData, title: e.target.value })
                 }
-                className="h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all text-base"
+                className="h-11 bg-slate-50 border-slate-200 placeholder:text-slate-400 focus:bg-white focus:ring-[0.1px] focus-visible:ring-0 focus-visible:border-brand-aqua transition-all duration-300 text-base"
               />
             </div>
 

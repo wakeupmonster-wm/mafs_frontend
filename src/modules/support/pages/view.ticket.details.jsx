@@ -14,15 +14,9 @@ import {
   Reply,
   Send,
   Tag,
-  User,
   AlertCircle,
   Ticket as TicketIcon,
-  Calendar,
-  Mail,
-  Archive,
-  Trash2,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -91,483 +85,373 @@ export default function ViewTicketDetails() {
 
   const StatusIcon = STATUS_CONFIG[ticket.status]?.icon || Clock;
 
-  console.log("ticket: ", ticket);
-
-  // return (
-  //   <div className="w-full min-h-screen mx-auto space-y-6 bg-[#f8fafc] px-4 lg:px-5 py-4">
-  //     {/* Navigation & Actions */}
-  //     <div className="flex items-center justify-between">
-  //       <Link
-  //         to="/admin/management/support"
-  //         className="group flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900 transition-all"
-  //       >
-  //         <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-  //         Back to Ticket List
-  //       </Link>
-  //       <div className="text-xs text-slate-400 font-mono">ID: {ticket._id}</div>
-  //     </div>
-
-  //     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  //       {/* Main Conversation Column */}
-  //       <div className="lg:col-span-2 space-y-6">
-  //         <Card className="border-none shadow-sm overflow-hidden">
-  //           <CardHeader className="bg-white border-b border-slate-100">
-  //             <div className="flex justify-between items-start">
-  //               <div className="space-y-1">
-  //                 <CardTitle className="text-xl font-bold text-slate-900">
-  //                   {ticket.subject}
-  //                 </CardTitle>
-  //                 <div className="flex items-center gap-2 text-slate-500 text-sm">
-  //                   <Calendar className="w-3.5 h-3.5" />
-  //                   {new Date(ticket.createdAt).toLocaleString()}
-  //                 </div>
-  //               </div>
-  //               <Badge
-  //                 className={`${
-  //                   STATUS_CONFIG[ticket.status]?.color
-  //                 } capitalize px-3 py-1`}
-  //               >
-  //                 <StatusIcon className="w-3 h-3 mr-1.5" />
-  //                 {ticket.status.replace("_", " ")}
-  //               </Badge>
-  //             </div>
-  //           </CardHeader>
-
-  //           <CardContent className="p-6 space-y-8">
-  //             {/* User Message - "Left Aligned" Bubble style */}
-  //             <div className="flex gap-4">
-  //               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
-  //                 <User className="w-5 h-5" />
-  //               </div>
-  //               <div className="flex-1 space-y-2">
-  //                 <div className="flex items-center gap-2">
-  //                   <span className="text-sm font-bold text-slate-900">
-  //                     Customer
-  //                   </span>
-  //                   <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-  //                     Initial Request
-  //                   </span>
-  //                 </div>
-  //                 <div className="bg-slate-50 border border-slate-100 rounded-2xl rounded-tl-none p-4 text-slate-700 text-sm leading-relaxed shadow-sm">
-  //                   {ticket.message}
-  //                 </div>
-  //               </div>
-  //             </div>
-
-  //             {/* Admin Reply - "Right Aligned" Bubble style */}
-  //             {ticket.adminReply && (
-  //               <div className="flex gap-4 flex-row-reverse">
-  //                 <div className="flex-shrink-0 w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 border border-emerald-200">
-  //                   <Reply className="w-5 h-5" />
-  //                 </div>
-  //                 <div className="flex-1 space-y-2 text-right">
-  //                   <div className="flex items-center gap-2 justify-end">
-  //                     <span className="text-[10px] text-emerald-500 uppercase tracking-widest font-bold">
-  //                       Admin Response
-  //                     </span>
-  //                     <span className="text-sm font-bold text-emerald-900">
-  //                       Support Team
-  //                     </span>
-  //                   </div>
-  //                   <div className="bg-emerald-50 border border-emerald-100 rounded-2xl rounded-tr-none p-4 text-emerald-800 text-sm leading-relaxed shadow-sm inline-block text-left min-w-[60%]">
-  //                     {ticket.adminReply}
-  //                     {ticket.repliedAt && (
-  //                       <div className="mt-2 pt-2 border-t border-emerald-100 text-[10px] text-emerald-600/70">
-  //                         Sent on {new Date(ticket.repliedAt).toLocaleString()}
-  //                       </div>
-  //                     )}
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //             )}
-  //           </CardContent>
-  //         </Card>
-
-  //         {/* Reply Input Form */}
-  //         {ticket.status !== "closed" && (
-  //           <Card className="border-none shadow-md overflow-hidden ring-1 ring-slate-200">
-  //             <form onSubmit={handleReplySubmit}>
-  //               <div className="p-4 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-  //                 <Reply className="w-4 h-4 text-slate-400" />
-  //                 <h3 className="text-sm font-semibold text-slate-700">
-  //                   Quick Response
-  //                 </h3>
-  //               </div>
-  //               <CardContent className="p-6 space-y-4">
-  //                 <Textarea
-  //                   rows={4}
-  //                   value={reply}
-  //                   onChange={(e) => setReply(e.target.value)}
-  //                   placeholder="Address the customer's issue clearly..."
-  //                   className="border-slate-200 focus:ring-slate-900 focus:border-slate-900 resize-none shadow-inner"
-  //                 />
-  //                 <div className="flex flex-col sm:flex-row gap-4 items-end">
-  //                   <div className="flex-1 w-full space-y-1.5">
-  //                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider ml-1">
-  //                       Change Ticket Status
-  //                     </label>
-  //                     <Select value={status} onValueChange={setStatus}>
-  //                       <SelectTrigger className="bg-white border-slate-200">
-  //                         <SelectValue />
-  //                       </SelectTrigger>
-  //                       <SelectContent>
-  //                         <SelectItem value="open">Open</SelectItem>
-  //                         <SelectItem value="in_progress">
-  //                           In Progress
-  //                         </SelectItem>
-  //                         <SelectItem value="resolved">Resolved</SelectItem>
-  //                         <SelectItem value="closed">Closed</SelectItem>
-  //                       </SelectContent>
-  //                     </Select>
-  //                   </div>
-  //                   <Button
-  //                     type="submit"
-  //                     disabled={loading || !reply.trim()}
-  //                     className="bg-slate-900 text-white hover:bg-black px-8 h-10 shadow-lg shadow-slate-200"
-  //                   >
-  //                     {loading ? (
-  //                       <Loader2 className="animate-spin w-4 h-4" />
-  //                     ) : (
-  //                       <Send className="w-4 h-4 mr-2" />
-  //                     )}
-  //                     Send Reply
-  //                   </Button>
-  //                 </div>
-  //               </CardContent>
-  //             </form>
-  //           </Card>
-  //         )}
-
-  //         {successMessage && (
-  //           <div className="flex items-center justify-center gap-2 text-emerald-600 bg-emerald-50 p-3 rounded-lg border border-emerald-100 animate-in fade-in slide-in-from-bottom-2">
-  //             <CheckCircle2 className="w-4 h-4" />
-  //             <span className="text-sm font-medium">{successMessage}</span>
-  //           </div>
-  //         )}
-  //       </div>
-
-  //       {/* Sidebar Metadata Column */}
-  //       <div className="space-y-6">
-  //         <Card className="border-none shadow-sm">
-  //           <CardHeader className="pb-3">
-  //             <CardTitle className="text-sm font-bold text-slate-400 uppercase tracking-widest">
-  //               Metadata
-  //             </CardTitle>
-  //           </CardHeader>
-  //           <CardContent className="space-y-4">
-  //             <div className="space-y-1">
-  //               <div className="text-[10px] font-bold text-slate-400 uppercase">
-  //                 Category
-  //               </div>
-  //               <div className="flex items-center gap-2">
-  //                 <Tag className="w-4 h-4 text-slate-400" />
-  //                 <span className="text-sm font-medium text-slate-700">
-  //                   {ticket.category}
-  //                 </span>
-  //               </div>
-  //             </div>
-  //             <Separator className="bg-slate-100" />
-  //             <div className="space-y-1">
-  //               <div className="text-[10px] font-bold text-slate-400 uppercase">
-  //                 User Association
-  //               </div>
-  //               <div className="flex items-center gap-2">
-  //                 <Mail className="w-4 h-4 text-slate-400" />
-  //                 <span className="text-sm font-mono text-slate-600 truncate">
-  //                   {ticket.userId}
-  //                 </span>
-  //               </div>
-  //             </div>
-  //             <Separator className="bg-slate-100" />
-  //             <div className="space-y-1">
-  //               <div className="text-[10px] font-bold text-slate-400 uppercase">
-  //                 Last Updated
-  //               </div>
-  //               <div className="flex items-center gap-2 text-slate-600 text-sm">
-  //                 <Clock className="w-4 h-4 text-slate-400" />
-  //                 {new Date(ticket.updatedAt).toLocaleDateString()}
-  //               </div>
-  //             </div>
-  //           </CardContent>
-  //         </Card>
-
-  //         {ticket.status === "closed" && (
-  //           <div className="p-4 bg-slate-100 rounded-xl border border-slate-200 text-center space-y-2">
-  //             <AlertCircle className="w-5 h-5 text-slate-400 mx-auto" />
-  //             <p className="text-xs text-slate-500 font-medium">
-  //               This ticket is archived. Re-open to send new replies.
-  //             </p>
-  //           </div>
-  //         )}
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
-
   return (
-    <div className="w-full min-h-screen bg-white text-slate-900 font-sans">
-      {/* 1. TOP TOOLBAR - Modern Mail Action Bar */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-6 py-3 border-b border-slate-200 bg-white/80 backdrop-blur-md">
-        <div className="flex items-center gap-4">
-          <Link
-            to="/admin/management/support"
-            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-            title="Back to Inbox"
-          >
-            <ArrowLeft className="w-5 h-5 text-slate-600" />
-          </Link>
-          <Separator orientation="vertical" className="h-6" />
-          <div className="flex items-center gap-2">
-            {/* <Badge
-              className={`${STATUS_CONFIG[ticket.status]?.color} border font-medium shadow-sm`}
+    <div className="w-full min-h-[calc(100vh-4rem)] p-4 lg:p-8 bg-slate-50/50 font-sans">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* 1. TOP TOOLBAR */}
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-sm shadow-slate-200/20 p-4 rounded-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-aqua/5 to-transparent pointer-events-none" />
+          <div className="flex items-center gap-4 relative z-10">
+            <Link
+              to="/admin/management/support"
+              className="p-2.5 bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 rounded-xl transition-all shadow-sm"
+              title="Back to Tickets"
             >
-              <StatusIcon className="w-3 h-3 mr-1.5" />
-              {ticket.status.replace("_", " ")}
-            </Badge> */}
-
-            <Badge
-              className={`${
-                STATUS_CONFIG[ticket.status]?.color
-              } capitalize px-3 py-1`}
-            >
-              <StatusIcon className="w-3 h-3 mr-1.5" />
-              {ticket.status.replace("_", " ")}
-            </Badge>
-            <span className="text-sm text-slate-600 font-semibold font-mono">
-              #{ticket._id.slice(-6)}
-            </span>
-          </div>
-        </div>
-
-        {/* <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="text-slate-600">
-            <Archive className="w-4 h-4 mr-2" /> Archive
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50"
-          >
-            <Trash2 className="w-4 h-4 mr-2" /> Delete
-          </Button>
-        </div> */}
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 h-[calc(100vh-57px)]">
-        {/* 2. MAIN EMAIL BODY */}
-        <main className="lg:col-span-3 overflow-y-auto">
-          <div className="max-w-4xl mx-auto px-8 py-6 my-5 space-y-10 rounded-2xl border border-slate-300">
-            {/* Subject Line */}
-            <div className="space-y-4">
-              <h1 className="text-3xl font-bold tracking-tight text-slate-900">
-                Subject: {ticket.subject}
-              </h1>
-              <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-slate-400" />
-                <span className="text-sm text-slate-500 capitalize">
-                  {ticket.category} Support
-                </span>
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+            <div className="h-8 w-px bg-slate-200 hidden sm:block" />
+            <div className="flex items-center gap-3">
+              <Badge
+                variant="outline"
+                className={`${STATUS_CONFIG[ticket.status]?.color} capitalize px-3 py-1 text-xs font-semibold shadow-sm border rounded-full backdrop-blur-md`}
+              >
+                <StatusIcon className="w-3.5 h-3.5 mr-1.5" />
+                {ticket.status.replace("_", " ")}
+              </Badge>
+              <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium whitespace-nowrap">
+                <Tag className="w-3.5 h-3.5" />
+                <span className="capitalize">{ticket.category}</span>
               </div>
             </div>
+          </div>
+          <div className="text-sm font-mono text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100 hidden sm:block">
+            ID:{" "}
+            <span className="text-slate-600 font-semibold">{ticket._id}</span>
+          </div>
+        </header>
 
-            {/* INITIAL CUSTOMER MESSAGE */}
-            <section className="space-y-6">
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 border border-slate-200">
-                    {ticket.userId?.charAt(0).toUpperCase() || "C"}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-slate-900">
-                        Customer User
-                      </span>
-                      <span className="text-xs text-slate-400">
-                        &lt;{ticket.userId}&gt;
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500">to Support Team</p>
-                  </div>
-                </div>
-                <time className="text-xs text-slate-400">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* 2. MAIN CONVERSATION AREA */}
+          <main className="lg:col-span-8 flex flex-col gap-6">
+            {/* Subject Card */}
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-200/40 p-6 md:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-32 bg-brand-aqua/5 blur-3xl rounded-full pointer-events-none" />
+              <div className="relative z-10 space-y-2">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                  {ticket.subject}
+                </h1>
+                <p className="text-sm text-slate-500 flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  Opened on{" "}
                   {new Date(ticket.createdAt).toLocaleString([], {
                     dateStyle: "medium",
                     timeStyle: "short",
                   })}
-                </time>
+                </p>
               </div>
+            </div>
 
-              <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed text-[15px] whitespace-pre-wrap pl-13">
-                {ticket.message}
-              </div>
-            </section>
-
-            <Separator className="bg-slate-100" />
-
-            {/* ADMIN REPLY THREAD */}
-            {ticket.adminReply && (
-              <section className="space-y-6 animate-in fade-in slide-in-from-top-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-brand-aqua flex items-center justify-center text-white">
-                      <Reply className="w-5 h-5" />
+            {/* Thread Entries */}
+            <div className="space-y-6">
+              {/* Customer Initial Request */}
+              <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-200/40 overflow-hidden text-left">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold border border-slate-200 shadow-sm">
+                      {ticket.userId?.charAt(0).toUpperCase() || "C"}
                     </div>
-                    <div>
+                    <div className="flex flex-col">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900">
-                          Support Team (Admin)
+                        <span className="font-semibold text-slate-900 text-sm">
+                          Customer User
                         </span>
+                        <Badge
+                          variant="secondary"
+                          className="bg-slate-200 text-slate-600 text-[10px] px-1.5 py-0 h-5 font-semibold"
+                        >
+                          Requester
+                        </Badge>
                       </div>
-                      <p className="text-xs text-slate-500">to Customer</p>
+                      <span className="text-xs text-slate-500 font-mono mt-0.5 hidden sm:inline">
+                        {ticket.userId}
+                      </span>
                     </div>
                   </div>
-                  <time className="text-xs text-slate-400">
-                    {new Date(ticket.repliedAt).toLocaleString([], {
+                  <time className="text-xs font-medium text-slate-400">
+                    {new Date(ticket.createdAt).toLocaleString([], {
                       dateStyle: "medium",
                       timeStyle: "short",
                     })}
                   </time>
                 </div>
-
-                <div className="bg-slate-50/50 border border-brand-aqua/40 rounded-xl p-6 text-slate-800 leading-relaxed text-[15px] italic border-l-4 border-l-brand-aqua">
-                  {ticket.adminReply}
+                {/* Body */}
+                <div className="p-6 md:p-8 text-slate-700 leading-relaxed text-[15px] whitespace-pre-wrap">
+                  {ticket.message}
                 </div>
-              </section>
-            )}
+              </div>
 
-            {/* 3. COMPOSE REPLY AREA */}
-            {ticket.status !== "closed" && (
-              <div className="pt-8">
-                <div className="border border-slate-300 rounded-2xl shadow-sm focus-within:ring-2 focus-within:ring-brand-aqua focus-within:border-transparent transition-all">
-                  <div className="px-4 py-2 border-b border-slate-100 bg-slate-50/50 rounded-t-2xl flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
-                      Reply as Admin
-                    </span>
-                    <Select value={status} onValueChange={setStatus}>
-                      <SelectTrigger className="w-[140px] h-8 text-xs border border-slate-400 bg-transparent font-semibold">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="open">Keep Open</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="resolved">Mark Resolved</SelectItem>
-                        <SelectItem value="closed">Close Ticket</SelectItem>
-                      </SelectContent>
-                    </Select>
+              {/* Admin Reply */}
+              {ticket.adminReply && (
+                <div className="bg-white rounded-3xl border border-brand-aqua/30 shadow-sm shadow-brand-aqua/5 overflow-hidden text-left relative ring-1 ring-inset ring-brand-aqua/5">
+                  <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-aqua" />
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-brand-aqua/5">
+                    <div className="flex items-center gap-4 pl-1">
+                      <div className="w-10 h-10 rounded-full bg-brand-aqua flex items-center justify-center text-white shadow-md shadow-brand-aqua/20">
+                        <Reply className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold text-slate-900 text-sm">
+                            Support Team
+                          </span>
+                          <Badge
+                            variant="secondary"
+                            className="bg-brand-aqua/10 text-brand-aqua text-[10px] px-1.5 py-0 h-5 font-bold border border-brand-aqua/20"
+                          >
+                            Admin
+                          </Badge>
+                        </div>
+                        <span className="text-xs text-slate-500 mt-0.5">
+                          Response to Customer
+                        </span>
+                      </div>
+                    </div>
+                    <time className="text-xs font-medium text-slate-400">
+                      {new Date(ticket.repliedAt).toLocaleString([], {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
+                    </time>
                   </div>
-                  <form onSubmit={handleReplySubmit}>
+                  {/* Body */}
+                  <div className="p-6 md:p-8 text-slate-800 leading-relaxed text-[15px] whitespace-pre-wrap bg-gradient-to-br from-white to-slate-50/50">
+                    {ticket.adminReply}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* COMPOSE REPLY AREA */}
+            {ticket.status !== "closed" && (
+              <div className="mt-8 pt-6 border-t border-slate-200/60 sticky bottom-4">
+                <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xl shadow-slate-200/50 focus-within:ring-4 focus-within:ring-brand-aqua/20 focus-within:border-brand-aqua transition-all duration-300 overflow-hidden flex flex-col group/reply">
+                  {/* Reply Header / Actions */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-3 bg-slate-50/80 border-b border-slate-100 gap-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+                      <Reply className="w-4 h-4 text-brand-aqua" />
+                      Reply to Customer
+                    </div>
+                    <div className="flex items-center gap-3 self-end sm:self-auto">
+                      <span className="text-xs text-slate-400 font-medium">
+                        Status:
+                      </span>
+                      <Select value={status} onValueChange={setStatus}>
+                        <SelectTrigger className="w-[140px] h-8 text-xs bg-white border-slate-300 font-medium rounded-lg shadow-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-slate-200 shadow-xl">
+                          <SelectItem
+                            value="open"
+                            className="text-xs font-medium"
+                          >
+                            Keep Open
+                          </SelectItem>
+                          <SelectItem
+                            value="in_progress"
+                            className="text-xs font-medium"
+                          >
+                            In Progress
+                          </SelectItem>
+                          <SelectItem
+                            value="resolved"
+                            className="text-xs font-medium"
+                          >
+                            Mark Resolved
+                          </SelectItem>
+                          <SelectItem
+                            value="closed"
+                            className="text-xs font-medium"
+                          >
+                            Close Ticket
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleReplySubmit} className="flex flex-col">
                     <Textarea
                       value={reply}
                       onChange={(e) => setReply(e.target.value)}
-                      placeholder="Write your response here..."
-                      className="border-none focus-visible:ring-0 min-h-[150px] text-[15px] p-6 resize-none rounded-b-2xl"
+                      placeholder="Type your response here..."
+                      className="border-none focus-visible:ring-0 min-h-[160px] text-[15px] px-6 py-5 resize-y bg-transparent placeholder:text-slate-400"
                     />
-                    <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-white rounded-b-2xl">
+                    <div className="px-6 py-4 bg-white flex justify-end">
                       <Button
                         type="submit"
                         disabled={loading || !reply.trim()}
-                        className="bg-brand-aqua/30 hover:bg-brand-aqua/80 border border-brand-aqua text-slate-600 px-6 rounded-full"
+                        className="bg-brand-aqua hover:bg-brand-aqua/90 text-white shadow-lg shadow-brand-aqua/30 rounded-full px-8 h-11 transition-all hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center font-semibold"
                       >
                         {loading ? (
                           <Loader2 className="animate-spin w-4 h-4 mr-2" />
                         ) : (
                           <Send className="w-4 h-4 mr-2" />
                         )}
-                        Send Message
+                        Send Reply
                       </Button>
                     </div>
                   </form>
                 </div>
               </div>
             )}
-          </div>
-        </main>
 
-        {/* 4. SIDEBAR - TICKET METADATA */}
-        <aside className="hidden h-max lg:block mr-4 bg-slate-50/50 my-5 p-6 space-y-8 rounded-2xl border border-slate-300">
-          <div>
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
-              Ticket Details
-            </h3>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-slate-400">Created</span>
-                <span className="text-sm font-medium text-slate-700">
-                  {new Date(ticket.createdAt).toLocaleDateString()}
-                </span>
+            {ticket.status === "closed" && (
+              <div className="mt-8 flex flex-col items-center justify-center p-8 bg-slate-100/50 rounded-3xl border border-slate-200 border-dashed text-center space-y-3">
+                <div className="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 mb-2">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <h4 className="text-slate-700 font-semibold">Ticket Closed</h4>
+                <p className="text-sm text-slate-500 max-w-sm">
+                  This conversation has been closed. You will need to change the
+                  status to reopen the ticket before sending new replies.
+                </p>
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-slate-400">Last Activity</span>
-                <span className="text-sm font-medium text-slate-700">
-                  {new Date(ticket.updatedAt).toLocaleDateString()}
-                </span>
+            )}
+
+            {successMessage && (
+              <div className="flex items-center gap-3 text-emerald-700 bg-emerald-50 p-4 rounded-2xl border border-emerald-200 animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+                <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm font-medium">{successMessage}</span>
               </div>
-              <div className="flex flex-col gap-1">
-                <span className="text-xs text-slate-400">Support ID</span>
-                <span className="text-sm font-mono text-slate-700 break-all">
-                  {ticket._id}
-                </span>
+            )}
+          </main>
+
+          {/* 4. SIDEBAR - METADATA */}
+          <aside className="lg:col-span-4 space-y-6">
+            <div className="sticky top-24 bg-white rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-200/40 p-6 space-y-8 overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-full -z-10 pointer-events-none" />
+
+              {/* Ticket Details */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-5 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                  Ticket Info
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-slate-400">
+                      Created Date
+                    </p>
+                    <p className="text-sm font-semibold text-slate-700">
+                      {new Date(ticket.createdAt).toLocaleDateString([], {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <Separator className="bg-slate-100" />
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-slate-400">
+                      Last Updated
+                    </p>
+                    <p className="text-sm font-semibold text-slate-700">
+                      {new Date(ticket.updatedAt).toLocaleDateString([], {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <Separator className="bg-slate-100" />
+                  <div className="flex flex-col gap-1">
+                    <p className="text-xs font-medium text-slate-400">
+                      Support Reference
+                    </p>
+                    <div className="text-xs font-mono font-medium bg-slate-50 text-slate-600 p-2 rounded-lg border border-slate-100 break-all select-all mt-1">
+                      {ticket._id}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <Separator className="bg-slate-200/60" />
+
+              {/* User Identity */}
+              <div>
+                <h3 className="text-xs font-bold text-slate-900 uppercase tracking-widest mb-5 flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-brand-aqua" />
+                  Requester
+                </h3>
+                <div className="flex items-center gap-4 p-4 bg-slate-50/80 rounded-2xl border border-slate-100 group transition-colors hover:border-brand-aqua/30">
+                  <div className="w-10 h-10 flex-shrink-0 rounded-full bg-white flex items-center justify-center text-slate-600 font-bold border border-slate-200 shadow-sm">
+                    {ticket.userId?.charAt(0)}
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span
+                      className="text-sm font-bold text-slate-800 truncate"
+                      title={ticket.userId}
+                    >
+                      {ticket.userId.slice(0, 8)}...
+                    </span>
+                    <span className="text-[11px] font-medium text-slate-400 mt-0.5 truncate">
+                      User Profile
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-
-          <Separator className="bg-slate-200" />
-
-          <div>
-            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">
-              User Info
-            </h3>
-            <div className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-xs font-bold">
-                {ticket.userId?.charAt(0)}
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-slate-900 truncate max-w-[120px]">
-                  UID: {ticket.userId}
-                </span>
-                <span className="text-[10px] text-slate-500">View History</span>
-              </div>
-            </div>
-          </div>
-        </aside>
+          </aside>
+        </div>
       </div>
     </div>
   );
 }
 
-// Sub-components for cleaner refactoring
+// Sub-components
 const LoadingState = () => (
-  <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-    <Loader2 className="w-10 h-10 text-slate-300 animate-spin" />
-    <p className="text-slate-500 font-medium">Synchronizing ticket data...</p>
+  <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50/50">
+    <Loader2 className="w-10 h-10 text-brand-aqua animate-spin" />
+    <p className="text-slate-500 font-medium animate-pulse">
+      Loading ticket details...
+    </p>
   </div>
 );
 
 const ErrorState = ({ message }) => (
-  <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
-    <div className="max-w-md w-full bg-white p-6 rounded-2xl shadow-sm border border-red-100 text-center space-y-4">
-      <div className="w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto">
-        <AlertCircle className="w-6 h-6" />
+  <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50/50">
+    <div className="max-w-md w-full bg-white p-8 rounded-3xl shadow-lg shadow-slate-200/40 border border-red-100 text-center space-y-4">
+      <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto shadow-inner">
+        <AlertCircle className="w-8 h-8" />
       </div>
-      <h3 className="text-lg font-bold text-slate-900">Fetch Failed</h3>
-      <p className="text-slate-500 text-sm">{message}</p>
-      <Button variant="outline" onClick={() => window.location.reload()}>
-        Retry Request
+      <div>
+        <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+          Failed to Load
+        </h3>
+        <p className="text-slate-500 text-sm mt-1">{message}</p>
+      </div>
+      <Button
+        variant="outline"
+        onClick={() => window.location.reload()}
+        className="w-full rounded-xl border-slate-200 hover:bg-slate-50 mt-4"
+      >
+        Try Again
       </Button>
     </div>
   </div>
 );
 
 const EmptyState = () => (
-  <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
-    <div className="text-center space-y-4">
-      <TicketIcon className="w-16 h-16 text-slate-200 mx-auto" />
-      <p className="text-slate-400 font-medium">Ticket entry not found.</p>
+  <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50/50">
+    <div className="max-w-md w-full text-center space-y-6 bg-white p-8 rounded-3xl shadow-lg shadow-slate-200/40 border border-slate-200/80">
+      <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto shadow-inner">
+        <TicketIcon className="w-10 h-10 text-slate-300" />
+      </div>
+      <div>
+        <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+          Ticket Not Found
+        </h3>
+        <p className="text-slate-500 text-sm mt-2">
+          The ticket you're looking for doesn't exist or has been removed.
+        </p>
+      </div>
       <Link
-        to="/admin/management/support/tickets"
-        className="text-slate-900 underline font-semibold"
+        to="/admin/management/support"
+        className="inline-flex items-center justify-center w-full h-11 bg-slate-900 text-white rounded-xl font-semibold hover:bg-slate-800 transition-colors shadow-md"
       >
-        Return to Dashboard
+        Return to Inbox
       </Link>
     </div>
   </div>

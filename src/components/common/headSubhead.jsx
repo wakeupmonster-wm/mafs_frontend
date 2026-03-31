@@ -135,7 +135,7 @@ const PageHeader = React.forwardRef(
             <motion.div
               variants={itemVariants}
               className={cn(
-                "flex p-2 size-10 items-center justify-center rounded-xl shadow-xl",
+                "flex p-2 size-10 items-center justify-center rounded-xl",
                 color || "bg-white",
               )}
             >
@@ -146,7 +146,7 @@ const PageHeader = React.forwardRef(
           {/* Heading: Fade and Slide */}
           <motion.h1
             variants={itemVariants}
-            className="text-xl font-semibold text-slate-900 tracking-tight sm:text-2xl"
+            className="text-xl font-bold text-slate-900 tracking-tight sm:text-2xl"
           >
             {heading}
           </motion.h1>
@@ -156,7 +156,7 @@ const PageHeader = React.forwardRef(
         {subheading && (
           <motion.p
             variants={itemVariants}
-            className="text-[13px] leading-relaxed text-slate-500 max-w-[600px] font-medium"
+            className="text-[13px] leading-relaxed text-muted-foreground max-w-[600px] font-medium"
           >
             {subheading}
           </motion.p>

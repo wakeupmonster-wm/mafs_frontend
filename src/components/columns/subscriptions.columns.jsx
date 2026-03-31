@@ -42,7 +42,7 @@ import { AiFillAndroid } from "react-icons/ai";
 export const subscriptionColumns = [
   {
     id: "sno",
-    header: () => <div className="w-10 text-center text-xs">S.No</div>,
+    header: () => <div className="w-10 text-center text-xs">Sr.No.</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
@@ -79,7 +79,9 @@ export const subscriptionColumns = [
               {nickname.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
-          <span className="font-bold text-[11px] truncate">{nickname}</span>
+          <span className="capitalize font-bold text-[11px] truncate">
+            {nickname}
+          </span>
         </div>
       );
     },

@@ -81,19 +81,19 @@ export default function TermAndConditionsPage() {
           <PageHeader
             heading="Terms & Conditions"
             icon={<ReceiptText className="w-6 h-6 text-white" />}
-            color="bg-brand-aqua shadow-xl shadow-cyan-100"
+            color="bg-brand-aqua"
             subheading="Manage legal policies and user agreements."
           />
 
           <Button
             onClick={handleUpdate}
             disabled={isUpdating || loading}
-            className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-10 px-4 shadow-sm shadow-neutral-400"
+            className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white gap-2 h-9 px-4 shadow-sm"
           >
             {isUpdating ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
             ) : (
-              <Save className="mr-2 h-4 w-4" />
+              <Save className="w-3.5 h-3.5 mr-1" />
             )}
             Save Changes
           </Button>
@@ -114,7 +114,7 @@ export default function TermAndConditionsPage() {
                 onChange={(e) =>
                   setPageData({ ...pageData, title: e.target.value })
                 }
-                className="h-11 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all text-base"
+                className="h-11 bg-slate-50 border-slate-200 placeholder:text-slate-400 focus:ring-[0.1px] focus-visible:ring-0 focus-visible:border-brand-aqua transition-all duration-300 text-base"
               />
             </div>
 

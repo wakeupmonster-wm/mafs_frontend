@@ -152,31 +152,26 @@ export default function ProfileReviewPage() {
           {/* LEFT COLUMN: Tabbed Interface */}
           <div className="lg:col-span-8 space-y-6">
             <Tabs defaultValue="reports" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 mb-8 gap-4 border border-slate-200 bg-slate-100 shadow-sm px-2 h-14 rounded-2xl">
+              <TabsList className="relative h-13 w-full justify-start gap-2 bg-slate-50/50 p-2 rounded-xl border border-brand-aqua/20 hover:border-brand-aqua/40 shadow-sm mx-auto grid grid-cols-2">
                 <TabsTrigger
                   value="reports"
                   className={cn(
-                    "rounded-xl font-bold py-2.5 border border-transparent gap-2 transition-all",
-                    "data-[state=active]:border-brand-aqua/40 data-[state=active]:bg-brand-aqua/20 data-[state=active]:shadow-sm",
+                    "flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg",
                     hasPending
-                      ? "data-[state=active]:text-red-600"
-                      : "data-[state=active]:text-brand-aqua",
+                      ? "data-[state=active]:bg-red-100 data-[state=active]:text-red-700 data-[state=active]:shadow-sm hover:bg-red-50 text-slate-600"
+                      : "data-[state=active]:bg-brand-aqua/60 data-[state=active]:text-slate-900 data-[state=active]:shadow-md hover:bg-slate-100 text-slate-600",
                   )}
                 >
                   <ShieldAlert
                     className={cn(
-                      "w-4 h-4",
-                      hasPending ? "text-red-500" : "text-brand-aqua",
+                      "w-4 h-4 shrink-0",
+                      hasPending && "text-red-500",
                     )}
                   />
-
-                  {/* Text Logic */}
                   <span>
                     {!hasPending ? "Report History" : "Active Reports"}
                   </span>
-
-                  {/* Count Badge */}
-                  <span className="opacity-60 text-sm">
+                  <span className="opacity-70 text-xs ml-0.5">
                     (
                     {hasPending
                       ? pendingReports.length
@@ -184,17 +179,21 @@ export default function ProfileReviewPage() {
                     )
                   </span>
                 </TabsTrigger>
+
                 <TabsTrigger
                   value="details"
-                  className="rounded-xl font-bold py-2.5 border border-transparent data-[state=active]:border-brand-aqua/40 gap-2 data-[state=active]:bg-brand-aqua/10 data-[state=active]:text-brand-aqua data-[state=active]:shadow-sm"
+                  className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg data-[state=active]:bg-brand-aqua/60 data-[state=active]:text-slate-900 data-[state=active]:shadow-md hover:bg-slate-100 text-slate-600"
                 >
-                  <UserSearch className="w-4 h-4" />
+                  <UserSearch className="w-4 h-4 shrink-0" />
                   Review User Details
                 </TabsTrigger>
               </TabsList>
 
               {/* TAB 1: ALL REPORTS */}
-              <TabsContent value="reports" className="space-y-6 outline-none">
+              <TabsContent
+                value="reports"
+                className="space-y-6 mt-6 outline-none"
+              >
                 <motion.div
                   variants={sectionVariants}
                   initial="hidden"
@@ -205,7 +204,10 @@ export default function ProfileReviewPage() {
               </TabsContent>
 
               {/* TAB 2: USER FULL DETAILS */}
-              <TabsContent value="details" className="space-y-8 outline-none">
+              <TabsContent
+                value="details"
+                className="space-y-8 outline-none mt-5"
+              >
                 <motion.div
                   variants={sectionVariants}
                   initial="hidden"
@@ -219,8 +221,7 @@ export default function ProfileReviewPage() {
                     </p>
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="gap-2 bg-white hover:bg-brand-aqua/60 hover:text-white transition-all shadow-sm"
+                      className="gap-2 bg-white hover:bg-brand-aqua text-slate-500 hover:text-white transition-all shadow-sm"
                       onClick={() =>
                         navigate("../../users-management/view-profile", {
                           state: { userId: p.userId },
