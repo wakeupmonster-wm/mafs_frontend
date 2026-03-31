@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Trash,
   EyeIcon,
+  Eye,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,7 +28,7 @@ import { toast } from "sonner";
 export const supportColumns = (onAction, onPreview) => [
   {
     id: "sno",
-    header: () => <div className="w-max text-center text-xs">S.No</div>,
+    header: () => <div className="w-10 text-center text-xs">Sr.No.</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       return (
@@ -70,7 +71,7 @@ export const supportColumns = (onAction, onPreview) => [
 
           {/* Text Labels */}
           <div className="flex flex-col min-w-0">
-            <span className="font-bold text-gray-900 text-xs truncate">
+            <span className="capitalize font-bold text-gray-900 text-xs truncate">
               {nickname}
             </span>
             {/* <span className="text-[10px] text-muted-foreground italic truncate">
@@ -118,8 +119,16 @@ export const supportColumns = (onAction, onPreview) => [
       if (!email)
         return <span className="text-slate-400 text-xs italic">-</span>;
 
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(email);
+        toast.success("Email address copied!");
+      };
+
       return (
-        <div className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground">
+        <div
+          onClick={copyToClipboard}
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
+        >
           <Mail className="w-3 h-3 mr-1.5 text-slate-500" />
           {email}
         </div>
@@ -175,39 +184,6 @@ export const supportColumns = (onAction, onPreview) => [
       );
     },
   },
-  //   {
-  //     accessorKey: "status",
-  //     header: "Status",
-  //     cell: ({ row }) => {
-  //       const status = (
-  //         row.original.status ||
-  //         row.original.verification?.status ||
-  //         "pending"
-  //       ).toLowerCase();
-
-  //       const variants = {
-  //         pending: "bg-amber-100 text-amber-700 border-amber-200",
-  //         approved: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  //         rejected: "bg-red-100 text-red-700 border-red-200",
-  //         closed: "bg-slate-100 text-slate-700 border-slate-200",
-  //       };
-
-  //       return (
-  //         <Badge
-  //           className={`capitalize font-medium transition-all duration-200 hover:scale-105 ${
-  //             variants[status] || variants.pending
-  //           }`}
-  //         >
-  //           {status === "approved" && <CheckCircle className="w-3 h-3 mr-1" />}
-  //           {status === "rejected" && <XCircle className="w-3 h-3 mr-1" />}
-  //           {status === "pending" && (
-  //             <Clock className="w-3 h-3 mr-1 animate-pulse" />
-  //           )}
-  //           {status}
-  //         </Badge>
-  //       );
-  //     },
-  //   },
   {
     accessorKey: "status",
     header: "Status",
@@ -226,9 +202,12 @@ export const supportColumns = (onAction, onPreview) => [
       return (
         <Badge
           variant="outline"
+          //   className={`
+          //   capitalize font-medium transition-all duration-200 hover:scale-105
+          //   ${variants[status] || "bg-gray-100 text-gray-700 border-gray-200"}
+          // `}
           className={`
-          capitalize font-medium transition-all duration-200 hover:scale-105 
-          ${variants[status] || "bg-gray-100 text-gray-700 border-gray-200"}
+          capitalize font-medium transition-all duration-200 hover:scale-105 bg-gray-100 text-gray-700 border-gray-200
         `}
         >
           {/* Dynamic Icon Rendering based on Ticket Status */}
@@ -287,52 +266,63 @@ export const supportColumns = (onAction, onPreview) => [
       const { setSelectedTicket, setConfirmConfig } = table.options?.meta || {};
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-slate-100">
-              <MoreHorizontal className="h-4 w-4 text-slate-600" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 p-2">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-
-            <DropdownMenuItem
-              onClick={() =>
-                navigate(`./view-ticket/${ticket._id}`, {
-                  state: { ticketData: ticket },
-                })
-              }
+        <div className="text-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+              >
+                <MoreHorizontal className="h-4 w-4 text-slate-500" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-40 p-2 rounded-2xl border-slate-300 shadow-xl"
             >
-              <EyeIcon className="h-4 w-4" />
-              <span className="font-medium"> View Ticket</span>
-            </DropdownMenuItem>
+              <DropdownMenuLabel className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-2 py-1.5">
+                Actions
+              </DropdownMenuLabel>
 
-            {/* Update Status Action */}
-            <DropdownMenuItem
-              className="cursor-pointer gap-2 py-2 text-emerald-600 focus:bg-emerald-50"
-              onClick={() => setSelectedTicket?.(ticket)}
-            >
-              <MessageSquare className="h-4 w-4" />
-              <span className="font-medium">Update Status</span>
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer rounded-xl py-2 focus:bg-brand-aqua/10 focus:text-brand-aqua text-slate-500 font-semibold text-xs"
+                onClick={() =>
+                  navigate(`./view-ticket/${ticket._id}`, {
+                    state: { ticketData: ticket },
+                  })
+                }
+              >
+                <Eye className="w-4 h-4" />
+                View Ticket
+              </DropdownMenuItem>
 
-            {/* Delete Action */}
-            <DropdownMenuItem
-              className="cursor-pointer gap-2 py-2 text-red-600 focus:bg-red-50"
-              onClick={() =>
-                setConfirmConfig?.({
-                  isOpen: true,
-                  ticketId: ticket._id,
-                  nickname: ticket.user?.nickname || "this user",
-                  action: "delete", // We add a 'delete' case here
-                })
-              }
-            >
-              <Trash className="h-4 w-4" />
-              <span className="font-medium">Delete Ticket</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {/* Update Status Action */}
+              <DropdownMenuItem
+                className="cursor-pointer rounded-xl gap-2 py-2 text-xs font-medium hover:font-semibold text-emerald-800 transition-colors focus:bg-emerald-50 focus:text-emerald-500 data-[highlighted]:bg-emerald-50"
+                onClick={() => setSelectedTicket?.(ticket)}
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                Update Status
+              </DropdownMenuItem>
+
+              {/* Delete Action */}
+              <DropdownMenuItem
+                className="cursor-pointer rounded-xl gap-2 py-2 text-xs font-medium hover:font-semibold text-red-800 transition-colors focus:bg-red-50 focus:text-red-500 data-[highlighted]:bg-red-50"
+                onClick={() =>
+                  setConfirmConfig?.({
+                    isOpen: true,
+                    ticketId: ticket._id,
+                    nickname: ticket.user?.nickname || "this user",
+                    action: "delete", // We add a 'delete' case here
+                  })
+                }
+              >
+                <Trash className="h-3.5 w-3.5" />
+                Delete Ticket
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

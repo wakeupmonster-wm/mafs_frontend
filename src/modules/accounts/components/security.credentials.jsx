@@ -101,10 +101,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
   ];
 
   return (
-    <Card className="mx-auto border-none overflow-hidden font-jakarta rounded-lg">
-      {/* Top Accent Line */}
-      <div className="h-1.5 w-full bg-gradient-to-r from-brand-aqua via-indigo-400 to-brand-aqua/40" />
-
+    <Card className="mx-auto border-none shadow-none bg-transparent overflow-hidden font-jakarta w-full">
       <CardHeader className="py-2 px-8">
         <div className="flex items-center gap-5">
           <div className="p-4 bg-brand-aqua/10 rounded-2xl text-brand-aqua ring-4 ring-brand-aqua/5">
@@ -122,7 +119,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
       </CardHeader>
 
       <CardContent className="px-8 pb-10 space-y-8">
-        <form onSubmit={onSubmit} className="grid gap-8">
+        <form onSubmit={onSubmit} className="grid gap-6">
           {/* Current Password - Full Width */}
           <div className="space-y-3 group">
             <Label className="text-[13px] uppercase tracking-wider text-slate-500 font-black ml-1 group-focus-within:text-brand-aqua transition-colors">
@@ -131,7 +128,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
             <div className="relative">
               <Input
                 type={showPasswords.current ? "text" : "password"}
-                className="h-14 border-slate-200 bg-slate-50/30 focus:bg-white focus:ring-4 focus:ring-brand-aqua/10 focus:border-brand-aqua pr-12 rounded-2xl transition-all duration-300 text-base"
+                className="h-14 border-slate-200 placeholder:text-slate-400 bg-slate-50/30 pr-12 rounded-2xl text-base focus-visible:ring-4 focus-visible:ring-brand-aqua/10 focus-visible:border-brand-aqua transition-[background-color,border-color] duration-300"
                 value={form.currentPassword}
                 onChange={(e) =>
                   setForm({ ...form, currentPassword: e.target.value })
@@ -154,7 +151,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               <div className="relative">
                 <Input
                   type={showPasswords.new ? "text" : "password"}
-                  className="h-14 border-slate-200 rounded-2xl focus:ring-4 focus:ring-brand-aqua/10 focus:border-brand-aqua pr-12 text-base transition-all"
+                  className="h-14 border-slate-200 placeholder:text-slate-400 bg-slate-50/30 pr-12 rounded-2xl text-base focus-visible:ring-4 focus-visible:ring-brand-aqua/10 focus-visible:border-brand-aqua transition-[background-color,border-color] duration-300"
                   value={form.newPassword}
                   onChange={(e) =>
                     setForm({ ...form, newPassword: e.target.value })
@@ -180,7 +177,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
                       ? "border-emerald-500 bg-emerald-50/30 focus:ring-emerald-500/10"
                       : passwordsMismatch
                         ? "border-red-500 bg-red-50/30 focus:ring-red-500/10"
-                        : "border-slate-200 focus:ring-brand-aqua/10 focus:border-brand-aqua"
+                        : "border-slate-200 bg-slate-50/30 focus-visible:ring-4 focus-visible:ring-brand-aqua/10 focus-visible:border-brand-aqua"
                   }`}
                   value={form.confirmPassword}
                   onChange={(e) =>
@@ -263,7 +260,7 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               form.newPassword !== form.confirmPassword ||
               !form.newPassword
             }
-            className="h-14 w-full bg-brand-aqua/25 disabled:bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-700 rounded-xl font-black text-sm shadow-[0_10px_20px_-10px_rgba(70,199,205,0.5)] hover:shadow-[0_15px_25px_-10px_rgba(70,199,205,0.6)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 disabled:hover:translate-y-0"
+            className="h-14 w-full bg-brand-aqua/25 disabled:bg-brand-aqua/15 hover:bg-brand-aqua/90 border border-brand-aqua/50 font-medium hover:font-semibold text-slate-500 hover:text-white rounded-xl transition-all duration-300"
           >
             {loading ? (
               <div className="flex items-center gap-3">
@@ -272,7 +269,8 @@ const SecurityCredentials = ({ account, loading, passwordSuccess }) => {
               </div>
             ) : (
               <span className="flex items-center gap-2">
-                Update Credentials <ShieldCheck className="w-5 h-5" />
+                Update Credentials{" "}
+                <ShieldCheck className="w-6 h-6" strokeWidth={2} />
               </span>
             )}
           </Button>

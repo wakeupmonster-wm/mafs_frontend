@@ -57,85 +57,6 @@ export default function NotificationManagementPages() {
   const update = (k, v) => setForm((p) => ({ ...p, [k]: v }));
   const isLoading = reduxLoading || localLoading;
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (!form.campaignName) return toast.error("Campaign name is required");
-
-  //   // --- EMAIL CAMPAIGN LOGIC ---
-  //   if (form.notificationType === "email") {
-  //     if (!form.emailSubject || !form.emailBody)
-  //       return toast.error("Email fields are required");
-
-  //     setLocalLoading(true);
-  //     try {
-  //       const token = localStorage.getItem("access_Token");
-  //       const res = await fetch(
-  //         "https://api.matchatfirstswipe.com.au/api/v1/admin/notification/broadcastemail",
-  //         {
-  //           method: "POST",
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //           body: JSON.stringify({
-  //             campaignName: form.campaignName,
-  //             subject: form.emailSubject,
-  //             body: form.emailBody,
-  //             target:
-  //               form.target === "all_users"
-  //                 ? "all"
-  //                 : form.target === "free_users"
-  //                 ? "free"
-  //                 : "premium",
-  //           }),
-  //         }
-  //       );
-  //       const data = await res.json();
-  //       if (!data.success) throw new Error(data.message);
-  //       toast.success("Email campaign queued successfully");
-  //     } catch (err) {
-  //       toast.error(err.message || "Email sending failed");
-  //     } finally {
-  //       setLocalLoading(false);
-  //     }
-  //     return;
-  //   }
-
-  //   // --- PUSH NOTIFICATION LOGIC ---
-  //   if (!form.title || !form.message)
-  //     return toast.error("Title and Message are required");
-
-  //   const actions = {
-  //     broadcast: () => broadcastNotification({ ...form }),
-  //     premium: () => sendNotificationToPremiumUsers({ ...form }),
-  //     expiry: () => {
-  //       if (!form.daysBeforeExpiry) throw new Error("Expiry days required");
-  //       return createPremiumExpiryCampaign({
-  //         ...form,
-  //         daysBeforeExpiry: Number(form.daysBeforeExpiry),
-  //       });
-  //     },
-  //   };
-
-  //   try {
-  //     dispatch(actions[form.notificationType]());
-  //     setTimeout(() => dispatch(clearNotificationStatus()), 4000);
-  //   } catch (err) {
-  //     toast.error(err.message);
-  //   }
-  // };
-
-  // const [form, setForm] = useState({
-  //   notificationType: "broadcast",
-  //   target: "all_users",
-  //   campaignName: "",
-  //   title: "",
-  //   message: "",
-  //   cta: "",
-  //   daysBeforeExpiry: "",
-  // });
-
   const handleChange = (key, value) => {
     setForm((p) => ({ ...p, [key]: value }));
   };
@@ -168,7 +89,7 @@ export default function NotificationManagementPages() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* LEFT COLUMN: FORM */}
         <div className="lg:col-span-7 space-y-6">
@@ -182,15 +103,15 @@ export default function NotificationManagementPages() {
             />
           </header>
 
-          <Card className="p-6 border-slate-200 shadow-md">
+          <Card className="p-6 border-slate-200 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   Campaign Configuration
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">
+                    <label className="text-xs font-semibold text-slate-500 ml-1">
                       Channel Type
                     </label>
                     <Select
@@ -226,7 +147,7 @@ export default function NotificationManagementPages() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 ml-1">
+                    <label className="text-xs font-semibold text-slate-500 ml-1">
                       Target Audience
                     </label>
                     <Select
@@ -251,19 +172,20 @@ export default function NotificationManagementPages() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-700 ml-1">
+                  <label className="text-xs font-semibold text-slate-500 ml-1">
                     Internal Reference
                   </label>
                   <Input
                     placeholder="Internal Campaign Name (e.g., Valentines_2026)"
                     value={form.campaignName}
                     onChange={(e) => update("campaignName", e.target.value)}
+                    className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                   />
                 </div>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-slate-100">
-                <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   Creative Content
                 </h3>
 
@@ -275,7 +197,7 @@ export default function NotificationManagementPages() {
                   >
                     <Input
                       placeholder="Email Subject Line"
-                      className="font-semibold"
+                      className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                       value={form.emailSubject}
                       onChange={(e) => update("emailSubject", e.target.value)}
                     />
@@ -284,6 +206,7 @@ export default function NotificationManagementPages() {
                       placeholder="Write your email body (HTML supported)..."
                       value={form.emailBody}
                       onChange={(e) => update("emailBody", e.target.value)}
+                      className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                     />
                   </motion.div>
                 ) : (
@@ -294,7 +217,7 @@ export default function NotificationManagementPages() {
                   >
                     <Input
                       placeholder="Notification Title"
-                      className="font-semibold"
+                      className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                       value={form.title}
                       onChange={(e) => update("title", e.target.value)}
                     />
@@ -303,18 +226,21 @@ export default function NotificationManagementPages() {
                       placeholder="Push message content..."
                       value={form.message}
                       onChange={(e) => update("message", e.target.value)}
+                      className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                     />
                     {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> */}
                     <Input
                       placeholder="Action Link (Optional)"
                       value={form.cta}
                       onChange={(e) => update("cta", e.target.value)}
+                      className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                     />
                     {form.notificationType === "expiry" && (
                       <Input
                         type="number"
                         placeholder="Days before expiry"
                         value={form.daysBeforeExpiry}
+                        className="font-medium placeholder:text-slate-400 border-slate-200 ring-[0.1px] focus-visible:ring-1 focus-visible:ring-brand-aqua"
                         onChange={(e) =>
                           update("daysBeforeExpiry", e.target.value)
                         }
@@ -326,7 +252,7 @@ export default function NotificationManagementPages() {
               </div>
 
               <Button
-                className="w-full border border-brand-aqua text-gray-500 bg-brand-aqua/20 hover:bg-brand-aqua/50 hover:text-gray-700 h-12 text-base font-semibold shadow-lg shadow-slate-300"
+                className="w-full border border-slate-300 text-slate-400 hover:text-white bg-white hover:bg-brand-aqua h-10 text-sm font-semibold rounded-lg shadow-sm"
                 disabled={isLoading}
               >
                 {isLoading ? (

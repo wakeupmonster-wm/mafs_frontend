@@ -276,19 +276,19 @@ export default function FakeProfileManagementPage() {
                   setPagination((prev) => ({ ...prev, pageIndex: 0 }))
                 }
                 disabled={loading}
-                className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
+                className="h-9 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
-                  className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
+                  className={cn("h-4 w-4 mr-0.5", loading && "animate-spin")}
                 />
                 Refresh
               </Button>
               <Button
-                size="sm"
+                variant="outline"
                 onClick={() => setIsBulkModalOpen(true)}
-                className="h-9 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold shadow-md transition-all active:scale-95"
+                className="h-9 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white transition-all active:scale-95"
               >
-                <IconUsersPlus className="mr-1.5 h-4 w-4" />
+                <IconUsersPlus className="mr-0.5 h-4 w-4 text-slate-500 group-hover:text-white" />
                 Bulk Create
               </Button>
             </div>
@@ -307,12 +307,12 @@ export default function FakeProfileManagementPage() {
         <motion.div variants={itemVariants}>
           <div className="flex flex-row md:items-center justify-between gap-3 bg-slate-50/50 p-2 rounded-xl">
             {/* Search */}
-            <div className="relative w-3/5 md:w-1/3">
-              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+            <div className="relative w-80 lg:w-96 order-1">
+              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 z-10" />
               <Input
                 placeholder="Search by nickname, city..."
                 // className="pl-9 pr-10 bg-white border-slate-200 h-9 shadow-sm focus-visible:ring-brand-aqua rounded-lg text-sm"
-                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+                className="pl-9 pr-10 bg-white border-slate-200 h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-brand-aqua rounded-lg"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -323,15 +323,15 @@ export default function FakeProfileManagementPage() {
                     setSearch("");
                     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
                   }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-0.5 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
                 >
-                  <IconX className="h-3.5 w-3.5 text-slate-600 group-hover:text-white transition-colors" />
+                  <IconX className="h-3.5 w-3.5 text-slate-500" />
                 </button>
               )}
             </div>
 
             {/* Filter chips + button */}
-            <div className="flex items-center justify-end gap-2 min-w-0 flex-1 ml-3">
+            <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4 order-2">
               {/* Active filter chip */}
               <div className="hidden sm:flex flex-1 items-center justify-end gap-1.5 overflow-x-hidden min-w-0">
                 <AnimatePresence mode="popLayout">
@@ -345,11 +345,12 @@ export default function FakeProfileManagementPage() {
                     >
                       <Badge
                         variant="secondary"
-                        className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                        // className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                        className="h-6 px-2 gap-1 bg-slate-50 border-slate-300 text-slate-600 whitespace-nowrap"
                       >
-                        <span className="text-[10px] font-bold uppercase opacity-50">
+                        {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Status:
-                        </span>
+                        </span> */}
                         <span className="capitalize text-xs">
                           {statusFilter}
                         </span>
@@ -358,9 +359,10 @@ export default function FakeProfileManagementPage() {
                             setStatusFilter("");
                             setPagination((p) => ({ ...p, pageIndex: 0 }));
                           }}
-                          className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                          // className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                          className="ml-0.5 p-0.5 rounded-full hover:bg-slate-200 transition-colors"
                         >
-                          <IconX size={12} />
+                          <IconX size={10} />
                         </button>
                       </Badge>
                     </motion.div>
@@ -378,26 +380,24 @@ export default function FakeProfileManagementPage() {
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="outline"
+                      // size="sm"
                       className={cn(
-                        "h-9 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
-                        hasActiveFilter &&
-                          "border-brand-aqua ring-1 ring-brand-aqua",
+                        "h-9 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white whitespace-nowrap transition-all duration-300",
+                        hasActiveFilter && "border-brand-aqua",
                       )}
                     >
                       <IconFilter
                         strokeWidth={2.5}
                         className={cn(
-                          "h-5 w-5",
+                          "h-6 w-6",
                           hasActiveFilter
-                            ? "text-brand-aqua"
-                            : "text-brand-aqua/60",
+                            ? "text-brand-aqua group-hover:text-white"
+                            : "text-slate-500/80 group-hover:text-white",
                         )}
                       />
-                      <span className="text-sm font-medium text-slate-700">
-                        Filters
-                      </span>
+                      Filters
                       {hasActiveFilter && (
-                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-white text-[10px] text-white group-hover:text-brand-aqua font-bold">
                           1
                         </span>
                       )}
@@ -461,7 +461,7 @@ export default function FakeProfileManagementPage() {
                     {headerGroup.headers.map((header) => (
                       <TableHead
                         key={header.id}
-                        className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs"
+                        className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-4"
                       >
                         {flexRender(
                           header.column.columnDef.header,
@@ -477,7 +477,7 @@ export default function FakeProfileManagementPage() {
                   table.getRowModel().rows.map((row) => (
                     <TableRow key={row.id} className="hover:bg-slate-50/50">
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="py-2.5">
+                        <TableCell key={cell.id} className="py-2.5 px-4">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),

@@ -29,7 +29,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 export const getKYCColumns = (onAction, onPreview) => [
   {
     id: "sno",
-    header: "S.no",
+    header: () => <div className="w-10 text-center text-xs">Sr.No.</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
@@ -73,7 +73,7 @@ export const getKYCColumns = (onAction, onPreview) => [
 
           {/* Text Labels */}
           <div className="flex flex-col min-w-0">
-            <span className="font-bold text-gray-900 text-xs truncate">
+            <span className="capitalize font-bold text-gray-900 text-xs truncate">
               {nickname}
             </span>
           </div>
@@ -117,8 +117,15 @@ export const getKYCColumns = (onAction, onPreview) => [
       if (!email)
         return <span className="text-slate-400 text-xs italic">-</span>;
 
+      const copyToClipboard = () => {
+        navigator.clipboard.writeText(email);
+        toast.success("Email copied!");
+      };
       return (
-        <div className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground">
+        <div
+          onClick={copyToClipboard}
+          className="flex items-center cursor-pointer gap-2 w-full text-[11px] text-foreground"
+        >
           <Mail className="w-3 h-3 mr-1.5 text-slate-500" />
           {email}
         </div>
@@ -152,7 +159,7 @@ export const getKYCColumns = (onAction, onPreview) => [
       return (
         <Badge
           className={`
-          capitalize font-medium transition-all duration-200 hover:scale-105
+          uppercase cursor-pointer font-semibold transition-all duration-200 py-1 rounded-xl
           ${variants[status]}
         `}
         >
@@ -183,9 +190,9 @@ export const getKYCColumns = (onAction, onPreview) => [
         row.original.verification?.submittedAt || row.original.createdAt;
 
       return (
-        <div className="flex items-center gap-2 text-gray-600 font-medium whitespace-nowrap">
+        <div className="flex items-center justify-center gap-2 text-gray-600 font-medium whitespace-nowrap">
           <IconCalendar className="h-4 w-4 text-slate-400" />
-          <span className="text-sm">
+          <span className="text-xs">
             {new Date(dateValue).toLocaleDateString("en-US", {
               month: "short",
               day: "numeric",
@@ -207,7 +214,7 @@ export const getKYCColumns = (onAction, onPreview) => [
         <Button
           variant="outline"
           size="sm"
-          className="gap-2 border-brand-aqua/50 text-brand-aqua hover:bg-brand-aqua/10 transition-all active:scale-95"
+          className="gap-2 border text-slate-500 hover:text-white font-normal hover:font-medium hover:bg-brand-aqua transition-all active:scale-95"
           disabled={!hasDocs}
           onClick={() =>
             onPreview({
@@ -222,7 +229,7 @@ export const getKYCColumns = (onAction, onPreview) => [
             })
           }
         >
-          <FileText className="w-4 h-4" />
+          <FileText className="w-4 h-4" strokeWidth={1.5} />
           View Docs
         </Button>
       );
@@ -266,67 +273,6 @@ export const getKYCColumns = (onAction, onPreview) => [
       // );
     },
   },
-  // {
-  //   id: "actions",
-  //   header: () => <div className="w-max text-center mr-4 text-xs">Actions</div>,
-  //   cell: ({ row }) => {
-  //     const user = row.original;
-  //     const userId = user?.userId;
-  //     const navigate = useNavigate();
-  //     console.log("user: ", user);
-
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger asChild>
-  //           <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-slate-100">
-  //             <span className="sr-only">Open menu</span>
-  //             <MoreHorizontal className="h-4 w-4 text-slate-600" />
-  //           </Button>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent align="end" className="w-48 p-2 shadow-lg">
-  //           <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
-  //             KYC Actions
-  //           </DropdownMenuLabel>
-
-  //           {/* 1. VIEW DETAILS */}
-  //           <DropdownMenuItem
-  //             className="cursor-pointer gap-2 py-1.5"
-  //             onClick={() =>
-  //               navigate(`../users-management/view-profile`, {
-  //                 state: { userId },
-  //               })
-  //             }
-  //           >
-  //             <Eye className="h-4 w-4 text-slate-600" />
-  //             <span>View Profile </span>
-  //           </DropdownMenuItem>
-
-  //           {/* 2. APPROVE */}
-  //           <DropdownMenuItem
-  //             className="cursor-pointer gap-2 py-1.5 text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50"
-  //             onClick={() => onAction(user.userId, "approve", user.nickname)}
-  //           >
-  //             <CheckCircle2 className="h-4 w-4" />
-  //             <span className="font-medium">Approve KYC</span>
-  //           </DropdownMenuItem>
-
-  //           {/* 3. REJECT */}
-  //           <DropdownMenuItem
-  //             className="cursor-pointer gap-2 py-1.5 text-red-600 focus:text-red-700 focus:bg-red-50"
-  //             onClick={() =>
-  //               onAction(user.userId, "reject", "Document unclear")
-  //             }
-  //             // onClick={() => onAction(user.userId, "reject", user.nickname)}
-  //           >
-  //             <XCircle className="h-4 w-4" />
-  //             <span className="font-medium">Reject KYC</span>
-  //           </DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
-
   {
     id: "actions",
     header: () => <div className="w-max text-center mr-4 text-xs">Actions</div>,
@@ -341,73 +287,81 @@ export const getKYCColumns = (onAction, onPreview) => [
       const navigate = useNavigate();
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-slate-100">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4 text-slate-600" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-44 p-2 shadow-lg">
-            <DropdownMenuLabel className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
-              KYC Actions
-            </DropdownMenuLabel>
-
-            {/* 1. VIEW DETAILS - Hamesha active rahega */}
-            <DropdownMenuItem
-              className="cursor-pointer gap-2"
-              onClick={() =>
-                navigate(`../users-management/view-profile`, {
-                  state: { userId },
-                })
-              }
+        <div className="text-start">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-slate-100/50 rounded-full"
+              >
+                <MoreHorizontal className="h-4 w-4 text-slate-500" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="w-44 p-2 rounded-2xl border-slate-300 shadow-xl"
             >
-              <Eye className="h-4 w-4 text-slate-500" />
-              <span className="text-xs">View Profile</span>
-            </DropdownMenuItem>
+              <DropdownMenuLabel className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1">
+                KYC Actions
+              </DropdownMenuLabel>
 
-            {/* 2. APPROVE - Disable agar process ho chuka hai ya already approved hai */}
-            <DropdownMenuItem
-              className={cn(
-                "cursor-pointer gap-2 disabled:cursor-not-allowed text-emerald-600 focus:text-emerald-700 focus:bg-emerald-50",
-                isProcessed &&
-                  "opacity-50 cursor-not-allowed pointer-events-none",
-              )}
-              disabled={isProcessed}
-              onClick={() =>
-                !isProcessed && onAction(user.userId, "approve", user.nickname)
-              }
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              <span className="font-semibold text-xs">
-                {currentStatus === "approved"
-                  ? "Already Approved"
-                  : "Approve KYC"}
-              </span>
-            </DropdownMenuItem>
+              {/* 1. VIEW DETAILS - Hamesha active rahega */}
+              <DropdownMenuItem
+                className="gap-2 cursor-pointer py-2 rounded-xl focus:bg-brand-aqua/10 focus:text-brand-aqua text-slate-500 font-semibold text-xs"
+                onClick={() =>
+                  navigate(`../users-management/view-profile`, {
+                    state: { userId },
+                  })
+                }
+              >
+                <Eye className="w-4 h-4" />
+                View Profile
+              </DropdownMenuItem>
 
-            {/* 3. REJECT - Disable agar process ho chuka hai */}
-            <DropdownMenuItem
-              className={cn(
-                "cursor-pointer gap-2 text-red-600 focus:text-red-700 focus:bg-red-50",
-                isProcessed &&
-                  "opacity-50 cursor-not-allowed pointer-events-none",
-              )}
-              disabled={isProcessed}
-              onClick={() =>
-                !isProcessed &&
-                onAction(user.userId, "reject", "Document unclear")
-              }
-            >
-              <XCircle className="h-4 w-4" />
-              <span className="font-semibold text-xs">
-                {currentStatus === "rejected"
-                  ? "Already Rejected"
-                  : "Reject KYC"}
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {/* 2. APPROVE - Disable agar process ho chuka hai ya already approved hai */}
+              <DropdownMenuItem
+                className={cn(
+                  "cursor-pointer rounded-lg gap-2 disabled:cursor-not-allowed text-emerald-800 focus:text-emerald-600 focus:bg-emerald-50",
+                  isProcessed &&
+                    "opacity-50 cursor-not-allowed pointer-events-none",
+                )}
+                disabled={isProcessed}
+                onClick={() =>
+                  !isProcessed &&
+                  onAction(user.userId, "approve", user.nickname)
+                }
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                <span className="font-semibold text-xs">
+                  {currentStatus === "approved"
+                    ? "Already Approved"
+                    : "Approve KYC"}
+                </span>
+              </DropdownMenuItem>
+
+              {/* 3. REJECT - Disable agar process ho chuka hai */}
+              <DropdownMenuItem
+                className={cn(
+                  "cursor-pointer rounded-lg gap-2 text-red-800 focus:text-red-600 focus:bg-red-50",
+                  isProcessed &&
+                    "opacity-50 cursor-not-allowed pointer-events-none",
+                )}
+                disabled={isProcessed}
+                onClick={() =>
+                  !isProcessed &&
+                  onAction(user.userId, "reject", "Document unclear")
+                }
+              >
+                <XCircle className="h-4 w-4" />
+                <span className="font-semibold text-xs">
+                  {currentStatus === "rejected"
+                    ? "Already Rejected"
+                    : "Reject KYC"}
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },

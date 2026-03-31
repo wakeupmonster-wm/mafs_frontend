@@ -19,7 +19,7 @@ export const SocialInput = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full border border-slate-400 focus-visible:ring-1 focus-visible:ring-brand-aqua rounded-lg py-3 pl-12 pr-4 text-sm font-medium text-slate-800 focus:outline-none transition-all placeholder:text-gray-600"
+        className="w-full placeholder:text-slate-400 border border-slate-400 focus-visible:ring-1 focus-visible:ring-brand-aqua rounded-lg py-3 pl-12 pr-4 text-sm font-medium text-slate-800 focus:outline-none transition-all duration-300"
       />
     </div>
   </div>

@@ -55,7 +55,7 @@ export const Header = ({ p }) => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center gap-3 bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-xl shadow-slate-200/60"
+          className="flex flex-wrap items-center gap-3 bg-white/60 backdrop-blur-xl p-4 rounded-2xl border border-slate-200 shadow-sm shadow-slate-200/60"
         >
           <div className="w-full px-1 mb-1 flex justify-between items-center">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">

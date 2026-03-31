@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { IconLoader, IconX } from "@tabler/icons-react";
+import { IconLoader, IconSearch, IconX } from "@tabler/icons-react";
 import { deleteFAQ, fetchFAQs } from "../store/faq.slice";
 import { toast } from "sonner";
 import ConfirmModal from "@/components/common/ConfirmModal";
@@ -33,6 +33,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import StatsGrid from "@/components/common/stats.grid";
+import { PageHeader } from "@/components/common/headSubhead";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -82,21 +83,6 @@ const FAQSPage = () => {
     );
   }
 
-  const statCards = [
-    {
-      label: "Total FAQs",
-      value: items.length,
-      icon: MessageSquareText,
-      color: "blue", // Changed from brand-aqua
-    },
-    {
-      label: "Categories",
-      value: new Set(items.map((f) => f.category)).size,
-      icon: Layers,
-      color: "amber", // Changed from alerts-error
-    },
-  ];
-
   const CATEGORIES = [
     "general",
     "account",
@@ -142,11 +128,6 @@ const FAQSPage = () => {
     return matchSearch && matchCategory;
   });
 
-  const grouped = filtered.reduce((acc, faq) => {
-    (acc[faq.category] ??= []).push(faq);
-    return acc;
-  }, {});
-
   const colorMap = {
     blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
     emerald:
@@ -168,106 +149,69 @@ const FAQSPage = () => {
       "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
   };
 
+  const combinedStats = [
+    {
+      label: "Total FAQs",
+      val: items.length,
+      icon: <MessageSquareText className="h-5 w-5" strokeWidth={2.5} />,
+      color: "blue",
+      description: "Active FAQs",
+    },
+    {
+      label: "Categories",
+      val: new Set(items.map((f) => f.category)).size,
+      icon: <Layers className="h-5 w-5" strokeWidth={2.5} />,
+      color: "amber",
+      description: "Total Sections",
+    },
+    ...CATEGORIES.slice(0, 2).map((cat, idx) => {
+      const count = items.filter((f) => f.category === cat).length;
+      const catColor = idx === 0 ? "emerald" : "rose";
+      return {
+        label: cat,
+        val: count,
+        icon: <HelpCircle className="h-5 w-5" strokeWidth={2.5} />,
+        color: catColor,
+        description: "Items in category",
+      };
+    }),
+  ];
+
   return (
     <div className="w-full mx-auto p-4 pb-16 space-y-6 animate-in fade-in duration-500">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl text-primary bg-brand-aqua shadow-xl shadow-cyan-100">
-            <HelpCircle className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">
-              FAQ Manager
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Create, edit and organize frequently asked questions.
-            </p>
-          </div>
-        </div>
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+        <PageHeader
+          heading="FAQ Manager"
+          icon={<HelpCircle className="w-9 h-9 text-white animate-pulse" />}
+          color="bg-brand-aqua shadow-brand-aqua/20"
+          subheading="Create, edit and organize frequently asked questions."
+        />
+
         <Button
-          // onClick={openAdd}
           onClick={() => setFormModal({ isOpen: true, data: null })}
-          className="bg-brand-aqua/20 hover:bg-brand-aqua/60 border border-brand-aqua text-slate-800 font-semibold gap-2 h-10 px-4 shadow-sm shadow-neutral-400"
+          className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-slate-500 hover:text-white gap-2 h-10 px-4 shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add FAQ
         </Button>
-      </div>
+      </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((s) => (
-          <Card
-            key={s.label}
-            className={`overflow-hidden border-slate-200 transition-all hover:shadow-md bg-gradient-to-br ${bgMap[s.color]}`}
-          >
-            <CardContent className="p-0 flex items-stretch h-24">
-              {/* Left Color Strip Accent */}
-              <div
-                className={`w-1.5 rounded-tr-lg rounded-br-lg ${s.color === "blue" ? "bg-blue-500" : "bg-amber-500"}`}
-              />
-
-              <div className="flex items-center gap-4 px-4 w-full">
-                <div
-                  className={`p-2.5 rounded-xl border bg-white shadow-sm ${colorMap[s.color]}`}
-                >
-                  <s.icon className="h-5 w-5" strokeWidth={2.5} />
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-2xl font-black text-slate-900 leading-none mb-1">
-                    {s.value}
-                  </p>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest truncate">
-                    {s.label}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-
-        {/* Category Specific Stats */}
-        {CATEGORIES.slice(0, 2).map((cat, idx) => {
-          const count = items.filter((f) => f.category === cat).length;
-          const catColor = idx === 0 ? "emerald" : "rose"; // Assigning specific theme colors
-
-          return (
-            <Card
-              key={cat}
-              className={`overflow-hidden border-slate-200 transition-all hover:shadow-md bg-gradient-to-br ${bgMap[catColor]}`}
-            >
-              <CardContent className="p-0 flex items-stretch h-24">
-                <div
-                  className={`w-1.5 rounded-tr-lg rounded-br-lg ${catColor === "emerald" ? "bg-emerald-500" : "bg-rose-500"}`}
-                />
-
-                <div className="flex items-center gap-4 px-4 w-full">
-                  <Badge
-                    variant="outline"
-                    className={`capitalize text-[10px] font-bold px-4 py-2 bg-white shadow-sm ${colorMap[catColor]}`}
-                  >
-                    {cat}
-                  </Badge>
-                  <div className="flex flex-col">
-                    <p className="text-2xl font-black text-slate-900 leading-none mb-1">
-                      {count}
-                    </p>
-                    <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-                      Items
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+      >
+        <StatsGrid stats={combinedStats} colorMap={colorMap} bgMap={bgMap} />
+      </motion.div>
 
       {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row justify-between gap-3">
-        <div className="relative w-full max-w-lg lg:max-w-xl">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
-          {/* // className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" /> */}
+      <div className="flex flex-col sm:flex-row items-end justify-between gap-3">
+        {/* 1. LEFT SIDE: Search Input */}
+        <div className="relative w-80 lg:w-96">
+          {/* Search Icon (Left) */}
+          <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
           <Input
             placeholder="Search questions or answers…"
             value={search}
@@ -284,8 +228,12 @@ const FAQSPage = () => {
           )}
         </div>
 
-        <Select value={filterCategory} onValueChange={setFilterCategory}>
-          <SelectTrigger className="w-full sm:w-64 bg-secondary">
+        <Select
+          value={filterCategory}
+          onValueChange={setFilterCategory}
+          className={""}
+        >
+          <SelectTrigger className="w-full max-w-40 sm:max-w-60 bg-gray-50 hover:bg-brand-aqua font-medium hover:font-semibold text-xs text-slate-500 hover:text-white hover:border-none">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -299,87 +247,72 @@ const FAQSPage = () => {
         </Select>
       </div>
 
-      {/* FAQ List grouped by category */}
-      {Object.keys(grouped).length > 0 ? (
+      {/* FAQ List */}
+      {filtered.length > 0 ? (
         <div className="space-y-4">
-          {Object.entries(grouped).map(([category, items]) => (
-            <div key={category} className="space-y-2">
-              <div className="flex items-center gap-2 px-1">
-                <Badge
-                  variant="outline"
-                  className={`${CATEGORY_COLORS[category]} text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5`}
-                >
-                  {category}
-                </Badge>
-                <span className="text-xs text-muted-foreground font-medium">
-                  {items.length} {items.length === 1 ? "item" : "items"}
-                </span>
-              </div>
-              <Accordion type="multiple" className="space-y-2">
-                {items.map((faq) => (
-                  <AccordionItem
-                    key={faq.id}
-                    value={faq.id}
-                    className="px-4 border border-slate-400/50 rounded-xl data-[state=open]:bg-secondary/30"
-                  >
-                    <div className="flex items-center">
-                      <AccordionTrigger className="flex-1 text-left text-sm font-semibold text-foreground hover:no-underline py-4">
-                        <span className="flex items-center gap-2">
-                          <span className="text-muted-foreground text-xs font-jakarta w-5 shrink-0">
-                            Q{faq.order}.
-                          </span>
-                          {faq.question}
-                        </span>
-                      </AccordionTrigger>
+          <Accordion type="multiple" className="space-y-3">
+            {filtered.map((faq) => (
+              <AccordionItem
+                key={faq.id}
+                value={faq.id}
+                className="px-6 py-1 border border-slate-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-white data-[state=open]:bg-secondary/30"
+              >
+                <div className="relative group">
+                  <AccordionTrigger className="flex-1 text-left text-[15px] font-semibold text-foreground hover:no-underline py-5">
+                    <span className="flex items-start gap-3 pr-[100px] flex-1">
+                      <span className="text-slate-500 text-sm font-jakarta w-7 shrink-0 font-bold mt-0.5">
+                        Q{faq.order}.
+                      </span>
+                      <span>{faq.question}</span>
+                    </span>
+                  </AccordionTrigger>
 
-                      <div className="flex items-center gap-1 ml-2 shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-brand-aqua"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setFormModal({ isOpen: true, data: faq });
-                          }}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 flex items-center gap-2 z-10">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10 border-slate-200 bg-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFormModal({ isOpen: true, data: faq });
+                      }}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
 
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleteModal({
-                              isOpen: true,
-                              id: faq._id || faq.id,
-                              title: faq.question,
-                            });
-                          }}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    </div>
-                    <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4 pl-7">
-                      {faq.answer}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          ))}
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 border-slate-200 bg-white"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteModal({
+                          isOpen: true,
+                          id: faq._id || faq.id,
+                          title: faq.question,
+                        });
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+                <AccordionContent className="text-[15px] text-slate-600 leading-relaxed pb-6 pl-10 border-t border-slate-100/60">
+                  {faq.answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
       ) : (
-        <Card>
+        <Card className="border-dashed border-2 bg-slate-50 border-slate-200 shadow-none">
           <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-            <HelpCircle className="h-10 w-10 text-muted-foreground/40 mb-3" />
-            <p className="text-muted-foreground font-medium">No FAQs found</p>
-            <p className="text-xs text-muted-foreground/60 mt-1">
+            <HelpCircle className="h-10 w-10 text-slate-300 mb-3" />
+            <p className="text-slate-600 font-semibold mb-1">No FAQs found</p>
+            <p className="text-xs text-slate-500 max-w-sm">
               {search || filterCategory !== "all"
-                ? "Try adjusting your search or filter."
-                : "Start by adding your first FAQ."}
+                ? "Try adjusting your search or filter criteria."
+                : "Your FAQ list is empty. Start by adding your first FAQ to help your users."}
             </p>
           </CardContent>
         </Card>

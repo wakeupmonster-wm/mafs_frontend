@@ -126,7 +126,7 @@ const InfoItem = ({ label, value, isCode = false, icon }) => (
   <div className="group w-full bg-slate-50/50 p-4 rounded-2xl border border-slate-100 transition-all hover:bg-white hover:shadow-md hover:border-blue-100/50">
     <div className="flex items-center gap-1.5 mb-1.5">
       {icon}
-      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">
+      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">
         {label}
       </p>
     </div>

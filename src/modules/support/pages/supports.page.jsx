@@ -1,208 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/set-state-in-effect */
-// import React, { useEffect, useMemo, useState } from "react";
-// import { motion } from "framer-motion";
-// import { PageHeader } from "@/components/common/headSubhead";
-// import { Inbox } from "lucide-react";
-// import SupportTicketsDataTables from "@/components/shared/data-tables/support.ticket.data.table";
-// import { useNavigate } from "react-router";
-// import { useDispatch, useSelector } from "react-redux";
-// import { fetchMyTickets } from "../store/support.slice";
-// import { supportColumns } from "@/components/columns/support.columns";
-// import { TicketAction } from "../components/dialogs/tickets.action";
-// import ConfirmModal from "@/components/common/ConfirmModal";
-
-// const containerVariants = {
-//   hidden: { opacity: 0 },
-//   visible: {
-//     opacity: 1,
-//     transition: {
-//       staggerChildren: 0.1,
-//       delayChildren: 0.1,
-//     },
-//   },
-// };
-
-// const itemVariants = {
-//   hidden: { opacity: 0, y: 20, scale: 0.95 },
-//   visible: {
-//     opacity: 1,
-//     y: 0,
-//     scale: 1,
-//     transition: { type: "spring", stiffness: 100, damping: 15 },
-//   },
-// };
-
-// export default function SupportTicketsPage() {
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-
-//   // 1. Redux State
-//   //   const {
-//   //     list,
-//   //     pagination: reduxPagination,
-//   //     loading,
-//   //   } = useSelector((s) => s.profileReview);
-//   const {
-//     tickets,
-//     pagination: reduxPagination,
-//     loading,
-//   } = useSelector((s) => s.support);
-
-//   // 2. Local Filter/Pagination State
-//   const [globalFilter, setGlobalFilter] = useState("");
-//   const [statusFilter, setStatusFilter] = useState("");
-//   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-//   const [selectedTicket, setSelectedTicket] = useState(null);
-//   const [statusUpdate, setStatusUpdate] = useState("");
-//   const [reply, setReply] = useState("");
-
-//   const [confirmConfig, setConfirmConfig] = useState({
-//     isOpen: false,
-//     ticketId: null,
-//     nickname: "",
-//     action: "", // 'approve', 'reject', or 'delete'
-//   });
-
-//   useEffect(() => {
-//     const delayDebounceFn = setTimeout(() => {
-//       dispatch(
-//         fetchMyTickets({
-//           page: pagination.pageIndex + 1,
-//           limit: pagination.pageSize,
-//           search: globalFilter,
-//           status: statusFilter,
-//         })
-//       );
-//     }, 500);
-//     return () => clearTimeout(delayDebounceFn);
-//   }, [
-//     dispatch,
-//     pagination.pageIndex,
-//     pagination.pageSize,
-//     globalFilter,
-//     statusFilter,
-//   ]);
-
-//   useEffect(() => {
-//     if (selectedTicket) {
-//       setStatusUpdate(selectedTicket.status);
-//       setReply(""); // Clear previous reply
-//     }
-//   }, [selectedTicket]);
-
-//   const columns = useMemo(() => supportColumns(navigate), [navigate]);
-
-//   const handleActionSubmit = async () => {
-//     // Your API call logic here
-//     console.log("Updating ticket:", selectedTicket._id, statusUpdate, reply);
-//     // After success:
-//     setSelectedTicket(null);
-//   };
-
-//   const handleConfirmAction = async () => {
-//     if (confirmConfig.action === "delete") {
-//       console.log("Deleting ticket:", confirmConfig.ticketId);
-//       // Dispatch your delete action here:
-//       // await dispatch(deleteTicket(confirmConfig.ticketId));
-//     }
-//     // Close modal after action
-//     setConfirmConfig({ ...confirmConfig, isOpen: false });
-//   };
-
-//   return (
-//     <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
-//       <motion.div
-//         className="space-y-6"
-//         initial="hidden"
-//         animate="visible"
-//         variants={containerVariants}
-//       >
-//         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
-//           <PageHeader
-//             heading="Support Management"
-//             icon={<Inbox className="w-9 h-9 text-white animate-pulse" />}
-//             color="bg-red-500 shadow-red-500/20"
-//             subheading="Track and manage customer queries."
-//           />
-//         </header>
-
-//         <SupportTicketsDataTables
-//           columns={columns}
-//           data={tickets || []}
-//           rowCount={reduxPagination?.total || 0}
-//           isLoading={loading}
-//           pagination={pagination}
-//           onPaginationChange={setPagination}
-//           globalFilter={globalFilter}
-//           setGlobalFilter={(val) => {
-//             setGlobalFilter(val);
-//             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//           }}
-//           searchPlaceholder="Search..."
-//           filters={{
-//             statusFilter,
-//             setStatusFilter: (val) => {
-//               setStatusFilter(val),
-//                 setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-//             },
-//           }}
-//           meta={{
-//             setSelectedTicket: (ticket) => setSelectedTicket(ticket),
-//             setConfirmConfig, // Pass this to the columns
-//           }}
-//         />
-
-//         <TicketAction
-//           selectedTicket={selectedTicket}
-//           setSelectedTicket={setSelectedTicket}
-//           statusUpdate={statusUpdate}
-//           setStatusUpdate={setStatusUpdate}
-//           reply={reply}
-//           setReply={setReply}
-//           handleActionSubmit={handleActionSubmit}
-//           loading={loading}
-//         />
-//       </motion.div>
-
-//       {/* Updated ConfirmModal UI */}
-//       <ConfirmModal
-//         isOpen={confirmConfig.isOpen}
-//         onClose={() => setConfirmConfig({ ...confirmConfig, isOpen: false })}
-//         onConfirm={handleConfirmAction}
-//         title={
-//           confirmConfig.action === "delete"
-//             ? "Delete Ticket?"
-//             : confirmConfig.action === "approve"
-//             ? "Approve KYC?"
-//             : "Reject KYC?"
-//         }
-//         message={
-//           confirmConfig.action === "delete"
-//             ? `Are you sure you want to delete the ticket from ${confirmConfig.nickname}? This action is permanent and cannot be undone.`
-//             : confirmConfig.action === "approve"
-//             ? `Are you sure you want to approve ${confirmConfig.nickname}?`
-//             : `Are you sure you want to reject ${confirmConfig.nickname}?`
-//         }
-//         confirmText={
-//           confirmConfig.action === "delete"
-//             ? "Delete Permanently"
-//             : confirmConfig.action === "approve"
-//             ? "Approve User"
-//             : "Reject User"
-//         }
-//         type={
-//           confirmConfig.action === "delete" || confirmConfig.action === "reject"
-//             ? "danger"
-//             : "success"
-//         }
-//       />
-//     </div>
-//   );
-// }
-
-
-
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { PageHeader } from "@/components/common/headSubhead";
@@ -228,6 +23,7 @@ import {
   IconTicket,
 } from "@tabler/icons-react";
 import StatsGrid from "@/components/common/stats.grid";
+import { bgMap, colorMap } from "@/constants/colors";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -399,33 +195,33 @@ export default function SupportTicketsPage() {
     setConfirmConfig({ ...confirmConfig, isOpen: false });
   };
 
-  const colorMap = {
-    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    indigo:
-      "from-indigo-500/40 to-indigo-600/5 text-indigo-600 border-indigo-100",
-    emerald:
-      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-    orange:
-      "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
-  };
+  // const colorMap = {
+  //   blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+  //   indigo:
+  //     "from-indigo-500/40 to-indigo-600/5 text-indigo-600 border-indigo-100",
+  //   emerald:
+  //     "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+  //   amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+  //   rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+  //   orange:
+  //     "from-orange-500/40 to-orange-600/5 text-orange-600 border-orange-100",
+  // };
 
-  const bgMap = {
-    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    indigo:
-      "from-indigo-300/20 via-indigo-500/10 to-transparent text-indigo-600 border-indigo-200 hover:border-indigo-400",
-    emerald:
-      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-    amber:
-      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
-    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
-    orange:
-      "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
-  };
+  // const bgMap = {
+  //   blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+  //   indigo:
+  //     "from-indigo-300/20 via-indigo-500/10 to-transparent text-indigo-600 border-indigo-200 hover:border-indigo-400",
+  //   emerald:
+  //     "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+  //   amber:
+  //     "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+  //   rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+  //   orange:
+  //     "from-orange-300/20 via-orange-500/10 to-transparent text-orange-600 border-orange-200 hover:border-orange-400",
+  // };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <motion.div
         className="space-y-6"
         initial="hidden"
@@ -461,7 +257,7 @@ export default function SupportTicketsPage() {
             setGlobalFilter(val);
             setPagination((prev) => ({ ...prev, pageIndex: 0 }));
           }}
-          searchPlaceholder="Search..."
+          searchPlaceholder="Search by name, contact, email, subject..."
           filters={{
             statusFilter,
             setStatusFilter: (val) => {

@@ -187,7 +187,7 @@ export function DataTable({
                     className={cn(
                       "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 transition-all whitespace-nowrap",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                        "border-brand-aqua ring-1 ring-brand-aqua",
                     )}
                   >
                     <IconFilter
@@ -195,7 +195,7 @@ export function DataTable({
                         "h-4 w-4 mr-2",
                         hasActiveFilters
                           ? "text-brand-aqua"
-                          : "text-brand-aqua/50"
+                          : "text-brand-aqua/50",
                       )}
                     />
                     <span className="text-sm font-medium text-slate-700">
@@ -329,7 +329,7 @@ export function DataTable({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -338,7 +338,7 @@ export function DataTable({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -348,7 +348,7 @@ export function DataTable({
                     <TableCell key={cell.id} className="py-3">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

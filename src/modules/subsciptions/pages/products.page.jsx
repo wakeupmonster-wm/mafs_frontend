@@ -487,7 +487,7 @@ export default function ProductsPage() {
                 <table className="w-full min-w-[900px] border-collapse">
                   <thead>
                     <tr className="border-b border-slate-100 bg-slate-50/70">
-                      <ThCell label="S.No." className="text-center w-16" />
+                      <ThCell label="Sr.No.." className="text-center w-16" />
                       <ThCell label="Name" col="displayName" />
                       <ThCell label="Type" col="type" />
                       <ThCell label="Category" col="category" />
@@ -995,7 +995,7 @@ const TableRow = ({ product, index, onEdit }) => {
         !product.isActive && "opacity-50",
       )}
     >
-      {/* S.No. */}
+      {/* Sr.No.. */}
       <td className="px-4 py-3.5 text-center">
         <span className="text-xs font-black text-slate-500 tabular-nums border border-slate-200 bg-slate-100/50 rounded-lg px-2 py-1">
           {index + 1}

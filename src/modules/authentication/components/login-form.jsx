@@ -89,7 +89,7 @@ export function LoginForm({ className, ...props }) {
                 id="email"
                 type="email"
                 {...register("email")}
-                placeholder="keenasmustard@example.com"
+                placeholder="keenasmustard@gmail.com.au"
                 className={`w-full px-9 py-5 bg-gray-50 outline-none transition-all ${
                   errors.email
                     ? "border-red-500 focus-visible:ring-red-100"

@@ -40,7 +40,7 @@ export function NavUser({ user }) {
   };
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className={"px-1 py-0.5"}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -48,17 +48,17 @@ export function NavUser({ user }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground ring-brand-aqua"
             >
-              <Avatar className="h-9 w-9 rounded-full">
-                <AvatarImage src={user.avatar} alt={user.name} />
+              <Avatar className="h-8 w-8 rounded-full">
+                <AvatarImage src={user.avatar} alt={"admin.webp"} />
                 <AvatarFallback className="rounded-lg">
                   {dummyImg}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-[12px] leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-[11px]">
+                {/* <span className="text-muted-foreground truncate text-[11px]">
                   {user.email}
-                </span>
+                </span> */}
               </div>
               <IconDotsVertical className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -72,7 +72,7 @@ export function NavUser({ user }) {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={user.avatar} alt={"admin.webp"} />
                   <AvatarFallback className="rounded-lg">
                     {dummyImg}
                   </AvatarFallback>

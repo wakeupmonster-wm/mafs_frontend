@@ -16,6 +16,7 @@ import {
   updateSocialMediaAction,
 } from "../store/social.media.slice";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 // 1. Move config outside to avoid re-renders
 const PLATFORM_CONFIG = {
@@ -136,9 +137,9 @@ export default function SocialMediaPage() {
           subheading="Configure social media links for your application."
         />
 
-        <button
+        <Button
           disabled={loading}
-          className="flex items-center gap-2 bg-brand-aqua/80 hover:bg-brand-aqua text-slate-900 text-sm px-6 py-2.5 rounded-lg font-bold transition-all shadow-md disabled:opacity-50"
+          className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
           onClick={handleSave}
         >
           {loading ? (
@@ -147,7 +148,7 @@ export default function SocialMediaPage() {
             <Save size={16} />
           )}
           Save Changes
-        </button>
+        </Button>
       </header>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -102,10 +102,9 @@ export default function CampaignsDataTables({
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors duration-200"
-                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>
@@ -121,23 +120,23 @@ export default function CampaignsDataTables({
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="shrink-0" // Prevents the chip itself from squeezing
+                    className="shrink-0"
                   >
                     <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                      variant="outline"
+                      className="h-6 px-2 gap-1 bg-indigo-50 border-indigo-300 text-indigo-700 whitespace-nowrap"
                     >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
+                      <span className="text-[10px] font-bold uppercase opacity-60">
                         Status:
                       </span>
-                      <span className="capitalize text-xs">
+                      <span className="capitalize text-[10px] font-semibold">
                         {filters.drawStatus}
                       </span>
                       <button
                         onClick={() => filters.setDrawStatus("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        className="ml-0.5 p-0.5 rounded-full hover:bg-indigo-200 transition-colors"
                       >
-                        <IconX size={12} />
+                        <IconX size={9} />
                       </button>
                     </Badge>
                   </motion.div>
@@ -157,24 +156,23 @@ export default function CampaignsDataTables({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                      "h-10 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white whitespace-nowrap transition-all duration-300",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                        "border-brand-aqua ring-1 ring-brand-aqua focus-visible:ring-0",
                     )}
                   >
-                    <IconFilter strokeWidth={2.5}
+                    <IconFilter
+                      strokeWidth={2}
                       className={cn(
                         "h-6 w-6",
                         hasActiveFilters
-                          ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
+                          ? "text-brand-aqua group-hover:text-white"
+                          : "text-slate-500/80 group-hover:text-white",
                       )}
                     />
-                    <span className="text-sm font-medium text-slate-700">
-                      Filters
-                    </span>
+                    Filters
                     {hasActiveFilters && (
-                      <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-white text-[10px] text-black group-hover:text-brand-aqua font-bold">
                         {Number(!!filters.drawStatus)}
                       </span>
                     )}
@@ -250,18 +248,18 @@ export default function CampaignsDataTables({
               >
                 {filters.drawStatus && (
                   <Badge
-                    variant="secondary"
-                    className="bg-indigo-50 text-indigo-700 border-indigo-100 py-1"
+                    variant="outline"
+                    className="h-6 px-2 gap-1 bg-indigo-50 border-indigo-300 text-indigo-700"
                   >
-                    Status:
-                    <span className="capitalize ml-1">
+                    <span className="text-[10px] opacity-60">Status:</span>
+                    <span className="capitalize text-[10px] font-semibold">
                       {filters.drawStatus}
                     </span>
                     <button
                       onClick={() => filters.setDrawStatus("")}
-                      className="ml-1"
+                      className="ml-0.5"
                     >
-                      <IconX size={12} />
+                      <IconX size={9} />
                     </button>
                   </Badge>
                 )}
@@ -284,7 +282,7 @@ export default function CampaignsDataTables({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -293,7 +291,7 @@ export default function CampaignsDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -303,7 +301,7 @@ export default function CampaignsDataTables({
                     <TableCell key={cell.id} className="py-3 pl-10">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

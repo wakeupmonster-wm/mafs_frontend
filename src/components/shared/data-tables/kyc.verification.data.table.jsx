@@ -85,9 +85,9 @@ export default function KYCVerificationDataTable({
     <div className="w-full space-y-4">
       {/* --- TOOLBAR SECTION --- */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row flex-wrap md:items-center justify-between gap-4 p-2 rounded-xl">
-          {/* 1. LEFT SIDE: Search */}
-          <div className="relative w-3/5 md:w-1/3">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-3 p-0 rounded-2xl border border-slate-100">
+          {/* 1. LEFT SIDE: Search Input */}
+          <div className="relative w-80 lg:w-96 order-1">
             <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
             <Input
               placeholder={searchPlaceholder}
@@ -98,16 +98,15 @@ export default function KYCVerificationDataTable({
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors duration-200"
-                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>
 
           {/* 2. RIGHT SIDE CONTAINER: Chips + Divider + Filter Button */}
-          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4">
+          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4 order-2">
             {/* Desktop Chips (Hidden on Mobile) */}
             <div className="hidden sm:flex flex-1 items-center justify-end gap-2 overflow-x-hidden min-w-0">
               <AnimatePresence mode="popLayout">
@@ -121,20 +120,22 @@ export default function KYCVerificationDataTable({
                     className="shrink-0"
                   >
                     <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                      variant="outline"
+                      // className="h-6 px-2 gap-1 bg-indigo-50 border-indigo-300 text-indigo-700 whitespace-nowrap"
+                      className="h-6 px-2 gap-1 bg-sky-50 border-sky-300 text-sky-700 whitespace-nowrap"
                     >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
+                      {/* <span className="text-[10px] font-bold uppercase opacity-60">
                         Status:
-                      </span>
-                      <span className="capitalize text-xs">
+                      </span> */}
+                      <span className="capitalize text-[10px] font-semibold">
                         {filters.statusFilter}
                       </span>
                       <button
                         onClick={() => filters.setStatusFilter("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-indigo-200 transition-colors"
+                        // className="ml-0.5 p-0.5 rounded-full hover:bg-indigo-200 transition-colors"
+                        className="ml-0.5 p-0.5 rounded-full hover:bg-purple-200 transition-colors"
                       >
-                        <IconX size={12} />
+                        <IconX size={10} />
                       </button>
                     </Badge>
                   </motion.div>
@@ -150,20 +151,22 @@ export default function KYCVerificationDataTable({
                     className="shrink-0"
                   >
                     <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-slate-100 border-dashed border-slate-400 text-slate-700 shadow-sm whitespace-nowrap"
+                      variant="outline"
+                      // className="h-6 px-2 gap-1 bg-sky-50 border-sky-300 text-sky-700 whitespace-nowrap"
+                      className="h-6 px-2 gap-1 bg-slate-50 border-slate-300 text-slate-600 whitespace-nowrap"
                     >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
+                      {/* <span className="text-[10px] font-bold uppercase opacity-60">
                         Sort:
-                      </span>
-                      <span className="capitalize text-xs">
+                      </span> */}
+                      <span className="capitalize text-[10px] font-semibold">
                         {filters.sortBy}
                       </span>
                       <button
                         onClick={() => filters.setSortBy("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-200 transition-colors"
+                        // className="ml-0.5 p-0.5 rounded-full hover:bg-sky-200 transition-colors"
+                        className="ml-0.5 p-0.5 rounded-full hover:bg-slate-200 transition-colors"
                       >
-                        <IconX size={12} />
+                        <IconX size={9} />
                       </button>
                     </Badge>
                   </motion.div>
@@ -186,25 +189,23 @@ export default function KYCVerificationDataTable({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                      "h-10 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white whitespace-nowrap transition-all duration-300",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                        "border-brand-aqua ring-1 ring-brand-aqua focus-visible:ring-0",
                     )}
                   >
                     <IconFilter
-                      strokeWidth={2.5}
+                      strokeWidth={2}
                       className={cn(
                         "h-6 w-6",
                         hasActiveFilters
-                          ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
+                          ? "text-brand-aqua group-hover:text-white"
+                          : "text-slate-500/80 group-hover:text-white",
                       )}
                     />
-                    <span className="text-sm font-medium text-slate-700">
-                      Filters
-                    </span>
+                    Filters
                     {(filters.statusFilter || filters.sortBy) && (
-                      <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-white text-[10px] text-white group-hover:text-brand-aqua font-bold">
                         {Number(filters.statusFilter !== "") +
                           Number(filters.sortBy !== "")}
                       </span>
@@ -281,35 +282,35 @@ export default function KYCVerificationDataTable({
               >
                 {filters.statusFilter && (
                   <Badge
-                    variant="secondary"
-                    className="bg-indigo-50 text-indigo-700 border-indigo-100 py-1"
+                    variant="outline"
+                    className="h-6 px-2 gap-1 bg-indigo-50 border-indigo-300 text-indigo-700"
                   >
-                    Status:{" "}
-                    <span className="capitalize ml-1">
+                    <span className="text-[10px] opacity-60">Status:</span>
+                    <span className="capitalize text-[10px] font-semibold">
                       {filters.statusFilter}
                     </span>
                     <button
                       onClick={() => filters.setStatusFilter("")}
-                      className="ml-1"
+                      className="ml-0.5"
                     >
-                      <IconX size={12} />
+                      <IconX size={9} />
                     </button>
                   </Badge>
                 )}
-                {filters.isPremium !== undefined && (
+                {filters.sortBy && (
                   <Badge
-                    variant="secondary"
-                    className="bg-amber-50 text-amber-700 border-amber-100 py-1"
+                    variant="outline"
+                    className="h-6 px-2 gap-1 bg-sky-50 border-sky-300 text-sky-700"
                   >
-                    Sort:{" "}
-                    <span className="ml-1">
-                      {filters.sortBy ? "Newest" : "Oldest"}
+                    <span className="text-[10px] opacity-60">Sort:</span>
+                    <span className="capitalize text-[10px] font-semibold">
+                      {filters.sortBy}
                     </span>
                     <button
-                      onClick={() => filters.setSortBy(undefined)}
-                      className="ml-1"
+                      onClick={() => filters.setSortBy("")}
+                      className="ml-0.5"
                     >
-                      <IconX size={12} />
+                      <IconX size={9} />
                     </button>
                   </Badge>
                 )}
@@ -332,7 +333,7 @@ export default function KYCVerificationDataTable({
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -341,7 +342,7 @@ export default function KYCVerificationDataTable({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {/* Inside your TableBody */}
@@ -353,7 +354,7 @@ export default function KYCVerificationDataTable({
                       <TableCell key={cell.id} className="py-3 pl-10">
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

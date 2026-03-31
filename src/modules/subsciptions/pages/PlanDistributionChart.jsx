@@ -85,14 +85,14 @@ const PlanDistributionChart = ({ planData = [] }) => {
   };
 
   return (
-    <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full flex flex-col">
+    <Card className="rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden h-full flex flex-col">
       {/* ── Header ── */}
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-black flex items-center gap-2">
-          <Layers className="w-4 h-4 text-brand-aqua" />
+        <CardTitle className="text-base font-black flex items-center gap-2">
+          <Layers className="w-6 h-6 text-brand-aqua" />
           Plan Distribution
         </CardTitle>
-        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest pl-6">
+        <p className="text-xs uppercase font-bold text-slate-400 tracking-widest pl-6">
           Active Subscription Tiers
         </p>
       </CardHeader>

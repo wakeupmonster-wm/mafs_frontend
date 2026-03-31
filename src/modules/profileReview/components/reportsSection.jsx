@@ -171,10 +171,6 @@ export const ReportsSection = ({ reports, count }) => {
   const pendingReports = reports?.filter((r) => r.status !== "resolved") || [];
   const resolvedReports = reports?.filter((r) => r.status === "resolved") || [];
 
-  console.log("reports: ", reports);
-  console.log("pendingReports: ", pendingReports);
-  console.log("resolvedReports: ", resolvedReports);
-
   // Reusable Report Card Component taaki code repeat na ho
   const ReportItem = ({ r }) => (
     <div className="group relative flex flex-col gap-4 px-4 py-6 rounded-2xl border border-slate-200 bg-slate-50/40 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-200/50">
@@ -259,40 +255,41 @@ export const ReportsSection = ({ reports, count }) => {
 
   return (
     <div className="space-y-6">
-      {/* SECTION 1: PENDING REPORTS */}
-      <Card className="p-6 border-red-200 shadow-sm bg-white rounded-2xl border-t-4 border-t-red-500">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h3 className="font-bold text-xl text-gray-900 flex items-center gap-2.5">
-              <div className="p-2 bg-red-100/60 rounded-xl">
-                <Flag className="w-5 h-5 text-red-600" />
-              </div>
-              Pending Investigations
-            </h3>
-            <p className="text-xs text-slate-500 font-medium">
-              Reports currently requiring admin review.
-            </p>
-          </div>
-          <Badge
-            variant="outline"
-            className="bg-red-100 text-red-500 border-red-300"
-          >
-            {pendingReports.length} NEW
-          </Badge>
-        </div>
-
-        <div className="space-y-4">
-          {pendingReports.length === 0 ? (
-            <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed text-slate-400 text-sm">
-              All clear! No pending reports.
+      {pendingReports.length > 0 && (
+        <Card className="p-6 border-red-200 shadow-sm bg-white rounded-2xl border-t-4 border-t-red-500">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-bold text-xl text-gray-900 flex items-center gap-2.5">
+                <div className="p-2 bg-red-100/60 rounded-xl">
+                  <Flag className="w-5 h-5 text-red-600" />
+                </div>
+                Pending Investigations
+              </h3>
+              <p className="text-xs text-slate-500 font-medium">
+                Reports currently requiring admin review.
+              </p>
             </div>
-          ) : (
-            pendingReports.map((r, idx) => (
-              <ReportItem key={r._id || r.id || idx} r={r} idx={idx} />
-            ))
-          )}
-        </div>
-      </Card>
+            <Badge
+              variant="outline"
+              className="bg-red-100 text-red-500 border-red-300"
+            >
+              {pendingReports.length} NEW
+            </Badge>
+          </div>
+
+          <div className="space-y-4">
+            {pendingReports.length === 0 ? (
+              <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed text-slate-400 text-sm">
+                All clear! No pending reports.
+              </div>
+            ) : (
+              pendingReports.map((r, idx) => (
+                <ReportItem key={r._id || r.id || idx} r={r} idx={idx} />
+              ))
+            )}
+          </div>
+        </Card>
+      )}
 
       {/* SECTION 2: RESOLVED HISTORY */}
       <Card className="p-6 border-emerald-200 shadow-sm bg-white rounded-2xl border-t-4 border-t-emerald-500">

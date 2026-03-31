@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   Users,
   DollarSign,
-  UserPlus,
   UserMinus,
   Trophy,
   TrendingUp,
@@ -15,7 +14,6 @@ import {
   RefreshCcw,
   BarChart3,
   Target,
-  Layers,
   CalendarIcon,
   ChevronLeft,
   ChevronRight,
@@ -25,9 +23,6 @@ import {
 import {
   BarChart,
   Bar,
-  PieChart,
-  Pie,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -36,9 +31,6 @@ import {
   Legend,
   AreaChart,
   Area,
-  ComposedChart,
-  Line,
-  LabelList,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -58,38 +50,14 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { fetchSubscriptionKPIs } from "../store/subscription.slice";
-import { format, startOfWeek, startOfMonth } from "date-fns";
+import { format } from "date-fns";
 import { PreLoader } from "@/app/loader/preloader";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
 import Last24HoursPieChart from "./Last24HoursPieChart";
 import PlanDistributionChart from "./PlanDistributionChart";
-
-// Same color maps as subscription.page.jsx
-const colorMap = {
-  blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-  emerald:
-    "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-  amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-  purple:
-    "from-purple-500/40 to-purple-600/5 text-purple-600 border-purple-100",
-  rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-  cyan: "from-cyan-500/40 to-cyan-600/5 text-cyan-600 border-cyan-100",
-  aqua: "from-brand-aqua/30 to-brand-aqua/5 text-brand-aqua border-brand-aqua/30",
-};
-
-const bgMap = {
-  blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-  emerald:
-    "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-  amber:
-    "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
-  purple:
-    "from-purple-300/20 via-purple-500/10 to-transparent text-purple-600 border-purple-200 hover:border-purple-400",
-  rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
-  cyan: "from-cyan-300/20 via-cyan-500/10 to-transparent text-cyan-600 border-cyan-200 hover:border-cyan-400",
-  aqua: "from-brand-aqua/20 via-brand-aqua/10 to-transparent text-brand-aqua border-brand-aqua/30 hover:border-brand-aqua/80",
-};
+import { bgMap, colorMap } from "@/constants/colors";
+import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
 
@@ -160,7 +128,7 @@ export default function SubscriptionDashboard() {
         label: "Active Subscribers",
         val: kpis.activeSubscribers?.count || 0,
         icon: <Crown className="w-6 h-6" />,
-        color: "aqua",
+        color: "orange",
         description: `Change: ${kpis.activeSubscribers?.change || "0%"}`,
       },
       {
@@ -188,7 +156,7 @@ export default function SubscriptionDashboard() {
         label: "Churn Rate",
         val: kpis.churnRate || "0%",
         icon: <UserMinus className="w-6 h-6" />,
-        color: "rose",
+        color: "red",
         description: "Monthly cancellation %",
       },
     ];
@@ -575,9 +543,9 @@ export default function SubscriptionDashboard() {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8 font-jakarta">
+    <div className="flex flex-1 flex-col min-h-screen py-4 px-5 bg-slate-50 pb-8">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-8"
+        className="@container/main space-y-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -588,7 +556,7 @@ export default function SubscriptionDashboard() {
             heading="Revenue Dashboard"
             subheading="Consolidated intelligence across subscriptions & consumable growth."
             icon={<BarChart3 className="w-10 h-10 text-white" />}
-            color="bg-brand-aqua shadow-xl"
+            color="bg-brand-aqua"
           />
           <div className="flex items-center gap-3">
             <Popover
@@ -598,14 +566,17 @@ export default function SubscriptionDashboard() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="bg-white border-brand-aqua/30 rounded-2xl h-10 px-4 text-xs font-bold text-slate-700 shadow-sm flex items-center gap-2"
+                  className="group bg-white hover:bg-brand-aqua border border-slate-300 rounded-2xl h-10 px-4 text-xs font-medium hover:font-semibold text-slate-500 hover:text-white shadow-sm flex items-center gap-2 transition-all duration-300"
                 >
-                  <CalendarIcon className="w-4 h-4 text-brand-aqua" />
+                  <CalendarIcon
+                    strokeWidth={2.5}
+                    className="w-4 h-4 text-brand-aqua group-hover:text-white"
+                  />
                   {format(new Date(selectedMonth + "-01"), "MMMM yyyy")}
                 </Button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-64 p-3 rounded-3xl border-brand-aqua/20 shadow-xl"
+                className="w-64 p-3 rounded-3xl border-brand-aqua/20 shadow-sm"
                 align="end"
               >
                 <div className="space-y-4">
@@ -667,12 +638,15 @@ export default function SubscriptionDashboard() {
 
             <Button
               variant="ghost"
-              className="bg-slate-50 hover:bg-slate-100 rounded-2xl h-10 px-4 font-bold text-xs gap-2 text-slate-500 shadow-sm"
+              className="group border border-slate-300 bg-white hover:bg-brand-aqua text-slate-400 hover:text-white rounded-2xl h-10 px-4 font-medium hover:font-semibold text-xs gap-2 shadow-sm transition-all duration-300"
               onClick={refreshDashboard}
               disabled={statsLoading}
             >
               <RefreshCcw
-                className={cn("w-3.5 h-3.5", statsLoading && "animate-spin")}
+                className={cn(
+                  "w-3.5 h-3.5 group-hover:text-white",
+                  statsLoading && "animate-spin",
+                )}
               />
               {lastRefresh
                 ? `Updated ${lastRefresh.toLocaleTimeString()}`
@@ -687,7 +661,7 @@ export default function SubscriptionDashboard() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-2"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-2"
           >
             <StatsGrid stats={coreStats} colorMap={colorMap} bgMap={bgMap} />
           </motion.div>
@@ -696,22 +670,22 @@ export default function SubscriptionDashboard() {
         {/* Milestone Progress Card */}
         {kpis?.milestone && (
           <div className="px-2">
-            <Card className="rounded-[2rem] border-brand-aqua/30 hover:border-brand-aqua/60 transition-all shadow-md bg-white overflow-hidden">
+            <Card className="rounded-[1.5rem] border-brand-aqua/30 hover:border-brand-aqua/60 transition-all shadow-sm bg-white overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-sm font-black flex items-center gap-2">
-                      <Trophy className="w-4 h-4 text-brand-aqua" />
+                  <div className="space-y-2">
+                    <CardTitle className="text-base font-black flex items-center gap-2">
+                      <Trophy className="w-6 h-6 text-brand-aqua" />
                       Milestone Program
                     </CardTitle>
-                    <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                    <p className="text-xs uppercase font-bold text-slate-400 tracking-widest">
                       Free premium grant progress
                     </p>
                   </div>
                   <Badge
                     className={cn(
-                      "text-[10px] font-black uppercase tracking-widest border px-3 py-1 rounded-full",
-                      "bg-emerald-50 text-emerald-600 border-emerald-200",
+                      "text-[10px] cursor-pointer font-black uppercase tracking-widest border px-3 py-1 rounded-full",
+                      "bg-emerald-50 hover:bg-transparent text-emerald-800 hover:text-emerald-500 border-emerald-200 hover:border-emerald-500",
                     )}
                   >
                     Active
@@ -750,14 +724,14 @@ export default function SubscriptionDashboard() {
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-2">
           {/* Revenue Trend */}
-          <Card className="lg:col-span-2 rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
+          <Card className="lg:col-span-2 rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
-              <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-brand-aqua" />
+              <div className="space-y-2">
+                <CardTitle className="text-base font-black flex items-center gap-2">
+                  <BarChart3 className="w-6 h-6 text-brand-aqua" />
                   Revenue Trend
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
                   Subscription vs consumable revenue
                 </p>
 
@@ -854,12 +828,14 @@ export default function SubscriptionDashboard() {
                   </div>
                 )}
               </div>
+
               <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                 <Select
                   value={chartTimeframe}
                   onValueChange={setChartTimeframe}
                 >
-                  <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[110px]">
+                  {/* <SelectTrigger className="h-9 rounded-xl bg-slate-50 border border-slate-300 text-[10px] sm:text-[11px] font-bold w-full sm:w-[110px]"> */}
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-600 hover:text-white font-medium hover:font-semibold w-full sm:w-[110px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -884,7 +860,7 @@ export default function SubscriptionDashboard() {
                   </SelectContent>
                 </Select>
                 <Select value={chartType} onValueChange={setChartType}>
-                  <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[145px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-600 hover:text-white font-medium hover:font-semibold w-full sm:w-[120px]">
                     <SelectValue placeholder="Revenue Type" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -1212,14 +1188,14 @@ export default function SubscriptionDashboard() {
           </Card>
 
           {/* Platform Mix */}
-          <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
+          <Card className="rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-brand-aqua" />
+                <CardTitle className="text-base font-black flex items-center gap-2">
+                  <Smartphone className="w-6 h-6 text-brand-aqua" />
                   Platform Mix
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest">
                   Revenue by platform
                 </p>
               </div>
@@ -1233,8 +1209,16 @@ export default function SubscriptionDashboard() {
                   );
                   const percentage =
                     total > 0 ? ((platform.value || 0) / total) * 100 : 0;
+
                   const isIOS = platform.name === "IOS";
                   const isAndroid = platform.name === "ANDROID";
+
+                  // Helper function to render the correct icon
+                  const getPlatformIcon = () => {
+                    if (isIOS) return <AiFillApple className="w-5 h-5" />;
+                    if (isAndroid) return <AiFillAndroid className="w-5 h-5" />;
+                    return <AiFillAndroid className="w-4 h-4" />;
+                  };
 
                   return (
                     <div
@@ -1246,14 +1230,15 @@ export default function SubscriptionDashboard() {
                           <div
                             className={cn(
                               "p-2 rounded-xl shadow-sm",
-                              isIOS ? "bg-brand-aqua text-white" : "",
-                              isAndroid ? "bg-brand-aqua text-white" : "",
+                              isIOS ? "bg-black text-white" : "",
+                              isAndroid ? "bg-green-100 text-green-500" : "",
                               !isIOS && !isAndroid
                                 ? "bg-slate-200 text-slate-600"
                                 : "",
                             )}
                           >
-                            <Smartphone className="w-4 h-4 " />
+                            {/* <Smartphone className="w-4 h-4 " /> */}
+                            {getPlatformIcon()}
                           </div>
                           <div>
                             <p className="text-xs font-black uppercase tracking-widest text-brand-aqua">
@@ -1302,14 +1287,14 @@ export default function SubscriptionDashboard() {
         {/* Second Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
           {/* Subscriber Growth */}
-          <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
+          <Card className="rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
-              <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-brand-aqua" />
+              <div className="space-y-2">
+                <CardTitle className="text-base font-black flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-brand-aqua" />
                   Subscriber Growth
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
                   New vs cancelled vs net
                 </p>
               </div>
@@ -1413,7 +1398,7 @@ export default function SubscriptionDashboard() {
           </Card>
 
           {/* Plan Distribution */}
-          {/* <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
+          {/* <Card className="rounded-[2rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
                             <div className="space-y-1">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
@@ -1449,14 +1434,14 @@ export default function SubscriptionDashboard() {
         {/* Third Row: Best Selling Products */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
           {/* Best Selling Products */}
-          <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
+          <Card className="rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-              <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <Package className="w-4 h-4 text-brand-aqua" />
+              <div className="space-y-2">
+                <CardTitle className="text-base font-black flex items-center gap-2">
+                  <Package className="w-6 h-6 text-brand-aqua" />
                   Top Selling Products
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest">
                   Highest performing packages
                 </p>
               </div>
@@ -1512,7 +1497,7 @@ export default function SubscriptionDashboard() {
 
           {/* Quick Stats / Last 24 Hours (Placeholder or New Feature) */}
           {/* {subscriptionStats?.last24HoursActivity && (
-                        <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
+                        <Card className="rounded-[2rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden h-full">
                             <CardHeader className="pb-4">
                                 <CardTitle className="text-sm font-black flex items-center gap-2">
                                     <TrendingUp className="w-4 h-4 text-brand-aqua" />

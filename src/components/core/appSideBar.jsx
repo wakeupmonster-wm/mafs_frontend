@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 import React from "react";
 import { useEffect } from "react";
 import { NavMain } from "@/components/core/navigations/nav-main";
@@ -11,7 +10,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -36,13 +34,13 @@ export function AppSidebar({ ...props }) {
   }, [dispatch]);
 
   // Utility for section headers to keep the JSX clean
-  const SectionHeader = ({ title }) => (
-    <div className="px-4 mb-2 mt-4">
-      <h2 className="text-[11px] font-bold tracking-[0.15em] text-slate-400/80 uppercase">
-        {title}
-      </h2>
-    </div>
-  );
+  // const SectionHeader = ({ title }) => (
+  //   <div className="px-4 mb-2 mt-4">
+  //     <h2 className="text-[11px] font-bold tracking-[0.15em] text-slate-400/80 uppercase">
+  //       {title}
+  //     </h2>
+  //   </div>
+  // );
 
   const navUser = useMemo(
     () => ({
@@ -56,19 +54,18 @@ export function AppSidebar({ ...props }) {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-slate-300/50 bg-white/80 backdrop-blur-xl mt-1 justify-center"
+      className="border-r border-slate-200 bg-slate-50 backdrop-blur-xl pt-1"
       {...props}
     >
       {/* --- HEADER: Logo & Branding --- */}
-      <SidebarHeader className="h-14 items-center justify-center border border-slate-100 bg-white/40 p-0">
+      <SidebarHeader className="sticky top-0 z-20 h-16 items-center justify-center bg-slate-50/95 backdrop-blur-sm p-0">
         <SidebarMenu>
-          <SidebarMenuItem className="flex items-center justify-between">
+          <SidebarMenuItem className="flex items-center justify-between px-1">
             {/* 2. Agar sidebar open hai tabhi logo dikhega */}
             {open && (
               <SidebarMenuButton
                 size="lg"
                 asChild
-                className="hover:bg-transparent p-1 animate-in fade-in duration-300"
               >
                 <Link to="/admin/dashboard" className="flex items-center gap-2">
                   <div className="flex aspect-square items-center justify-center rounded-lg">
@@ -100,7 +97,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       {/* --- CONTENT: Navigation Sections --- */}
-      <SidebarContent className="scrollbar-none gap-0">
+      <SidebarContent className="flex-1 overflow-y-auto scrollbar-thin gap-0 bg-slate-50">
         {/* Overview Section */}
         {navigationData.navMain && <NavMain items={navigationData.navMain} />}
 

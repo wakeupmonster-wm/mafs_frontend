@@ -91,9 +91,9 @@ export default function SubscriptionsDataTables({
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-3 w-3 text-slate-600" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>

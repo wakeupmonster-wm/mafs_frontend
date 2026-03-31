@@ -37,8 +37,8 @@ export const getSubscriberColumns = (navigate) => [
   {
     id: "sno",
     header: () => (
-      <div className="w-10 text-center text-[10px] font-black uppercase tracking-widest text-slate-500">
-        S.No
+      <div className="w-12 text-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Sr.No.
       </div>
     ),
     cell: ({ row, table }) => {
@@ -90,18 +90,18 @@ export const getSubscriberColumns = (navigate) => [
       return (
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
-            <Avatar className="h-9 w-9 border-2 border-white shadow-sm rounded-xl overflow-hidden">
+            <Avatar className="h-9 w-9 border-2 border-white shadow-sm rounded-full overflow-hidden">
               <AvatarImage src={avatar} className="object-cover" />
               <AvatarFallback className="bg-brand-aqua/10 text-brand-aqua text-[10px] font-black rounded-xl">
                 {String(name).charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            {data?.status === "ACTIVE" && !data?.isExpired && (
+            {/* {data?.status === "ACTIVE" && !data?.isExpired && (
               <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
-            )}
+            )} */}
           </div>
           <div className="min-w-0">
-            <p className="text-xs font-black text-slate-900 truncate max-w-[120px]">
+            <p className="capitalize text-xs font-black text-slate-900 truncate max-w-[120px]">
               {name}
             </p>
             <p className="text-[10px] font-medium text-slate-400 truncate max-w-[140px]">
@@ -125,14 +125,14 @@ export const getSubscriberColumns = (navigate) => [
       return (
         <Badge
           className={cn(
-            "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
+            "text-[10px] font-black p-0 h-5 border-none",
             plan === "1_MONTH" || plan === "MONTHLY"
-              ? "bg-blue-50 text-blue-600 border-blue-100"
+              ? "text-blue-600"
               : plan === "3_MONTH" || plan === "QUARTERLY"
-                ? "bg-indigo-50 text-indigo-600 border-indigo-100"
+                ? "text-indigo-600"
                 : plan === "YEARLY"
-                  ? "bg-purple-50 text-purple-600 border-purple-100"
-                  : "bg-amber-50 text-amber-600 border-amber-100",
+                  ? "text-purple-600"
+                  : "text-amber-600",
           )}
         >
           {plan}
@@ -208,7 +208,7 @@ export const getSubscriberColumns = (navigate) => [
         <div className="flex justify-center">
           <Badge
             className={cn(
-              "text-[10px] font-black px-2.5 py-0.5 shadow-none border uppercase tracking-widest",
+              "text-[10px] font-black px-2.5 py-0.5 shadow-none border uppercase tracking-wide",
               badgeStyle,
             )}
           >
@@ -360,7 +360,7 @@ export const getSubscriberColumns = (navigate) => [
     cell: ({ row }) => {
       const sub = row.original;
       return (
-        <div className="text-right pr-2">
+        <div className="text-center pr-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

@@ -84,15 +84,14 @@ export default function ReportsDataTables({
     <div className="w-full space-y-4">
       {/* --- TOOLBAR SECTION --- */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-row md:items-center justify-between gap-4 bg-slate-50/50 p-2 rounded-xl">
+        <div className="flex flex-col md:flex-row lg:items-center justify-between gap-3 p-0 rounded-2xl">
           {/* 1. LEFT SIDE: Search Input */}
-          <div className="relative w-3/5 md:w-1/3">
+          <div className="relative w-80 lg:w-96 order-1">
             {/* Search Icon (Left) */}
-            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
-
+            <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500 z-10" />
             <Input
               placeholder={searchPlaceholder}
-              className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+              className="pl-9 pr-10 bg-white border-slate-200 h-10 placeholder:text-slate-400 shadow-sm focus-visible:ring-brand-aqua rounded-lg"
               value={globalFilter ?? ""}
               onChange={(e) => setGlobalFilter(e.target.value)}
             />
@@ -101,16 +100,15 @@ export default function ReportsDataTables({
             {globalFilter && (
               <button
                 onClick={() => setGlobalFilter("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors duration-200"
-                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-1 bg-slate-100 hover:bg-slate-200 transition-colors"
               >
-                <IconX className="h-4 w-4 text-slate-600 group-hover:text-slate-800 transition-colors" />
+                <IconX className="h-3.5 w-3.5 text-slate-500" />
               </button>
             )}
           </div>
 
           {/* 2. RIGHT SIDE CONTAINER: Chips + Divider + Filter Button */}
-          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4">
+          <div className="flex items-center justify-end gap-3 min-w-0 flex-1 ml-4 order-2">
             {/* Desktop Chips (Hidden on Mobile) */}
             <div className="hidden sm:flex flex-1 items-center justify-end gap-2 overflow-x-hidden min-w-0">
               <AnimatePresence mode="popLayout">
@@ -123,20 +121,22 @@ export default function ReportsDataTables({
                     className="shrink-0" // Prevents the chip itself from squeezing
                   >
                     <Badge
-                      variant="secondary"
-                      className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                      variant="outline"
+                      // className="p-2 gap-1 bg-indigo-100 border-dashed border-indigo-400 text-indigo-700 shadow-sm whitespace-nowrap"
+                      className="h-6 px-2 gap-1 bg-slate-50 border-slate-300 text-slate-600 whitespace-nowrap"
                     >
-                      <span className="text-[10px] font-bold uppercase opacity-50">
+                      {/* <span className="text-[10px] font-bold uppercase opacity-50">
                         Status:
-                      </span>
+                      </span> */}
                       <span className="capitalize text-xs">
                         {filters.statusFilter}
                       </span>
                       <button
                         onClick={() => filters.setStatusFilter("")}
-                        className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        // className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                        className="ml-0.5 p-0.5 rounded-full hover:bg-slate-200 transition-colors"
                       >
-                        <IconX size={12} />
+                        <IconX size={10} />
                       </button>
                     </Badge>
                   </motion.div>
@@ -156,25 +156,23 @@ export default function ReportsDataTables({
                   <Button
                     variant="outline"
                     className={cn(
-                      "h-10 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                      "h-9 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white whitespace-nowrap transition-all duration-300",
                       hasActiveFilters &&
-                        "border-brand-aqua ring-1 ring-brand-aqua"
+                        "border-brand-aqua ring-[0.1px] ring-brand-aqua focus-visible:ring-0",
                     )}
                   >
                     <IconFilter
-                      strokeWidth={2.5}
+                      strokeWidth={2}
                       className={cn(
                         "h-6 w-6",
                         hasActiveFilters
-                          ? "text-brand-aqua"
-                          : "text-brand-aqua/60"
+                          ? "text-brand-aqua group-hover:text-white"
+                          : "text-slate-500/80 group-hover:text-white",
                       )}
                     />
-                    <span className="text-sm font-medium text-slate-700">
-                      Filters
-                    </span>
+                    Filters
                     {hasActiveFilters && (
-                      <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-white text-[10px] text-white group-hover:text-brand-aqua font-bold">
                         {Number(!!filters.statusFilter)}
                       </span>
                     )}
@@ -204,7 +202,7 @@ export default function ReportsDataTables({
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
-                        className="text-red-600 justify-center font-medium focus:bg-red-50 focus:text-red-700 cursor-pointer"
+                        className="rounded-xl text-red-600 justify-center font-medium focus:bg-red-50 focus:text-red-700 cursor-pointer"
                         onClick={() => {
                           filters.setStatusFilter("");
                         }}
@@ -261,11 +259,11 @@ export default function ReportsDataTables({
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="text-slate-700 w-max pl-10 font-semibold h-10 bg-slate-100 text-xs"
+                    className="text-slate-700 w-max pl-10 font-semibold h-10 bg-slate-200/50 text-xs"
                   >
                     {flexRender(
                       header.column.columnDef.header,
-                      header.getContext()
+                      header.getContext(),
                     )}
                   </TableHead>
                 ))}
@@ -274,7 +272,7 @@ export default function ReportsDataTables({
           </TableHeader>
           <TableBody
             className={cn(
-              isLoading && "opacity-50 pointer-events-none transition-opacity"
+              isLoading && "opacity-50 pointer-events-none transition-opacity",
             )}
           >
             {table.getRowModel().rows?.length ? (
@@ -284,7 +282,7 @@ export default function ReportsDataTables({
                     <TableCell key={cell.id} className="py-3 pl-10">
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

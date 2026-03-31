@@ -1,18 +1,19 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { AlertCircle, AlertTriangle, Eye, Flag, Info } from "lucide-react";
+import { AlertCircle, AlertTriangle, Eye, Info } from "lucide-react";
 import dummyImg from "@/assets/web/dummyImg.webp";
+import { IoFlagSharp } from "react-icons/io5";
 
 export const reportColumns = (navigate) => [
   {
     id: "sno",
-    header: () => <div className="w-5 text-center text-xs">S.no</div>,
+    header: () => <div className="w-4 text-center text-xs">Sr.No.</div>,
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
 
-      return <div className="w-5 text-center font-medium">{serialNumber}</div>;
+      return <div className="w-4 text-center font-medium">{serialNumber}</div>;
     },
     enableSorting: false,
     enableHiding: false,
@@ -27,7 +28,7 @@ export const reportColumns = (navigate) => [
           className="w-8 h-8 rounded-full object-cover"
           alt="avatar"
         />
-        <span className="font-medium text-[13px] text-slate-700">
+        <span className="capitalize font-medium text-[13px] text-slate-700">
           {row.getValue("nickname")}
         </span>
       </div>
@@ -40,17 +41,20 @@ export const reportColumns = (navigate) => [
       const count = row.getValue("reportCount"); // Extract value once for cleaner code
 
       const getPriorityColor = (num) => {
-        if (num >= 5) return "text-red-600 bg-red-50 border-red-200";
-        if (num >= 3) return "text-amber-600 bg-amber-50 border-amber-200";
-        return "text-blue-600 bg-blue-50 border-blue-200";
+        if (num >= 5) return "text-red-600";
+        if (num >= 3) return "text-amber-600";
+        return "text-blue-600";
       };
 
       return (
         <Badge
           variant="outline"
-          className={cn("gap-1 w-max font-bold", getPriorityColor(count))}
+          className={cn(
+            "gap-1 w-max font-semibold px-0 border-transparent",
+            getPriorityColor(count),
+          )}
         >
-          <Flag className="w-3 h-3" />
+          <IoFlagSharp className="w-3 h-3" />
           {count} report
           {count !== 1 ? "s" : ""}
         </Badge>
@@ -98,7 +102,10 @@ export const reportColumns = (navigate) => [
       };
       return (
         <Badge
-          className={cn("capitalize border", colors[status] || "bg-slate-50")}
+          className={cn(
+            "capitalize border font-normal",
+            colors[status] || "bg-slate-50",
+          )}
         >
           {status}
         </Badge>
@@ -114,7 +121,7 @@ export const reportColumns = (navigate) => [
 
       if (count >= 5) {
         return (
-          <Badge className="bg-red-100 text-red-700 border-red-300">
+          <Badge className="text-red-700 px-0 border-transparent">
             <AlertTriangle className="w-3 h-3 mr-1" />
             HIGH
           </Badge>
@@ -123,7 +130,7 @@ export const reportColumns = (navigate) => [
 
       if (count >= 3) {
         return (
-          <Badge className="bg-amber-100 text-amber-700 border-amber-300">
+          <Badge className="text-amber-700 px-0 border-transparent">
             <AlertCircle className="w-3 h-3 mr-1" />
             MEDIUM
           </Badge>
@@ -131,7 +138,7 @@ export const reportColumns = (navigate) => [
       }
 
       return (
-        <Badge className="bg-blue-100 text-blue-700 border-blue-300">
+        <Badge className="text-blue-700 px-0 border-transparent">
           <Info className="w-3 h-3 mr-1" />
           LOW
         </Badge>
@@ -148,7 +155,7 @@ export const reportColumns = (navigate) => [
         <Button
           variant="ghost"
           size="sm"
-          className="text-black font-medium border border-brand-aqua shadow-sm bg-brand-aqua/20 hover:bg-brand-aqua/60"
+          className="text-slate-500 hover:text-slate-600 font-medium border hover:border-brand-aqua shadow-sm hover:bg-brand-aqua/20"
           onClick={() => navigate(`./review/${row.original?.userId}`)}
         >
           <Eye className="w-4 h-4 mr-2" />

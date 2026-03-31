@@ -40,20 +40,20 @@ export function NavMain({ items }) {
                     className={cn(
                       "flex size-[22px] items-center justify-center rounded-sm transition-all duration-300",
                       isActive
-                        ? "text-brand-aqua shadow-lg shadow-blue-500/40" // Added slight tilt for "pop"
-                        : "bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-brand-aqua group-hover:shadow-sm",
+                        ? "text-brand-aqua" // Added slight tilt for "pop"
+                        : "text-slate-500 group-hover:text-brand-aqua",
                     )}
                   >
                     <Icon className="size-4" />
                   </div>
                   <span className="flex-1 truncate">{item.title}</span>
 
-                  {isActive && (
+                  {/* {isActive && (
                     <motion.div
                       layoutId="active-dot"
                       className="size-1 rounded-full bg-brand-aqua shadow-[0_0_8px_rgba(var(--brand-aqua-rgb),0.8)]"
                     />
-                  )}
+                  )} */}
 
                   {/* Badge for notifications */}
                   {item.badge && (
