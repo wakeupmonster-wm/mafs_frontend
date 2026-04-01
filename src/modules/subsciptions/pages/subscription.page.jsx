@@ -60,24 +60,24 @@ import {
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
 
-const colorMap = {
-  blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-  emerald:
-    "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-  amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-  purple:
-    "from-purple-500/40 to-purple-600/5 text-purple-600 border-purple-100",
-};
+// const colorMap = {
+//   blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+//   emerald:
+//     "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+//   amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+//   purple:
+//     "from-purple-500/40 to-purple-600/5 text-purple-600 border-purple-100",
+// };
 
-const bgMap = {
-  blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-  emerald:
-    "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-  amber:
-    "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
-  purple:
-    "from-purple-300/20 to-purple-500/10 to-transparent text-purple-600 border-purple-200 hover:border-purple-400",
-};
+// const bgMap = {
+//   blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+//   emerald:
+//     "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+//   amber:
+//     "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+//   purple:
+//     "from-purple-300/20 to-purple-500/10 to-transparent text-purple-600 border-purple-200 hover:border-purple-400",
+// };
 
 export default function SubscriptionPage() {
   const dispatch = useDispatch();

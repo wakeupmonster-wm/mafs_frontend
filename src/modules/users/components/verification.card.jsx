@@ -65,7 +65,7 @@ const VerificationCard = ({
     currentStatus === "not_started";
 
   return (
-    <Card className="relative overflow-hidden border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md bg-white/70 backdrop-blur-md transition-all hover:shadow-md">
+    <Card className="relative overflow-hidden border-slate-200 shadow-sm bg-white/70 backdrop-blur-md transition-all hover:shadow-md">
       {/* Decorative Status Line */}
       <div
         className={cn(
@@ -108,7 +108,7 @@ const VerificationCard = ({
 
         {/* Thumbnail Comparison Row */}
         <div className="flex items-center justify-start gap-3">
-          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-brand-bg transition-all hover:border-brand-aqua">
+          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-brand-bg transition-all duration-300">
             <img
               src={verification?.selfieUrl || dummyImg}
               alt="Selfie"
@@ -120,7 +120,7 @@ const VerificationCard = ({
               </span>
             </div>
           </div>
-          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-300 bg-brand-bg transition-all hover:border-brand-aqua">
+          <div className="group relative w-full h-56 overflow-hidden rounded-xl border border-slate-200 shadow-sm bg-brand-bg transition-all duration-300">
             <img
               src={verification?.docUrl || dummyID}
               alt="Document"
@@ -139,7 +139,7 @@ const VerificationCard = ({
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full h-11 bg-brand-aqua/15 border-brand-aqua text-slate-600 hover:bg-brand-aqua/80 hover:text-white hover:border-brand-aqua transition-all group"
+              className="w-full h-11 bg-brand-aqua/5 hover:bg-brand-aqua/80 border-slate-200 hover:font-semibold text-slate-500 hover:text-white hover:border-brand-aqua transition-all duration-300 group"
             >
               <IconEye className="mr-2 h-4 w-4 transition-transform group-hover:scale-110" />
               Launch Side-by-Side Inspector
@@ -148,8 +148,8 @@ const VerificationCard = ({
           <DialogContent className="max-w-6xl h-[90vh] flex flex-col p-0 overflow-hidden rounded-3xl border-none">
             <div className="flex items-center justify-between p-6 border-b bg-white/80 backdrop-blur-md">
               <div className="flex items-center gap-4">
-                <div className="p-2.5 rounded-xl bg-brand-aqua text-white">
-                  <IconShieldCheck size={24} strokeWidth={2.5} />
+                <div className="p-2 rounded-xl bg-brand-aqua text-white">
+                  <IconShieldCheck size={28} strokeWidth={2.5} />
                 </div>
                 <div>
                   <DialogTitle className="text-xl font-black text-slate-900">
@@ -206,7 +206,7 @@ const VerificationCard = ({
                 <IconX className="mr-2 h-5 w-5" /> Reject
               </Button>
               <Button
-                className="flex-1 h-14 bg-emerald-600 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest cursor-pointer disabled:cursor-not-allowed text-xs shadow-lg shadow-emerald-200 transition-all active:scale-[0.98]"
+                className="flex-1 h-14 bg-emerald-400 hover:bg-emerald-700 text-white font-bold uppercase tracking-widest cursor-pointer disabled:cursor-not-allowed text-xs shadow-lg shadow-emerald-200 transition-all active:scale-[0.98]"
                 onClick={() => setIsApproveConfirmOpen(true)}
                 disabled={isActionDisabled}
               >
@@ -278,23 +278,17 @@ const VerificationCard = ({
             <Button
               variant="outline"
               size="sm"
-              className="h-8 rounded-lg px-3 text-rose-600 border-rose-300 hover:bg-rose-50 hover:border-rose-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed  transition-all font-bold text-xs"
+              className="h-8 rounded-lg px-3 border border-rose-300 hover:border-rose-200 text-rose-800 hover:text-rose-600 hover:bg-rose-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:font-semibold text-xs"
               onClick={() => setRejectDialogOpen(true)}
-              // disabled={
-              //   isVerifying || currentStatus === "approved" || "not_started"
-              // }
               disabled={isActionDisabled || currentStatus === "rejected"}
             >
               <X className="w-4 h-4 mr-1" /> Reject
             </Button>
             <Button
               size="sm"
-              className="h-8 rounded-lg px-3 bg-emerald-600 hover:bg-emerald-700 text-white transition-all font-bold text-xs cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed shadow-sm shadow-emerald-100"
+              className="h-8 rounded-lg px-3 border border-emerald-300 hover:border-emerald-200 bg-emerald-200 hover:bg-emerald-50 text-emerald-800 hover:text-emerald-600 hover:font-semibold text-xs cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 shadow-sm"
               onClick={() => setIsApproveConfirmOpen(true)}
-              // disabled={
-              //   isVerifying || currentStatus === "approved" || "not_started"
-              // }
-              disabled={isActionDisabled}
+              disabled={isActionDisabled || currentStatus === "rejected"}
             >
               <Check className="w-4 h-4 mr-1.5" />
               Approve

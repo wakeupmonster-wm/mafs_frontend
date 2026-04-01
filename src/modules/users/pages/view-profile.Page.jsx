@@ -107,7 +107,7 @@ export default function ViewProfilePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-50">
+      <div className="min-h-screen bg-slate-50">
         {/* Navigation Bar */}
         <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3">
           <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -145,7 +145,7 @@ export default function ViewProfilePage() {
 
         <div className="p-2 md:p-4 max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
           {/* User Summary Card */}
-          <div className="bg-white rounded-2xl border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md px-4 py-3">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm px-4 py-3">
             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
               <div className="relative">
                 <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
@@ -243,7 +243,7 @@ export default function ViewProfilePage() {
 
           {/* Tabs Section */}
           <Tabs defaultValue="profile" className="max-w-7xl space-y-6">
-            <div className="bg-white p-1 rounded-xl border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
+            <div className="bg-white px-2 py-1 rounded-full border border-slate-200 shadow-sm">
               <EnhancedTabs tabs={TabData} />
             </div>
 
@@ -266,11 +266,12 @@ export default function ViewProfilePage() {
               <DiscoveryTab discovery={discovery} />
               <ActivityTab stats={stats} recentMatches={recentMatches} />
               <FinancialsTab
+                userData={user}
                 account={account}
                 transactions={transactions}
                 subscription={subscription}
               />
-              <SubscriptionTab userData={user} subscription={subscription} />
+              {/* <SubscriptionTab userData={user} subscription={subscription} /> */}
               <SettingsTab userData={user} account={account} />
             </div>
           </Tabs>

@@ -63,7 +63,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
     <>
       <TabsContent value="gallery" className="mt-6 space-y-4">
         {/* GALLERY HEADER & BULK ACTIONS */}
-        <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
+        <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border shadow-sm">
           <div>
             <h3 className="text-sm font-bold text-slate-900">User Gallery</h3>
             <p className="text-xs text-slate-500">
@@ -79,7 +79,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                 exit={{ opacity: 0, x: 20 }}
                 className="flex items-center gap-2"
               >
-                <span className="text-xs font-bold text-indigo-600 mr-2">
+                <span className="text-xs font-bold text-indigo-500 mr-2">
                   {selectedPhotos.length} selected
                 </span>
                 <Button
@@ -130,7 +130,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                     className={cn(
                       "group relative break-inside-avoid rounded-2xl overflow-hidden border-2 transition-all duration-300",
                       isSelected
-                        ? "border-indigo-600 ring-4 ring-indigo-50"
+                        ? "border-brand-aqua ring-4 ring-brand-aqua/5"
                         : "border-transparent hover:border-slate-300 shadow-sm",
                     )}
                   >
@@ -143,7 +143,7 @@ export const GallleryTab = ({ photos = [], userId }) => {
                       className={cn(
                         "absolute top-3 right-3 z-30 h-6 w-6 rounded-full flex items-center justify-center border-2 transition-all",
                         isSelected
-                          ? "bg-indigo-600 border-indigo-600 text-white"
+                          ? "bg-brand-aqua border-brand-aqua text-white"
                           : "bg-white/20 backdrop-blur-md border-white/50 text-transparent group-hover:text-white/50",
                       )}
                     >

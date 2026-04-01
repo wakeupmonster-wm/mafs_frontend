@@ -17,6 +17,6 @@ export const TabData = [
   { value: "discovery", label: "Discovery", icon: Search },
   { value: "activity", label: "Activity", icon: Activity },
   { value: "financials", label: "Financials", icon: CircleDollarSign },
-  { value: "subscription", label: "Subscription", icon: Zap },
+  // { value: "subscription", label: "Subscription", icon: Zap },
   { value: "settings", label: "Settings", icon: Settings },
 ];

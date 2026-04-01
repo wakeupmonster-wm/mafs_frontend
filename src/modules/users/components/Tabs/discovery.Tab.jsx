@@ -34,13 +34,6 @@ const FILTER_METADATA = {
 export const DiscoveryTab = ({ discovery }) => {
   const filters = discovery?.discoveryFilters || {};
 
-  // Check if any specific discovery filters are active
-  // const hasActiveFilters = Object.values(filters).some(
-  //   (arr) => Array.isArray(arr) && arr.length > 0,
-  // );
-
-  // console.log("filters: ", filters);
-
   return (
     <TabsContent
       value="discovery"
@@ -49,7 +42,7 @@ export const DiscoveryTab = ({ discovery }) => {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* LEFT & CENTER COLUMN: DISCOVERY SETTINGS (Spans 2 columns on XL) */}
         <div className="xl:col-span-2 space-y-6">
-          <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden rounded-3xl">
+          <Card className="border border-slate-200 shadow-sm overflow-hidden rounded-3xl gap-3">
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 py-4 px-8">
               <CardTitle className="flex items-center gap-3 text-lg font-bold text-slate-800">
                 <div className="p-2 bg-brand-aqua rounded-xl shadow-lg shadow-brand-aqua/20">
@@ -59,7 +52,7 @@ export const DiscoveryTab = ({ discovery }) => {
               </CardTitle>
             </CardHeader>
 
-            <CardContent className="px-8 py-8">
+            <CardContent className="px-8 py-2">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                 {/* Intent Section */}
                 <div className="space-y-8">
@@ -166,8 +159,8 @@ export const DiscoveryTab = ({ discovery }) => {
             </CardContent>
 
             {/* 🔥 BETTER UI: ADVANCED DISCOVERY FILTERS SECTION */}
-            <div className="p-6 overflow-hidden">
-              <header className="flex items-center justify-between gap-4 border-b border-slate-100 pb-6 mb-8">
+            <div className="p-6 py-2 overflow-hidden">
+              <header className="flex items-center justify-between gap-4 border-b border-slate-100 pb-6 mb-4">
                 <SectionHeader
                   icon={<IconFilter className="text-brand-aqua" size={22} />}
                   title="Advanced Search Filters"

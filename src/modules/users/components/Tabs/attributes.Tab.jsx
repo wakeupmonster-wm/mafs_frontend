@@ -1,5 +1,4 @@
 import React from "react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
 import {
@@ -30,12 +29,102 @@ import {
 import { cn } from "@/lib/utils";
 
 export const AttributesTab = ({ attributes }) => {
+  const basic = [
+    {
+      icon: <IconZodiacGemini />,
+      label: "Zodiac",
+      value: attributes?.zodiac,
+      color: "blue",
+    },
+    {
+      icon: <IconSchool />,
+      label: "Education",
+      value: attributes?.education,
+      color: "blue",
+    },
+    {
+      icon: <IconUsers />,
+      label: "Family Plans",
+      value: attributes?.familyPlans,
+      color: "blue",
+    },
+    {
+      icon: <IconUsers />,
+      label: "Personality",
+      value: attributes?.personalityType,
+      color: "blue",
+    },
+    {
+      icon: <IconMessage2 />,
+      label: "Communication",
+      value: attributes?.communicationStyle,
+      color: "blue",
+    },
+    {
+      icon: <IconHeart />,
+      label: "Love Style",
+      value: attributes?.loveStyle,
+      color: "blue",
+    },
+    {
+      icon: <IconDroplet />,
+      label: "Blood Type",
+      value: attributes?.bloodType,
+      color: "blue",
+    },
+  ];
+
+  const lifestyle = [
+    {
+      icon: <IconPaw />,
+      label: "Pets",
+      value: attributes?.pets,
+      color: "amber",
+    },
+    {
+      icon: <IconGlassFull />,
+      label: "Drinking",
+      value: attributes?.drinking,
+      color: "amber",
+    },
+    {
+      icon: <IconSmoking />,
+      label: "Smoking",
+      value: attributes?.smoking,
+      color: "amber",
+    },
+    {
+      icon: <IconBarbell />,
+      label: "Workout",
+      value: attributes?.workout,
+      color: "amber",
+    },
+    {
+      icon: <IconToolsKitchen2 />,
+      label: "Dietary",
+      value: attributes?.dietary,
+      color: "amber",
+    },
+    {
+      icon: <IconDeviceMobile />,
+      label: "Social Media",
+      value: attributes?.socialMedia,
+      color: "amber",
+    },
+    {
+      icon: <IconMoonStars />,
+      label: "Sleeping",
+      value: attributes?.sleeping,
+      color: "amber",
+    },
+  ];
+
   return (
     <TabsContent
       value="attributes"
       className="mt-6 animate-in fade-in slide-in-from-top-2 duration-500"
     >
-      <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md gap-4 py-2 overflow-hidden rounded-3xl bg-white">
+      <Card className="border border-slate-200 shadow-sm gap-4 py-2 overflow-hidden rounded-3xl bg-slate-50">
         <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 py-4 px-8">
           <CardTitle className="flex items-center gap-4 text-2xl font-black text-slate-800 tracking-tight">
             <div className="relative">
@@ -57,48 +146,15 @@ export const AttributesTab = ({ attributes }) => {
             {/* 1. BASICS */}
             <SectionWrapper icon={IconUser} title="Basics" color="bg-blue-500">
               <div className="grid grid-cols-1 gap-2">
-                <LifeTile
-                  icon={<IconZodiacGemini />}
-                  label="Zodiac"
-                  value={attributes?.zodiac}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconSchool />}
-                  label="Education"
-                  value={attributes?.education}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconUsers />}
-                  label="Family Plans"
-                  value={attributes?.familyPlans}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconUsers />}
-                  label="Personality"
-                  value={attributes?.personalityType}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconMessage2 />}
-                  label="Communication"
-                  value={attributes?.communicationStyle}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconHeart />}
-                  label="Love Style"
-                  value={attributes?.loveStyle}
-                  color="blue"
-                />
-                <LifeTile
-                  icon={<IconDroplet />}
-                  label="Blood Type"
-                  value={attributes?.bloodType}
-                  color="blue"
-                />
+                {basic.map((item, index) => (
+                  <LifeTile
+                    key={index}
+                    icon={item.icon}
+                    label={item.label}
+                    value={item.value}
+                    color={item.color}
+                  />
+                ))}
               </div>
             </SectionWrapper>
 
@@ -109,130 +165,34 @@ export const AttributesTab = ({ attributes }) => {
               color="bg-amber-500"
             >
               <div className="grid grid-cols-1 gap-2">
-                <LifeTile
-                  icon={<IconPaw />}
-                  label="Pets"
-                  value={attributes?.pets}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconGlassFull />}
-                  label="Drinking"
-                  value={attributes?.drinking}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconSmoking />}
-                  label="Smoking"
-                  value={attributes?.smoking}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconBarbell />}
-                  label="Workout"
-                  value={attributes?.workout}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconToolsKitchen2 />}
-                  label="Dietary"
-                  value={attributes?.dietary}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconDeviceMobile />}
-                  label="Social Media"
-                  value={attributes?.socialMedia}
-                  color="amber"
-                />
-                <LifeTile
-                  icon={<IconMoonStars />}
-                  label="Sleeping"
-                  value={attributes?.sleeping}
-                  color="amber"
-                />
+                {lifestyle.map((item, index) => (
+                  <LifeTile
+                    key={index}
+                    icon={item.icon}
+                    label={item.label}
+                    value={item.value}
+                    color={item.color}
+                  />
+                ))}
               </div>
             </SectionWrapper>
 
-            {/* COLUMN 3: Interests & Languages (Stacked) */}
+            {/* 3. GOALS, LANGUAGES & INTERESTS (Ab Basics jaisa dikhega) */}
             <div className="space-y-8">
-              {/* 3. INTERESTS */}
-              {/* <SectionWrapper
-                icon={IconTags}
-                title="Interests"
-                color="bg-violet-500"
-              >
-                <div className="flex flex-wrap gap-2 p-1">
-                  {attributes?.interests?.map((tag) => (
-                    <Badge
-                      key={tag}
-                      className="bg-violet-50 text-violet-600 border-violet-100 hover:bg-violet-500 hover:text-white py-1.5 px-3 rounded-lg transition-all hover:-translate-y-1"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </SectionWrapper> */}
-
-              <SectionWrapper
-                icon={IconTags}
-                title="Interests"
-                color="bg-violet-500"
-              >
-                <div className="flex flex-wrap gap-2 px-1">
-                  {attributes?.interests?.length > 0 ? (
-                    attributes.interests.map((tag, index) => (
-                      <div
-                        key={`${tag}-${index}`}
-                        className="px-3 py-1 rounded-lg border border-violet-200 text-violet-700 bg-violet-100 text-[10px] font-bold uppercase tracking-wide shadow-sm transition-all hover:bg-violet-100"
-                      >
-                        {tag}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-xs font-medium text-slate-600 px-1">
-                      Not Set
-                    </div>
-                  )}
-                </div>
-              </SectionWrapper>
-
-              {/* 4. LANGUAGES */}
-              <SectionWrapper
-                icon={IconLanguage}
-                title="Languages"
-                color="bg-emerald-500"
-              >
-                <div className="flex flex-wrap gap-2 px-1">
-                  {attributes?.languages?.length > 0 ? (
-                    attributes.languages.map((lang, index) => (
-                      <div
-                        key={`${lang}-${index}`}
-                        className="px-3 py-1 rounded-lg border border-emerald-200 text-emerald-700 bg-emerald-100 text-[10px] font-bold uppercase tracking-wide shadow-sm transition-all hover:bg-emerald-100"
-                      >
-                        {lang}
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-xs font-medium text-slate-600 px-1">
-                      Not Set
-                    </div>
-                  )}
-                </div>
-              </SectionWrapper>
-
-              {/* 5. RELATIONSHIP GOALS */}
+              {/* RELATIONSHIP GOALS */}
               <SectionWrapper
                 icon={IconTarget}
-                title="Relationship Goals"
+                title="Relationship"
                 color="bg-rose-500"
               >
-                <div className="p-4 capitalize rounded-2xl border border-rose-200 bg-rose-50/30 text-rose-700 font-bold text-start">
-                  {attributes?.relationshipGoal || "Not-set"}
-                </div>
+                <LifeTile
+                  icon={<IconTarget />}
+                  label="Looking For"
+                  value={attributes?.relationshipGoal}
+                  color="rose"
+                />
               </SectionWrapper>
 
-              {/* 6. RELIGION */}
               <SectionWrapper
                 icon={IconPray}
                 title="Religion"
@@ -245,13 +205,44 @@ export const AttributesTab = ({ attributes }) => {
                   color="indigo"
                 />
               </SectionWrapper>
+
+              {/* INTERESTS (List converted to comma string) */}
+              <SectionWrapper
+                icon={IconTags}
+                title="Interests"
+                color="bg-violet-500"
+              >
+                <div className="grid grid-cols-1 gap-2">
+                  <LifeTile
+                    icon={<IconTags />}
+                    label="My Hobbies"
+                    value={attributes?.interests?.join(", ")}
+                    color="violet"
+                  />
+                </div>
+              </SectionWrapper>
+
+              {/* LANGUAGES */}
+              <SectionWrapper
+                icon={IconLanguage}
+                title="Languages"
+                color="bg-emerald-500"
+              >
+                <div className="grid grid-cols-1 gap-2">
+                  <LifeTile
+                    icon={<IconLanguage />}
+                    label="Fluent In"
+                    value={attributes?.languages?.join(", ")}
+                    color="emerald"
+                  />
+                </div>
+              </SectionWrapper>
             </div>
           </div>
 
           <hr className="border-slate-200" />
 
           {/* 7. PREFERENCES (Media/Travel) */}
-          {/* BOTTOM ROW: RELIGION & MEDIA */}
           <SectionWrapper
             icon={IconMovie}
             title="Favorites & Preferences"
@@ -307,6 +298,9 @@ const LifeTile = ({ icon, label, value, color }) => {
     blue: "hover:border-blue-300 hover:bg-blue-50/60",
     amber: "hover:border-amber-300 hover:bg-amber-50/60",
     indigo: "hover:border-indigo-300 hover:bg-indigo-50/60",
+    rose: "hover:border-rose-300 hover:bg-rose-50/60",
+    violet: "hover:border-violet-300 hover:bg-violet-50/60",
+    emerald: "hover:border-emerald-300 hover:bg-emerald-50/60",
   };
   return (
     <div
