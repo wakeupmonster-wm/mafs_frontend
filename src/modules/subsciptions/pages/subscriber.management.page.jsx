@@ -41,7 +41,6 @@ import { cn } from "@/lib/utils";
 import {
   IconUsers,
   IconUserCheck,
-  IconUserOff,
   IconRefresh,
   IconSearch,
   IconFilter,
@@ -56,13 +55,15 @@ import StatsGrid from "@/components/common/stats.grid";
 import { PreLoader } from "@/app/loader/preloader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import { bgMap, colorMap } from "@/constants/colors";
+import { RiUserForbidLine } from "react-icons/ri";
+import { LuUserRoundCheck, LuUserRound } from "react-icons/lu";
 
 // ─── Animation variants ───
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    transition: { staggerChildren: 0.1, delayChildren: 0.3, duration: 0.3 },
   },
 };
 const itemVariants = {
@@ -71,7 +72,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 120, damping: 18 },
+    transition: { type: "spring", stiffness: 100, damping: 15 },
   },
 };
 
@@ -132,7 +133,7 @@ export default function SubscriberManagementPage() {
       {
         label: "Total Subscribers",
         val: serverPagination?.total || 0,
-        icon: <IconUsers size={22} />,
+        icon: <LuUserRound size={24} strokeWidth={2} />,
         color: "blue",
         description: "All matching subscribers",
       },
@@ -140,7 +141,7 @@ export default function SubscriberManagementPage() {
         label: "Active",
         val: subscribers.filter((s) => s.status === "ACTIVE" && !s.isExpired)
           .length,
-        icon: <IconUserCheck size={22} />,
+        icon: <LuUserRoundCheck size={24} strokeWidth={2} />,
         color: "emerald",
         description: `Active on page ${pagination.pageIndex + 1}`,
       },
@@ -148,7 +149,7 @@ export default function SubscriberManagementPage() {
         label: "Revoked Users",
         val: subscribers.filter((s) => s.status !== "ACTIVE" || s.isExpired)
           .length,
-        icon: <IconUserOff size={22} />,
+        icon: <RiUserForbidLine size={24} />,
         color: "rose",
         description: `Revoked users on page ${pagination.pageIndex + 1}`,
       },
@@ -190,13 +191,25 @@ export default function SubscriberManagementPage() {
     setPagination((p) => ({ ...p, pageIndex: 0 }));
   };
 
+  const getFilterLabel = (type, value) => {
+    if (!value) return "";
+    if (type === "platform") {
+      const map = {
+        ios: "iOS",
+        android: "Android",
+        admin_granted: "Admin Granted",
+      };
+      return map[value] || value.replace("_", " ");
+    }
+    return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+  };
+
+  if (loading) {
+    return <PreLoader />;
+  }
+
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative font-jakarta">
-      {loading && (
-        <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px]">
-          <PreLoader />
-        </div>
-      )}
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -281,8 +294,8 @@ export default function SubscriberManagementPage() {
                         {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Status:
                         </span> */}
-                        <span className="capitalize text-xs">
-                          {statusFilter}
+                        <span className="font-semibold text-xs">
+                          {getFilterLabel("status", statusFilter)}
                         </span>
                         <button
                           onClick={() => {
@@ -314,7 +327,9 @@ export default function SubscriberManagementPage() {
                         {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Plan:
                         </span> */}
-                        <span className="capitalize text-xs">{planFilter}</span>
+                        <span className="font-semibold text-xs">
+                          {getFilterLabel("plan", planFilter)}
+                        </span>
                         <button
                           onClick={() => {
                             setPlanFilter("");
@@ -345,8 +360,8 @@ export default function SubscriberManagementPage() {
                         {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Platform:
                         </span> */}
-                        <span className="capitalize text-xs">
-                          {platformFilter}
+                        <span className="font-semibold text-xs">
+                          {getFilterLabel("platform", platformFilter)}
                         </span>
                         <button
                           onClick={() => {
@@ -391,7 +406,7 @@ export default function SubscriberManagementPage() {
                       />
                       Filters
                       {hasActiveFilter && (
-                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                        <span className="ml-2 flex h-4 w-4 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-slate-50 text-[10px] text-white group-hover:text-brand-aqua font-bold group-hover:font-black">
                           {activeFilterCount}
                         </span>
                       )}
@@ -408,7 +423,6 @@ export default function SubscriberManagementPage() {
                     {["ACTIVE", "CANCELLED", "REVOKED"].map((status) => (
                       <DropdownMenuCheckboxItem
                         key={status}
-                        className="capitalize"
                         checked={statusFilter === status}
                         onCheckedChange={() => {
                           setStatusFilter(
@@ -417,7 +431,7 @@ export default function SubscriberManagementPage() {
                           setPagination((p) => ({ ...p, pageIndex: 0 }));
                         }}
                       >
-                        {status}
+                        {getFilterLabel("status", status)}
                       </DropdownMenuCheckboxItem>
                     ))}
                     <DropdownMenuSeparator />
@@ -429,14 +443,13 @@ export default function SubscriberManagementPage() {
                     {["MONTHLY", "QUARTERLY", "YEARLY"].map((plan) => (
                       <DropdownMenuCheckboxItem
                         key={plan}
-                        className="capitalize"
                         checked={planFilter === plan}
                         onCheckedChange={() => {
                           setPlanFilter(planFilter === plan ? "" : plan);
                           setPagination((p) => ({ ...p, pageIndex: 0 }));
                         }}
                       >
-                        {plan}
+                        {getFilterLabel("plan", plan)}
                       </DropdownMenuCheckboxItem>
                     ))}
                     <DropdownMenuSeparator />
@@ -485,11 +498,6 @@ export default function SubscriberManagementPage() {
         {/* ─── DATA TABLE ─── */}
         <motion.div variants={itemVariants}>
           <div className="block rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden relative min-h-[400px]">
-            {/* {loading && (
-                            <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px]">
-                                <PreLoader />
-                            </div>
-                        )} */}
             <Table>
               <TableHeader className="bg-slate-50/50">
                 {table.getHeaderGroups().map((headerGroup) => (

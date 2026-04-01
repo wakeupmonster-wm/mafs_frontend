@@ -5,7 +5,7 @@ import React from "react";
 
 export const NotFoundState = () => {
   return (
-    <div className="m-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 flex items-center justify-center p-4">
+    <div className="m-h-screen bg-slate-50 flex items-center justify-center p-4">
       <Card className="p-8 max-w-2xl w-full">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-4">

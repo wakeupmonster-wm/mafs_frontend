@@ -42,7 +42,11 @@ import { AiFillAndroid } from "react-icons/ai";
 export const subscriptionColumns = [
   {
     id: "sno",
-    header: () => <div className="w-10 text-center text-xs">Sr.No.</div>,
+    header: () => (
+      <div className="w-12 min-w-[48px] text-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Sr.No.
+      </div>
+    ),
     cell: ({ row, table }) => {
       const { pageIndex, pageSize } = table.getState().pagination;
       const serialNumber = pageIndex * pageSize + row.index + 1;
@@ -59,7 +63,7 @@ export const subscriptionColumns = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className={"text-xs"}
+        className="min-w-[150px] justify-start px-0 text-[10px] font-black uppercase tracking-widest text-slate-500 hover:bg-transparent"
       >
         User
         <ArrowUpDown className="ml-2 h-4 w-4" />
@@ -127,7 +131,11 @@ export const subscriptionColumns = [
   // },
   {
     accessorKey: "userId.email",
-    header: "Email Address",
+    header: () => (
+      <div className="min-w-[200px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Email Address
+      </div>
+    ),
     cell: ({ row }) => {
       const email = row.original?.user?.email || "-";
 
@@ -162,7 +170,11 @@ export const subscriptionColumns = [
   },
   {
     accessorKey: "userId.phone",
-    header: "Phone Number",
+    header: () => (
+      <div className="min-w-[150px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Phone Number
+      </div>
+    ),
     cell: ({ row }) => {
       const phone = row.original?.user?.phone || "-";
 
@@ -197,7 +209,11 @@ export const subscriptionColumns = [
   },
   {
     accessorKey: "planType",
-    header: "Subscription Plan",
+    header: () => (
+      <div className="min-w-[140px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Subscription Plan
+      </div>
+    ),
     cell: ({ row }) => {
       const plan = row.getValue("planType")?.toLowerCase();
 
@@ -238,7 +254,11 @@ export const subscriptionColumns = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: () => (
+      <div className="min-w-[100px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Status
+      </div>
+    ),
     cell: ({ row }) => {
       const rawStatus = row.getValue("status") || "";
       const status = rawStatus.toUpperCase(); // Normalization
@@ -272,7 +292,11 @@ export const subscriptionColumns = [
   },
   {
     accessorKey: "platform",
-    header: "Platform",
+    header: () => (
+      <div className="min-w-[100px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Platform
+      </div>
+    ),
     cell: ({ row }) => {
       const platform = row.getValue("platform")?.toLowerCase();
 
@@ -310,7 +334,7 @@ export const subscriptionColumns = [
     accessorKey: "createdAt",
     header: ({ column }) => (
       <button
-        className="flex items-center hover:text-gray-900 transition-colors"
+        className="flex items-center min-w-[130px] hover:text-gray-900 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Buy At
@@ -343,7 +367,7 @@ export const subscriptionColumns = [
     accessorKey: "expiresAt",
     header: ({ column }) => (
       <button
-        className="flex items-center hover:text-gray-900 transition-colors"
+        className="flex items-center min-w-[130px] hover:text-gray-900 transition-colors text-[10px] font-black uppercase tracking-widest text-slate-500"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Expiry Date
@@ -374,7 +398,11 @@ export const subscriptionColumns = [
   },
   {
     accessorKey: "autoRenew",
-    header: "Auto-Renew",
+    header: () => (
+      <div className="min-w-[100px] text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Auto-Renew
+      </div>
+    ),
     cell: ({ row }) => {
       const isAutoRenew = !!row.getValue("autoRenew");
 
@@ -414,7 +442,11 @@ export const subscriptionColumns = [
   // Actions Column
   {
     id: "actions",
-    header: "Actions",
+    header: () => (
+      <div className="w-[80px] text-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Actions
+      </div>
+    ),
     cell: ({ row }) => {
       const subscription = row.original;
       const navigate = useNavigate();

@@ -246,9 +246,9 @@ export default function ViewSubscriptionDetailPage() {
   if (userDetailLoading) return <PreLoader />;
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 md:p-6 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-24 font-jakarta">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-6"
+        className="@container/main space-y-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -267,18 +267,18 @@ export default function ViewSubscriptionDetailPage() {
             <div className="hidden sm:flex gap-2">
               <Badge
                 variant="outline"
-                className="h-7 border-brand-aqua/30 bg-white text-brand-aqua font-black text-[10px] uppercase tracking-widest px-3"
+                className="h-7 rounded-lg border-slate-200 bg-white text-slate-600 font-bold text-[10px] uppercase tracking-widest px-3"
               >
                 UID: {userId?.toUpperCase() || "N/A"}
               </Badge>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6  backdrop-blur-xl p-6 rounded-[2.5rem] border border-brand-aqua/30 shadow-2xl shadow-indigo-100/40">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 backdrop-blur-xl p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
             <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
               <div className="relative">
                 <Avatar
-                  className="w-20 h-20 rounded-2xl shadow-xl p-1 bg-white ring-1 ring-slate-100 cursor-pointer hover:scale-105 transition-transform active:scale-95"
+                  className="w-20 h-20 rounded-full shadow-xl p-1 bg-white ring-2 ring-slate-100 cursor-pointer hover:scale-105 transition-transform active:scale-95"
                   onClick={() =>
                     setImageModal({
                       open: true,
@@ -304,29 +304,31 @@ export default function ViewSubscriptionDetailPage() {
                                     {sub?.status === "ACTIVE" ? <CheckCircle2 className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
                                 </div> */}
               </div>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
                     {user?.nickname || user?.fullName || "User Profile"}
                   </h1>
+
                   <Badge
                     className={cn(
-                      "font-black px-3 py-1 uppercase tracking-widest text-[10px] rounded-lg border-none shadow-sm",
+                      "font-semibold px-3 py-1 uppercase tracking-widest text-[10px] rounded-lg border-none shadow-sm",
                       sub?.status === "ACTIVE"
-                        ? "bg-emerald-500 text-white"
-                        : "bg-slate-200 text-slate-600",
+                        ? "bg-emerald-100 text-emerald-600"
+                        : "bg-slate-100 text-slate-600",
                     )}
                   >
                     {sub?.status || "NO ACTIVE PLAN"}
                   </Badge>
                 </div>
+
                 <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-5 gap-y-2 text-slate-500">
-                  <span className="flex items-center gap-2 text-xs font-bold">
-                    <Mail className="w-3.5 h-3.5 text-brand-aqua" />{" "}
+                  <span className="flex items-center gap-2 text-sm font-bold">
+                    <Mail className="w-3.5 h-3.5" />{" "}
                     {user?.email || "Email undisclosed"}
                   </span>
-                  <span className="flex items-center gap-2 text-xs font-bold">
-                    <Phone className="w-3.5 h-3.5 text-brand-aqua" />{" "}
+                  <span className="flex items-center gap-2 text-sm font-bold">
+                    <Phone className="w-3.5 h-3.5" />{" "}
                     {user?.phone || "Phone undisclosed"}
                   </span>
                 </div>
@@ -343,7 +345,7 @@ export default function ViewSubscriptionDetailPage() {
               {sub?.status === "ACTIVE" && (
                 <Button
                   onClick={() => setIsExtendOpen(true)}
-                  className="bg-brand-aqua hover:bg-brand-aqua/90 text-white rounded-2xl h-11 px-6 font-black text-xs uppercase tracking-widest gap-2 shadow-xl shadow-brand-aqua/20 transition-all active:scale-95 flex-1 sm:flex-none"
+                  className="bg-brand-aqua/60 hover:bg-brand-aqua/90 text-black rounded-2xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 shadow-sm shadow-brand-aqua/20 transition-all active:scale-95 flex-1 sm:flex-none"
                 >
                   <CalendarPlus className="w-4 h-4" /> Extend
                 </Button>
@@ -351,7 +353,7 @@ export default function ViewSubscriptionDetailPage() {
               <Button
                 variant="ghost"
                 onClick={() => setIsRevokeOpen(true)}
-                className="bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-2xl h-11 px-6 font-black text-xs uppercase tracking-widest gap-2 border border-rose-100 flex-1 sm:flex-none"
+                className="bg-rose-100 text-rose-600 hover:bg-rose-100 rounded-2xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 border border-rose-100 flex-1 sm:flex-none"
               >
                 <ShieldOff className="w-4 h-4" /> Revoke
               </Button>
@@ -395,17 +397,17 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 3. Main Detail Grid */}
           <div className="lg:col-span-1 space-y-5 ">
-            <Card className="rounded-[2.5rem] border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white/80 backdrop-blur-md overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 bg-brand-aqua/5">
-              <CardHeader className="py-4 px-6 border-b border-brand-aqua/10">
-                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-brand-aqua" /> Access Cycle
+            <Card className="rounded-[2.5rem] gap-2 border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white/80 overflow-hidden transition-all duration-200">
+              <CardHeader className="py-2 px-6 border-b border-brand-aqua/10">
+                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center gap-2">
+                  <Clock className="w-4 h-4" /> Access Cycle
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6 space-y-8">
-                <div className="space-y-4">
+              <CardContent className="py-2 px-6 space-y-6">
+                <div className="space-y-3">
                   <div className="flex justify-between items-end">
                     <div className="space-y-1">
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                      <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">
                         Cycle Progress
                       </p>
                       <h3 className="text-4xl font-black text-slate-900 tracking-tighter">
@@ -426,28 +428,32 @@ export default function ViewSubscriptionDetailPage() {
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <DetailItem
-                    label="Billing Started"
-                    val={
-                      sub?.startedAt
-                        ? format(new Date(sub.startedAt), "MMMM dd, yyyy")
-                        : "Not Available"
-                    }
-                    icon={Calendar}
-                  />
-                  <DetailItem
-                    label="Next Renewal"
-                    val={
-                      sub?.expiresAt
-                        ? format(new Date(sub.expiresAt), "MMMM dd, yyyy")
-                        : "Lifetime Access"
-                    }
-                    icon={History}
-                    isHighLight={sub?.status === "ACTIVE"}
-                  />
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <DetailItem
+                      label="Billing Started"
+                      val={
+                        sub?.startedAt
+                          ? format(new Date(sub.startedAt), "MMMM dd, yyyy")
+                          : "Not Available"
+                      }
+                      icon={Calendar}
+                    />
+                    <DetailItem
+                      label="Next Renewal"
+                      val={
+                        sub?.expiresAt
+                          ? format(new Date(sub.expiresAt), "MMMM dd, yyyy")
+                          : "Lifetime Access"
+                      }
+                      icon={History}
+                      isHighLight={sub?.status === "ACTIVE"}
+                    />
+                  </div>
+
                   <Separator className="bg-slate-100 my-4" />
-                  <div className="flex flex-col gap-3.5 pt-1">
+
+                  <div className="flex flex-col gap-3">
                     <InfoRow
                       label="Auto Renew"
                       val={sub?.autoRenew ? "ENABLED" : "DISABLED"}
@@ -481,7 +487,7 @@ export default function ViewSubscriptionDetailPage() {
                               className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/15 space-y-1.5"
                             >
                               <div className="flex items-center justify-between">
-                                <Badge className="bg-brand-aqua/10 text-brand-aqua border-brand-aqua/20 text-[9px] font-black px-2 py-0 h-5 shadow-none">
+                                <Badge className="bg-brand-aqua/10 text-brand-aqua border-slate-200 text-[9px] font-black px-2 py-0 h-5 shadow-none">
                                   EXTENDED
                                 </Badge>
                                 <span className="text-[10px] font-bold text-slate-400">
@@ -519,13 +525,13 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 4. Transactions Log — All payments and grants */}
           <div className="lg:col-span-3">
-            <Card className="rounded-[2.5rem]  border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 min-h-[400px] bg-brand-aqua/5">
-              <CardHeader className="py-5 px-8 border-b border-brand-aqua/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Card className="rounded-[2.5rem] border-slate-200 shadow-sm bg-white overflow-hidden min-h-[400px]">
+              <CardHeader className="py-2 px-8 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="space-y-1 text-center sm:text-left">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center justify-center sm:justify-start gap-2">
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center justify-center sm:justify-start gap-2">
                     <History className="w-4 h-4" /> Transaction History
                   </CardTitle>
-                  <p className="text-[11px] font-bold text-slate-400 opacity-80">
+                  <p className="text-[11px] font-semibold text-slate-600 opacity-80">
                     All payments, grants, and admin actions ({auditLogs.length}{" "}
                     records)
                   </p>
@@ -535,27 +541,28 @@ export default function ViewSubscriptionDetailPage() {
                                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Live</span>
                                 </div> */}
               </CardHeader>
+
               <CardContent className="p-0">
                 <div className="overflow-x-auto">
                   <Table>
-                    <TableHeader className="bg-slate-50/30">
+                    <TableHeader className="bg-slate-100">
                       <TableRow className="border-none hover:bg-transparent">
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-10">
                           Event
                         </TableHead>
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                           Amount
                         </TableHead>
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                           Platform
                         </TableHead>
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                           Product
                         </TableHead>
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                           Reason
                         </TableHead>
-                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-12">
+                        <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-10">
                           Date & Time
                         </TableHead>
                       </TableRow>
@@ -594,7 +601,7 @@ export default function ViewSubscriptionDetailPage() {
                                     className={cn(
                                       "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
                                       isAdminAction
-                                        ? "bg-brand-aqua/10 text-brand-aqua border-brand-aqua/30"
+                                        ? "bg-brand-aqua/10 text-brand-aqua border-slate-200"
                                         : txn.eventType === "PURCHASE" ||
                                             txn.eventType === "RENEW"
                                           ? "bg-emerald-50 text-emerald-600 border-emerald-100"
@@ -682,12 +689,12 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 5. Subscription History — All past subscriptions */}
           <div className="lg:col-span-4">
-            <Card className="rounded-[2.5rem] border-brand-aqua/30 shadow-xl shadow-brand-aqua/5 bg-white overflow-hidden hover:border-brand-aqua/60 transition-all duration-500 bg-brand-aqua/5">
-              <CardHeader className="py-5 px-8 border-b border-brand-aqua/10">
-                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+            <Card className="rounded-[2.5rem] border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white overflow-hidden transition-all duration-200">
+              <CardHeader className="py-2 px-8 border-b border-brand-aqua/10">
+                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center gap-2">
                   <Layers className="w-4 h-4" /> Subscription History
                 </CardTitle>
-                <p className="text-[11px] font-bold text-slate-400 opacity-80">
+                <p className="text-[11px] font-semibold text-slate-600 opacity-80">
                   All past subscriptions for this user (
                   {subscriptionHistory.length} records)
                 </p>
@@ -696,27 +703,27 @@ export default function ViewSubscriptionDetailPage() {
                 {subscriptionHistory.length > 0 ? (
                   <div className="overflow-x-auto">
                     <Table>
-                      <TableHeader className="bg-slate-50/30">
+                      <TableHeader className="bg-slate-100">
                         <TableRow className="border-none hover:bg-transparent">
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest pl-8 h-10">
                             Plan
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                             Status
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                             Platform
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                             Source
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                             Auto-Renew
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest h-10">
                             Started
                           </TableHead>
-                          <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-12">
+                          <TableHead className="text-[10px] font-black uppercase tracking-widest text-right pr-8 h-10">
                             Expired
                           </TableHead>
                         </TableRow>
@@ -727,7 +734,7 @@ export default function ViewSubscriptionDetailPage() {
                             key={hist._id || idx}
                             className="border-slate-50 hover:bg-slate-50/80 transition-colors"
                           >
-                            <TableCell className="pl-8 py-3">
+                            <TableCell className="pl-8 py-2">
                               <Badge
                                 className={cn(
                                   "text-[10px] font-black px-2 py-0 h-5 shadow-none border",
@@ -845,7 +852,7 @@ export default function ViewSubscriptionDetailPage() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black"
+                  className="h-12 w-12 rounded-xl border-slate-200 hover:text-brand-aqua text-lg font-black"
                   onClick={() =>
                     setSuperKeenAmount(Math.max(1, superKeenAmount - 1))
                   }
@@ -862,14 +869,14 @@ export default function ViewSubscriptionDetailPage() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black"
+                  className="h-12 w-12 rounded-xl border-slate-200 hover:text-brand-aqua text-lg font-black"
                   onClick={() => setSuperKeenAmount(superKeenAmount + 1)}
                 >
                   +
                 </Button>
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+            <div className="p-3 rounded-xl bg-brand-aqua/5 border border-slate-200">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                 After Grant
               </p>
@@ -925,7 +932,7 @@ export default function ViewSubscriptionDetailPage() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black"
+                  className="h-12 w-12 rounded-xl border-slate-200 hover:text-brand-aqua text-lg font-black"
                   onClick={() => setBoostAmount(Math.max(1, boostAmount - 1))}
                 >
                   −
@@ -940,14 +947,14 @@ export default function ViewSubscriptionDetailPage() {
                 <Button
                   variant="outline"
                   size="icon"
-                  className="h-12 w-12 rounded-xl border-slate-200 hover:border-brand-aqua hover:text-brand-aqua text-lg font-black"
+                  className="h-12 w-12 rounded-xl border-slate-200 hover:text-brand-aqua text-lg font-black"
                   onClick={() => setBoostAmount(boostAmount + 1)}
                 >
                   +
                 </Button>
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+            <div className="p-3 rounded-xl bg-brand-aqua/5 border border-slate-200">
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                 After Grant
               </p>
@@ -1160,7 +1167,7 @@ export default function ViewSubscriptionDetailPage() {
               />
             </div>
             {sub?.expiresAt && (
-              <div className="p-3 rounded-xl bg-brand-aqua/5 border border-brand-aqua/20">
+              <div className="p-3 rounded-xl bg-brand-aqua/5 border border-slate-200">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">
                   Preview
                 </p>
@@ -1264,8 +1271,8 @@ const StatBox = ({
   onAction,
   isActive,
 }) => (
-  <Card className="rounded-[2rem] border-brand-aqua/20 shadow-xl shadow-brand-aqua/5 bg-white transition-all hover:translate-y-[-4px] hover:border-brand-aqua/50 duration-300 overflow-hidden relative group">
-    <CardContent className="p-5 flex items-center gap-5 relative z-10">
+  <Card className="rounded-[2rem] border-slate-200 shadow-sm bg-white transition-all hover:translate-y-[-4px] duration-300 overflow-hidden relative group">
+    <CardContent className="px-5 py-2 flex items-center gap-5 relative z-10">
       <div
         className={cn(
           "w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:scale-110",
@@ -1284,8 +1291,8 @@ const StatBox = ({
       >
         <Icon className="w-6 h-6" />
       </div>
-      <div className="flex-1 space-y-1">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+      <div className="flex-1 space-y-2">
+        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none">
           {label}
         </p>
         <div className="flex items-center gap-2">
@@ -1296,7 +1303,7 @@ const StatBox = ({
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           )}
         </div>
-        <p className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">
           {subVal}
         </p>
       </div>
@@ -1305,7 +1312,7 @@ const StatBox = ({
           variant="ghost"
           size="icon"
           onClick={onAction}
-          className="h-8 w-8 rounded-xl hover:bg-slate-100 text-slate-400 transition-colors"
+          className="h-8 w-8 rounded-xl hover:bg-slate-100 text-slate-800 transition-colors"
         >
           <Plus className="w-4 h-4" />
         </Button>
@@ -1315,28 +1322,27 @@ const StatBox = ({
 );
 
 const DetailItem = ({ label, val, icon: Icon, isHighLight }) => (
-  <div className="flex items-center gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-50 group hover:bg-white hover:border-brand-aqua/20 transition-all border-l-4 border-l-transparent hover:border-l-brand-aqua">
-    <div className="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center border border-slate-100 group-hover:scale-110 transition-transform">
+  <div className="flex flex-col items-center gap-1 py-2">
+    <div className="bg-white flex gap-1 items-center justify-center group-hover:scale-110 transition-transform">
       <Icon
         className={cn(
-          "w-5 h-5",
-          isHighLight ? "text-emerald-500" : "text-slate-400",
+          "w-4 h-4 text-slate-800",
+          // isHighLight ? "text-emerald-700" : "text-slate-800",
         )}
       />
-    </div>
-    <div className="flex-1 space-y-1 pointer-events-none">
-      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+      <p className="text-[10px] font-bold text-slate-600 uppercase tracking-widest leading-none">
         {label}
       </p>
-      <p
-        className={cn(
-          "text-xs font-bold leading-none",
-          isHighLight ? "text-emerald-700 font-extrabold" : "text-slate-700",
-        )}
-      >
-        {val}
-      </p>
     </div>
+
+    <p
+      className={cn(
+        "text-xs font-bold leading-none text-slate-800",
+        // isHighLight ? "text-emerald-700 font-extrabold" : "text-slate-700",
+      )}
+    >
+      {val}
+    </p>
   </div>
 );
 
@@ -1356,4 +1362,5 @@ const InfoRow = ({ label, val, isGreen, isMono }) => (
     </span>
   </div>
 );
+
 const LoadingState = () => <PreLoader />;

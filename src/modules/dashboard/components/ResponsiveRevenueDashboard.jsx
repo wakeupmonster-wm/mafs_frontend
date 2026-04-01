@@ -126,7 +126,7 @@ export default function ResponsiveRevenueDashboard({
 
         <div className="grid grid-cols-1 gap-6">
           {/* Main Trend Chart */}
-          <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+          <Card className="lg:col-span-2 border-none shadow-sm ring-1 ring-slate-200 bg-slate-50">
             <CardHeader>
               <CardTitle className="text-lg">Revenue Timeline</CardTitle>
               <CardDescription>
@@ -140,7 +140,7 @@ export default function ResponsiveRevenueDashboard({
 
           {/* Distribution Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-            <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+            <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-slate-50">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-semibold">
                   By Platform
@@ -151,7 +151,7 @@ export default function ResponsiveRevenueDashboard({
               </CardContent>
             </Card>
 
-            <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+            <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-slate-50">
               <CardHeader className="pb-0 flex flex-row items-center justify-between">
                 <div className="space-y-1">
                   <CardTitle className="text-sm font-bold text-slate-500 uppercase tracking-wider">
@@ -169,7 +169,7 @@ export default function ResponsiveRevenueDashboard({
       </TabsContent>
 
       <TabsContent value="transactions" className="outline-none">
-        <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+        <Card className="border-none shadow-sm ring-1 ring-slate-200 bg-slate-50">
           <CardHeader className={"px-3 md:px-6"}>
             <CardTitle>Recent Transactions</CardTitle>
             <CardDescription>
@@ -184,7 +184,7 @@ export default function ResponsiveRevenueDashboard({
 
       <TabsContent value="risk" className="outline-none">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="min-h-[400px] bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+          <Card className="min-h-[400px] bg-slate-50">
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-foreground">
                 Cancellations Trends
@@ -205,7 +205,7 @@ export default function ResponsiveRevenueDashboard({
             </CardContent>
           </Card>
 
-          <Card className="min-h-[400px] bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
+          <Card className="min-h-[400px] bg-slate-50">
             <CardHeader>
               <CardTitle>At-Risk Users</CardTitle>
             </CardHeader>

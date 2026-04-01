@@ -152,7 +152,7 @@ export default function PendingVerifications() {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8">
       <div className="w-full mx-auto space-y-5">
         {/* Header - Animated */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 animate-in fade-in slide-in-from-top-4 duration-700">

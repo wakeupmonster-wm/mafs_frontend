@@ -254,7 +254,7 @@ export default function FakeProfileManagementPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8 relative">
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"

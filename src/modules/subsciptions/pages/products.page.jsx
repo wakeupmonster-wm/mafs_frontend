@@ -247,8 +247,10 @@ export default function ProductsPage() {
   const normalizePlanType = (raw) => {
     if (!raw) return "monthly";
     const val = raw.toLowerCase().trim();
-    if (val === "monthly" || val === "1_month" || val === "1month") return "monthly";
-    if (val === "quarterly" || val === "3_month" || val === "3month") return "quarterly";
+    if (val === "monthly" || val === "1_month" || val === "1month")
+      return "monthly";
+    if (val === "quarterly" || val === "3_month" || val === "3month")
+      return "quarterly";
     return "monthly"; // fallback
   };
 
@@ -357,26 +359,55 @@ export default function ProductsPage() {
     </th>
   );
 
-  const statsData = useMemo(() => [
-    { label: "Total Products", val: stats.total, icon: <IconStack2 size={22} />, color: "blue", description: "All products in catalog" },
-    { label: "Subscriptions", val: stats.subs, icon: <IconPackage size={22} />, color: "emerald", description: "Active subscription plans" },
-    { label: "Consumables", val: stats.consumables, icon: <IconShoppingBag size={22} />, color: "rose", description: "Active consumable packs" },
-    { label: "Archived", val: stats.archived, icon: <IconArchive size={22} />, color: "blue", description: "Inactive products" },
-  ], [stats]);
+  const statsData = useMemo(
+    () => [
+      {
+        label: "Total Products",
+        val: stats.total,
+        icon: <IconStack2 size={22} />,
+        color: "blue",
+        description: "All products in catalog",
+      },
+      {
+        label: "Subscriptions",
+        val: stats.subs,
+        icon: <IconPackage size={22} />,
+        color: "emerald",
+        description: "Active subscription plans",
+      },
+      {
+        label: "Consumables",
+        val: stats.consumables,
+        icon: <IconShoppingBag size={22} />,
+        color: "rose",
+        description: "Active consumable packs",
+      },
+      {
+        label: "Archived",
+        val: stats.archived,
+        icon: <IconArchive size={22} />,
+        color: "blue",
+        description: "Inactive products",
+      },
+    ],
+    [stats],
+  );
 
   const colorMap = {
     blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald: "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+    emerald:
+      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
     rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
   };
   const bgMap = {
     blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    emerald: "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+    emerald:
+      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
     rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100 pb-8 relative font-jakarta">
+    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8 relative font-jakarta">
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -398,7 +429,12 @@ export default function ProductsPage() {
                 disabled={productsLoading}
                 className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
               >
-                <IconRefresh className={cn("h-4 w-4 mr-1.5", productsLoading && "animate-spin")} />
+                <IconRefresh
+                  className={cn(
+                    "h-4 w-4 mr-1.5",
+                    productsLoading && "animate-spin",
+                  )}
+                />
                 Refresh
               </Button>
               <Button
@@ -414,7 +450,10 @@ export default function ProductsPage() {
         </motion.header>
 
         {/* ─── STATS GRID ─── */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           <StatsGrid stats={statsData} colorMap={colorMap} bgMap={bgMap} />
         </motion.div>
 
@@ -480,7 +519,13 @@ export default function ProductsPage() {
             )}
             {!productsLoading && filteredProducts.length === 0 ? (
               <div className="flex items-center justify-center h-56">
-                <DataNotFound message={searchQuery ? "No products match your search" : "No products found. Click 'Add Product' to get started."} />
+                <DataNotFound
+                  message={
+                    searchQuery
+                      ? "No products match your search"
+                      : "No products found. Click 'Add Product' to get started."
+                  }
+                />
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -496,7 +541,11 @@ export default function ProductsPage() {
                       <ThCell label="Google ID" />
                       <ThCell label="Badges" />
                       <ThCell label="Status" />
-                      <ThCell label="Order" col="sortOrder" className="text-center" />
+                      <ThCell
+                        label="Order"
+                        col="sortOrder"
+                        className="text-center"
+                      />
                       <ThCell label="" />
                     </tr>
                   </thead>
@@ -522,7 +571,8 @@ export default function ProductsPage() {
         <motion.div variants={itemVariants}>
           <div className="flex items-center justify-between py-2 border-t border-slate-100 px-3 md:px-0">
             <div className="text-xs font-medium text-slate-500">
-              Showing {filteredProducts.length} product{filteredProducts.length !== 1 ? "s" : ""}
+              Showing {filteredProducts.length} product
+              {filteredProducts.length !== 1 ? "s" : ""}
             </div>
           </div>
         </motion.div>
@@ -557,9 +607,9 @@ export default function ProductsPage() {
             <div className="bg-amber-50 border-b border-amber-100 px-7 py-3 flex items-start gap-2">
               <Info className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
               <p className="text-xs text-amber-700 font-semibold leading-snug">
-                <span className="font-black">Note:</span> The admin cannot change
-                actual prices. The reference price below is for display only. Real
-                prices are fetched from{" "}
+                <span className="font-black">Note:</span> The admin cannot
+                change actual prices. The reference price below is for display
+                only. Real prices are fetched from{" "}
                 <span className="font-black">App Store Connect</span> &amp;{" "}
                 <span className="font-black">Google Play Console</span> at
                 runtime.
@@ -822,7 +872,10 @@ export default function ProductsPage() {
 
               {/* Badge */}
               <div className="grid grid-cols-2 gap-4">
-                <FormSection label="Badge Text" hint="Short label shown on product card (e.g. POPULAR, BEST VALUE)">
+                <FormSection
+                  label="Badge Text"
+                  hint="Short label shown on product card (e.g. POPULAR, BEST VALUE)"
+                >
                   <FormInput
                     placeholder="e.g. MOST POPULAR"
                     value={formData.badgeText}
@@ -834,20 +887,26 @@ export default function ProductsPage() {
                     <input
                       type="color"
                       value={formData.badgeColor || "#00BCD4"}
-                      onChange={(e) => updateField("badgeColor", e.target.value)}
+                      onChange={(e) =>
+                        updateField("badgeColor", e.target.value)
+                      }
                       className="w-10 h-10 rounded-xl border border-slate-200 cursor-pointer p-0.5 bg-white"
                     />
                     <FormInput
                       placeholder="#00BCD4"
                       value={formData.badgeColor}
-                      onChange={(e) => updateField("badgeColor", e.target.value)}
+                      onChange={(e) =>
+                        updateField("badgeColor", e.target.value)
+                      }
                       mono
                       className="flex-1"
                     />
                     {formData.badgeText && (
                       <span
                         className="text-[9px] font-black uppercase tracking-widest px-2.5 py-1.5 rounded-full text-white shrink-0"
-                        style={{ backgroundColor: formData.badgeColor || "#00BCD4" }}
+                        style={{
+                          backgroundColor: formData.badgeColor || "#00BCD4",
+                        }}
                       >
                         {formData.badgeText}
                       </span>
@@ -858,14 +917,20 @@ export default function ProductsPage() {
 
               {/* Subtitle & New Badge */}
               <div className="grid grid-cols-2 gap-4">
-                <FormSection label="Subtitle" hint="e.g. Most Popular, Best Value">
+                <FormSection
+                  label="Subtitle"
+                  hint="e.g. Most Popular, Best Value"
+                >
                   <FormInput
                     placeholder="e.g. Best Value"
                     value={formData.subtitle || ""}
                     onChange={(e) => updateField("subtitle", e.target.value)}
                   />
                 </FormSection>
-                <FormSection label="Sys Badge" hint="e.g. 🔥 HOT, 💎 BEST VALUE">
+                <FormSection
+                  label="Sys Badge"
+                  hint="e.g. 🔥 HOT, 💎 BEST VALUE"
+                >
                   <FormInput
                     placeholder="e.g. 🔥 HOT"
                     value={formData.badge || ""}
@@ -876,7 +941,10 @@ export default function ProductsPage() {
 
               {/* Features (subscriptions only) */}
               {formData.type === "SUBSCRIPTION" && (
-                <FormSection label="Features List" hint="Bullet points shown on the subscription plan card in-app">
+                <FormSection
+                  label="Features List"
+                  hint="Bullet points shown on the subscription plan card in-app"
+                >
                   <div className="space-y-2">
                     {(formData.features || []).map((f, i) => (
                       <div key={i} className="flex items-center gap-2">
@@ -920,7 +988,9 @@ export default function ProductsPage() {
                     <span
                       className={cn(
                         "text-sm font-black",
-                        formData.isActive ? "text-emerald-600" : "text-slate-400",
+                        formData.isActive
+                          ? "text-emerald-600"
+                          : "text-slate-400",
                       )}
                     >
                       {formData.isActive ? "Active" : "Inactive"}

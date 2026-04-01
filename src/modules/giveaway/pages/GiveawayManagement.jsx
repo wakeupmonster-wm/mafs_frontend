@@ -101,7 +101,7 @@ export default function GiveawayManagement() {
   const currentStat = getDynamicStat();
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <motion.div
         className="w-full mx-auto px-2 lg:px-4 space-y-8"
         initial={{ opacity: 0, y: 10 }}

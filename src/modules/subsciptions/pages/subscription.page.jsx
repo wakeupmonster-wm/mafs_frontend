@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
@@ -9,11 +7,9 @@ import {
   clearSubscriptionState,
 } from "../store/subscription.slice";
 import { PageHeader } from "@/components/common/headSubhead";
-import StatsGrid from "@/components/common/stats.grid";
 import {
   CreditCard,
   Users,
-  Target,
   TrendingUp,
   TrendingDown,
   Layers,
@@ -39,11 +35,6 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -57,6 +48,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AiFillAndroid, AiFillApple } from "react-icons/ai";
+import { LiaUserTieSolid } from "react-icons/lia";
+import { PiDevicesDuotone } from "react-icons/pi";
+import { LuUserRound } from "react-icons/lu";
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
 
@@ -163,9 +158,9 @@ export default function SubscriptionPage() {
         label: "Today's Cancels",
         val: kpis.todayCancelled || 0,
         icon: <TrendingDown className="w-5 h-5" />,
-        color: "amber",
-        bg: "bg-amber-50 border-amber-200",
-        iconBg: "bg-amber-100 text-amber-600",
+        color: "red",
+        bg: "bg-red-50 border-red-200",
+        iconBg: "bg-red-100 text-red-600",
       },
       {
         label: "Today's Revenue",
@@ -178,7 +173,7 @@ export default function SubscriptionPage() {
       {
         label: "24h New Subs",
         val: activity?.newSubscriptions || 0,
-        icon: <Users className="w-5 h-5" />,
+        icon: <LuUserRound className="w-5 h-5" />,
         color: "purple",
         bg: "bg-purple-50 border-purple-200",
         iconBg: "bg-purple-100 text-purple-600",
@@ -188,16 +183,16 @@ export default function SubscriptionPage() {
         val: activity?.walletPacksBought || 0,
         icon: <ShoppingBag className="w-5 h-5" />,
         color: "amber",
-        bg: "bg-amber-50/50 border-amber-200/50",
-        iconBg: "bg-amber-100/50 text-amber-600/80",
+        bg: "bg-amber-50 border-amber-200",
+        iconBg: "bg-amber-100 text-amber-600",
       },
     ];
   }, [kpis, activity]);
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8 font-jakarta">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
       <motion.div
-        className="max-w-7xl mx-auto w-full space-y-8"
+        className="@container/main space-y-4"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -208,11 +203,11 @@ export default function SubscriptionPage() {
             heading="Subscription Analytics"
             subheading="Unified intelligence for products, revenue, and subscribers."
             icon={<CreditCard className="w-10 h-10 text-white" />}
-            color="bg-brand-aqua shadow-indigo-100 shadow-xl"
+            color="bg-brand-aqua shadow-indigo-100"
           />
           <Button
             variant="ghost"
-            className="bg-slate-50 hover:bg-slate-100 rounded-2xl h-10 px-4 font-bold text-xs gap-2 text-slate-500"
+            className="bg-slate-50 hover:bg-slate-100 border rounded-2xl h-10 px-4 font-bold shadow-sm text-xs gap-2 text-slate-500"
             onClick={refreshDashboard}
             disabled={dashboardLoading}
           >
@@ -238,7 +233,7 @@ export default function SubscriptionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 className={cn(
-                  "flex items-center gap-3 p-4 rounded-[1.5rem] border transition-all",
+                  "flex items-center gap-3 p-4 py-5 rounded-2xl border transition-all",
                   card.bg,
                 )}
               >
@@ -248,7 +243,7 @@ export default function SubscriptionPage() {
                   {card.icon}
                 </div>
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-0.5">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">
                     {card.label}
                   </p>
                   <h3 className="text-xl font-black text-slate-900 leading-none">
@@ -261,16 +256,17 @@ export default function SubscriptionPage() {
             ))}
           </div>
         )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-2">
           {/* Revenue Trend */}
-          <Card className="lg:col-span-2 rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden group">
+          <Card className="lg:col-span-2 rounded-[2rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden group">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-1">
                 <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4 text-brand-aqua" />
+                  <BarChart3 className="w-6 h-6 text-brand-aqua" />
                   Revenue Trend
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest leading-relaxed">
                   Daily revenue performance
                 </p>
               </div>
@@ -386,14 +382,14 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Platform Distribution */}
-          <Card className="rounded-[2rem] border-brand-aqua/40 hover:border-brand-aqua/80 transition-all duration-500 shadow-md bg-white overflow-hidden group">
+          <Card className="rounded-[2rem] border-slate-200 hover:border-emerald-300 transition-all duration-500 shadow-sm bg-white overflow-hidden group">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-1">
                 <CardTitle className="text-sm font-black flex items-center gap-2">
-                  <Smartphone className="w-4 h-4 text-emerald-500" />
+                  <PiDevicesDuotone className="w-6 h-6 text-emerald-500" />
                   Platform Mix
                 </CardTitle>
-                <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">
                   Active ecosystem distribution
                 </p>
               </div>
@@ -431,22 +427,22 @@ export default function SubscriptionPage() {
                               className={cn(
                                 "p-1.5 rounded-lg border",
                                 isAndroid
-                                  ? "bg-emerald-50 border-emerald-100 text-emerald-600"
+                                  ? "bg-emerald-100/60 border-emerald-200 text-emerald-600"
                                   : isIOS
-                                    ? "bg-slate-50 border-slate-200 text-slate-700"
+                                    ? "bg-slate-100/60 border-slate-200 text-slate-800"
                                     : isAdmin
-                                      ? "bg-purple-50 border-purple-100 text-purple-600"
-                                      : "bg-blue-50 border-blue-100 text-blue-600",
+                                      ? "bg-purple-100/60 border-purple-200 text-purple-800"
+                                      : "bg-blue-100/60 border-blue-200 text-blue-800",
                               )}
                             >
                               {isAndroid ? (
-                                <Smartphone className="w-3 h-3" />
+                                <AiFillAndroid className="w-5 h-5" />
                               ) : isIOS ? (
-                                <Apple className="w-3 h-3" />
+                                <AiFillApple className="w-5 h-5" />
                               ) : isAdmin ? (
-                                <ShieldCheck className="w-3 h-3" />
+                                <LiaUserTieSolid className="w-5 h-5" />
                               ) : (
-                                <LayoutGrid className="w-3 h-3" />
+                                <LayoutGrid className="w-5 h-5" />
                               )}
                             </div>
                             <span className="text-[11px] font-black uppercase tracking-tight text-slate-600">
@@ -488,13 +484,13 @@ export default function SubscriptionPage() {
         {/* Section 4: Alerts & Milestone Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
           {/* Expiring Soon Alert */}
-          <Card className="rounded-[2rem] border-amber-200 shadow-md bg-white overflow-hidden">
+          <Card className="rounded-[2rem] border-slate-200 hover:border-amber-300 transition-all duration-300 shadow-sm bg-white overflow-hidden">
             <CardHeader className="pb-4">
               <CardTitle className="text-sm font-black flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-500" />
+                <AlertTriangle className="w-6 h-6 text-amber-500" />
                 Expiring Soon
               </CardTitle>
-              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+              <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">
                 Plans expiring in the next 24 hours
               </p>
             </CardHeader>
@@ -522,15 +518,15 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Milestone Progress */}
-          <Card className="rounded-[2rem] border-purple-200 shadow-md bg-white overflow-hidden">
+          <Card className="rounded-[2rem] border-slate-200 hover:border-purple-300 transition-all duration-300 shadow-sm bg-slate-50 overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-sm font-black flex items-center gap-2">
-                    <Trophy className="w-4 h-4 text-purple-500" />
+                    <Trophy className="w-6 h-6 text-purple-500" />
                     Milestone Program
                   </CardTitle>
-                  <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">
+                  <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest mt-2">
                     Free premium grant progress
                   </p>
                 </div>

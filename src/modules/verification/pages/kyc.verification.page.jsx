@@ -223,7 +223,7 @@ export default function KYCVerificationPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 pb-8">
+    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <motion.div
         className="space-y-6"
         initial="hidden"

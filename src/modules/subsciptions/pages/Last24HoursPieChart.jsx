@@ -454,7 +454,7 @@ const Last24HoursPieChart = ({ last24HoursActivity }) => {
   };
 
   return (
-    <Card className="rounded-[1.5rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-white overflow-hidden h-full flex flex-col">
+    <Card className="rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden h-full flex flex-col">
       {/* ── Header ── */}
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-black flex items-center gap-2">

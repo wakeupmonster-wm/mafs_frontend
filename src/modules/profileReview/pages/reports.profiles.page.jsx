@@ -144,7 +144,7 @@ export default function ReportsProfilesPage() {
     red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
   };
 
-  // bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100
+  // bg-slate-50
   return (
     <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
       <motion.div
