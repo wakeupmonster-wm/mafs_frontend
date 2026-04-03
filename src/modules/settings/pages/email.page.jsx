@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RenderField } from "../components/render.field";
 import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
+import { Container } from "@/components/common/container";
+import { Button } from "@/components/ui/button";
 
 // 1. Validation Schema (Example for Email/General Settings)
 const formSchema = z.object({
@@ -52,102 +54,104 @@ export default function EmailPage() {
   };
 
   return (
-    <main className="flex-1 p-6 pb-20 w-full">
-      {/* Header Section */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
-        <PageHeader
-          heading="Email"
-          icon={<Mail className="w-9 h-9 text-white animate-pulse" />}
-          color="bg-brand-aqua shadow-brand-aqua/30"
-          subheading="Configure email delivery settings for your application."
-        />
-
-        <button
-          className="flex items-center gap-2 bg-brand-aqua/50 hover:bg-brand-aqua/60 text-black text-sm px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-slate-400/50"
-          onClick={handleSave}
-        >
-          <Save size={16} /> Save
-        </button>
-      </header>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* 1. Select Input Dropdown */}
-            <RenderField
-              control={form.control}
-              name="driver"
-              label="Email Driver"
-              type="select"
-              options={[
-                { label: "SMTP Server", value: "SMTP" },
-                { label: "Mailgun API", value: "Mailgun" },
-                { label: "Amazon SES", value: "SES" },
-              ]}
-            />
-
-            {/* 2. Standard Text Input */}
-            <RenderField
-              control={form.control}
-              name="host"
-              label="SMTP Host"
-              type="text"
-              placeholder="e.g. smtp.gmail.com"
-            />
-
-            {/* 3. Number/Text Input */}
-            <RenderField
-              control={form.control}
-              name="port"
-              label="SMTP Port"
-              type="text"
-              placeholder="Enter SMTP Port"
-            />
-
-            {/* 4. Select Input for Encryption */}
-            <RenderField
-              control={form.control}
-              name="encryption"
-              label="Encryption"
-              type="select"
-              options={[
-                { label: "SSL", value: "SSL" },
-                { label: "TLS", value: "TLS" },
-              ]}
-            />
-          </div>
-
-          {/* Email Address */}
-          <RenderField
-            control={form.control}
-            name="address"
-            label="Email Address"
-            type="text"
-            placeholder="abc@domain.in"
+    <Container>
+      <main className="flex-1 pb-20 w-full">
+        {/* Header Section */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
+          <PageHeader
+            heading="Email"
+            icon={<Mail className="w-9 h-9 text-white animate-pulse" />}
+            color="bg-brand-aqua shadow-brand-aqua/30"
+            subheading="Configure email delivery settings for your application."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Username */}
+          <Button
+            className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
+            onClick={handleSave}
+          >
+            <Save size={16} /> Save Changes
+          </Button>
+        </header>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 1. Select Input Dropdown */}
+              <RenderField
+                control={form.control}
+                name="driver"
+                label="Email Driver"
+                type="select"
+                options={[
+                  { label: "SMTP Server", value: "SMTP" },
+                  { label: "Mailgun API", value: "Mailgun" },
+                  { label: "Amazon SES", value: "SES" },
+                ]}
+              />
+
+              {/* 2. Standard Text Input */}
+              <RenderField
+                control={form.control}
+                name="host"
+                label="SMTP Host"
+                type="text"
+                placeholder="e.g. smtp.gmail.com"
+              />
+
+              {/* 3. Number/Text Input */}
+              <RenderField
+                control={form.control}
+                name="port"
+                label="SMTP Port"
+                type="text"
+                placeholder="Enter SMTP Port"
+              />
+
+              {/* 4. Select Input for Encryption */}
+              <RenderField
+                control={form.control}
+                name="encryption"
+                label="Encryption"
+                type="select"
+                options={[
+                  { label: "SSL", value: "SSL" },
+                  { label: "TLS", value: "TLS" },
+                ]}
+              />
+            </div>
+
+            {/* Email Address */}
             <RenderField
               control={form.control}
-              name="username"
-              label="SMTP Username"
+              name="address"
+              label="Email Address"
               type="text"
-              placeholder="re******"
+              placeholder="abc@domain.in"
             />
 
-            {/* 5. Password Input */}
-            <RenderField
-              control={form.control}
-              name="password"
-              label="SMTP Password"
-              type="password"
-              placeholder="Enter password"
-            />
-          </div>
-        </form>
-      </Form>
-    </main>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Username */}
+              <RenderField
+                control={form.control}
+                name="username"
+                label="SMTP Username"
+                type="text"
+                placeholder="re******"
+              />
+
+              {/* 5. Password Input */}
+              <RenderField
+                control={form.control}
+                name="password"
+                label="SMTP Password"
+                type="password"
+                placeholder="Enter password"
+              />
+            </div>
+          </form>
+        </Form>
+      </main>
+    </Container>
   );
 }
 

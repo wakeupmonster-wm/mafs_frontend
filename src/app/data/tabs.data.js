@@ -1,16 +1,15 @@
 import {
-  User,
   Image,
   Sun,
   Search,
   Activity,
   CircleDollarSign,
   Settings,
-  Zap,
 } from "lucide-react";
+import { LuUserRound } from "react-icons/lu";
 
 export const TabData = [
-  { value: "profile", label: "Profile", icon: User },
+  { value: "profile", label: "Profile", icon: LuUserRound },
   { value: "gallery", label: "Gallery", icon: Image },
   { value: "attributes", label: "Attributes", icon: Sun },
   // { value: "attribute", label: "Attribute", icon: Sun },

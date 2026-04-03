@@ -21,7 +21,7 @@ export default function Dashboard() {
         <div className="@container/main flex flex-1 flex-col gap-2">
           <div className="flex flex-col gap-4 py-4 px-4 md:gap-6">
             <SectionCards stats={stats} loading={loading} error={error} />
-            <div className="px-2">
+            <div>
               <ChartAreaInteractive
                 kpiData={stats}
                 loading={loading}

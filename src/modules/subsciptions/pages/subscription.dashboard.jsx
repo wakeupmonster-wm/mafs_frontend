@@ -59,6 +59,7 @@ import PlanDistributionChart from "./PlanDistributionChart";
 import { bgMap, colorMap } from "@/constants/colors";
 import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 import { LuUserRound, LuUserRoundMinus } from "react-icons/lu";
+import { Container } from "@/components/common/container";
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
 
@@ -553,7 +554,7 @@ export default function SubscriptionDashboard() {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen py-4 px-5 bg-slate-50 pb-8">
+    <Container>
       <motion.div
         className="@container/main space-y-6"
         initial={{ opacity: 0, y: 10 }}
@@ -561,11 +562,11 @@ export default function SubscriptionDashboard() {
         transition={{ duration: 0.5 }}
       >
         {/* Header — same as subscription.page.jsx */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <PageHeader
             heading="Revenue Dashboard"
             subheading="Consolidated intelligence across subscriptions & consumable growth."
-            icon={<BarChart3 className="w-10 h-10 text-white" />}
+            icon={<BarChart3 className="w-10 h-10 text-slate-50" />}
             color="bg-brand-aqua"
           />
           <div className="flex items-center gap-3">
@@ -576,7 +577,7 @@ export default function SubscriptionDashboard() {
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
-                  className="group bg-slate-50 hover:bg-brand-aqua border border-slate-300 rounded-2xl h-10 px-4 text-xs font-medium hover:font-semibold text-slate-500 hover:text-white shadow-sm flex items-center gap-2 transition-all duration-300"
+                  className="group bg-slate-50 hover:bg-brand-aqua border border-slate-200 rounded-2xl h-10 px-4 text-xs font-medium hover:font-semibold text-muted-foreground hover:text-white shadow-sm flex items-center gap-2 transition-all duration-300"
                 >
                   <CalendarIcon
                     strokeWidth={2.5}
@@ -648,7 +649,7 @@ export default function SubscriptionDashboard() {
 
             <Button
               variant="ghost"
-              className="group border border-slate-300 bg-white hover:bg-brand-aqua text-slate-400 hover:text-white rounded-2xl h-10 px-4 font-medium hover:font-semibold text-xs gap-2 shadow-sm transition-all duration-300"
+              className="group border border-slate-200 bg-white hover:bg-brand-aqua text-muted-foreground hover:text-white rounded-2xl h-10 px-4 font-medium hover:font-semibold text-xs gap-2 shadow-sm transition-all duration-300"
               onClick={refreshDashboard}
               disabled={statsLoading}
             >
@@ -671,7 +672,7 @@ export default function SubscriptionDashboard() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-2"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           >
             <StatsGrid stats={coreStats} colorMap={colorMap} bgMap={bgMap} />
           </motion.div>
@@ -679,16 +680,16 @@ export default function SubscriptionDashboard() {
 
         {/* Milestone Progress Card */}
         {kpis?.milestone && (
-          <div className="px-2">
-            <Card className="rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
+          <div>
+            <Card className="rounded-xl border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-2">
-                    <CardTitle className="text-base font-black flex items-center gap-2">
+                    <CardTitle className="text-base text-foreground font-black flex items-center gap-2">
                       <Trophy className="w-6 h-6 text-brand-aqua" />
                       Milestone Program
                     </CardTitle>
-                    <p className="text-xs uppercase font-bold text-slate-400 tracking-widest">
+                    <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest">
                       Free premium grant progress
                     </p>
                   </div>
@@ -732,16 +733,16 @@ export default function SubscriptionDashboard() {
           </div>
         )}
         {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Trend */}
-          <Card className="lg:col-span-2 rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
+          <Card className="lg:col-span-2 rounded-xl border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-2">
-                <CardTitle className="text-base font-black flex items-center gap-2">
+                <CardTitle className="text-base text-foreground font-black flex items-center gap-2">
                   <BarChart3 className="w-6 h-6 text-brand-aqua" />
                   Revenue Trend
                 </CardTitle>
-                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest leading-relaxed">
                   Subscription vs consumable revenue
                 </p>
 
@@ -897,6 +898,7 @@ export default function SubscriptionDashboard() {
                 </Select>
               </div>
             </CardHeader>
+
             <CardContent className="h-[280px] p-0 pr-6">
               <ResponsiveContainer width="100%" height="100%">
                 {chartTimeframe === "monthly" ? (
@@ -1199,14 +1201,14 @@ export default function SubscriptionDashboard() {
           </Card>
 
           {/* Platform Mix */}
-          <Card className="rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
+          <Card className="rounded-xl border-slate-200 shadow-sm bg-slate-50 overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-1">
-                <CardTitle className="text-base font-black flex items-center gap-2">
+                <CardTitle className="text-base text-foreground font-black flex items-center gap-2">
                   <Smartphone className="w-6 h-6 text-brand-aqua" />
                   Platform Mix
                 </CardTitle>
-                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest">
+                <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest">
                   Revenue by platform
                 </p>
               </div>
@@ -1296,16 +1298,16 @@ export default function SubscriptionDashboard() {
         </div>
 
         {/* Second Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Subscriber Growth */}
-          <Card className="rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden gap-2">
+          <Card className="rounded-xl border-slate-200 shadow-sm bg-slate-50 overflow-hidden gap-2">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5">
               <div className="space-y-2">
-                <CardTitle className="text-base font-black flex items-center gap-2">
+                <CardTitle className="text-base text-foreground font-black flex items-center gap-2">
                   <TrendingUp className="w-6 h-6 text-brand-aqua" />
                   Subscriber Growth
                 </CardTitle>
-                <p className="text-xs uppercase font-bold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest leading-relaxed">
                   New vs cancelled vs net
                 </p>
               </div>
@@ -1315,7 +1317,7 @@ export default function SubscriptionDashboard() {
                   value={growthTimeframe}
                   onValueChange={setGrowthTimeframe}
                 >
-                  <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[110px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[110px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -1415,9 +1417,9 @@ export default function SubscriptionDashboard() {
         </div>
 
         {/* Third Row: Best Selling Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Best Selling Products */}
-          <Card className="rounded-[1.5rem] border-slate-200 shadow-sm bg-slate-50 overflow-hidden h-full">
+          <Card className="rounded-xl border-slate-200 shadow-sm bg-slate-50 overflow-hidden h-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-2">
                 <CardTitle className="text-base font-black flex items-center gap-2">
@@ -1479,6 +1481,6 @@ export default function SubscriptionDashboard() {
           )}
         </div>
       </motion.div>
-    </div>
+    </Container>
   );
 }

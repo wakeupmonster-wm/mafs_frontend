@@ -61,12 +61,15 @@ export const GallleryTab = ({ photos = [], userId }) => {
 
   return (
     <>
-      <TabsContent value="gallery" className="mt-6 space-y-4">
+      <TabsContent
+        value="gallery"
+        className="mt-6 space-y-4 focus-visible:ring-offset-0 focus-visible:ring-0"
+      >
         {/* GALLERY HEADER & BULK ACTIONS */}
         <div className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border shadow-sm">
           <div>
-            <h3 className="text-sm font-bold text-slate-900">User Gallery</h3>
-            <p className="text-xs text-slate-500">
+            <h3 className="text-sm font-bold text-primary">User Gallery</h3>
+            <p className="text-xs text-secondary-foreground">
               {photos.length} Total Uploads
             </p>
           </div>

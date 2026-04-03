@@ -146,7 +146,7 @@ const PageHeader = React.forwardRef(
           {/* Heading: Fade and Slide */}
           <motion.h1
             variants={itemVariants}
-            className="text-xl font-bold text-slate-900 tracking-tight sm:text-2xl"
+            className="text-xl font-bold text-foreground tracking-tight sm:text-2xl"
           >
             {heading}
           </motion.h1>

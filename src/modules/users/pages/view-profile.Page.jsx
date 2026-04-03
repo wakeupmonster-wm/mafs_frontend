@@ -107,10 +107,10 @@ export default function ViewProfilePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50 py-2">
         {/* Navigation Bar */}
-        <div className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-3">
-          <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div className="sticky px-5 top-0 z-30 bg-white/80 backdrop-blur-md border-b border-slate-200">
+          <div className="max-w-[1400px] mx-auto py-1 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
                 <IconArrowLeft className="h-5 w-5 text-slate-600" />
@@ -123,7 +123,7 @@ export default function ViewProfilePage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleCopy}
-                className="group flex items-center gap-1.5 px-2 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-md"
+                className="group flex items-center gap-1.5 px-2 py-1 bg-slate-50 hover:bg-slate-100 border border-slate-300 rounded-md"
               >
                 <Badge
                   variant="secondary"
@@ -131,11 +131,11 @@ export default function ViewProfilePage() {
                 >
                   ID: {user._id}
                 </Badge>
-                <div className="text-slate-400 pl-1.5 border-l border-slate-200">
+                <div className="text-slate-400 pl-1.5 border-l border-slate-300">
                   {copied ? (
                     <Check size={12} className="text-green-500" />
                   ) : (
-                    <Copy size={12} />
+                    <Copy size={12} className="text-slate-500" />
                   )}
                 </div>
               </button>
@@ -143,20 +143,20 @@ export default function ViewProfilePage() {
           </div>
         </div>
 
-        <div className="p-2 md:p-4 max-w-[1400px] mx-auto space-y-8 animate-in fade-in duration-500">
+        <div className="py-2 md:py-4 px-5 max-w-[1450px] mx-auto space-y-6 animate-in fade-in duration-500">
           {/* User Summary Card */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm px-4 py-3">
-            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+          <div className="bg-white rounded-xl border border-slate-200 shadow-sm px-4 py-3">
+            <div className="flex flex-col md:flex-row gap-5 items-start md:items-center">
               <div className="relative">
-                <Avatar className="h-20 w-20 border-4 border-white shadow-xl">
+                <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
                   <AvatarImage src={photos?.[0]?.url} alt={profile?.nickname} />
                   <AvatarFallback className="bg-indigo-100 text-indigo-700 text-2xl font-bold">
                     {profile?.nickname?.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 {verification?.status === "approved" && (
-                  <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1 shadow-md">
-                    <IconCircleCheck className="h-6 w-6 text-green-500 fill-green-50" />
+                  <div className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-md">
+                    <IconCircleCheck className="h-4 w-4 text-green-500 fill-green-50" />
                   </div>
                 )}
               </div>
@@ -187,20 +187,20 @@ export default function ViewProfilePage() {
                   )}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                <div className="flex flex-wrap items-center gap-6 font-semibold text-sm text-slate-600">
                   {/* Location */}
                   <div className="flex items-center gap-1">
-                    <IconMapPin className="h-4 w-4 text-slate-400" />
+                    <IconMapPin className="h-4 w-4 text-slate-500" />
                     {userLoc?.city}, {userLoc?.country}
                   </div>
 
                   {/* Vertical Separator for desktop */}
-                  <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" />
+                  {/* <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" /> */}
 
                   {/* Joined Date */}
                   <div className="flex items-center gap-1">
                     <IconCalendar className="h-4 w-4 text-slate-400" />
-                    Joined{" "}
+                    Joined:
                     {new Date(account?.createdAt).toLocaleDateString(
                       undefined,
                       {
@@ -212,7 +212,7 @@ export default function ViewProfilePage() {
                   </div>
 
                   {/* Vertical Separator for desktop */}
-                  <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" />
+                  {/* <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" /> */}
 
                   {/* Last Update Date - NEW FIELD */}
                   <div className="flex items-center gap-1">
@@ -242,12 +242,12 @@ export default function ViewProfilePage() {
           </div>
 
           {/* Tabs Section */}
-          <Tabs defaultValue="profile" className="max-w-7xl space-y-6">
-            <div className="bg-white px-2 py-1 rounded-full border border-slate-200 shadow-sm">
+          <Tabs defaultValue="profile" className="w-full space-y-4">
+            <div className="bg-slate-40 px-2 py-1 rounded-full border border-slate-200 shadow-sm">
               <EnhancedTabs tabs={TabData} />
             </div>
 
-            <div className="mt-6">
+            <div className="mt-4">
               <ProfileTab
                 reports={reports}
                 security={security}

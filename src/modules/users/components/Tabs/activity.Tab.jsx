@@ -32,7 +32,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
   return (
     <TabsContent
       value="activity"
-      className="mt-6 space-y-8 animate-in fade-in slide-in-from-bottom-3 duration-500"
+      className="mt-6 space-y-4 focus-visible:ring-offset-0 focus-visible:ring-0 animate-in fade-in slide-in-from-bottom-3 duration-500"
     >
       {/* 1. TOP STATS ROW - Using a Glassmorphism Style */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -75,7 +75,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
         ].map((stat, i) => (
           <Card
             key={i}
-            className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md bg-white overflow-hidden group"
+            className="border border-slate-200 shadow-sm bg-slate-50 overflow-hidden py-4 rounded-xl group"
           >
             <CardContent className="p-0">
               <div className="flex items-center p-4 gap-4">
@@ -89,10 +89,10 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                   {React.cloneElement(stat.icon, { size: 24, stroke: 2 })}
                 </div>
                 <div>
-                  <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                  <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">
                     {stat.label}
                   </p>
-                  <h4 className="text-xl font-bold text-slate-900">
+                  <h4 className="text-xl font-bold text-foreground">
                     {stat.val?.toLocaleString()}
                   </h4>
                 </div>
@@ -108,17 +108,17 @@ export const ActivityTab = ({ stats, recentMatches }) => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* 2. RECENT MATCHES TIMELINE (8/12) */}
-        <Card className="lg:col-span-8 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between border-b border-slate-50 bg-slate-50/30 py-4 px-6">
-            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <Card className="lg:col-span-8 border border-slate-200 shadow-sm bg-slate-50 gap-4 rounded-xl overflow-hidden">
+          <CardHeader className="flex flex-row items-center justify-between bg-slate-50 px-6">
+            <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
               <IconMessage2 size={18} className="text-emerald-500" /> Recent
               Connections
             </CardTitle>
             <Badge
               variant="outline"
-              className="bg-white text-[10px] font-bold text-slate-400 border-slate-200"
+              className="bg-slate-50 text-[10px] font-bold text-slate-500 border-slate-300"
             >
               {recentMatches?.length ?? 0} Matches
             </Badge>
@@ -165,7 +165,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                           state: { userId: match.ouserId },
                         })
                       }
-                      className="h-8 text-xs font-bold text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10"
+                      className="h-8 rounded-xl text-xs font-bold border border-slate-300 shadow-sm bg-slate-50 text-slate-500 hover:text-brand-aqua hover:bg-brand-aqua/10"
                     >
                       View Profile
                     </Button>
@@ -186,27 +186,27 @@ export const ActivityTab = ({ stats, recentMatches }) => {
         </Card>
 
         {/* 3. INSIGHTS & CONVERSION RATE (4/12) */}
-        <div className="lg:col-span-4 space-y-6">
-          <Card className="border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md">
+        <div className="lg:col-span-4 space-y-4">
+          <Card className="border-slate-200 shadow-sm bg-slate-50 rounded-xl gap-2">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+              <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
                 <IconTrendingUp size={18} className="text-brand-aqua" />{" "}
                 Engagement Score
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <div className="text-center py-4">
                 <h3 className="text-4xl font-black text-slate-900 leading-none">
                   {matchRate}%
                 </h3>
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2">
+                <p className="text-[10px] font-bold text-secondary-foreground uppercase tracking-widest mt-2">
                   Conversion Rate
                 </p>
               </div>
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <div className="flex justify-between text-xs font-bold uppercase tracking-tighter text-slate-500">
+                  <div className="flex justify-between text-xs font-bold uppercase tracking-tighter text-muted-foreground">
                     <span>Funnel Success</span>
                     <span className="text-brand-aqua">{matchRate}%</span>
                   </div>
@@ -216,7 +216,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 gap-3 pt-4 border-t border-slate-100 mt-4">
+                <div className="grid grid-cols-1 border-t border-slate-100 mt-2">
                   <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                     <span className="text-xs font-medium text-slate-500">
                       Like Accuracy
@@ -231,6 +231,7 @@ export const ActivityTab = ({ stats, recentMatches }) => {
                       %
                     </span>
                   </div>
+
                   <div className="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
                     <span className="text-xs font-medium text-slate-500">
                       Super Like Ratio
@@ -250,10 +251,10 @@ export const ActivityTab = ({ stats, recentMatches }) => {
             </CardContent>
           </Card>
 
-          <Card className="bg-brand-aqua/90 border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md p-6 text-white overflow-hidden relative">
+          <Card className="bg-slate-50 border border-slate-200 shadow-sm p-6 text-slate-700 rounded-xl overflow-hidden relative">
             <div className="relative z-10">
-              <h4 className="text-sm font-bold opacity-80">Moderator Tip</h4>
-              <p className="text-xs mt-2 leading-relaxed">
+              <h4 className="text-sm font-bold text-foreground">Moderator Tip</h4>
+              <p className="text-xs mt-2 font-medium text-muted-foreground leading-relaxed">
                 This user has a high swipe frequency. Monitor for potential bot
                 behavior or automated scripts.
               </p>

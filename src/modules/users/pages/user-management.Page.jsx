@@ -27,6 +27,7 @@ import StatsGrid from "@/components/common/stats.grid";
 import { SuspendUserModal } from "../components/suspendUserModal";
 import { bgMap, colorMap } from "@/constants/colors";
 import { Download, Loader2 } from "lucide-react";
+import { Container } from "@/components/common/container";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -245,7 +246,7 @@ export default function UserManagementPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen py-4 px-5 bg-slate-50 pb-8">
+    <Container>
       <motion.div
         className="@container/main space-y-6"
         initial="hidden"
@@ -389,6 +390,6 @@ export default function UserManagementPage() {
           userName={selectedUserForSuspend?.profile?.nickname}
         />
       </motion.div>
-    </div>
+    </Container>
   );
 }

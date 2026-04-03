@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -16,6 +17,8 @@ import {
   IconBrandApple,
   IconBrandAndroid,
   IconCircleCheck,
+  IconRocket,
+  IconStar,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
@@ -46,6 +49,20 @@ import {
   grantSubscription,
   grantConsumables,
 } from "@/modules/subsciptions/store/subscription.slice";
+import { bgMap, colorMap } from "@/constants/colors";
+import StatsGrid from "@/components/common/stats.grid";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      // Controls the speed of the "wave" between cards
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
 
 export const FinancialsTab = ({
   userData,
@@ -127,16 +144,49 @@ export const FinancialsTab = ({
     }
   };
 
+  // --- Optimized Stats Calculation ---
+  const stats = useMemo(() => {
+    return [
+      {
+        label: "Available Boosts",
+        val: subscription?.availableBoosts || 0,
+        icon: <IconRocket size={22} />, // Icon update kiya (Boost ke liye rocket better hai)
+        color: "blue",
+        description: "Remaining profile boosts", // Description relevant kiya
+      },
+      {
+        label: "Available Super Keen",
+        val: subscription?.availableSuperKeens || 0, // || 0 add kiya safety ke liye
+        icon: <IconStar size={22} />, // Icon update kiya (Super Keen ke liye star/heart)
+        color: "emerald",
+        description: "Remaining super keens", // Description relevant kiya
+      },
+    ];
+  }, [subscription]);
+
   const isPremiumActive =
     subscription?.status === "ACTIVE" || userData?.account?.isPremium;
 
+  console.log("subscription: ", subscription);
+
   return (
-    <TabsContent value="financials" className="grid pb-10 gap-6">
-      <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
+    <TabsContent
+      value="financials"
+      className="grid gap-6 focus-visible:ring-offset-0 focus-visible:ring-0"
+    >
+      {/* --- STATS GRID (Staggered) --- */}
+      <motion.div
+        variants={containerVariants}
+        className="grid grid-cols-2 gap-6"
+      >
+        <StatsGrid stats={stats} colorMap={colorMap} bgMap={bgMap} />
+      </motion.div>
+
+      <div className="mt-2 grid grid-cols-1 lg:grid-cols-12 gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
         {/* 1. SUBSCRIPTION OVERVIEW (4/12) */}
         <Card
           className={cn(
-            "lg:col-span-4 border shadow-sm overflow-hidden relative transition-all duration-300",
+            "lg:col-span-4 border shadow-sm gap-2 overflow-hidden relative transition-all duration-300",
             isPremiumActive
               ? "bg-slate-900 text-white"
               : "bg-brand-aqua/5 text-slate-900",
@@ -150,8 +200,8 @@ export const FinancialsTab = ({
             )}
           />
 
-          <CardHeader className="relative z-10 pb-2">
-            <CardTitle className="text-sm font-bold uppercase tracking-widest opacity-70 flex items-center gap-2">
+          <CardHeader className="relative z-10">
+            <CardTitle className="text-sm text-muted font-bold uppercase tracking-widest opacity-70 flex items-center gap-2">
               <IconCreditCard size={18} /> Membership Status
             </CardTitle>
           </CardHeader>
@@ -246,9 +296,9 @@ export const FinancialsTab = ({
         </Card>
 
         {/* 2. TRANSACTION HISTORY (8/12) */}
-        <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 border-b border-slate-100 py-4 px-6">
-            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <Card className="lg:col-span-8 border-slate-200 shadow-sm overflow-hidden flex flex-col rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between bg-slate-50/50 border-b border-slate-100 px-6">
+            <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
               <IconHistory size={18} className="text-indigo-500" /> Payment
               Records
             </CardTitle>
@@ -266,7 +316,7 @@ export const FinancialsTab = ({
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-t border-b border-slate-200 bg-slate-100">
+                  <tr className="border-t border-b border-slate-300 bg-slate-100">
                     <th className="px-6 py-3 text-left font-bold text-slate-500 uppercase text-[10px] tracking-wider">
                       Date
                     </th>
@@ -353,9 +403,9 @@ export const FinancialsTab = ({
                   ) : (
                     <tr>
                       <td colSpan={5} className="px-6 py-10 text-center">
-                        <div className="flex flex-col items-center gap-2 opacity-20">
+                        <div className="flex flex-col items-center gap-2 opacity-30">
                           <IconCreditCard size={48} />
-                          <p className="font-medium">
+                          <p className="font-medium text-foreground">
                             No payment records found
                           </p>
                         </div>
@@ -370,15 +420,15 @@ export const FinancialsTab = ({
       </div>
 
       {/* CARDS GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 pb-10 gap-6">
         {/* GRANT SUBSCRIPTION */}
-        <Card className="rounded-[1.5rem] border-slate-200 shadow-sm overflow-hidden bg-slate-50 gap-4 py-4">
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="text-sm font-black flex items-center gap-2 text-slate-900">
+        <Card className="border-slate-200 shadow-sm overflow-hidden bg-slate-50 rounded-xl gap-4">
+          <CardHeader className="px-6 pb-4">
+            <CardTitle className="text-sm font-black flex items-center gap-2 text-foreground">
               <Crown className="w-5 h-5 text-brand-aqua" />
               Grant Subscription
             </CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-secondary-foreground">
               Assign premium access manually
             </CardDescription>
           </CardHeader>
@@ -389,7 +439,7 @@ export const FinancialsTab = ({
 
           <CardContent className="p-6 pt-2 space-y-5">
             <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+              <Label className="text-[10px] font-black uppercase text-secondary-foreground tracking-widest ml-1">
                 Subscription Tier
               </Label>
               <Select
@@ -422,11 +472,11 @@ export const FinancialsTab = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                <Label className="text-[10px] font-black uppercase text-secondary-foreground tracking-widest ml-1">
                   Duration (Days)
                 </Label>
                 <div className="relative">
-                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary-foreground" />
                   <Input
                     type="number"
                     className="h-12 pl-10 rounded-xl bg-slate-50 border-none font-bold text-sm focus:ring-2 ring-brand-aqua/20"
@@ -436,11 +486,11 @@ export const FinancialsTab = ({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+                <Label className="text-[10px] font-black uppercase text-secondary-foreground tracking-widest ml-1">
                   Reason
                 </Label>
                 <div className="relative">
-                  <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <ShieldCheck className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary-foreground" />
                   <Input
                     placeholder="e.g. Compensation"
                     className="h-12 pl-10 rounded-xl bg-slate-50 border-none font-bold text-sm focus:ring-2 ring-brand-aqua/20"
@@ -467,13 +517,13 @@ export const FinancialsTab = ({
         </Card>
 
         {/* GRANT CONSUMABLES */}
-        <Card className="rounded-[1.5rem] border-slate-200 shadow-sm overflow-hidden bg-slate-50 gap-4 py-4">
-          <CardHeader className="p-6 pb-2">
-            <CardTitle className="text-sm font-black flex items-center gap-2 text-slate-900">
+        <Card className="border-slate-200 shadow-sm overflow-hidden bg-slate-50 rounded-xl gap-4">
+          <CardHeader className="px-6 pb-2">
+            <CardTitle className="text-sm font-black flex items-center gap-2 text-foreground">
               <Gem className="w-5 h-5 text-brand-aqua" />
               Grant Consumables
             </CardTitle>
-            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+            <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-secondary-foreground">
               Add Super Keens or Boosts
             </CardDescription>
           </CardHeader>
@@ -484,7 +534,7 @@ export const FinancialsTab = ({
 
           <CardContent className="p-6 pt-2 space-y-5">
             <div className="space-y-2">
-              <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest ml-1">
+              <Label className="text-[10px] font-black uppercase text-secondary-foreground tracking-widest ml-1">
                 Asset Type
               </Label>
               <Select value={consumableType} onValueChange={setConsumableType}>
@@ -510,7 +560,7 @@ export const FinancialsTab = ({
 
             <div className="space-y-3">
               <div className="flex items-center justify-between px-1">
-                <Label className="text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                <Label className="text-[10px] font-black uppercase text-secondary-foreground tracking-widest">
                   Quantity
                 </Label>
                 <span className="text-2xl font-black text-slate-900 tabular-nums">

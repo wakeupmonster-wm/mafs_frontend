@@ -27,6 +27,7 @@ import {
   IconPlaneDeparture,
 } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
+import { Separator } from "@/components/ui/separator";
 
 export const AttributesTab = ({ attributes }) => {
   const basic = [
@@ -122,10 +123,10 @@ export const AttributesTab = ({ attributes }) => {
   return (
     <TabsContent
       value="attributes"
-      className="mt-6 animate-in fade-in slide-in-from-top-2 duration-500"
+      className="mt-2 animate-in fade-in slide-in-from-top-2 duration-300 focus-visible:ring-offset-0 focus-visible:ring-0"
     >
-      <Card className="border border-slate-200 shadow-sm gap-4 py-2 overflow-hidden rounded-3xl bg-slate-50">
-        <CardHeader className="bg-gradient-to-r from-slate-50 to-white border-b border-slate-100 py-4 px-8">
+      <Card className="border border-slate-200 shadow-sm gap-2 py-4 overflow-hidden rounded-xl bg-slate-50">
+        <CardHeader className="bg-slate-50 border-slate-100 py-2 px-8">
           <CardTitle className="flex items-center gap-4 text-2xl font-black text-slate-800 tracking-tight">
             <div className="relative">
               <IconSparkles
@@ -140,7 +141,7 @@ export const AttributesTab = ({ attributes }) => {
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="px-6 md:px-10 py-4 space-y-10">
+        <CardContent className="px-6 md:px-10 py-2 space-y-8">
           {/* MASONRY-STYLE GRID FOR VARIED SECTION SIZES */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* 1. BASICS */}
@@ -178,7 +179,7 @@ export const AttributesTab = ({ attributes }) => {
             </SectionWrapper>
 
             {/* 3. GOALS, LANGUAGES & INTERESTS (Ab Basics jaisa dikhega) */}
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* RELATIONSHIP GOALS */}
               <SectionWrapper
                 icon={IconTarget}
@@ -187,7 +188,7 @@ export const AttributesTab = ({ attributes }) => {
               >
                 <LifeTile
                   icon={<IconTarget />}
-                  label="Looking For"
+                  // label="Looking For"
                   value={attributes?.relationshipGoal}
                   color="rose"
                 />
@@ -200,7 +201,7 @@ export const AttributesTab = ({ attributes }) => {
               >
                 <LifeTile
                   icon={<IconPray />}
-                  label="Faith"
+                  // label="Faith"
                   value={attributes?.religion}
                   color="indigo"
                 />
@@ -215,7 +216,7 @@ export const AttributesTab = ({ attributes }) => {
                 <div className="grid grid-cols-1 gap-2">
                   <LifeTile
                     icon={<IconTags />}
-                    label="My Hobbies"
+                    // label="My Hobbies"
                     value={attributes?.interests?.join(", ")}
                     color="violet"
                   />
@@ -231,7 +232,7 @@ export const AttributesTab = ({ attributes }) => {
                 <div className="grid grid-cols-1 gap-2">
                   <LifeTile
                     icon={<IconLanguage />}
-                    label="Fluent In"
+                    // label="Fluent In"
                     value={attributes?.languages?.join(", ")}
                     color="emerald"
                   />
@@ -240,34 +241,43 @@ export const AttributesTab = ({ attributes }) => {
             </div>
           </div>
 
-          <hr className="border-slate-200" />
+          <Separator />
 
           {/* 7. PREFERENCES (Media/Travel) */}
           <SectionWrapper
             icon={IconMovie}
             title="Favorites & Preferences"
             color="bg-slate-800"
+            className="space-y-4"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <MediaCard
-                icon={<IconMusic />}
+                icon={<IconMusic size={22} />}
                 title="Music"
                 items={attributes?.music}
+                colorClass="text-pink-500"
+                gradientClass="bg-gradient-to-br from-pink-50/80 to-rose-100/50 border-pink-200 hover:border-pink-300 shadow-[0_0_10px_rgb(244,114,182,0.15)]"
               />
               <MediaCard
-                icon={<IconMovie />}
+                icon={<IconMovie size={22} />}
                 title="Movies"
                 items={attributes?.movies}
+                colorClass="text-purple-500"
+                gradientClass="bg-gradient-to-br from-purple-50/80 to-indigo-100/50 border-purple-200 hover:border-purple-300 shadow-[0_0_10px_rgb(168,85,247,0.15)]"
               />
               <MediaCard
-                icon={<IconBook />}
+                icon={<IconBook size={22} />}
                 title="Books"
                 items={attributes?.books}
+                colorClass="text-blue-500"
+                gradientClass="bg-gradient-to-br from-blue-50/80 to-sky-100/50 border-blue-200 hover:border-blue-300 shadow-[0_0_10px_rgb(59,130,246,0.15)]"
               />
               <MediaCard
-                icon={<IconPlaneDeparture />}
+                icon={<IconPlaneDeparture size={22} />}
                 title="Travel"
                 items={attributes?.travel}
+                colorClass="text-emerald-500"
+                gradientClass="bg-gradient-to-br from-emerald-50/80 to-teal-100/50 border-emerald-200 hover:border-emerald-300 shadow-[0_0_10px_rgb(16,185,129,0.15)]"
               />
             </div>
           </SectionWrapper>
@@ -279,13 +289,13 @@ export const AttributesTab = ({ attributes }) => {
 
 // --- IMPROVED SUB-COMPONENTS ---
 
-const SectionWrapper = ({ icon: Icon, title, color, children }) => (
-  <div className="flex flex-col gap-4">
+const SectionWrapper = ({ icon: Icon, title, color, children, className }) => (
+  <div className={`flex flex-col gap-2 ${className}`}>
     <div className="flex items-center gap-3 px-1">
       <div className={cn("p-2 rounded-xl text-white shadow-sm", color)}>
         <Icon size={16} stroke={2.5} />
       </div>
-      <h4 className="text-[11px] font-black uppercase text-slate-400 tracking-widest">
+      <h4 className="text-[11px] font-black uppercase text-slate-600 tracking-widest">
         {title}
       </h4>
     </div>
@@ -326,23 +336,45 @@ const LifeTile = ({ icon, label, value, color }) => {
   );
 };
 
-const MediaCard = ({ icon, title, items }) => (
-  <div className="p-4 rounded-2xl border border-slate-100 hover:border-slate-300 shadow hover:shadow-md bg-slate-50/50 hover:bg-white transition-all">
-    <div className="flex items-center gap-2 mb-3">
-      <div className="text-slate-400">{icon}</div>
-      <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+const MediaCard = ({ icon, title, items, colorClass, gradientClass }) => (
+  <div
+    className={cn(
+      "relative overflow-hidden p-4 rounded-3xl border border-white/60 backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 group",
+      gradientClass,
+    )}
+  >
+    {/* Decorative background element */}
+    <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/50 blur-2xl rounded-full group-hover:scale-150 transition-transform duration-700 pointer-events-none" />
+
+    <div className="relative z-10 flex items-center gap-3 mb-5">
+      <div
+        className={cn(
+          "p-3 rounded-2xl bg-white shadow-sm group-hover:scale-110 transition-transform duration-300",
+          colorClass,
+        )}
+      >
+        {icon}
+      </div>
+      <span className="text-xs font-black uppercase tracking-[0.15em] text-slate-800">
         {title}
       </span>
     </div>
-    <div className="flex flex-wrap gap-1.5">
-      {items?.map((item) => (
-        <span
-          key={item}
-          className="text-[10px] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-100 shadow-sm capitalize"
-        >
-          {item}
+
+    <div className="relative z-10 flex flex-wrap gap-2">
+      {items?.length > 0 ? (
+        items.map((item) => (
+          <span
+            key={item}
+            className="text-[11px] font-bold text-slate-700 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm capitalize group-hover:bg-white group-hover:shadow-[0_4px_10px_rgb(0,0,0,0.05)] transition-all duration-300 cursor-default"
+          >
+            {item}
+          </span>
+        ))
+      ) : (
+        <span className="text-[11px] font-semibold italic text-slate-600/70 py-1 bg-white/40 px-3 rounded-lg border border-dashed border-white/50">
+          Not specified
         </span>
-      ))}
+      )}
     </div>
   </div>
 );

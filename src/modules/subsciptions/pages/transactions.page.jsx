@@ -64,6 +64,7 @@ import {
   STATUS_MAP,
 } from "@/constants/transection.config";
 import { bgMap, colorMap } from "@/constants/colors";
+import { Container } from "@/components/common/container";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -246,7 +247,7 @@ export default function TransactionsPage() {
   );
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8 relative font-jakarta">
+    <Container>
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -269,7 +270,7 @@ export default function TransactionsPage() {
                   fetchTransactions();
                 }}
                 disabled={loading}
-                className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
+                className="h-9 border-slate-200 bg-slate-50 hover:bg-brand-aqua text-muted-foreground hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
@@ -280,7 +281,7 @@ export default function TransactionsPage() {
                 size="sm"
                 onClick={handleExport}
                 disabled={exporting}
-                className="h-9 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold shadow-md transition-all active:scale-95"
+                className="h-9 border-slate-200 bg-slate-50 hover:bg-brand-aqua text-muted-foreground hover:text-white transition-all active:scale-95"
               >
                 {exporting ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
@@ -303,13 +304,13 @@ export default function TransactionsPage() {
 
         {/* ─── TOOLBAR (Search + Filters) ─── */}
         <motion.div variants={itemVariants}>
-          <div className="flex flex-row md:items-center justify-between gap-3 bg-slate-50/50 p-2 rounded-xl">
+          <div className="flex flex-row md:items-center justify-between gap-3 bg-slate-50/50 py-2 rounded-xl">
             {/* Search */}
             <div className="relative w-3/5 md:w-1/3">
-              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
               <Input
                 placeholder="Search by email, name, txn ID..."
-                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-sm focus-visible:ring-brand-aqua rounded-lg"
                 value={search}
                 onChange={(e) => {
                   setSearch(e.target.value);
@@ -344,12 +345,13 @@ export default function TransactionsPage() {
                     >
                       <Badge
                         variant="secondary"
-                        className="p-2 gap-1 bg-violet-100 border-dashed border-violet-400 text-violet-700 shadow-sm whitespace-nowrap"
+                        // className="p-2 gap-1 bg-violet-100 border-dashed border-violet-400 text-violet-700 shadow-sm whitespace-nowrap"
+                        className="h-6 px-2 gap-1 bg-sky-50 border-sky-300 text-sky-700 whitespace-nowrap"
                       >
-                        <span className="text-[10px] font-bold uppercase opacity-50">
+                        {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Type:
-                        </span>
-                        <span className="capitalize text-xs">
+                        </span> */}
+                        <span className="capitalize text-[10px] font-semibold">
                           {EVENT_TYPE_MAP[eventTypeFilter]?.label ||
                             eventTypeFilter}
                         </span>
@@ -358,9 +360,9 @@ export default function TransactionsPage() {
                             setEventTypeFilter("");
                             setPage(1);
                           }}
-                          className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                          className="ml-0.5 p-0.5 rounded-full hover:bg-purple-200 transition-colors"
                         >
-                          <IconX size={12} />
+                          <IconX size={9} />
                         </button>
                       </Badge>
                     </motion.div>
@@ -375,12 +377,13 @@ export default function TransactionsPage() {
                     >
                       <Badge
                         variant="secondary"
-                        className="p-2 gap-1 bg-blue-100 border-dashed border-blue-400 text-blue-700 shadow-sm whitespace-nowrap"
+                        // className="p-2 gap-1 bg-blue-100 border-dashed border-blue-400 text-blue-700 shadow-sm whitespace-nowrap"
+                        className="h-6 px-2 gap-1 bg-slate-50 border-slate-300 text-slate-600 whitespace-nowrap"
                       >
-                        <span className="text-[10px] font-bold uppercase opacity-50">
+                        {/* <span className="text-[10px] font-bold uppercase opacity-50">
                           Platform:
-                        </span>
-                        <span className="capitalize text-xs">
+                        </span> */}
+                        <span className="capitalize text-[10px] font-semibold">
                           {PLATFORM_MAP[platformFilter] || platformFilter}
                         </span>
                         <button
@@ -388,9 +391,9 @@ export default function TransactionsPage() {
                             setPlatformFilter("");
                             setPage(1);
                           }}
-                          className="ml-1 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
+                          className="ml-0.5 p-0.5 rounded-full hover:bg-slate-100 transition-colors"
                         >
-                          <IconX size={12} />
+                          <IconX size={9} />
                         </button>
                       </Badge>
                     </motion.div>
@@ -409,9 +412,9 @@ export default function TransactionsPage() {
                     <Button
                       variant="outline"
                       className={cn(
-                        "h-9 border-brand-aqua/80 shadow-sm bg-brand-aqua/5 hover:bg-brand-aqua/30 transition-all whitespace-nowrap",
+                        "h-9 group shadow-sm bg-white hover:bg-brand-aqua text-sm font-normal hover:font-medium text-slate-500 hover:text-white whitespace-nowrap transition-all duration-300",
                         hasActiveFilter &&
-                          "border-brand-aqua ring-1 ring-brand-aqua",
+                          "border-brand-aqua ring-[0.1px] ring-brand-aqua focus-visible:ring-0",
                       )}
                     >
                       <IconFilter
@@ -419,15 +422,13 @@ export default function TransactionsPage() {
                         className={cn(
                           "h-5 w-5",
                           hasActiveFilter
-                            ? "text-brand-aqua"
-                            : "text-brand-aqua/60",
+                            ? "text-brand-aqua group-hover:text-white"
+                            : "text-slate-500/80 group-hover:text-white",
                         )}
                       />
-                      <span className="text-sm font-medium text-slate-700">
-                        Filters
-                      </span>
+                      Filters
                       {hasActiveFilter && (
-                        <span className="ml-2 flex h-5 w-5 items-center justify-center rounded-full bg-brand-aqua text-[10px] text-white font-bold">
+                        <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-brand-aqua group-hover:bg-white text-[8px] text-white group-hover:text-brand-aqua font-bold">
                           {activeFilterCount}
                         </span>
                       )}
@@ -514,56 +515,56 @@ export default function TransactionsPage() {
               </div>
             )}
             <Table>
-              <TableHeader className="bg-slate-50/50">
+              <TableHeader className="bg-slate-200/50">
                 <TableRow>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 w-[60px]">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Sr.No.
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
                     <button
                       onClick={() => handleSort("occurredAt")}
-                      className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors"
+                      className="flex items-center text-[11px] font-black tracking-wide text-muted-foreground hover:text-brand-aqua transition-colors"
                     >
                       Date <SortIcon column="occurredAt" />
                     </button>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden sm:table-cell">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       User
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden lg:table-cell">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Product
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Type
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
                     <button
                       onClick={() => handleSort("amount")}
-                      className="flex items-center text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-brand-aqua transition-colors"
+                      className="flex items-center text-[11px] font-black tracking-wide text-muted-foreground hover:text-brand-aqua transition-colors"
                     >
                       Amount <SortIcon column="amount" />
                     </button>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden sm:table-cell">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Platform
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Status
                     </span>
                   </TableHead>
                   <TableHead className="text-slate-700 font-semibold h-9 bg-slate-100 text-xs px-2 md:px-4 hidden lg:table-cell w-[180px]">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                    <span className="text-[11px] font-black tracking-wide text-muted-foreground">
                       Txn ID
                     </span>
                   </TableHead>
@@ -773,6 +774,6 @@ export default function TransactionsPage() {
           </div>
         </motion.div>
       </motion.div>
-    </div>
+    </Container>
   );
 }

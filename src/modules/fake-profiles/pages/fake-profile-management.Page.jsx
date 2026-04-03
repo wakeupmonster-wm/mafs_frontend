@@ -62,6 +62,7 @@ import {
 } from "../store/fake-profile.slice";
 import { fakeProfileColumns } from "../components/fake-profile-columns";
 import { BulkCreateModal } from "../components/bulk-create-modal";
+import { Container } from "@/components/common/container";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -254,7 +255,7 @@ export default function FakeProfileManagementPage() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8 relative">
+    <Container>
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -590,6 +591,6 @@ export default function FakeProfileManagementPage() {
           type="danger"
         />
       </motion.div>
-    </div>
+    </Container>
   );
 }

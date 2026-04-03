@@ -50,6 +50,8 @@ import { PreLoader } from "@/app/loader/preloader";
 import { PageHeader } from "@/components/common/headSubhead";
 import StatsGrid from "@/components/common/stats.grid";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
+import { Container } from "@/components/common/container";
+import { bgMap, colorMap } from "@/constants/colors";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -117,7 +119,7 @@ const TYPE_MAP = {
 const Pill = ({ label, colorCls }) => (
   <span
     className={cn(
-      "inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest",
+      "w-max inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest",
       colorCls,
     )}
   >
@@ -348,8 +350,9 @@ export default function ProductsPage() {
     <th
       onClick={col ? () => handleSort(col) : undefined}
       className={cn(
-        "px-4 py-3 text-left text-[10px] font-black uppercase tracking-widest text-slate-400 whitespace-nowrap select-none",
-        col && "cursor-pointer hover:text-slate-600 transition-colors",
+        "w-max px-2.5 py-3 text-left text-[11px] font-semibold capitalize tracking-widest text-foreground whitespace-nowrap select-none",
+        col &&
+          "cursor-pointer hover:text-slate-600 transition-colors font-jakarta",
         className,
       )}
     >
@@ -393,23 +396,23 @@ export default function ProductsPage() {
     [stats],
   );
 
-  const colorMap = {
-    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald:
-      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-  };
-  const bgMap = {
-    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    emerald:
-      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
-  };
+  // const colorMap = {
+  //   blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+  //   emerald:
+  //     "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+  //   rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+  // };
+  // const bgMap = {
+  //   blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+  //   emerald:
+  //     "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+  //   rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+  // };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-2 sm:p-4 bg-slate-50 pb-8 relative font-jakarta">
+    <Container>
       <motion.div
-        className="@container/main space-y-4"
+        className="@container/main space-y-6"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
@@ -427,7 +430,7 @@ export default function ProductsPage() {
                 size="sm"
                 onClick={() => dispatch(fetchProducts({ page: 1, limit: 100 }))}
                 disabled={productsLoading}
-                className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
+                className="h-9 border border-slate-200 hover:bg-brand-aqua text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <IconRefresh
                   className={cn(
@@ -440,7 +443,7 @@ export default function ProductsPage() {
               <Button
                 size="sm"
                 onClick={handleOpenCreate}
-                className="h-9 bg-brand-aqua hover:bg-brand-aqua/90 text-white font-semibold shadow-md transition-all active:scale-95"
+                className="h-9 border border-slate-200 shadow-sm bg-slate-50 hover:bg-brand-aqua text-slate-400 hover:text-white transition-all active:scale-95"
               >
                 <Plus className="mr-1.5 h-4 w-4" />
                 Add Product
@@ -459,18 +462,18 @@ export default function ProductsPage() {
 
         {/* ─── TOOLBAR (Tabs + Search) ─── */}
         <motion.div variants={itemVariants}>
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 p-2 rounded-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 rounded-xl">
             {/* Tabs */}
-            <div className="flex gap-0.5 bg-white border border-slate-200 rounded-xl p-1 shadow-sm w-fit">
+            <div className="flex gap-2 bg-white border border-slate-200 rounded-full p-1 shadow-sm w-fit">
               {tabs.map((tab) => (
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-wider transition-all duration-150 flex items-center gap-1.5",
+                    "px-4 py-1.5 rounded-full border border-transparent text-xs font-black uppercase tracking-wider transition-all duration-150 flex items-center gap-1.5",
                     activeTab === tab.key
                       ? "bg-brand-aqua text-white shadow-sm"
-                      : "text-slate-400 hover:text-slate-600 hover:bg-slate-50",
+                      : "text-slate-400 hover:text-slate-600 hover:border-brand-aqua/50 hover:bg-brand-aqua/20",
                   )}
                 >
                   {tab.label}
@@ -478,7 +481,7 @@ export default function ProductsPage() {
                     className={cn(
                       "text-[9px] font-black px-1.5 py-0.5 rounded-full",
                       activeTab === tab.key
-                        ? "bg-white/25 text-white"
+                        ? "bg-slate-50 text-brand-aqua"
                         : "bg-slate-100 text-slate-400",
                     )}
                   >
@@ -490,19 +493,19 @@ export default function ProductsPage() {
 
             {/* Search */}
             <div className="relative w-full sm:max-w-sm">
-              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 z-10" />
+              <IconSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600 z-10" />
               <Input
                 placeholder="Search by name, key, Apple/Google ID…"
-                className="pl-9 pr-10 bg-white border-slate-200 h-10 shadow-md focus-visible:ring-brand-aqua rounded-lg"
+                className="pl-9 pr-10 placeholder:text-slate-400 bg-white border-slate-200 h-10 shadow-sm focus-visible:ring-brand-aqua rounded-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-0.5 bg-brand-aqua/30 hover:bg-brand-aqua transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 group flex items-center justify-center rounded-full p-0.5 bg-slate-100 transition-colors"
                 >
-                  <IconX className="h-3.5 w-3.5 text-slate-600 group-hover:text-white transition-colors" />
+                  <IconX className="h-3 w-3 text-slate-600 group-hover:text-white transition-colors" />
                 </button>
               )}
             </div>
@@ -531,8 +534,8 @@ export default function ProductsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[900px] border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-100 bg-slate-50/70">
-                      <ThCell label="Sr.No.." className="text-center w-16" />
+                    <tr className="border-b border-slate-100 bg-slate-200/60">
+                      <ThCell label="Sr.No." className="text-center w-16" />
                       <ThCell label="Name" col="displayName" />
                       <ThCell label="Type" col="type" />
                       <ThCell label="Category" col="category" />
@@ -546,7 +549,7 @@ export default function ProductsPage() {
                         col="sortOrder"
                         className="text-center"
                       />
-                      <ThCell label="" />
+                      <ThCell label="Action" />
                     </tr>
                   </thead>
                   <tbody>
@@ -1029,7 +1032,7 @@ export default function ProductsPage() {
           </DialogContent>
         </Dialog>
       </motion.div>
-    </div>
+    </Container>
   );
 }
 
@@ -1061,19 +1064,19 @@ const TableRow = ({ product, index, onEdit }) => {
       exit={{ opacity: 0 }}
       transition={{ delay: index * 0.03, duration: 0.2 }}
       className={cn(
-        "border-b border-slate-100 last:border-0 hover:bg-slate-50/70 transition-colors group",
+        "w-max border-b border-slate-100 last:border-0 hover:bg-slate-50/70 transition-colors group",
         !product.isActive && "opacity-50",
       )}
     >
       {/* Sr.No.. */}
-      <td className="px-4 py-3.5 text-center">
+      <td className="px-2 py-3.5 text-center">
         <span className="text-xs font-black text-slate-500 tabular-nums border border-slate-200 bg-slate-100/50 rounded-lg px-2 py-1">
           {index + 1}
         </span>
       </td>
 
       {/* Name & Subtitle */}
-      <td className="px-4 py-3.5">
+      <td className="px-0 py-3.5">
         <div>
           <p className="text-sm font-black text-slate-800 leading-tight">
             {product.displayName}
@@ -1098,17 +1101,17 @@ const TableRow = ({ product, index, onEdit }) => {
       </td>
 
       {/* Type */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5">
         <Pill label={typeMeta.label} colorCls={typeMeta.color} />
       </td>
 
       {/* Category */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5">
         <Pill label={catMeta.label} colorCls={catMeta.color} />
       </td>
 
       {/* Ref Price */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5 max-w-max">
         <span className="text-sm font-black text-slate-800">
           {product.currency || "AUD"} {product.displayPrice || "—"}
         </span>
@@ -1118,7 +1121,7 @@ const TableRow = ({ product, index, onEdit }) => {
       </td>
 
       {/* Apple ID */}
-      <td className="px-4 py-3.5 max-w-[140px]">
+      <td className="px-2 py-3.5 max-w-[140px]">
         {product.appleProductId ? (
           <span
             className="text-[10px] font-mono font-bold text-slate-600 truncate block"
@@ -1132,7 +1135,7 @@ const TableRow = ({ product, index, onEdit }) => {
       </td>
 
       {/* Google ID */}
-      <td className="px-4 py-3.5 max-w-[140px]">
+      <td className="px-2 py-3.5 max-w-[140px]">
         {product.googleProductId ? (
           <span
             className="text-[10px] font-mono font-bold text-slate-600 truncate block"
@@ -1146,10 +1149,10 @@ const TableRow = ({ product, index, onEdit }) => {
       </td>
 
       {/* Badges (Sys + Card) */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5 max-w-[120px]">
         <div className="flex flex-col items-start gap-1.5">
           {product.badge && (
-            <span className="text-[10px] font-bold text-slate-800 px-1.5 py-0.5 rounded border border-slate-200 bg-slate-50 leading-none">
+            <span className="text-[10px] font-bold text-slate-800 px-2 py-1 rounded border border-slate-200 bg-slate-50 leading-none">
               {product.badge}
             </span>
           )}
@@ -1168,28 +1171,28 @@ const TableRow = ({ product, index, onEdit }) => {
       </td>
 
       {/* Status */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5">
         <span
           className={cn(
             "text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full",
             product.isActive
-              ? "bg-emerald-50 text-emerald-600"
+              ? "bg-brand-aqua text-white"
               : "bg-slate-100 text-slate-400",
           )}
         >
-          {product.isActive ? "● Active" : "○ Inactive"}
+          {product.isActive ? "Active" : "Inactive"}
         </span>
       </td>
 
       {/* Sort Order */}
-      <td className="px-4 py-3.5 text-center">
-        <span className="text-xs font-black text-slate-400 tabular-nums">
+      <td className="px-2 py-3.5 text-center">
+        <span className="text-xs font-black text-muted-foreground tabular-nums">
           {product.sortOrder ?? 0}
         </span>
       </td>
 
       {/* Edit */}
-      <td className="px-4 py-3.5">
+      <td className="px-2 py-3.5">
         <button
           onClick={onEdit}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-brand-aqua/10 hover:text-brand-aqua text-slate-500 font-black text-[10px] uppercase tracking-wider transition-all duration-150"

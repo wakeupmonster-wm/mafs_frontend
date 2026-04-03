@@ -6,7 +6,6 @@ import PrivateRoute from "./privateRoute";
 // 1. Layouts (Keep these standard or lazy load them too)
 import AdminLayout from "../layouts/AdminLayout";
 import RootLayout from "../layouts/RootLayout";
-import AuthLayout from "../layouts/AuthLayout";
 
 // 2. LAZY LOAD COMPONENTS
 const Dashboard = lazy(() => import("@/modules/dashboard/pages/Dashboard"));
@@ -64,16 +63,15 @@ const PrivacyAndPolicyPage = lazy(
 const TermAndConditionsPage = lazy(
   () => import("@/modules/cms/pages/terms-conditions.page"),
 );
-const NotificationManagementPages = lazy(
-  () =>
-    import("@/modules/notificationManagement/pages/NotificationManagementPages"),
-);
+
 const NotificationManagementPage = lazy(
   () => import("@/modules/notificationManagement/pages/notificationPage"),
 );
+
 const ReportsProfilesPage = lazy(
   () => import("@/modules/profileReview/pages/reports.profiles.page"),
 );
+
 const ProfileReviewPage = lazy(
   () => import("@/modules/profileReview/pages/profile.review.page"),
 );
@@ -123,10 +121,6 @@ const FakeProfileManagementPage = lazy(
   () => import("@/modules/fake-profiles/pages/fake-profile-management.Page"),
 );
 
-const SettingsPage = lazy(
-  () => import("@/modules/settings/pages/settings.page"),
-);
-
 const AccountsPage = lazy(
   () => import("@/modules/accounts/page/accounts.page"),
 );
@@ -152,6 +146,7 @@ import SocialMediaPage from "@/modules/settings/pages/social.media.page";
 import EmailPage from "@/modules/settings/pages/email.page";
 import ADSMobPage from "@/modules/settings/pages/ads.mob.page";
 import StoragePage from "@/modules/settings/pages/storage.page";
+import NotificationManagementPages from "@/modules/notificationManagement/pages/notificationPage";
 
 export const router = createBrowserRouter([
   {

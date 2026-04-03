@@ -17,6 +17,7 @@ import {
 } from "../store/social.media.slice";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/common/container";
 
 // 1. Move config outside to avoid re-renders
 const PLATFORM_CONFIG = {
@@ -128,42 +129,44 @@ export default function SocialMediaPage() {
   }, [dispatch]);
 
   return (
-    <main className="flex-1 p-6 pb-20 w-full">
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
-        <PageHeader
-          heading="Social Media"
-          icon={<Share2 className="w-9 h-9 text-white animate-pulse" />}
-          color="bg-brand-aqua shadow-brand-aqua/30"
-          subheading="Configure social media links for your application."
-        />
-
-        <Button
-          disabled={loading}
-          className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
-          onClick={handleSave}
-        >
-          {loading ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <Save size={16} />
-          )}
-          Save Changes
-        </Button>
-      </header>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        {Object.entries(PLATFORM_CONFIG).map(([key, config]) => (
-          <SocialInput
-            key={key}
-            label={config.label}
-            name={key}
-            value={socialLinks[key] || ""}
-            onChange={handleInputChange}
-            placeholder={config.placeholder}
-            icon={config.icon}
+    <Container>
+      <main className="flex-1 pb-20 w-full">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
+          <PageHeader
+            heading="Social Media"
+            icon={<Share2 className="w-9 h-9 text-white animate-pulse" />}
+            color="bg-brand-aqua shadow-brand-aqua/30"
+            subheading="Configure social media links for your application."
           />
-        ))}
-      </div>
-    </main>
+
+          <Button
+            disabled={loading}
+            className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
+            onClick={handleSave}
+          >
+            {loading ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <Save size={16} />
+            )}
+            Save Changes
+          </Button>
+        </header>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {Object.entries(PLATFORM_CONFIG).map(([key, config]) => (
+            <SocialInput
+              key={key}
+              label={config.label}
+              name={key}
+              value={socialLinks[key] || ""}
+              onChange={handleInputChange}
+              placeholder={config.placeholder}
+              icon={config.icon}
+            />
+          ))}
+        </div>
+      </main>
+    </Container>
   );
 }

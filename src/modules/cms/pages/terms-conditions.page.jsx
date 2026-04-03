@@ -12,6 +12,7 @@ import {
   updateTermsAndCondition,
 } from "../store/t&c.slice";
 import { PageHeader } from "@/components/common/headSubhead";
+import { Container } from "@/components/common/container";
 
 export default function TermAndConditionsPage() {
   const dispatch = useDispatch();
@@ -60,24 +61,10 @@ export default function TermAndConditionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-['Plus_Jakarta_Sans',sans-serif]">
+    <Container className="px-0">
       {/* Header Section - Sticky for better UX */}
-      <header className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-4 sm:px-8">
-        <div className="w-full mx-auto flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          {/* <div className="flex items-center gap-3">
-            <div className="p-2 bg-brand-aqua/20 rounded-lg">
-              <ReceiptText className="w-6 h-6 text-brand-aqua" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 leading-tight">
-                Terms & Conditions
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                Manage legal policies and user agreements
-              </p>
-            </div>
-          </div> */}
-
+      <header className="sticky top-0 z-20 px-6 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div className="w-full mx-auto py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
             heading="Terms & Conditions"
             icon={<ReceiptText className="w-6 h-6 text-white" />}
@@ -100,9 +87,9 @@ export default function TermAndConditionsPage() {
         </div>
       </header>
 
-      <main className="p-4 mx-auto">
-        <Card className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white py-4">
-          <CardContent className="px-6 space-y-8">
+      <main className="p-6">
+        <Card className="overflow-hidden py-4 border-none p-0">
+          <CardContent className="px-0 space-y-8">
             {/* Page Title Input */}
             <div className="grid gap-2">
               <label className="text-sm font-semibold text-slate-700 ml-1">
@@ -143,6 +130,6 @@ export default function TermAndConditionsPage() {
           </CardContent>
         </Card>
       </main>
-    </div>
+    </Container>
   );
 }

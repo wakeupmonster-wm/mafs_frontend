@@ -7,8 +7,8 @@ export default function EnhancedTabs({ tabs }) {
         <TabsTrigger
           key={tab.value}
           value={tab.value}
-          className="flex items-center gap-2 px-4 py-2 text-sm font-medium data-[state=active]:hover:font-semibold transition-all duration-300 rounded-full data-[state=active]:bg-brand-aqua/50 data-[state=active]:hover:bg-brand-aqua/15 hover:bg-brand-aqua/10
-          border border-transparent data-[state=active]:hover:border-brand-aqua hover:border-brand-aqua/80 data-[state=active]:text-slate-700 data-[state=active]:hover:text-brand-aqua hover:text-foreground data-[state=active]:shadow-sm"
+          className="flex items-center gap-2 px-4 py-2 text-sm font-semibold data-[state=active]:hover:font-semibold transition-all duration-300 rounded-full data-[state=active]:bg-brand-aqua hover:bg-brand-aqua/10
+          border border-transparent hover:border-brand-aqua/80 data-[state=active]:text-white hover:text-foreground data-[state=active]:shadow-sm"
         >
           <tab.icon className="w-4 h-4 shrink-0" />
           <span className="hidden lg:inline-block">{tab.label}</span>

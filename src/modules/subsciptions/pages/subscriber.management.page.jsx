@@ -39,8 +39,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  IconUsers,
-  IconUserCheck,
   IconRefresh,
   IconSearch,
   IconFilter,
@@ -57,6 +55,7 @@ import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import { bgMap, colorMap } from "@/constants/colors";
 import { RiUserForbidLine } from "react-icons/ri";
 import { LuUserRoundCheck, LuUserRound } from "react-icons/lu";
+import { Container } from "@/components/common/container";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -209,7 +208,7 @@ export default function SubscriberManagementPage() {
   }
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
+    <Container>
       <motion.div
         className="@container/main space-y-4"
         initial="hidden"
@@ -230,7 +229,7 @@ export default function SubscriberManagementPage() {
                 setPagination((prev) => ({ ...prev, pageIndex: 0 }))
               }
               disabled={loading}
-              className="h-9 border-brand-aqua/40 hover:bg-brand-aqua/10 transition-all active:scale-95"
+              className="h-9 border-slate-300 hover:bg-brand-aqua hover:text-white shadow-sm transition-all duration-300 active:scale-95"
             >
               <IconRefresh
                 className={cn("h-4 w-4 mr-1.5", loading && "animate-spin")}
@@ -414,7 +413,7 @@ export default function SubscriberManagementPage() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="w-56 p-2 shadow-xl border-slate-200"
+                    className="w-48 p-2 shadow-xl border-slate-200"
                   >
                     {/* Status */}
                     <DropdownMenuLabel className="text-xs text-slate-500 font-bold uppercase tracking-wider">
@@ -430,6 +429,7 @@ export default function SubscriberManagementPage() {
                           );
                           setPagination((p) => ({ ...p, pageIndex: 0 }));
                         }}
+                        className="py-1"
                       >
                         {getFilterLabel("status", status)}
                       </DropdownMenuCheckboxItem>
@@ -448,6 +448,7 @@ export default function SubscriberManagementPage() {
                           setPlanFilter(planFilter === plan ? "" : plan);
                           setPagination((p) => ({ ...p, pageIndex: 0 }));
                         }}
+                        className="py-1"
                       >
                         {getFilterLabel("plan", plan)}
                       </DropdownMenuCheckboxItem>
@@ -472,6 +473,7 @@ export default function SubscriberManagementPage() {
                           );
                           setPagination((prev) => ({ ...prev, pageIndex: 0 }));
                         }}
+                        className="py-1"
                       >
                         {p.label}
                       </DropdownMenuCheckboxItem>
@@ -617,6 +619,6 @@ export default function SubscriberManagementPage() {
           </div>
         </motion.div>
       </motion.div>
-    </div>
+    </Container>
   );
 }

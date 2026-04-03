@@ -32,6 +32,7 @@ import {
   sendEmailCampaign,
 } from "../store/notification-management.slice";
 import { PageHeader } from "@/components/common/headSubhead";
+import { Container } from "@/components/common/container";
 
 export default function NotificationManagementPages() {
   const dispatch = useDispatch();
@@ -89,12 +90,11 @@ export default function NotificationManagementPages() {
   };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
+    <Container>
       <div className="w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* LEFT COLUMN: FORM */}
         <div className="lg:col-span-7 space-y-6">
-          {/* <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2"> */}
-          <header className="flex items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <header className="flex items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
             <PageHeader
               heading="Campaign Manager"
               icon={<Bell className="w-9 h-9 text-white animate-pulse" />}
@@ -351,6 +351,6 @@ export default function NotificationManagementPages() {
           </AnimatePresence>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }

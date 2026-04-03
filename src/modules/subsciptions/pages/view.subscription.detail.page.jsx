@@ -90,6 +90,7 @@ import {
 import { toast } from "sonner";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import { PreLoader } from "@/app/loader/preloader";
+import { Container } from "@/components/common/container";
 
 export default function ViewSubscriptionDetailPage() {
   const { userId } = useParams();
@@ -246,9 +247,9 @@ export default function ViewSubscriptionDetailPage() {
   if (userDetailLoading) return <PreLoader />;
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
+    <Container>
       <motion.div
-        className="@container/main space-y-4"
+        className="@container/main space-y-6"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -274,7 +275,7 @@ export default function ViewSubscriptionDetailPage() {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 backdrop-blur-xl p-6 rounded-[2.5rem] border border-slate-200 shadow-sm">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 backdrop-blur-xl p-6 rounded-xl border border-slate-200 shadow-sm">
             <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
               <div className="relative">
                 <Avatar
@@ -297,16 +298,10 @@ export default function ViewSubscriptionDetailPage() {
                       "U"}
                   </AvatarFallback>
                 </Avatar>
-                {/* <div className={cn(
-                                    "absolute -bottom-1.5 -right-1.5 p-1.5 rounded-xl border-2 border-white shadow-lg pointer-events-none",
-                                    sub?.status === "ACTIVE" ? "bg-emerald-500 text-white" : "bg-slate-400 text-white"
-                                )}>
-                                    {sub?.status === "ACTIVE" ? <CheckCircle2 className="w-4 h-4" /> : <ShieldOff className="w-4 h-4" />}
-                                </div> */}
               </div>
               <div className="space-y-2">
                 <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+                  <h1 className="text-2xl font-black text-primary tracking-tight leading-none">
                     {user?.nickname || user?.fullName || "User Profile"}
                   </h1>
 
@@ -322,7 +317,7 @@ export default function ViewSubscriptionDetailPage() {
                   </Badge>
                 </div>
 
-                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-5 gap-y-2 text-slate-500">
+                <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-5 gap-y-2 text-muted-foreground">
                   <span className="flex items-center gap-2 text-sm font-bold">
                     <Mail className="w-3.5 h-3.5" />{" "}
                     {user?.email || "Email undisclosed"}
@@ -336,16 +331,10 @@ export default function ViewSubscriptionDetailPage() {
             </div>
 
             <div className="flex flex-wrap justify-center gap-3 w-full lg:w-auto">
-              {/* <Button
-                                onClick={() => setIsGrantOpen(true)}
-                                className="bg-slate-900 hover:bg-slate-800 text-white rounded-2xl h-11 px-6 font-black text-xs uppercase tracking-widest gap-2 shadow-xl shadow-slate-900/20 transition-all active:scale-95 flex-1 sm:flex-none"
-                            >
-                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" /> Manual Grant
-                            </Button> */}
               {sub?.status === "ACTIVE" && (
                 <Button
                   onClick={() => setIsExtendOpen(true)}
-                  className="bg-brand-aqua/60 hover:bg-brand-aqua/90 text-black rounded-2xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 shadow-sm shadow-brand-aqua/20 transition-all active:scale-95 flex-1 sm:flex-none"
+                  className="bg-brand-aqua/60 hover:bg-brand-aqua/90 text-black rounded-xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 shadow-sm shadow-brand-aqua/20 transition-all active:scale-95 flex-1 sm:flex-none"
                 >
                   <CalendarPlus className="w-4 h-4" /> Extend
                 </Button>
@@ -353,7 +342,7 @@ export default function ViewSubscriptionDetailPage() {
               <Button
                 variant="ghost"
                 onClick={() => setIsRevokeOpen(true)}
-                className="bg-rose-100 text-rose-600 hover:bg-rose-100 rounded-2xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 border border-rose-100 flex-1 sm:flex-none"
+                className="bg-rose-100 text-rose-600 hover:bg-rose-100 rounded-xl h-11 px-6 font-semibold text-xs uppercase tracking-widest gap-2 border border-rose-100 flex-1 sm:flex-none"
               >
                 <ShieldOff className="w-4 h-4" /> Revoke
               </Button>
@@ -361,7 +350,7 @@ export default function ViewSubscriptionDetailPage() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-2">
           {/* 2. Top Stats */}
           <StatBox
             label="Environment"
@@ -397,9 +386,9 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 3. Main Detail Grid */}
           <div className="lg:col-span-1 space-y-5 ">
-            <Card className="rounded-[2.5rem] gap-2 border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white/80 overflow-hidden transition-all duration-200">
-              <CardHeader className="py-2 px-6 border-b border-brand-aqua/10">
-                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center gap-2">
+            <Card className="rounded-xl gap-2 border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white/80 overflow-hidden transition-all duration-200">
+              <CardHeader className="px-6">
+                <CardTitle className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
                   <Clock className="w-4 h-4" /> Access Cycle
                 </CardTitle>
               </CardHeader>
@@ -525,13 +514,13 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 4. Transactions Log — All payments and grants */}
           <div className="lg:col-span-3">
-            <Card className="rounded-[2.5rem] border-slate-200 shadow-sm bg-white overflow-hidden min-h-[400px]">
-              <CardHeader className="py-2 px-8 border-b border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <Card className="rounded-xl border-slate-200 shadow-sm bg-white overflow-hidden min-h-[385px]">
+              <CardHeader className="px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="space-y-1 text-center sm:text-left">
-                  <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center justify-center sm:justify-start gap-2">
+                  <CardTitle className="text-xs font-black uppercase tracking-widest text-primary flex items-center justify-center sm:justify-start gap-2">
                     <History className="w-4 h-4" /> Transaction History
                   </CardTitle>
-                  <p className="text-[11px] font-semibold text-slate-600 opacity-80">
+                  <p className="text-[11px] font-semibold text-muted-foreground opacity-80">
                     All payments, grants, and admin actions ({auditLogs.length}{" "}
                     records)
                   </p>
@@ -689,12 +678,12 @@ export default function ViewSubscriptionDetailPage() {
 
           {/* 5. Subscription History — All past subscriptions */}
           <div className="lg:col-span-4">
-            <Card className="rounded-[2.5rem] border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white overflow-hidden transition-all duration-200">
+            <Card className="rounded-xl border-slate-200 shadow-sm shadow-brand-aqua/5 bg-white overflow-hidden transition-all duration-200">
               <CardHeader className="py-2 px-8 border-b border-brand-aqua/10">
-                <CardTitle className="text-xs font-black uppercase tracking-widest text-slate-600 flex items-center gap-2">
+                <CardTitle className="text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2">
                   <Layers className="w-4 h-4" /> Subscription History
                 </CardTitle>
-                <p className="text-[11px] font-semibold text-slate-600 opacity-80">
+                <p className="text-[11px] font-semibold text-muted-foreground opacity-80">
                   All past subscriptions for this user (
                   {subscriptionHistory.length} records)
                 </p>
@@ -829,7 +818,7 @@ export default function ViewSubscriptionDetailPage() {
       {/* Dialogs scaled slightly larger */}
       {/* Super Keen Dialog */}
       <Dialog open={isSuperKeenOpen} onOpenChange={setIsSuperKeenOpen}>
-        <DialogContent className="rounded-[2.5rem] p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
+        <DialogContent className="rounded-3xl p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
           <div className="bg-gradient-to-br from-brand-aqua to-brand-aqua/80 p-6 text-center">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Gem className="w-8 h-8 text-white" />
@@ -909,7 +898,7 @@ export default function ViewSubscriptionDetailPage() {
 
       {/* Boost Dialog */}
       <Dialog open={isBoostOpen} onOpenChange={setIsBoostOpen}>
-        <DialogContent className="rounded-[2.5rem] p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
+        <DialogContent className="rounded-3xl p-0 max-w-sm border-none shadow-2xl font-jakarta overflow-hidden">
           <div className="bg-gradient-to-br from-brand-aqua/90 to-brand-aqua/60 p-6 text-center">
             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
               <Zap className="w-8 h-8 text-white" />
@@ -985,7 +974,7 @@ export default function ViewSubscriptionDetailPage() {
       </Dialog>
 
       <Dialog open={isGrantOpen} onOpenChange={setIsGrantOpen}>
-        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-md font-jakarta">
+        <DialogContent className="rounded-3xl border-none shadow-2xl p-8 max-w-md font-jakarta">
           <DialogHeader>
             <DialogTitle className="text-xl font-black text-slate-900">
               Manual Provisioning
@@ -1098,7 +1087,7 @@ export default function ViewSubscriptionDetailPage() {
       </Dialog>
 
       <Dialog open={isRevokeOpen} onOpenChange={setIsRevokeOpen}>
-        <DialogContent className="rounded-[2.5rem] text-center max-w-sm p-8 border-none shadow-2xl font-jakarta">
+        <DialogContent className="rounded-3xl text-center max-w-sm p-8 border-none shadow-2xl font-jakarta">
           <div className="w-20 h-20 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-5 border border-rose-100/50">
             <ShieldAlert className="w-10 h-10 text-rose-500" />
           </div>
@@ -1132,7 +1121,7 @@ export default function ViewSubscriptionDetailPage() {
 
       {/* Extend Subscription Dialog */}
       <Dialog open={isExtendOpen} onOpenChange={setIsExtendOpen}>
-        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl p-8 max-w-sm font-jakarta">
+        <DialogContent className="rounded-3xl border-none shadow-2xl p-8 max-w-sm font-jakarta">
           <DialogHeader>
             <DialogTitle className="text-xl font-black text-slate-900">
               Extend Subscription
@@ -1257,7 +1246,7 @@ export default function ViewSubscriptionDetailPage() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </Container>
   );
 }
 
@@ -1271,7 +1260,7 @@ const StatBox = ({
   onAction,
   isActive,
 }) => (
-  <Card className="rounded-[2rem] border-slate-200 shadow-sm bg-white transition-all hover:translate-y-[-4px] duration-300 overflow-hidden relative group">
+  <Card className="rounded-xl border-slate-200 shadow-sm bg-white transition-all hover:translate-y-[-4px] duration-300 overflow-hidden relative group">
     <CardContent className="px-5 py-2 flex items-center gap-5 relative z-10">
       <div
         className={cn(
@@ -1292,18 +1281,18 @@ const StatBox = ({
         <Icon className="w-6 h-6" />
       </div>
       <div className="flex-1 space-y-2">
-        <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none">
+        <p className="text-[10px] font-black text-secondary-foreground uppercase tracking-widest leading-none">
           {label}
         </p>
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-black text-slate-900 tracking-tight leading-none truncate uppercase">
+          <h3 className="text-lg font-black text-primary tracking-tight leading-none truncate uppercase">
             {val}
           </h3>
           {isActive && (
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           )}
         </div>
-        <p className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">
+        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">
           {subVal}
         </p>
       </div>
@@ -1348,7 +1337,7 @@ const DetailItem = ({ label, val, icon: Icon, isHighLight }) => (
 
 const InfoRow = ({ label, val, isGreen, isMono }) => (
   <div className="flex justify-between items-center px-1">
-    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
       {label}
     </span>
     <span

@@ -22,6 +22,8 @@ import {
   IconLoader,
   IconX,
 } from "@tabler/icons-react";
+import { Container } from "@/components/common/container";
+import { bgMap, colorMap } from "@/constants/colors";
 
 // --- Animation Variants ---
 const containerVariants = {
@@ -203,27 +205,27 @@ export default function KYCVerificationPage() {
     ];
   }, [filteredData, reduxPagination?.total]);
 
-  const colorMap = {
-    blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
-    emerald:
-      "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
-    amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
-    rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
-    red: "from-red-500/40 to-red-600/5 text-red-600 border-red-100",
-  };
+  // const colorMap = {
+  //   blue: "from-blue-500/40 to-blue-600/5 text-blue-600 border-blue-100",
+  //   emerald:
+  //     "from-emerald-500/40 to-emerald-600/5 text-emerald-600 border-emerald-100",
+  //   amber: "from-amber-500/40 to-amber-600/5 text-amber-600 border-amber-100",
+  //   rose: "from-rose-500/40 to-rose-600/5 text-rose-600 border-rose-100",
+  //   red: "from-red-500/40 to-red-600/5 text-red-600 border-red-100",
+  // };
 
-  const bgMap = {
-    blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
-    emerald:
-      "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
-    amber:
-      "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
-    rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
-    red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
-  };
+  // const bgMap = {
+  //   blue: "from-blue-300/20 via-blue-500/10 to-transparent text-blue-600 border-blue-200 hover:border-blue-400",
+  //   emerald:
+  //     "from-emerald-300/20 via-emerald-500/10 to-transparent text-emerald-600 border-emerald-200 hover:border-emerald-400",
+  //   amber:
+  //     "from-amber-300/20 via-amber-500/10 to-transparent text-amber-600 border-amber-200 hover:border-amber-400",
+  //   rose: "from-rose-300/20 via-rose-500/10 to-transparent text-rose-600 border-rose-200 hover:border-rose-400",
+  //   red: "from-red-300/20 via-red-500/10 to-transparent text-red-600 border-red-200 hover:border-red-400",
+  // };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
+    <Container>
       <motion.div
         className="space-y-6"
         initial="hidden"
@@ -310,6 +312,6 @@ export default function KYCVerificationPage() {
         userName={confirmConfig.nickname}
         isLoading={loading}
       />
-    </div>
+    </Container>
   );
 }

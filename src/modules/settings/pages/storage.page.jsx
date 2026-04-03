@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { HardDrive, Save } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { RenderField } from "../components/render.field";
+import { Container } from "@/components/common/container";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   as3Status: z.string().min(1, "AS3 Status is required"),
@@ -39,100 +41,102 @@ export default function StoragePage() {
   };
 
   return (
-    <main className="flex-1 p-6 pb-20 w-full">
-      {/* Header Section */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
-        <PageHeader
-          heading="Storage"
-          icon={<HardDrive className="w-9 h-9 text-white animate-pulse" />}
-          color="bg-brand-aqua shadow-brand-aqua/30"
-          subheading="Configure storage settings for your application."
-        />
-
-        <button
-          className="flex items-center gap-2 bg-brand-aqua/50 hover:bg-brand-aqua/60 text-black text-sm px-6 py-2 rounded-lg font-medium transition-all shadow-lg shadow-slate-400/50"
-          onClick={handleSave}
-        >
-          <Save size={16} /> Save
-        </button>
-      </header>
-
-      <Form {...form}>
-        <form className="space-y-5">
-          {/* S3 Status Toggle */}
-          <RenderField
-            control={form.control}
-            name="as3Status"
-            label="AS3 Status"
-            type="select"
-            options={[
-              { label: "On", value: "On" },
-              { label: "Off", value: "Off" },
-            ]}
+    <Container>
+      <main className="flex-1 pb-20 w-full">
+        {/* Header Section */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
+          <PageHeader
+            heading="Storage"
+            icon={<HardDrive className="w-9 h-9 text-white animate-pulse" />}
+            color="bg-brand-aqua shadow-brand-aqua/30"
+            subheading="Configure storage settings for your application."
           />
 
-          {/* AS3 Key & Secret */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <RenderField
-              control={form.control}
-              name="as3Secret"
-              label="AS3 Secret"
-              type="password"
-              placeholder="••••••••••••••••"
-            />
+          <Button
+            className="flex items-center gap-2 bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white h-9 px-4 shadow-sm"
+            onClick={handleSave}
+          >
+            <Save size={16} /> Save Changes
+          </Button>
+        </header>
 
-            {/* Region Dropdown */}
+        <Form {...form}>
+          <form className="space-y-5">
+            {/* S3 Status Toggle */}
             <RenderField
               control={form.control}
-              name="as3Region"
-              label="AS3 Region"
+              name="as3Status"
+              label="AS3 Status"
               type="select"
               options={[
-                { label: "Auto", value: "Auto" },
-                { label: "US East (N. Virginia)", value: "us-east-1" },
-                { label: "Asia Pacific (Mumbai)", value: "ap-south-1" },
+                { label: "On", value: "On" },
+                { label: "Off", value: "Off" },
               ]}
             />
-          </div>
 
-          {/* Bucket & Endpoint */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* AS3 Key & Secret */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <RenderField
+                control={form.control}
+                name="as3Secret"
+                label="AS3 Secret"
+                type="password"
+                placeholder="••••••••••••••••"
+              />
+
+              {/* Region Dropdown */}
+              <RenderField
+                control={form.control}
+                name="as3Region"
+                label="AS3 Region"
+                type="select"
+                options={[
+                  { label: "Auto", value: "Auto" },
+                  { label: "US East (N. Virginia)", value: "us-east-1" },
+                  { label: "Asia Pacific (Mumbai)", value: "ap-south-1" },
+                ]}
+              />
+            </div>
+
+            {/* Bucket & Endpoint */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <RenderField
+                control={form.control}
+                name="as3Bucket"
+                label="AS3 Bucket"
+                type="text"
+                placeholder="e.g. my-app-bucket"
+              />
+
+              <RenderField
+                control={form.control}
+                name="as3Endpoint"
+                label="AS3 Endpoint"
+                type="text"
+                placeholder="e.g. s3.amazonaws.com"
+              />
+            </div>
+
+            {/* Optional Custom Domain */}
             <RenderField
               control={form.control}
-              name="as3Bucket"
-              label="AS3 Bucket"
+              name="as3CustomDomain"
+              label="AS3 Custom Domain (Optional)"
               type="text"
-              placeholder="e.g. my-app-bucket"
+              placeholder="e.g. https://cdn.mydomain.com"
             />
 
+            {/* Root Path */}
             <RenderField
               control={form.control}
-              name="as3Endpoint"
-              label="AS3 Endpoint"
+              name="as3RootPath"
+              label="AS3 Root Path (Optional)"
               type="text"
-              placeholder="e.g. s3.amazonaws.com"
+              placeholder="e.g. uploads/"
             />
-          </div>
-
-          {/* Optional Custom Domain */}
-          <RenderField
-            control={form.control}
-            name="as3CustomDomain"
-            label="AS3 Custom Domain (Optional)"
-            type="text"
-            placeholder="e.g. https://cdn.mydomain.com"
-          />
-
-          {/* Root Path */}
-          <RenderField
-            control={form.control}
-            name="as3RootPath"
-            label="AS3 Root Path (Optional)"
-            type="text"
-            placeholder="e.g. uploads/"
-          />
-        </form>
-      </Form>
-    </main>
+          </form>
+        </Form>
+      </main>
+    </Container>
   );
 }

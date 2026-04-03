@@ -14,10 +14,10 @@ export const DetailRow = ({ icon, label, value, iconBg }) => {
         {icon}
       </div>
       <div className="min-w-0">
-        <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">
+        <p className="text-[11px] font-bold text-secondary-foreground uppercase tracking-wide">
           {label}
         </p>
-        <p className="text-sm font-semibold text-slate-700 truncate">{value}</p>
+        <p className="text-sm font-semibold text-foreground truncate">{value}</p>
       </div>
     </div>
   );

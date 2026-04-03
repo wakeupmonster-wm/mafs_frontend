@@ -30,13 +30,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { PreLoader } from "@/app/loader/preloader";
+import { Container } from "@/components/common/container";
 
 export default function ConfigPage() {
   const dispatch = useDispatch();
@@ -241,15 +241,15 @@ export default function ConfigPage() {
 
   /* ======================== MAIN UI ======================== */
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
+    <Container>
       <motion.div
-        className="max-w-6xl mx-auto w-full space-y-8"
+        className="w-full space-y-8"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <PageHeader
             heading="Subscription Config"
             subheading="Control quotas, feature toggles, and milestone programs"
@@ -260,7 +260,7 @@ export default function ConfigPage() {
             {hasChanges && (
               <Button
                 variant="outline"
-                className="rounded-2xl h-11 px-5 font-bold gap-2 border-slate-200 text-slate-600 hover:text-slate-800"
+                className="rounded-xl h-11 px-5 font-bold gap-2 bg-slate-50 hover:bg-brand-aqua border-slate-200 text-muted-foreground hover:text-white"
                 onClick={handleReset}
               >
                 <RefreshCcw className="w-4 h-4" /> Revert
@@ -268,9 +268,9 @@ export default function ConfigPage() {
             )}
             <Button
               className={cn(
-                "rounded-2xl h-11 px-6 font-black gap-2 shadow-lg transition-all duration-300",
+                "rounded-xl h-11 px-6 font-black border gap-2 shadow-sm transition-all duration-300",
                 hasChanges
-                  ? "bg-brand-aqua hover:bg-brand-aqua/90 text-white shadow-brand-aqua/20 scale-100"
+                  ? "bg-slate-50 hover:bg-brand-aqua text-muted-foreground hover:text-white"
                   : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none scale-95",
               )}
               onClick={handleSave}
@@ -287,7 +287,7 @@ export default function ConfigPage() {
         </header>
 
         {/* Config Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* ─────────── CARD 1: Free User Limits ─────────── */}
           <ConfigCard
             icon={<Heart className="w-4 h-4 text-rose-500" />}
@@ -456,22 +456,22 @@ export default function ConfigPage() {
               icon={<Calendar className="w-3.5 h-3.5" />}
             />
             {/* Visual Progress Indicator */}
-            <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 space-y-3">
+            <div className="bg-emerald-50/60 border border-emerald-200 rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-700">
                   Milestone Progress
                 </span>
-                <Badge className="bg-emerald-100 text-emerald-700 border-none font-bold text-[10px]">
+                <Badge className="bg-emerald-100 text-emerald-800 border-none font-bold text-[10px]">
                   {milestone.isActive ? "LIVE" : "PAUSED"}
                 </Badge>
               </div>
               <div className="flex items-center gap-3">
-                <Progress value={0} className="h-2 flex-1 bg-emerald-100" />
-                <span className="text-xs font-black text-emerald-700">
+                <Progress value={0} className="h-2 flex-1 bg-emerald-200" />
+                <span className="text-xs font-black text-emerald-800">
                   0 / {milestone.targetUserCount}
                 </span>
               </div>
-              <p className="text-[10px] text-emerald-500 font-medium">
+              <p className="text-[10px] text-emerald-600 font-medium">
                 Each qualifying user receives {milestone.grantDurationDays} days
                 of free premium access.
               </p>
@@ -505,7 +505,7 @@ export default function ConfigPage() {
           </div>
         </div>
       </motion.div>
-    </div>
+    </Container>
   );
 }
 
@@ -528,26 +528,24 @@ const ConfigCard = ({ icon, emoji, title, subtitle, color, children }) => {
   return (
     <Card
       className={cn(
-        "rounded-[2rem] transition-all duration-500 shadow-md hover:shadow-xl bg-white overflow-hidden",
+        "rounded-2xl transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden gap-0",
         borderColors[color] || "border-slate-200",
       )}
     >
-      <CardHeader
-        className={cn("pb-4 border-b border-slate-50", headerBg[color])}
-      >
+      <CardHeader className={cn(headerBg[color])}>
         <div className="flex items-center gap-3">
           <span className="text-2xl">{emoji}</span>
           <div className="flex-1">
-            <CardTitle className="text-sm font-black flex items-center gap-2">
+            <CardTitle className="text-sm font-black text-foreground flex items-center gap-2">
               {icon} {title}
             </CardTitle>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
+            <p className="text-[10px] font-bold text-secondary-foreground uppercase tracking-widest mt-0.5">
               {subtitle}
             </p>
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-6 space-y-4">{children}</CardContent>
+      <CardContent className="pt-3 space-y-4">{children}</CardContent>
     </Card>
   );
 };
@@ -566,31 +564,34 @@ const QuotaField = ({
 
   return (
     <div className="group">
-      <div className="flex items-center justify-between mb-1.5">
+      <div className="flex items-center justify-between mb-0.5">
         <div className="flex items-center gap-2">
-          <span className="text-slate-400 group-hover:text-brand-aqua transition-colors">
+          <span className="text-secondary-foreground group-hover:text-brand-aqua transition-colors">
             {icon}
           </span>
-          <Label className="text-[11px] font-black uppercase text-slate-600 tracking-widest">
+          <Label className="text-[11px] font-black uppercase text-muted-muted tracking-widest">
             {label}
           </Label>
         </div>
+
         {allowUnlimited && isUnlimited && (
           <Badge className="bg-amber-100 text-amber-700 border-none font-black text-[9px] uppercase tracking-widest px-2 py-0.5 animate-pulse">
             Unlimited
           </Badge>
         )}
       </div>
+
       {description && (
         <p className="text-[10px] font-medium text-slate-400 mb-2 pl-5">
           {description}
         </p>
       )}
-      <div className="flex items-center gap-2">
+
+      <div className="flex items-center gap-2 my-3">
         <Input
           type="number"
           className={cn(
-            "h-11 rounded-2xl border-none font-bold text-sm transition-all",
+            "h-10 rounded-2xl border font-bold text-sm transition-all",
             isUnlimited
               ? "bg-amber-50 text-amber-700"
               : "bg-slate-50 text-slate-800",
@@ -606,7 +607,7 @@ const QuotaField = ({
             variant="outline"
             size="sm"
             className={cn(
-              "rounded-xl h-11 px-3 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all",
+              "rounded-xl h-10 px-4 text-[10px] font-black uppercase tracking-widest whitespace-nowrap transition-all",
               isUnlimited
                 ? "bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200"
                 : "bg-slate-50 text-slate-400 border-slate-200 hover:bg-slate-100",
@@ -628,7 +629,7 @@ const FeatureToggle = ({
   onCheckedChange,
   icon,
 }) => (
-  <div className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 p-4 rounded-2xl transition-all group">
+  <div className="flex items-center justify-between bg-slate-50/80 hover:bg-slate-100/80 py-3 rounded-2xl transition-all group">
     <div className="flex items-center gap-3 flex-1 min-w-0">
       <div
         className={cn(
@@ -652,13 +653,17 @@ const FeatureToggle = ({
     <div className="flex items-center gap-2 ml-3">
       <span
         className={cn(
-          "text-[9px] font-black uppercase tracking-widest transition-colors",
-          checked ? "text-emerald-500" : "text-slate-400",
+          "text-[10px] font-black uppercase tracking-widest transition-colors",
+          checked ? "text-brand-aqua" : "text-slate-400",
         )}
       >
         {checked ? "ON" : "OFF"}
       </span>
-      <Switch checked={checked} onCheckedChange={onCheckedChange} />
+      <Switch
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+        className={"bg-brand-aqua"}
+      />
     </div>
   </div>
 );

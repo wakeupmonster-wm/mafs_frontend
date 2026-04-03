@@ -15,6 +15,7 @@ import {
 } from "../store/general.slice";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Container } from "@/components/common/container";
 
 const formSchema = z.object({
   siteName: z.string().min(1, "App name is required"),
@@ -99,9 +100,9 @@ export default function GeneralPage() {
   }, [dispatch]);
 
   return (
-    <div className="flex min-h-screen text-gray-300 font-sans">
+    <Container>
       {/* --- MAIN CONTENT --- */}
-      <main className="flex-1 p-6 pb-20 w-full">
+      <main className="flex-1 pb-20 w-full">
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2 mb-8">
           <PageHeader
             heading="General"
@@ -184,6 +185,6 @@ export default function GeneralPage() {
           </form>
         </Form>
       </main>
-    </div>
+    </Container>
   );
 }

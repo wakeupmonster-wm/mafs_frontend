@@ -12,6 +12,7 @@ import {
   updatePrivacyPolicy,
 } from "../store/privacy.slice";
 import { PageHeader } from "@/components/common/headSubhead";
+import { Container } from "@/components/common/container";
 
 export default function PrivacyAndPolicyPage() {
   const dispatch = useDispatch();
@@ -25,16 +26,71 @@ export default function PrivacyAndPolicyPage() {
     description: "",
   });
 
+  // 1. Saare Tags/Actions enable karne ke liye "modules" ko expand karein
+  // const modules = {
+  //   toolbar: [
+  //     [{ font: [] }, { header: [1, 2, 3, 4, 5, 6, false] }], // Font family & Size
+  //     ["bold", "italic", "underline", "strike"], // Basic formatting
+  //     [{ color: [] }, { background: [] }], // Text & Highlight color
+  //     [{ script: "sub" }, { script: "super" }], // Sub/Super script
+  //     [
+  //       { header: "1" },
+  //       { header: "2" },
+  //       { header: "3" },
+  //       { paragraph: "paragraph" },
+  //       { blockquote: true },
+  //       "code-block",
+  //     ], // Headers & Blocks
+  //     [
+  //       { list: "ordered" },
+  //       { list: "bullet" },
+  //       { indent: "-1" },
+  //       { indent: "+1" },
+  //     ], // Lists & Indentation
+  //     [{ direction: "rtl" }, { align: [] }], // Text Alignment & Direction
+  //     ["link", "image", "video"], // Media
+  //     ["clean"], // Clear formatting
+  //   ],
+  // };
   const modules = {
     toolbar: [
-      [{ header: [1, 2, 3, false] }],
+      [{ font: [] }, { header: [1, 2, 3, 4, 5, 6, false] }],
       ["bold", "italic", "underline", "strike"],
-      [{ list: "bullet" }, { list: "ordered" }],
+      [{ color: [] }, { background: [] }],
       [{ script: "sub" }, { script: "super" }],
-      ["link", "image"],
+      ["blockquote", "code-block"],
+      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+      [{ indent: "-1" }, { indent: "+1" }],
+      [{ direction: "rtl" }, { align: [] }],
+      ["link", "image", "video"],
       ["clean"],
     ],
   };
+
+  // 2. Explicitly define formats (Ye ensure karta hai ki editor saare tags accept kare)
+  const formats = [
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color",
+    "background",
+    "script",
+    "header",
+    "blockquote",
+    "code-block",
+    "list",
+    "bullet",
+    "indent",
+    "check",
+    "direction",
+    "align",
+    "link",
+    "image",
+    "video",
+  ];
 
   useEffect(() => {
     dispatch(fetchPrivacyPolicy());
@@ -64,24 +120,10 @@ export default function PrivacyAndPolicyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-12 font-['Plus_Jakarta_Sans',sans-serif]">
+    <Container className="px-0">
       {/* Header with Glassmorphism Effect */}
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200">
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          {/* <div className="flex items-center gap-3">
-            <div className="p-2 bg-brand-aqua/20 rounded-lg">
-              <ShieldCheck className="w-6 h-6 text-brand-aqua" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 leading-tight">
-                Privacy & Policy
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                Update user data protection guidelines
-              </p>
-            </div>
-          </div> */}
-
+      <header className="sticky top-0 z-20 px-6 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div className="w-full mx-auto py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
             heading="Privacy & Policy"
             icon={<ShieldCheck className="w-6 h-6 text-white" />}
@@ -103,15 +145,16 @@ export default function PrivacyAndPolicyPage() {
             {isSaving ? "Saving..." : "Save Changes"}
           </Button>
         </div>
-      </div>
+      </header>
 
-      <main className="p-4 mx-auto">
-        <Card className="border border-slate-200 shadow-sm rounded-xl overflow-hidden bg-white py-4">
-          <CardContent className="px-6 space-y-8">
+      <main className="p-6">
+        <Card className="overflow-hidden py-4 border-none p-0">
+          <CardContent className="px-0 space-y-8">
             {/* Page Title Input */}
             <div className="grid gap-2">
               <label className="text-sm font-semibold text-slate-700 ml-1">
-                Document Title
+                Content Editor (Advanced)
+                {/* Document Title */}
               </label>
               <Input
                 placeholder="e.g. User Terms of Service"
@@ -128,11 +171,25 @@ export default function PrivacyAndPolicyPage() {
               <label className="text-sm font-semibold text-slate-700 ml-1">
                 Content Editor
               </label>
-              <div className="rounded-lg border border-slate-200 overflow-hidden">
-                <style>{`
+              {/* <div className="rounded-lg border border-slate-200 overflow-hidden"> */}
+              <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">
+                {/* <style>{`
                     .ql-container { min-height: 400px; font-size: 16px; }
                     .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
                     .ql-container.ql-snow { border: none; }
+                  `}</style> */}
+                <style>{`
+                    .ql-container { min-height: 500px; font-size: 16px; background: white; }
+                    .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #e2e8f0; background: #f8fafc; padding: 12px; }
+                    .ql-container.ql-snow { border: none; }
+                    .ql-editor { line-height: 1.6; }
+                    /* Tooltip visibility fix */
+                    .ql-snow .ql-tooltip { z-index: 1000; }
+                    /* .ql-editor p { margin-bottom: 12px; line-height: 1.6; } */
+                    .ql-align-center { text-align: center; }
+                    .ql-align-right { text-align: right; }
+                    .ql-align-justify { text-align: justify; }
+
                   `}</style>
                 <ReactQuill
                   theme="snow"
@@ -141,13 +198,14 @@ export default function PrivacyAndPolicyPage() {
                     setPageData({ ...pageData, description: val })
                   }
                   modules={modules}
-                  placeholder="Start typing your legal content..."
+                  formats={formats} // Formats pass karna zaroori hai
+                  placeholder="Paste your Privacy Policy here and use the toolbar to align..."
                 />
               </div>
             </div>
           </CardContent>
         </Card>
       </main>
-    </div>
+    </Container>
   );
 }

@@ -81,36 +81,34 @@ export const SettingsTab = ({ userData }) => {
   return (
     <TabsContent
       value="settings"
-      className="mt-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500"
+      className="mt-2 space-y-8 focus-visible:ring-offset-0 focus-visible:ring-0 animate-in fade-in slide-in-from-bottom-2 duration-500"
     >
       {/* 1. COMPACT HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-1">
-        <div>
-          <h3 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <IconSettings className="text-slate-400" size={22} /> System
-            Controls
-          </h3>
-          <p className="text-xs text-slate-500 font-medium mt-0.5">
-            Manage administrative permissions, discovery settings, and
-            notifications.
-          </p>
-        </div>
+        <h3 className="text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+          <IconSettings className="text-muted-foreground" size={22} /> System
+          Controls
+        </h3>
+        <p className="text-xs text-muted-foreground font-medium mt-0.5">
+          Manage administrative permissions, discovery settings, and
+          notifications.
+        </p>
         {/* <EditSettingsDialog userData={userData} /> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 pb-10 gap-6">
         {/* 2. GOVERNANCE & STATUS CARD */}
-        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
+        <Card className="border border-slate-200 shadow-sm overflow-hidden gap-2 py-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconUserShield className="text-indigo-500" size={18} /> Account
               Management
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-6 py-2 space-y-6">
+          <CardContent className="px-6 space-y-6">
             <div className="grid gap-4">
               {/* ✅ Account Status */}
-              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+              <div className="flex items-center justify-between px-4 py-2 rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Account Status
@@ -133,7 +131,7 @@ export const SettingsTab = ({ userData }) => {
               </div>
 
               {/* ✅ Membership Level */}
-              <div className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
+              <div className="flex items-center justify-between px-4 py-2 rounded-xl border border-slate-100 bg-white shadow-sm">
                 <div className="space-y-0.5">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Membership Level
@@ -157,12 +155,12 @@ export const SettingsTab = ({ userData }) => {
 
             <Separator className="bg-slate-50" />
 
-            <div className="space-y-3">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <div className="space-y-2">
+              <p className="text-[10px] font-black text-secondary-foreground uppercase tracking-widest">
                 Infrastructure Identity
               </p>
               <div className="bg-slate-50 p-3 rounded-lg flex items-center justify-between border border-slate-200/50">
-                <code className="text-[11px] font-mono text-slate-500 truncate mr-4">
+                <code className="text-[11px] font-mono text-secondary-foreground truncate mr-4">
                   {userData._id}
                 </code>
                 <Button
@@ -178,14 +176,14 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 3. NOTIFICATIONS & PREFERENCES */}
-        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
-            <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
+        <Card className="border border-slate-200 shadow-sm overflow-hidden gap-1 py-6">
+          <CardHeader className="border-b border-slate-50 bg-slate-50/50 px-6">
+            <CardTitle className="text-sm font-bold text-primary flex items-center gap-2">
               <IconBellRinging className="text-blue-500" size={18} />{" "}
               Communication Preferences
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-6 py-2 space-y-5">
+          <CardContent className="px-+ space-y-2">
             {Object.entries(settings?.notifications || {}).map(
               ([key, isEnabled]) => {
                 const formattedKey = formatLabel(key);
@@ -224,14 +222,14 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 4. DISCOVERY SETTINGS */}
-        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
+        <Card className="border border-slate-200 shadow-sm overflow-hidden gap-2">
+          <CardHeader className="bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconMapPin className="text-orange-500" size={18} /> Discovery
               Parameters
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-6 py-2 space-y-4">
+          <CardContent className="px-6 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
@@ -271,14 +269,14 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 5. ACCESS & TRUST CARD */}
-        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden gap-2 py-4">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 py-2 px-6">
+        <Card className="border border-slate-200 shadow-sm overflow-hidden gap-2">
+          <CardHeader className="bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-emerald-500" size={18} /> Access &
               Trust
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-6 py-2 space-y-4">
+          <CardContent className="px-6 space-y-4">
             <VerificationRow
               label="Primary Email"
               subLabel={account.email || "Verification Pending"}
@@ -295,8 +293,8 @@ export const SettingsTab = ({ userData }) => {
         </Card>
 
         {/* 6. PRIVACY & RESTRICTIONS */}
-        <Card className="border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md overflow-hidden lg:col-span-2 gap-2">
-          <CardHeader className="border-b border-slate-50 bg-slate-50/50 px-6">
+        <Card className="border border-slate-200 shadow-sm overflow-hidden lg:col-span-2 gap-2">
+          <CardHeader className="bg-slate-50/50 px-6">
             <CardTitle className="text-sm font-bold text-slate-700 flex items-center gap-2">
               <IconShieldLock className="text-rose-500" size={18} /> Restricted
               Access

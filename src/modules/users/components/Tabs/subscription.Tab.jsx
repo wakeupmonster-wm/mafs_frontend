@@ -109,7 +109,7 @@ export const SubscriptionTab = ({ userData, subscription }) => {
   return (
     <TabsContent
       value="subscription"
-      className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 outline-none"
+      className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 outline-none focus-visible:ring-offset-0 focus-visible:ring-0"
     >
       {/* STATUS BANNER */}
       <div className="p-6 rounded-[1.5rem] border border-brand-aqua/30 hover:border-brand-aqua/60 shadow-md relative overflow-hidden group">

@@ -24,6 +24,7 @@ import {
 } from "@tabler/icons-react";
 import StatsGrid from "@/components/common/stats.grid";
 import { bgMap, colorMap } from "@/constants/colors";
+import { Container } from "@/components/common/container";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -221,7 +222,7 @@ export default function SupportTicketsPage() {
   // };
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8">
+    <Container>
       <motion.div
         className="space-y-6"
         initial="hidden"
@@ -300,6 +301,6 @@ export default function SupportTicketsPage() {
         confirmText={"Delete Permanently"}
         type={"danger"}
       />
-    </div>
+    </Container>
   );
 }

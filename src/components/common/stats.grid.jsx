@@ -32,7 +32,7 @@ const StatsGrid = ({ stats, colorMap, bgMap }) => {
           variants={itemVariants}
           whileHover={{ y: -5, transition: { duration: 0.2 } }}
           className={cn(
-            "group relative p-6 rounded-2xl border bg-white shadow-sm cursor-pointer transition-all duration-500",
+            "group relative p-6 rounded-xl border bg-white shadow-sm cursor-pointer transition-all duration-500",
             // bgMap[stat.color],
           )}
         >
@@ -47,13 +47,13 @@ const StatsGrid = ({ stats, colorMap, bgMap }) => {
               {stat.icon}
             </div>
             <div className="flex-1 w-max">
-              <p className="text-[10px] font-black uppercase tracking-widest mb-0.5">
+              <p className="text-[10px] font-black text-secondary-foreground uppercase tracking-widest mb-0.5">
                 {stat.label}
               </p>
-              <h4 className="text-2xl font-black text-slate-900 leading-none mb-0.5">
+              <h4 className="text-2xl font-black text-foreground leading-none mb-0.5">
                 {stat.val.toLocaleString()}
               </h4>
-              <p className="text-[10px] font-medium mt-1 truncate text-slate-500 mb-0.5">
+              <p className="text-[10px] font-semibold mt-1 truncate text-muted-foreground mb-0.5">
                 {stat.description}
               </p>
             </div>

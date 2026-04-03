@@ -52,6 +52,7 @@ import { AiFillAndroid, AiFillApple } from "react-icons/ai";
 import { LiaUserTieSolid } from "react-icons/lia";
 import { PiDevicesDuotone } from "react-icons/pi";
 import { LuUserRound } from "react-icons/lu";
+import { Container } from "@/components/common/container";
 
 const COLORS = ["#46C7CD", "#818CF8", "#F472B6", "#FB923C", "#A78BFA"];
 
@@ -190,7 +191,7 @@ export default function SubscriptionPage() {
   }, [kpis, activity]);
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen p-4 bg-slate-50 pb-8 font-jakarta">
+    <Container>
       <motion.div
         className="@container/main space-y-4"
         initial={{ opacity: 0, y: 10 }}
@@ -198,7 +199,7 @@ export default function SubscriptionPage() {
         transition={{ duration: 0.5 }}
       >
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <PageHeader
             heading="Subscription Analytics"
             subheading="Unified intelligence for products, revenue, and subscribers."
@@ -207,7 +208,7 @@ export default function SubscriptionPage() {
           />
           <Button
             variant="ghost"
-            className="bg-slate-50 hover:bg-slate-100 border rounded-2xl h-10 px-4 font-bold shadow-sm text-xs gap-2 text-slate-500"
+            className="bg-slate-50 hover:bg-slate-100 border rounded-2xl h-10 px-4 font-bold shadow-sm text-xs gap-2 text-muted-foreground"
             onClick={refreshDashboard}
             disabled={dashboardLoading}
           >
@@ -225,7 +226,7 @@ export default function SubscriptionPage() {
 
         {/* Section 1: Unified KPI Block */}
         {pulseCards.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 px-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             {pulseCards.map((card, i) => (
               <motion.div
                 key={card.label}
@@ -233,7 +234,7 @@ export default function SubscriptionPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 className={cn(
-                  "flex items-center gap-3 p-4 py-5 rounded-2xl border transition-all",
+                  "flex items-center gap-3 p-4 py-5 rounded-xl border transition-all",
                   card.bg,
                 )}
               >
@@ -243,10 +244,10 @@ export default function SubscriptionPage() {
                   {card.icon}
                 </div>
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-500 mb-1">
+                  <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground mb-1">
                     {card.label}
                   </p>
-                  <h3 className="text-xl font-black text-slate-900 leading-none">
+                  <h3 className="text-xl font-black text-foreground leading-none">
                     {typeof card.val === "number"
                       ? card.val.toLocaleString()
                       : card.val}
@@ -257,22 +258,23 @@ export default function SubscriptionPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 px-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Trend */}
-          <Card className="lg:col-span-2 rounded-[2rem] border-slate-200 hover:border-brand-aqua/80 transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden group">
+          <Card className="lg:col-span-2 rounded-xl border-slate-200 transition-all duration-500 shadow-sm bg-slate-50 overflow-hidden group">
             <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-7">
               <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
+                <CardTitle className="text-base font-black flex items-center gap-2">
                   <BarChart3 className="w-6 h-6 text-brand-aqua" />
                   Revenue Trend
                 </CardTitle>
-                <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest leading-relaxed">
+                <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest leading-relaxed">
                   Daily revenue performance
                 </p>
               </div>
+
               <div className="flex items-center">
                 <Select value={timeRange} onValueChange={setTimeRange}>
-                  <SelectTrigger className="h-9 rounded-xl bg-slate-50 border-slate-100 text-[10px] sm:text-[11px] font-bold w-full sm:w-[130px]">
+                  <SelectTrigger className="h-9 rounded-xl bg-white hover:bg-brand-aqua border border-slate-300 hover:border-none text-[10px] sm:text-[11px] text-slate-800 hover:text-white font-bold hover:font-semibold w-full sm:w-[130px]">
                     <SelectValue placeholder="Timeframe" />
                   </SelectTrigger>
                   <SelectContent className="rounded-2xl border-none shadow-xl">
@@ -382,14 +384,14 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Platform Distribution */}
-          <Card className="rounded-[2rem] border-slate-200 hover:border-emerald-300 transition-all duration-500 shadow-sm bg-white overflow-hidden group">
+          <Card className="rounded-xl border-slate-200 transition-all duration-500 shadow-sm bg-white overflow-hidden group">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
               <div className="space-y-1">
-                <CardTitle className="text-sm font-black flex items-center gap-2">
+                <CardTitle className="text-base font-black flex items-center gap-2">
                   <PiDevicesDuotone className="w-6 h-6 text-emerald-500" />
                   Platform Mix
                 </CardTitle>
-                <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">
+                <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest">
                   Active ecosystem distribution
                 </p>
               </div>
@@ -482,15 +484,15 @@ export default function SubscriptionPage() {
         </div>
 
         {/* Section 4: Alerts & Milestone Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-2">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Expiring Soon Alert */}
-          <Card className="rounded-[2rem] border-slate-200 hover:border-amber-300 transition-all duration-300 shadow-sm bg-white overflow-hidden">
+          <Card className="rounded-xl border-slate-200 transition-all duration-300 shadow-sm bg-white overflow-hidden">
             <CardHeader className="pb-4">
-              <CardTitle className="text-sm font-black flex items-center gap-2">
+              <CardTitle className="text-base font-black flex items-center gap-2">
                 <AlertTriangle className="w-6 h-6 text-amber-500" />
                 Expiring Soon
               </CardTitle>
-              <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest">
+              <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest">
                 Plans expiring in the next 24 hours
               </p>
             </CardHeader>
@@ -518,15 +520,15 @@ export default function SubscriptionPage() {
           </Card>
 
           {/* Milestone Progress */}
-          <Card className="rounded-[2rem] border-slate-200 hover:border-purple-300 transition-all duration-300 shadow-sm bg-slate-50 overflow-hidden">
+          <Card className="rounded-XL border-slate-200 transition-all duration-300 shadow-sm bg-slate-50 overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-sm font-black flex items-center gap-2">
+                  <CardTitle className="text-base font-black flex items-center gap-2">
                     <Trophy className="w-6 h-6 text-purple-500" />
                     Milestone Program
                   </CardTitle>
-                  <p className="text-[10px] uppercase font-semibold text-slate-400 tracking-widest mt-2">
+                  <p className="text-xs uppercase font-bold text-secondary-foreground tracking-widest mt-2">
                     Free premium grant progress
                   </p>
                 </div>
@@ -597,7 +599,7 @@ export default function SubscriptionPage() {
             );
 
             return (
-              <div className="px-2 space-y-4">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between px-2">
                   <div className="space-y-1">
                     <h3 className="text-sm font-black flex items-center gap-2 text-slate-900">
@@ -701,6 +703,6 @@ export default function SubscriptionPage() {
             );
           })()}
       </motion.div>
-    </div>
+    </Container>
   );
 }

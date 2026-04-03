@@ -65,7 +65,7 @@ const VerificationCard = ({
     currentStatus === "not_started";
 
   return (
-    <Card className="relative overflow-hidden border-slate-200 shadow-sm bg-white/70 backdrop-blur-md transition-all hover:shadow-md">
+    <Card className="relative overflow-hidden py-7 border-slate-200 shadow-sm bg-white/70 backdrop-blur-md transition-all hover:shadow-md">
       {/* Decorative Status Line */}
       <div
         className={cn(
@@ -78,7 +78,7 @@ const VerificationCard = ({
         )}
       />
 
-      <CardContent className="p-6 space-y-6">
+      <CardContent className="space-y-6">
         {/* Header Section */}
         <div className="flex items-start justify-between">
           <div className="flex gap-4">
@@ -220,7 +220,7 @@ const VerificationCard = ({
         {currentStatus !== "pending" && (
           <div
             className={cn(
-              "rounded-2xl p-4 border animate-in slide-in-from-top-2 duration-300",
+              "rounded-xl p-4 border animate-in slide-in-from-top-2 duration-300",
               currentStatus === "approved" &&
                 "bg-emerald-100/50 border-emerald-300",
               currentStatus === "rejected" && "bg-rose-100/50 border-rose-300",

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/accordion";
 import StatsGrid from "@/components/common/stats.grid";
 import { PageHeader } from "@/components/common/headSubhead";
+import { Container } from "@/components/common/container";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -177,10 +178,11 @@ const FAQSPage = () => {
     }),
   ];
 
+  // <div className="w-full mx-auto p-4 pb-16 space-y-6 animate-in fade-in duration-500">
   return (
-    <div className="w-full mx-auto p-4 pb-16 space-y-6 animate-in fade-in duration-500">
+    <Container className="space-y-6">
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <PageHeader
           heading="FAQ Manager"
           icon={<HelpCircle className="w-9 h-9 text-white animate-pulse" />}
@@ -190,7 +192,7 @@ const FAQSPage = () => {
 
         <Button
           onClick={() => setFormModal({ isOpen: true, data: null })}
-          className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-slate-500 hover:text-white gap-2 h-10 px-4 shadow-sm"
+          className="bg-slate-50 hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-slate-500 hover:text-white gap-2 h-10 px-4 shadow-sm"
         >
           <Plus className="h-4 w-4" /> Add FAQ
         </Button>
@@ -216,7 +218,7 @@ const FAQSPage = () => {
             placeholder="Search questions or answers…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 pr-10 bg-white border-slate-200 h-11 lg:h-10 shadow-sm focus-visible:ring-brand-aqua rounded-xl"
+            className="pl-9 pr-10 bg-slate-50 border-slate-200 h-11 lg:h-10 shadow-sm focus-visible:ring-brand-aqua rounded-xl"
           />
           {search && (
             <button
@@ -233,13 +235,15 @@ const FAQSPage = () => {
           onValueChange={setFilterCategory}
           className={""}
         >
-          <SelectTrigger className="w-full max-w-40 sm:max-w-60 bg-gray-50 hover:bg-brand-aqua font-medium hover:font-semibold text-xs text-slate-500 hover:text-white hover:border-none">
+          <SelectTrigger className="w-full max-w-44 bg-gray-50 hover:bg-brand-aqua font-medium hover:font-semibold text-xs text-slate-500 hover:text-white hover:border-none transition-all duration-300">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
+            <SelectItem value="all" className="text-xs">
+              All Categories
+            </SelectItem>
             {CATEGORIES.map((c) => (
-              <SelectItem key={c} value={c}>
+              <SelectItem key={c} value={c} className="text-xs">
                 {formatLabel(c)}
               </SelectItem>
             ))}
@@ -255,7 +259,7 @@ const FAQSPage = () => {
               <AccordionItem
                 key={faq.id}
                 value={faq.id}
-                className="px-6 py-1 border border-slate-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-white data-[state=open]:bg-secondary/30"
+                className="px-6 py-1 border border-slate-200 shadow-sm hover:shadow-md transition-all rounded-xl bg-slate-50 data-[state=open]:bg-secondary/30"
               >
                 <div className="relative group">
                   <AccordionTrigger className="flex-1 text-left text-[15px] font-semibold text-foreground hover:no-underline py-5">
@@ -271,7 +275,7 @@ const FAQSPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10 border-slate-200 bg-white"
+                      className="h-8 w-8 text-slate-400 hover:text-brand-aqua hover:bg-brand-aqua/10 border-slate-200 bg-slate-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFormModal({ isOpen: true, data: faq });
@@ -283,7 +287,7 @@ const FAQSPage = () => {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 border-slate-200 bg-white"
+                      className="h-8 w-8 text-slate-400 hover:text-destructive hover:bg-destructive/10 border-slate-200 bg-slate-50"
                       onClick={(e) => {
                         e.stopPropagation();
                         setDeleteModal({
@@ -334,7 +338,8 @@ const FAQSPage = () => {
         confirmText="Yes, Delete"
         type="danger"
       />
-    </div>
+      {/* </div> */}
+    </Container>
   );
 };
 
