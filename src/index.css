@@ -331,7 +331,11 @@
   box-shadow: none !important;
 }
 
-/* Ensure map doesn't overflow card */
-.leaflet-container {
-  font-family: inherit !important;
+/* ===== Date Range Picker — Brand Color Override ===== */
+/* Override range start and end button colors to brand teal */
+button[data-range-start="true"],
+button[data-range-end="true"] {
+  background-color: #46C7CD !important;
+  color: #ffffff !important;
+  border-radius: 0.375rem !important;
 }

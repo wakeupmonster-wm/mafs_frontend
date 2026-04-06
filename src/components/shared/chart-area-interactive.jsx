@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/select";
 import { useDispatch } from "react-redux";
 import { fetchDashboardKPIs } from "@/modules/dashboard/store/dashboard.slice";
-import { IconBrandAndroid, IconBrandApple } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { PreLoader } from "@/app/loader/preloader";
 import ErrorState from "./ErrorState";
@@ -39,8 +38,8 @@ const chartConfig = {
 export function ChartAreaInteractive({ kpiData, loading, error }) {
   const dispatch = useDispatch();
   const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = useState("90d");
-  const [activeChart, setActiveChart] = useState("both"); // "both" | "android" | "ios"
+  const [timeRange, setTimeRange] = useState("30d");
+  const [activeChart, setActiveChart] = useState("both");
 
   useEffect(() => {
     if (isMobile) {
@@ -51,25 +50,19 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
   const generateChartData = (data) => {
     const result = [];
     const today = new Date();
-
     const baseActive = data?.activeUsers24h?.value || 1349;
 
     for (let i = 89; i >= 0; i--) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
 
-      // Create a smooth overlapping wave effect similar to the screenshot
       const wave1 = Math.sin(i * 0.15) * 200;
       const wave2 = Math.cos(i * 0.1) * 300;
-
-      // Simulate gradual increase over time
       const trend = ((90 - i) / 90) * baseActive;
 
-      // Ensure minimum non-negative boundaries and beautiful intersections
       let ios = Math.round(trend * 0.6 + wave1 + 200);
       let android = Math.round(trend * 0.45 + wave2 + 100);
 
-      // Add a bit of noise
       ios += Math.random() * 50;
       android += Math.random() * 50;
 
@@ -88,7 +81,6 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
 
   useEffect(() => {
     fetchVisitorData();
-
     const interval = setInterval(fetchVisitorData, 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchVisitorData]);
@@ -122,7 +114,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
 
   if (loading) {
     return (
-      <Card className="rounded-[24px] shadow-md px-0">
+      <Card className="rounded-[24px] shadow-sm bg-white border border-slate-100 flex-1">
         <CardContent className="h-[400px] flex items-center justify-center">
           <PreLoader />
         </CardContent>
@@ -135,15 +127,14 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
   }
 
   return (
-    <Card className="rounded-3xl border border-slate-200 shadow-md bg-slate-50 overflow-hidden p-2 sm:p-5">
+    <Card className="rounded-[20px] border border-slate-200 shadow-md bg-slate-50 overflow-hidden p-2 sm:p-5 flex-1 flex flex-col h-full">
       <CardHeader className="flex flex-row items-start justify-between pb-8 pt-2 px-4 sm:px-6">
         <div className="flex flex-col gap-4">
-          <CardTitle className="text-[22px] font-bold text-slate-800 tracking-tight">
-            Real-Time Visitors
+          <CardTitle className="text-[20px] font-bold text-slate-900 tracking-tight">
+            Platform Visitors
           </CardTitle>
 
           <div className="flex flex-col gap-4">
-            {/* Interactive Total Visitors Metric */}
             <button
               onClick={() => setActiveChart("both")}
               className={cn(
@@ -155,17 +146,16 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
             >
               <div className="w-[14px] h-[14px] rounded-full bg-emerald-400 shadow-sm shadow-emerald-200"></div>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-[28px] font-black text-slate-800 leading-none tracking-tight">
+                <span className="text-[26px] font-black text-slate-800 leading-none tracking-tight">
                   {totalActive.toLocaleString()}
                 </span>
-                <span className="text-[17px] font-medium text-slate-500">
+                <span className="text-[16px] font-medium text-slate-500">
                   online
                 </span>
               </div>
             </button>
 
             <div className="flex gap-4">
-              {/* Interactive Android Metric */}
               <button
                 onClick={() =>
                   setActiveChart(activeChart === "android" ? "both" : "android")
@@ -177,19 +167,17 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
                     : "opacity-100",
                 )}
               >
-                {/* <IconBrandAndroid size={22} className="text-emerald-600" /> */}
-                <AiFillAndroid className="w-6 h-6 mb-0.5 text-green-600" />
+                <AiFillAndroid className="w-5 h-5 mb-0.5 text-emerald-500" />
                 <div className="flex items-baseline gap-1">
-                  <span className="text-base font-bold text-slate-700 leading-none">
+                  <span className="text-sm font-bold text-slate-700 leading-none">
                     {currentAndroid.toLocaleString()}
                   </span>
-                  <span className="text-[15px] font-medium text-slate-500 leading-none">
+                  <span className="text-[13px] font-medium text-slate-500 leading-none">
                     visitors
                   </span>
                 </div>
               </button>
 
-              {/* Interactive iOS Metric */}
               <button
                 onClick={() =>
                   setActiveChart(activeChart === "ios" ? "both" : "ios")
@@ -201,13 +189,12 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
                     : "opacity-100",
                 )}
               >
-                {/* <IconBrandApple size={22} className="" fill="currentColor" /> */}
-                <IoLogoApple className="w-6 h-6 mb-0.5" />
+                <IoLogoApple className="w-5 h-5 mb-0.5 text-blue-500" />
                 <div className="flex items-baseline gap-1">
-                  <span className="text-base font-bold text-slate-700 leading-none">
+                  <span className="text-sm font-bold text-slate-700 leading-none">
                     {currentIos.toLocaleString()}
                   </span>
-                  <span className="text-[15px] font-medium text-slate-500 leading-none">
+                  <span className="text-[13px] font-medium text-slate-500 leading-none">
                     visitors
                   </span>
                 </div>
@@ -216,15 +203,15 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
           </div>
         </div>
 
-        <div className="pt-0.5">
+        <div className="pt-0.5 z-10">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
-              className="flex w-[140px] h-9 rounded-xl border-slate-200 bg-white text-slate-700 font-medium text-[13px] shadow-sm"
+              className="flex w-[130px] h-9 rounded-lg border-slate-200 bg-white text-slate-700 font-medium text-[13px] shadow-sm"
               aria-label="Select time range"
             >
               <SelectValue placeholder="Last 30 days" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-slate-100 shadow-lg">
+            <SelectContent className="rounded-xl border-slate-100 shadow-lg z-50">
               <SelectItem
                 value="90d"
                 className="rounded-lg text-[13px] font-medium"
@@ -251,7 +238,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
       <CardContent className="px-0 sm:px-2 pb-2">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[260px] w-full"
+          className="aspect-auto h-[200px] w-full"
         >
           <AreaChart
             data={filteredData}
@@ -278,7 +265,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
               axisLine={false}
               tickMargin={12}
               minTickGap={30}
-              tick={{ fill: "#64748b", fontSize: 13, fontWeight: 400 }}
+              tick={{ fill: "#64748b", fontSize: 12, fontWeight: 500 }}
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
@@ -291,7 +278,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
               tickLine={false}
               axisLine={false}
               tickMargin={10}
-              tick={{ fill: "#94a3b8", fontSize: 13, fontWeight: 500 }}
+              tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 500 }}
               tickFormatter={(value) => value.toLocaleString()}
             />
             <ChartTooltip
@@ -309,41 +296,39 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
                 />
               }
             />
-            {/* Draw Area overlapping dynamically based on interaction state */}
             {(activeChart === "both" || activeChart === "android") && (
               <Area
                 dataKey="android"
-                type="natural"
+                type="linear"
                 fill="url(#fillAndroid)"
                 stroke="#34d399"
                 strokeWidth={1.5}
                 activeDot={{
-                  r: 6,
+                  r: 5,
                   fill: "#34d399",
                   stroke: "#d1fae5",
-                  strokeWidth: 4,
+                  strokeWidth: 3,
                 }}
               />
             )}
             {(activeChart === "both" || activeChart === "ios") && (
               <Area
                 dataKey="ios"
-                type="natural"
+                type="linear"
                 fill="url(#fillIos)"
                 stroke="#60a5fa"
                 strokeWidth={1.5}
                 activeDot={{
-                  r: 6,
+                  r: 5,
                   fill: "#60a5fa",
                   stroke: "#e0f2fe",
-                  strokeWidth: 4,
+                  strokeWidth: 3,
                 }}
               />
             )}
           </AreaChart>
         </ChartContainer>
 
-        {/* Custom Legend closely mirroring the image */}
         <div className="flex px-4 sm:px-12 mt-4 items-center gap-6">
           <div
             className={cn(
@@ -354,8 +339,8 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
               setActiveChart(activeChart === "android" ? "both" : "android")
             }
           >
-            <div className="w-3.5 h-3.5 rounded-full bg-emerald-400"></div>
-            <span className="text-[15px] font-medium text-slate-800">
+            <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+            <span className="text-[14px] font-medium text-slate-800">
               Android
             </span>
           </div>
@@ -368,8 +353,8 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
               setActiveChart(activeChart === "ios" ? "both" : "ios")
             }
           >
-            <div className="w-3.5 h-3.5 rounded-full bg-blue-400"></div>
-            <span className="text-[15px] font-medium text-slate-800">iOS</span>
+            <div className="w-3 h-3 rounded-full bg-black"></div>
+            <span className="text-[14px] font-medium text-slate-800">IOS</span>
           </div>
         </div>
       </CardContent>

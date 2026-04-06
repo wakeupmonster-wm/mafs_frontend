@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-background-tertiary);
+  }
+
+  .dash {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    min-height: 100vh;
+    gap: 0;
+  }
+
+  .sidebar {
+    background: #0f172a;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sb-brand {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2DC5A2;
+    padding: 0 16px 16px;
+    border-bottom: 0.5px solid #1e293b;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .sb-item {
+    padding: 9px 16px;
+    font-size: 12px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-left: 2px solid transparent;
+  }
+
+  .sb-item.active {
+    color: #fff;
+    background: #1e293b;
+    border-left-color: #2DC5A2;
+  }
+
+  .sb-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  .main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 0.5px;
+    background: var(--color-border-tertiary);
+  }
+
+  .zone-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ROW 1 — AI Snapshot */
+  .ai-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .ai-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #E1F5EE;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 18px;
+  }
+
+  .ai-text {
+    font-size: 13px;
+    color: var(--color-text-primary);
+    line-height: 1.6;
+  }
+
+  .ai-text strong {
+    color: #0F6E56;
+  }
+
+  .ai-text .warn {
+    color: #854F0B;
+  }
+
+  /* Metric cards row */
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .mcard {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+  }
+
+  .mcard-label {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mcard-val {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .mcard-sub {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  .dot-green {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #1D9E75;
+    flex-shrink: 0;
+  }
+
+  .dot-red {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #E24B4A;
+    flex-shrink: 0;
+  }
+
+  .dot-amber {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #BA7517;
+    flex-shrink: 0;
+  }
+
+  /* Alert row */
+  .alert-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .alert-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .alert-card.red {
+    border-left: 3px solid #E24B4A;
+    border-radius: 0;
+    border-radius: var(--border-radius-md);
+  }
+
+  .alert-card.amber {
+    border-left: 3px solid #BA7517;
+    border-radius: var(--border-radius-md);
+  }
+
+  .alert-card.green {
+    border-left: 3px solid #1D9E75;
+    border-radius: var(--border-radius-md);
+  }
+
+  .alert-num {
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  .alert-num.red {
+    color: #E24B4A;
+  }
+
+  .alert-num.amber {
+    color: #BA7517;
+  }
+
+  .alert-num.green {
+    color: #1D9E75;
+  }
+
+  .alert-desc {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+
+  .alert-desc strong {
+    color: var(--color-text-primary);
+    display: block;
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  /* Main chart row */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 320px;
+    gap: 12px;
+  }
+
+  .chart-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 14px 16px;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 11px;
+    color: var(--color-text-tertiary);
+    margin-bottom: 12px;
+  }
+
+  /* Gender ratio bar */
+  .ratio-bar {
+    height: 10px;
+    border-radius: 5px;
+    background: #ED93B1;
+    overflow: hidden;
+    margin: 8px 0;
+  }
+
+  .ratio-fill {
+    height: 100%;
+    background: #378ADD;
+    border-radius: 5px;
+    width: 63%;
+  }
+
+  .ratio-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+
+  /* Funnel */
+  .funnel {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .funnel-step {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    height: 32px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* Live feed */
+  .feed {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 220px;
+    overflow: hidden;
+  }
+
+  .feed-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 10px;
+    background: var(--color-background-secondary);
+    border-radius: 6px;
+  }
+
+  .feed-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .feed-text {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+  }
+
+  .feed-time {
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    margin-left: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Bottom row */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Heatmap grid for peak hours */
+  .hour-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 3px;
+    margin-top: 8px;
+  }
+
+  .hour-cell {
+    height: 20px;
+    border-radius: 3px;
+    background: var(--color-background-secondary);
+  }
+
+  .hour-cell.l1 {
+    background: #9FE1CB;
+  }
+
+  .hour-cell.l2 {
+    background: #1D9E75;
+  }
+
+  .hour-cell.l3 {
+    background: #0F6E56;
+  }
+
+  .hour-label {
+    font-size: 9px;
+    color: var(--color-text-tertiary);
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Success metrics */
+  .success-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .success-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--color-background-secondary);
+    border-radius: 6px;
+  }
+
+  .success-name {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  .success-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+  }
+
+  .success-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--color-border-tertiary);
+    border-radius: 2px;
+    margin: 0 10px;
+  }
+
+  .success-bar {
+    height: 100%;
+    border-radius: 2px;
+    background: #1D9E75;
+  }
+</style>
+
+<body>
+  <div class="dash">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-brand">Keines Mustard</div>
+      <div class="sb-item active"><span class="sb-dot"></span>Dashboard</div>
+      <div class="sb-item"><span class="sb-dot"></span>Users</div>
+      <div class="sb-item"><span class="sb-dot"></span>KYC Review</div>
+      <div class="sb-item"><span class="sb-dot"></span>Reports</div>
+      <div class="sb-item"><span class="sb-dot"></span>Revenue</div>
+      <div class="sb-item"><span class="sb-dot"></span>Boosts</div>
+      <div class="sb-item"><span class="sb-dot"></span>Settings</div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- ZONE A: AI Snapshot -->
+      <div>
+        <div class="section-label">
+          <span class="zone-tag" style="background:#E1F5EE;color:#0F6E56;">Zone A</span>
+          AI Morning Snapshot — full width, top of page
+        </div>
+        <div class="ai-card">
+          <div class="ai-icon">&#128075;</div>
+          <div class="ai-text">
+            Good morning! Revenue is <strong>up 12% today</strong> — Boosts are your top seller.
+            However, <span class="warn">female signups dropped 5%</span> vs yesterday — consider a targeted campaign.
+            You have <strong>45 KYC profiles</strong> pending and <strong>12 users</strong> flagged for review.
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE B: Actionable Alerts -->
+      <div>
+        <div class="section-label">
+          <span class="zone-tag" style="background:#FCEBEB;color:#A32D2D;">Zone B</span>
+          Ecosystem Alerts — 3 cards, traffic light indicators
+        </div>
+        <div class="alert-row">
+          <div class="alert-card red">
+            <div class="alert-num red">45</div>
+            <div class="alert-desc"><strong>KYC Pending</strong>Profiles waiting for approval</div>
+          </div>
+          <div class="alert-card red">
+            <div class="alert-num red">12</div>
+            <div class="alert-desc"><strong>High-report Users</strong>Reported 5+ times today</div>
+          </div>
+          <div class="alert-card amber">
+            <div class="alert-num amber">+10%</div>
+            <div class="alert-desc"><strong>Ghosting Rate Up</strong>Abnormal vs last 7-day avg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE C: Key Metrics -->
+      <div>
+        <div class="section-label">
+          <span class="zone-tag" style="background:#E6F1FB;color:#0C447C;">Zone C</span>
+          Health Metrics — 4 number cards with traffic light dots
+        </div>
+        <div class="metric-row">
+          <div class="mcard">
+            <div class="mcard-label"><span class="dot-green"></span>Match liquidity</div>
+            <div class="mcard-val">1.5%</div>
+            <div class="mcard-sub" style="color:#1D9E75;">150 matches / 10k swipes</div>
+          </div>
+          <div class="mcard">
+            <div class="mcard-label"><span class="dot-amber"></span>Gender ratio</div>
+            <div class="mcard-val">63 : 37</div>
+            <div class="mcard-sub" style="color:#BA7517;">Male-heavy — watch closely</div>
+          </div>
+          <div class="mcard">
+            <div class="mcard-label"><span class="dot-green"></span>Revenue today</div>
+            <div class="mcard-val">&#8377;84k</div>
+            <div class="mcard-sub" style="color:#1D9E75;">Boosts: 61% · Subs: 39%</div>
+          </div>
+          <div class="mcard">
+            <div class="mcard-label"><span class="dot-red"></span>Funnel drop-off</div>
+            <div class="mcard-val">31%</div>
+            <div class="mcard-sub" style="color:#E24B4A;">Drop at profile completion</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE D: Charts row -->
+      <div>
+        <div class="section-label">
+          <span class="zone-tag" style="background:#EEEDFE;color:#3C3489;">Zone D</span>
+          Charts — Revenue velocity (bar) · Gender ratio (bar) · Live feed (right column)
+        </div>
+        <div class="chart-row">
+
+          <!-- Gender Ratio -->
+          <div class="chart-card">
+            <div class="chart-title">Gender ratio — last 7 days</div>
+            <div class="chart-sub">Stacked bar chart · Male vs Female daily signups</div>
+            <div style="position:relative;height:130px;">
+              <canvas id="genderChart"></canvas>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:8px;">
+              <span
+                style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary);"><span
+                  style="width:10px;height:10px;border-radius:2px;background:#378ADD;"></span>Male</span>
+              <span
+                style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary);"><span
+                  style="width:10px;height:10px;border-radius:2px;background:#ED93B1;"></span>Female</span>
+            </div>
+          </div>
+
+          <!-- Revenue Velocity -->
+          <div class="chart-card">
+            <div class="chart-title">Revenue velocity — today</div>
+            <div class="chart-sub">Donut chart · Premium subscriptions vs Consumables</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center;">
+              <div style="position:relative;height:130px;">
+                <canvas id="revChart"></canvas>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div>
+                  <div style="font-size:10px;color:var(--color-text-tertiary);">Subscriptions</div>
+                  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);">&#8377;33k</div>
+                  <div style="height:3px;border-radius:2px;background:#534AB7;margin-top:3px;"></div>
+                </div>
+                <div>
+                  <div style="font-size:10px;color:var(--color-text-tertiary);">Boosts & Super Keens</div>
+                  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);">&#8377;51k</div>
+                  <div style="height:3px;border-radius:2px;background:#1D9E75;margin-top:3px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live Feed -->
+          <div class="chart-card">
+            <div class="chart-title">Live heartbeat feed</div>
+            <div class="chart-sub">Real-time scrolling activity ticker</div>
+            <div class="feed">
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#1D9E75;"></div>
+                <div class="feed-text">User #4821 bought a Boost</div>
+                <div class="feed-time">just now</div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#D4537E;"></div>
+                <div class="feed-text">Aisha & Rohan just matched!</div>
+                <div class="feed-time">1m ago</div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#E24B4A;"></div>
+                <div class="feed-text">User #3302 auto-blocked for spam</div>
+                <div class="feed-time">3m ago</div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#1D9E75;"></div>
+                <div class="feed-text">User #5511 bought Gold subscription</div>
+                <div class="feed-time">5m ago</div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#BA7517;"></div>
+                <div class="feed-text">User #2209 reported by 3 users</div>
+                <div class="feed-time">8m ago</div>
+              </div>
+              <div class="feed-item">
+                <div class="feed-dot" style="background:#D4537E;"></div>
+                <div class="feed-text">Priya & Arjun just matched!</div>
+                <div class="feed-time">10m ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZONE E: Bottom row -->
+      <div>
+        <div class="section-label">
+          <span class="zone-tag" style="background:#FAEEDA;color:#633806;">Zone E</span>
+          Bottom row — Funnel (pyramid) · Peak hours (heatmap grid) · Success metrics (bar list)
+        </div>
+        <div class="bottom-row">
+
+          <!-- Conversion Funnel -->
+          <div class="chart-card">
+            <div class="chart-title">Conversion funnel</div>
+            <div class="chart-sub">Pyramid / funnel chart · Onboarding drop-off</div>
+            <div class="funnel" style="margin-top:8px;">
+              <div class="funnel-step" style="width:100%;background:#378ADD;">
+                <span>App Installs</span><span>10,000</span>
+              </div>
+              <div class="funnel-step" style="width:82%;background:#5DCAA5;">
+                <span>Signups</span><span>8,200</span>
+              </div>
+              <div class="funnel-step" style="width:58%;background:#1D9E75;">
+                <span>Profile Complete</span><span>5,800</span>
+              </div>
+              <div class="funnel-step" style="width:36%;background:#BA7517;">
+                <span>First Swipe</span><span>3,600</span>
+              </div>
+              <div class="funnel-step" style="width:18%;background:#D4537E;">
+                <span>Subscribed</span><span>1,800</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Peak Swipe Hours -->
+          <div class="chart-card">
+            <div class="chart-title">Peak swipe hours</div>
+            <div class="chart-sub">Heatmap grid · Day × time slot activity</div>
+            <div style="margin-top:4px;">
+              <div style="display:flex;gap:3px;align-items:center;margin-bottom:4px;">
+                <div style="width:28px;font-size:9px;color:var(--color-text-tertiary);">Mon</div>
+                <div class="hour-grid" style="flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+                  <div class="hour-cell"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l1"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:3px;align-items:center;margin-bottom:4px;">
+                <div style="width:28px;font-size:9px;color:var(--color-text-tertiary);">Wed</div>
+                <div style="flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l2"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:3px;align-items:center;margin-bottom:4px;">
+                <div style="width:28px;font-size:9px;color:var(--color-text-tertiary);">Fri</div>
+                <div style="flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+                  <div class="hour-cell"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l2"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:3px;align-items:center;">
+                <div style="width:28px;font-size:9px;color:var(--color-text-tertiary);">Sun</div>
+                <div style="flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l3"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l1"></div>
+                  <div class="hour-cell l2"></div>
+                  <div class="hour-cell l3"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:3px;margin-top:3px;padding-left:31px;">
+                <div style="flex:1;display:grid;grid-template-columns:repeat(8,1fr);gap:3px;">
+                  <div class="hour-label">6am</div>
+                  <div class="hour-label">9am</div>
+                  <div class="hour-label">12pm</div>
+                  <div class="hour-label">3pm</div>
+                  <div class="hour-label">6pm</div>
+                  <div class="hour-label">8pm</div>
+                  <div class="hour-label">10pm</div>
+                  <div class="hour-label">12am</div>
+                </div>
+              </div>
+              <div
+                style="display:flex;align-items:center;gap:6px;margin-top:10px;font-size:10px;color:var(--color-text-tertiary);">
+                <span>Low</span>
+                <div style="display:flex;gap:2px;">
+                  <div style="width:12px;height:12px;border-radius:2px;background:#E1F5EE;"></div>
+                  <div style="width:12px;height:12px;border-radius:2px;background:#9FE1CB;"></div>
+                  <div style="width:12px;height:12px;border-radius:2px;background:#1D9E75;"></div>
+                  <div style="width:12px;height:12px;border-radius:2px;background:#085041;"></div>
+                </div>
+                <span>High</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Metrics -->
+          <div class="chart-card">
+            <div class="chart-title">Success metrics</div>
+            <div class="chart-sub">Horizontal bar list · Effectiveness rates</div>
+            <div class="success-row" style="margin-top:8px;">
+              <div class="success-item">
+                <div class="success-name" style="width:90px;flex-shrink:0;">Boost ROI</div>
+                <div class="success-bar-wrap">
+                  <div class="success-bar" style="width:90%;background:#1D9E75;"></div>
+                </div>
+                <div class="success-val">4.5x</div>
+              </div>
+              <div class="success-item">
+                <div class="success-name" style="width:90px;flex-shrink:0;">Super Keen rate</div>
+                <div class="success-bar-wrap">
+                  <div class="success-bar" style="width:45%;background:#534AB7;"></div>
+                </div>
+                <div class="success-val">45%</div>
+              </div>
+              <div class="success-item">
+                <div class="success-name" style="width:90px;flex-shrink:0;">Normal match rate</div>
+                <div class="success-bar-wrap">
+                  <div class="success-bar" style="width:3%;background:#888780;"></div>
+                </div>
+                <div class="success-val">3%</div>
+              </div>
+              <div class="success-item">
+                <div class="success-name" style="width:90px;flex-shrink:0;">4+ photo users</div>
+                <div class="success-bar-wrap">
+                  <div class="success-bar" style="width:75%;background:#D4537E;"></div>
+                </div>
+                <div class="success-val">3x matches</div>
+              </div>
+              <div class="success-item">
+                <div class="success-name" style="width:90px;flex-shrink:0;">Deep connections</div>
+                <div class="success-bar-wrap">
+                  <div class="success-bar" style="width:22%;background:#1D9E75;"></div>
+                </div>
+                <div class="success-val">22%</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script>
+    new Chart(document.getElementById('genderChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        datasets: [
+          { label: 'Male', data: [320, 290, 350, 310, 400, 480, 420], backgroundColor: '#378ADD', borderRadius: 3, stack: 'a' },
+          { label: 'Female', data: [180, 200, 160, 190, 210, 240, 200], backgroundColor: '#ED93B1', borderRadius: 3, stack: 'a' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 }, color: '#888' } },
+          y: { stacked: true, grid: { color: '#f0f0f0' }, ticks: { font: { size: 10 }, color: '#888' } }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('revChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Subscriptions', 'Boosts & Consumables'],
+        datasets: [{ data: [39, 61], backgroundColor: ['#534AB7', '#1D9E75'], borderWidth: 0, hoverOffset: 4 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '70%',
+        plugins: { legend: { display: false } }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

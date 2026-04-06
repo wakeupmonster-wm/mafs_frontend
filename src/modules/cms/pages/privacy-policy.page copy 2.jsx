@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   Loader2,
-  ReceiptText,
+  ShieldCheck,
   Save,
   Eye,
   PenLine,
@@ -13,50 +13,48 @@ import {
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchTermsAndCondition,
-  updateTermsAndCondition,
-} from "../store/t&c.slice";
+  fetchPrivacyPolicy,
+  updatePrivacyPolicy,
+} from "../store/privacy.slice";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Container } from "@/components/common/container";
-// import { termsContent } from "@/constants/term.conditions";
+import { privacyContents } from "@/constants/privacypolicy";
 import {
-  termsContentToSections,
   sectionsToFullHtml,
   fullHtmlToSections,
+  termsContentToSections,
 } from "../utils/termsDataConverter";
 import TermsSectionCard from "../components/TermsSectionCard";
 import "../styles/terms-editor.css";
 
-export default function TermAndConditionsPage() {
+export default function PrivacyAndPolicyPage() {
   const dispatch = useDispatch();
-  const { data, loading } = useSelector((state) => state.termsAndcondition);
+  const { data, loading } = useSelector((state) => state.privacypolicy);
   const [isSaving, setIsSaving] = useState(false);
 
   // ── Page title ──
-  const [pageTitle, setPageTitle] = useState("Terms & Conditions");
+  const [pageTitle, setPageTitle] = useState("Privacy Policy");
 
   // ── Section-based state ──
   const [sections, setSections] = useState([]);
   const [expandedSections, setExpandedSections] = useState(new Set());
 
   // ── View / Edit mode ──
-  const [viewMode, setViewMode] = useState("edit"); // "view" | "edit"
+  const [viewMode, setViewMode] = useState("edit");
 
-  // ── Load data from API or fallback to constants ──
+  // ── Load data from API ──
   useEffect(() => {
-    dispatch(fetchTermsAndCondition());
+    dispatch(fetchPrivacyPolicy());
   }, [dispatch]);
 
   useEffect(() => {
     if (data) {
-      setPageTitle(data.title || "Terms & Conditions");
+      setPageTitle(data.title || "Privacy Policy");
 
       if (data.description) {
-        // Try parsing backend HTML — only use it if it has our section markers
         const parsed = fullHtmlToSections(data.description);
         const hasStructuredSections =
-          parsed.length > 1 ||
-          (parsed.length === 1 && parsed[0].id !== "full-document");
+          parsed.length > 1 || (parsed.length === 1 && parsed[0].id !== "full-document");
 
         if (hasStructuredSections) {
           setSections(parsed);
@@ -65,17 +63,15 @@ export default function TermAndConditionsPage() {
       }
     }
 
-    // Fallback: convert structured JS constants to initial sections
-    // const initialSections = termsContentToSections(termsContent);
-    // setSections(initialSections);
+    // Fallback: use structured constants from privacypolicy.js
+    const initialSections = termsContentToSections(privacyContents);
+    setSections(initialSections);
   }, [data]);
 
   // ── Expand first 2 sections by default ──
   useEffect(() => {
     if (sections.length > 0 && expandedSections.size === 0) {
-      setExpandedSections(
-        new Set([sections[0]?.id, sections[1]?.id].filter(Boolean)),
-      );
+      setExpandedSections(new Set([sections[0]?.id, sections[1]?.id].filter(Boolean)));
     }
   }, [sections]);
 
@@ -92,7 +88,6 @@ export default function TermAndConditionsPage() {
     });
   }, []);
 
-  // ── Expand / Collapse All ──
   const expandAll = useCallback(() => {
     setExpandedSections(new Set(sections.map((s) => s.id)));
   }, [sections]);
@@ -104,7 +99,7 @@ export default function TermAndConditionsPage() {
   // ── Update a section ──
   const handleUpdateSection = useCallback((sectionId, updatedSection) => {
     setSections((prev) =>
-      prev.map((s) => (s.id === sectionId ? updatedSection : s)),
+      prev.map((s) => (s.id === sectionId ? updatedSection : s))
     );
     toast.success("Section updated");
   }, []);
@@ -144,12 +139,12 @@ export default function TermAndConditionsPage() {
     try {
       const fullHtml = sectionsToFullHtml(sections);
       await dispatch(
-        updateTermsAndCondition({
+        updatePrivacyPolicy({
           title: pageTitle,
           description: fullHtml,
-        }),
+        })
       ).unwrap();
-      toast.success("Terms & Conditions saved successfully");
+      toast.success("Privacy Policy saved successfully");
     } catch (error) {
       toast.error(error || "Failed to save");
     } finally {
@@ -159,8 +154,7 @@ export default function TermAndConditionsPage() {
 
   // ── Stats ──
   const sectionCount = sections.length;
-  const allExpanded =
-    expandedSections.size === sectionCount && sectionCount > 0;
+  const allExpanded = expandedSections.size === sectionCount && sectionCount > 0;
 
   return (
     <Container className="px-0">
@@ -168,10 +162,10 @@ export default function TermAndConditionsPage() {
       <header className="sticky top-0 z-20 px-6 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="w-full mx-auto py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
-            heading="Terms & Conditions"
-            icon={<ReceiptText className="w-6 h-6 text-white" />}
+            heading="Privacy & Policy"
+            icon={<ShieldCheck className="w-6 h-6 text-white" />}
             color="bg-brand-aqua"
-            subheading="Manage legal policies and user agreements."
+            subheading="Update user data protection guidelines."
           />
 
           <div className="flex items-center gap-3">
@@ -241,7 +235,7 @@ export default function TermAndConditionsPage() {
               className="tc-section-edit__title-input"
               value={pageTitle}
               onChange={(e) => setPageTitle(e.target.value)}
-              placeholder="e.g. Terms & Conditions"
+              placeholder="e.g. Privacy Policy"
             />
           </div>
         )}
@@ -277,8 +271,8 @@ export default function TermAndConditionsPage() {
             </div>
             <p className="tc-empty-state__title">No sections yet</p>
             <p className="tc-empty-state__desc">
-              Click "Add New Section" to start building your Terms & Conditions
-              document.
+              Click "Add New Section" to start building your Privacy
+              Policy document.
             </p>
             {viewMode === "edit" && (
               <button

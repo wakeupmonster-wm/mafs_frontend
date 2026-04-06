@@ -1,0 +1,449 @@
+/* ============================================================
+   Terms & Conditions — Section Editor Styles
+   ============================================================ */
+
+/* ── Section Card ─────────────────────────────────────────── */
+.tc-section-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tc-section-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.tc-section-card--editing {
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1), 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Left Accent Border ──────────────────────────────────── */
+.tc-section-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #22d3ee 0%, #06b6d4 100%);
+  border-radius: 4px 0 0 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tc-section-card:hover::before,
+.tc-section-card--editing::before {
+  opacity: 1;
+}
+
+/* ── Section Header ──────────────────────────────────────── */
+.tc-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.tc-section-header:hover {
+  background: #f8fafc;
+}
+
+.tc-section-header__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.tc-section-header__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+  color: #0891b2;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.tc-section-card:hover .tc-section-header__badge {
+  transform: scale(1.05);
+}
+
+.tc-section-header__title {
+  font-size: 15px;
+  font-weight: 650;
+  color: #0f172a;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tc-section-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.tc-section-card:hover .tc-section-header__actions {
+  opacity: 1;
+}
+
+/* ── Section Content (View Mode) ─────────────────────────── */
+.tc-section-content {
+  padding: 0 20px 20px 72px;
+  animation: tc-fadeIn 0.3s ease;
+}
+
+.tc-section-content__html {
+  font-size: 14px;
+  line-height: 1.75;
+  color: #334155;
+  word-break: break-word;
+}
+
+.tc-section-content__html p {
+  margin-bottom: 10px;
+}
+
+.tc-section-content__html ul {
+  margin: 8px 0;
+}
+
+.tc-section-content__html li {
+  margin-bottom: 6px;
+}
+
+.tc-section-content__html b,
+.tc-section-content__html strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.tc-section-content__html u {
+  text-decoration-color: #22d3ee;
+  text-underline-offset: 3px;
+}
+
+.tc-section-content__html a {
+  color: #0891b2;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Section Content (Edit Mode) ─────────────────────────── */
+.tc-section-edit {
+  padding: 0 20px 20px 20px;
+  animation: tc-fadeIn 0.3s ease;
+}
+
+.tc-section-edit__title-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #0f172a;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.tc-section-edit__title-input:focus {
+  border-color: #22d3ee;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+}
+
+.tc-section-edit__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* ── Quill Overrides (inside section editor) ─────────────── */
+.tc-quill-wrapper {
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.tc-quill-wrapper .ql-toolbar.ql-snow {
+  border: none;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.tc-quill-wrapper .ql-container.ql-snow {
+  border: none;
+  min-height: 280px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.tc-quill-wrapper .ql-editor {
+  line-height: 1.7;
+  padding: 16px 20px;
+  color: #334155;
+}
+
+.tc-quill-wrapper .ql-editor.ql-blank::before {
+  color: #94a3b8;
+  font-style: normal;
+}
+
+.tc-quill-wrapper .ql-snow .ql-tooltip {
+  z-index: 1000;
+}
+
+/* ── Action Buttons ──────────────────────────────────────── */
+.tc-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tc-action-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.tc-action-btn--edit:hover {
+  background: #ecfeff;
+  color: #0891b2;
+}
+
+.tc-action-btn--delete:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.tc-action-btn--save {
+  background: #22d3ee;
+  color: white;
+  width: auto;
+  padding: 0 16px;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  height: 36px;
+}
+
+.tc-action-btn--save:hover {
+  background: #06b6d4;
+  color: white;
+}
+
+.tc-action-btn--cancel {
+  background: #f1f5f9;
+  color: #64748b;
+  width: auto;
+  padding: 0 16px;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 10px;
+  height: 36px;
+}
+
+.tc-action-btn--cancel:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+/* ── Delete Confirmation Overlay ─────────────────────────── */
+.tc-delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: #fef2f2;
+  border-top: 1px solid #fecaca;
+  animation: tc-fadeIn 0.2s ease;
+}
+
+.tc-delete-confirm__text {
+  flex: 1;
+  font-size: 13px;
+  color: #991b1b;
+  font-weight: 500;
+}
+
+.tc-delete-confirm__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tc-delete-confirm__btn--yes {
+  background: #dc2626;
+  color: white;
+}
+
+.tc-delete-confirm__btn--yes:hover {
+  background: #b91c1c;
+}
+
+.tc-delete-confirm__btn--no {
+  background: white;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.tc-delete-confirm__btn--no:hover {
+  background: #f8fafc;
+}
+
+/* ── Add Section Button ──────────────────────────────────── */
+.tc-add-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 16px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  background: transparent;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tc-add-section:hover {
+  border-color: #22d3ee;
+  color: #0891b2;
+  background: #ecfeff50;
+}
+
+/* ── Mode Toggle ─────────────────────────────────────────── */
+.tc-mode-toggle {
+  display: inline-flex;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+}
+
+.tc-mode-toggle__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tc-mode-toggle__btn--active {
+  background: #ffffff;
+  color: #0891b2;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Section Count Badge ─────────────────────────────────── */
+.tc-stats-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0d9488;
+}
+
+/* ── Expand/Collapse Chevron ─────────────────────────────── */
+.tc-chevron {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  color: #94a3b8;
+}
+
+.tc-chevron--open {
+  transform: rotate(180deg);
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+@keyframes tc-fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+.tc-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.tc-empty-state__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ecfeff 0%, #cffafe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0891b2;
+  margin-bottom: 16px;
+}
+
+.tc-empty-state__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.tc-empty-state__desc {
+  font-size: 13px;
+  color: #64748b;
+  max-width: 320px;
+}

@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill-new";
-import "react-quill-new/dist/quill.snow.css";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Loader2, ShieldCheck, Save } from "lucide-react";
+import {
+  Loader2,
+  ShieldCheck,
+  Save,
+  Eye,
+  PenLine,
+  Plus,
+  FileText,
+  Layers,
+} from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPrivacyPolicy,
@@ -13,115 +18,151 @@ import {
 } from "../store/privacy.slice";
 import { PageHeader } from "@/components/common/headSubhead";
 import { Container } from "@/components/common/container";
+// import { privacyContents } from "@/constants/privacypolicy";
+import {
+  sectionsToFullHtml,
+  fullHtmlToSections,
+  termsContentToSections,
+} from "../utils/termsDataConverter";
+import TermsSectionCard from "../components/TermsSectionCard";
+import "../styles/terms-editor.css";
 
 export default function PrivacyAndPolicyPage() {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.privacypolicy);
-
-  // Local loading state for the specific update action
   const [isSaving, setIsSaving] = useState(false);
 
-  const [pageData, setPageData] = useState({
-    title: "",
-    description: "",
-  });
+  // ── Page title ──
+  const [pageTitle, setPageTitle] = useState("Privacy Policy");
 
-  // 1. Saare Tags/Actions enable karne ke liye "modules" ko expand karein
-  // const modules = {
-  //   toolbar: [
-  //     [{ font: [] }, { header: [1, 2, 3, 4, 5, 6, false] }], // Font family & Size
-  //     ["bold", "italic", "underline", "strike"], // Basic formatting
-  //     [{ color: [] }, { background: [] }], // Text & Highlight color
-  //     [{ script: "sub" }, { script: "super" }], // Sub/Super script
-  //     [
-  //       { header: "1" },
-  //       { header: "2" },
-  //       { header: "3" },
-  //       { paragraph: "paragraph" },
-  //       { blockquote: true },
-  //       "code-block",
-  //     ], // Headers & Blocks
-  //     [
-  //       { list: "ordered" },
-  //       { list: "bullet" },
-  //       { indent: "-1" },
-  //       { indent: "+1" },
-  //     ], // Lists & Indentation
-  //     [{ direction: "rtl" }, { align: [] }], // Text Alignment & Direction
-  //     ["link", "image", "video"], // Media
-  //     ["clean"], // Clear formatting
-  //   ],
-  // };
-  const modules = {
-    toolbar: [
-      [{ font: [] }, { header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
-      [{ script: "sub" }, { script: "super" }],
-      ["blockquote", "code-block"],
-      [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
-      [{ indent: "-1" }, { indent: "+1" }],
-      [{ direction: "rtl" }, { align: [] }],
-      ["link", "image", "video"],
-      ["clean"],
-    ],
-  };
+  // ── Section-based state ──
+  const [sections, setSections] = useState([]);
+  const [expandedSections, setExpandedSections] = useState(new Set());
 
-  // 2. Explicitly define formats (Ye ensure karta hai ki editor saare tags accept kare)
-  const formats = [
-    "font",
-    "size",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "script",
-    "header",
-    "blockquote",
-    "code-block",
-    "list",
-    "bullet",
-    "indent",
-    "check",
-    "direction",
-    "align",
-    "link",
-    "image",
-    "video",
-  ];
+  // ── View / Edit mode ──
+  const [viewMode, setViewMode] = useState("edit");
 
+  // ── Load data from API ──
   useEffect(() => {
     dispatch(fetchPrivacyPolicy());
   }, [dispatch]);
 
   useEffect(() => {
     if (data) {
-      setPageData({
-        title: data.title || "Privacy Policy",
-        description: data.description || "",
-      });
+      setPageTitle(data.title || "Privacy Policy");
+
+      if (data.description) {
+        const parsed = fullHtmlToSections(data.description);
+        const hasStructuredSections =
+          parsed.length > 1 ||
+          (parsed.length === 1 && parsed[0].id !== "full-document");
+
+        if (hasStructuredSections) {
+          setSections(parsed);
+          return;
+        }
+      }
     }
+
+    // Fallback: use structured constants from privacypolicy.js
+    // const initialSections = termsContentToSections(privacyContents);
+    // setSections(initialSections);
   }, [data]);
 
-  const handleUpdate = async () => {
-    if (!pageData.description) return toast.error("Description is required");
+  // ── Expand first 2 sections by default ──
+  useEffect(() => {
+    if (sections.length > 0 && expandedSections.size === 0) {
+      setExpandedSections(
+        new Set([sections[0]?.id, sections[1]?.id].filter(Boolean)),
+      );
+    }
+  }, [sections]);
+
+  // ── Toggle expand/collapse ──
+  const toggleExpand = useCallback((sectionId) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) {
+        next.delete(sectionId);
+      } else {
+        next.add(sectionId);
+      }
+      return next;
+    });
+  }, []);
+
+  const expandAll = useCallback(() => {
+    setExpandedSections(new Set(sections.map((s) => s.id)));
+  }, [sections]);
+
+  const collapseAll = useCallback(() => {
+    setExpandedSections(new Set());
+  }, []);
+
+  // ── Update a section ──
+  const handleUpdateSection = useCallback((sectionId, updatedSection) => {
+    setSections((prev) =>
+      prev.map((s) => (s.id === sectionId ? updatedSection : s)),
+    );
+    toast.success("Section updated");
+  }, []);
+
+  // ── Delete a section ──
+  const handleDeleteSection = useCallback((sectionId) => {
+    setSections((prev) => prev.filter((s) => s.id !== sectionId));
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      next.delete(sectionId);
+      return next;
+    });
+    toast.success("Section removed");
+  }, []);
+
+  // ── Add new section ──
+  const handleAddSection = useCallback(() => {
+    const newId = `section-${Date.now()}`;
+    const newSection = {
+      id: newId,
+      title: `${sections.length + 1}. New Section`,
+      iconName: "FileText",
+      html: "<p>Enter section content here…</p>",
+    };
+    setSections((prev) => [...prev, newSection]);
+    setExpandedSections((prev) => new Set(prev).add(newId));
+    toast.success("New section added");
+  }, [sections.length]);
+
+  // ── Save All to backend ──
+  const handleSaveAll = useCallback(async () => {
+    if (sections.length === 0) {
+      return toast.error("No sections to save");
+    }
 
     setIsSaving(true);
     try {
-      await dispatch(updatePrivacyPolicy(pageData)).unwrap();
-      toast.success("Privacy Policy updated successfully");
+      const fullHtml = sectionsToFullHtml(sections);
+      await dispatch(
+        updatePrivacyPolicy({
+          title: pageTitle,
+          description: fullHtml,
+        }),
+      ).unwrap();
+      toast.success("Privacy Policy saved successfully");
     } catch (error) {
-      toast.error(error || "Failed to update page");
+      toast.error(error || "Failed to save");
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [dispatch, pageTitle, sections]);
+
+  // ── Stats ──
+  const sectionCount = sections.length;
+  const allExpanded =
+    expandedSections.size === sectionCount && sectionCount > 0;
 
   return (
     <Container className="px-0">
-      {/* Header with Glassmorphism Effect */}
+      {/* ══════════ Sticky Header ══════════ */}
       <header className="sticky top-0 z-20 px-6 bg-white/80 backdrop-blur-md border-b border-slate-200">
         <div className="w-full mx-auto py-2 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <PageHeader
@@ -131,80 +172,124 @@ export default function PrivacyAndPolicyPage() {
             subheading="Update user data protection guidelines."
           />
 
-          <Button
-            onClick={handleUpdate}
-            disabled={isSaving}
-            // className="w-full sm:w-auto bg-brand-aqua hover:bg-brand-aqua/80 text-white px-6 h-11 rounded-lg shadow-md transition-all active:scale-95"
-            className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white gap-2 h-9 px-4 shadow-sm"
-          >
-            {isSaving ? (
-              <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
-            ) : (
-              <Save className="w-3.5 h-3.5 mr-1" />
-            )}
-            {isSaving ? "Saving..." : "Save Changes"}
-          </Button>
+          <div className="flex items-center gap-3">
+            {/* Mode Toggle */}
+            <div className="tc-mode-toggle">
+              <button
+                className={`tc-mode-toggle__btn ${viewMode === "view" ? "tc-mode-toggle__btn--active" : ""}`}
+                onClick={() => setViewMode("view")}
+              >
+                <Eye size={14} />
+                View
+              </button>
+              <button
+                className={`tc-mode-toggle__btn ${viewMode === "edit" ? "tc-mode-toggle__btn--active" : ""}`}
+                onClick={() => setViewMode("edit")}
+              >
+                <PenLine size={14} />
+                Edit
+              </button>
+            </div>
+
+            {/* Save Button */}
+            <Button
+              onClick={handleSaveAll}
+              disabled={isSaving || loading}
+              className="bg-white hover:bg-brand-aqua border border-slate-300 font-medium hover:font-semibold text-xs text-slate-500 hover:text-white gap-2 h-9 px-4 shadow-sm"
+            >
+              {isSaving ? (
+                <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" />
+              ) : (
+                <Save className="w-3.5 h-3.5 mr-1" />
+              )}
+              {isSaving ? "Saving…" : "Save Changes"}
+            </Button>
+          </div>
         </div>
       </header>
 
+      {/* ══════════ Toolbar Bar ══════════ */}
+      <div className="px-6 py-3 flex items-center justify-between border-b border-slate-100 bg-white">
+        <div className="flex items-center gap-3">
+          <span className="tc-stats-badge">
+            <Layers size={13} />
+            {sectionCount} {sectionCount === 1 ? "Section" : "Sections"}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={allExpanded ? collapseAll : expandAll}
+            className="text-xs font-semibold text-slate-500 hover:text-brand-aqua transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-50"
+          >
+            {allExpanded ? "Collapse All" : "Expand All"}
+          </button>
+        </div>
+      </div>
+
+      {/* ══════════ Main Content ══════════ */}
       <main className="p-6">
-        <Card className="overflow-hidden py-4 border-none p-0">
-          <CardContent className="px-0 space-y-8">
-            {/* Page Title Input */}
-            <div className="grid gap-2">
-              <label className="text-sm font-semibold text-slate-700 ml-1">
-                Content Editor (Advanced)
-                {/* Document Title */}
-              </label>
-              <Input
-                placeholder="e.g. User Terms of Service"
-                value={pageData.title}
-                onChange={(e) =>
-                  setPageData({ ...pageData, title: e.target.value })
-                }
-                className="h-11 bg-slate-50 border-slate-200 placeholder:text-slate-400 focus:bg-white focus:ring-[0.1px] focus-visible:ring-0 focus-visible:border-brand-aqua transition-all duration-300 text-base"
+        {/* Document Title (Edit mode only) */}
+        {viewMode === "edit" && (
+          <div className="mb-6">
+            <label className="text-sm font-semibold text-slate-700 ml-1 block mb-2">
+              Document Title
+            </label>
+            <input
+              type="text"
+              className="tc-section-edit__title-input"
+              value={pageTitle}
+              onChange={(e) => setPageTitle(e.target.value)}
+              placeholder="e.g. Privacy Policy"
+            />
+          </div>
+        )}
+
+        {/* Sections list */}
+        {sections.length > 0 ? (
+          <div className="space-y-4">
+            {sections.map((section, index) => (
+              <TermsSectionCard
+                key={section.id}
+                section={section}
+                index={index}
+                isExpanded={expandedSections.has(section.id)}
+                onToggleExpand={() => toggleExpand(section.id)}
+                onUpdate={handleUpdateSection}
+                onDelete={handleDeleteSection}
+                totalSections={sectionCount}
               />
-            </div>
+            ))}
 
-            {/* Rich Text Editor */}
-            <div className="grid gap-2">
-              <label className="text-sm font-semibold text-slate-700 ml-1">
-                Content Editor
-              </label>
-              {/* <div className="rounded-lg border border-slate-200 overflow-hidden"> */}
-              <div className="rounded-lg border border-slate-200 overflow-hidden shadow-sm">
-                {/* <style>{`
-                    .ql-container { min-height: 400px; font-size: 16px; }
-                    .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-                    .ql-container.ql-snow { border: none; }
-                  `}</style> */}
-                <style>{`
-                    .ql-container { min-height: 500px; font-size: 16px; background: white; }
-                    .ql-toolbar.ql-snow { border: none; border-bottom: 1px solid #e2e8f0; background: #f8fafc; padding: 12px; }
-                    .ql-container.ql-snow { border: none; }
-                    .ql-editor { line-height: 1.6; }
-                    /* Tooltip visibility fix */
-                    .ql-snow .ql-tooltip { z-index: 1000; }
-                    /* .ql-editor p { margin-bottom: 12px; line-height: 1.6; } */
-                    .ql-align-center { text-align: center; }
-                    .ql-align-right { text-align: right; }
-                    .ql-align-justify { text-align: justify; }
-
-                  `}</style>
-                <ReactQuill
-                  theme="snow"
-                  value={pageData.description}
-                  onChange={(val) =>
-                    setPageData({ ...pageData, description: val })
-                  }
-                  modules={modules}
-                  formats={formats} // Formats pass karna zaroori hai
-                  placeholder="Paste your Privacy Policy here and use the toolbar to align..."
-                />
-              </div>
+            {/* Add New Section (Edit mode only) */}
+            {viewMode === "edit" && (
+              <button className="tc-add-section" onClick={handleAddSection}>
+                <Plus size={18} />
+                Add New Section
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="tc-empty-state">
+            <div className="tc-empty-state__icon">
+              <FileText size={28} />
             </div>
-          </CardContent>
-        </Card>
+            <p className="tc-empty-state__title">No sections yet</p>
+            <p className="tc-empty-state__desc">
+              Click "Add New Section" to start building your Privacy Policy
+              document.
+            </p>
+            {viewMode === "edit" && (
+              <button
+                className="tc-add-section mt-6"
+                style={{ maxWidth: 320 }}
+                onClick={handleAddSection}
+              >
+                <Plus size={18} />
+                Add First Section
+              </button>
+            )}
+          </div>
+        )}
       </main>
     </Container>
   );
