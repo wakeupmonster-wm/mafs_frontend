@@ -21,8 +21,6 @@ export default function Dashboard() {
     if (!stats) dispatch(fetchDashboardKPIs());
   }, [dispatch, stats]);
 
-  
-
   const handleApply = useCallback(async () => {
     if (!selectedDate?.from) return;
     setRefreshing(true);
