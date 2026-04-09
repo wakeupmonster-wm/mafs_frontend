@@ -1,6 +1,6 @@
 import React from "react";
+import loginImg from "@/assets/web/LoginImg.webp";
 import { Outlet } from "react-router";
-import loginImg from "@/assets/web/loginImg.webp";
 
 export default function ForgotPasswordPage() {
   return (
