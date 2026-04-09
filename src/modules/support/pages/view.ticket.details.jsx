@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { PreLoader } from "@/app/loader/preloader";
+import { format } from "date-fns";
 
 // Helper for Status Styles
 const STATUS_CONFIG = {
@@ -133,10 +134,11 @@ export default function ViewTicketDetails() {
                 <p className="text-sm text-slate-500 flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   Opened on{" "}
-                  {new Date(ticket.createdAt).toLocaleString([], {
+                  {/* {new Date(ticket.createdAt).toLocaleString([], {
                     dateStyle: "medium",
                     timeStyle: "short",
-                  })}
+                  })} */}
+                  {format(new Date(ticket.createdAt), "dd MMM, yyyy p")}
                 </p>
               </div>
             </div>
@@ -169,10 +171,11 @@ export default function ViewTicketDetails() {
                     </div>
                   </div>
                   <time className="text-xs font-medium text-slate-400">
-                    {new Date(ticket.createdAt).toLocaleString([], {
+                    {/* {new Date(ticket.createdAt).toLocaleString([], {
                       dateStyle: "medium",
                       timeStyle: "short",
-                    })}
+                    })} */}
+                    {format(new Date(ticket.createdAt), "dd MMM, yyyy p")}
                   </time>
                 </div>
                 {/* Body */}
@@ -209,10 +212,11 @@ export default function ViewTicketDetails() {
                       </div>
                     </div>
                     <time className="text-xs font-medium text-slate-400">
-                      {new Date(ticket.repliedAt).toLocaleString([], {
+                      {/* {new Date(ticket.repliedAt).toLocaleString([], {
                         dateStyle: "medium",
                         timeStyle: "short",
-                      })}
+                      })} */}
+                      {format(new Date(ticket.repliedAt), "dd MMM, yyyy p")}
                     </time>
                   </div>
                   {/* Body */}
@@ -335,11 +339,12 @@ export default function ViewTicketDetails() {
                       Created Date
                     </p>
                     <p className="text-sm font-semibold text-slate-700">
-                      {new Date(ticket.createdAt).toLocaleDateString([], {
+                      {/* {new Date(ticket.createdAt).toLocaleDateString([], {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      })}
+                      })} */}
+                      {format(new Date(ticket.createdAt), "dd MMM, yyyy")}
                     </p>
                   </div>
                   <Separator className="bg-slate-100" />
@@ -348,11 +353,12 @@ export default function ViewTicketDetails() {
                       Last Updated
                     </p>
                     <p className="text-sm font-semibold text-slate-700">
-                      {new Date(ticket.updatedAt).toLocaleDateString([], {
+                      {/* {new Date(ticket.updatedAt).toLocaleDateString([], {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      })}
+                      })} */}
+                      {format(new Date(ticket.updatedAt), "dd MMM, yyyy")}
                     </p>
                   </div>
                   <Separator className="bg-slate-100" />

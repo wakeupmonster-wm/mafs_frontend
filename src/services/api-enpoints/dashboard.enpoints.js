@@ -3,4 +3,6 @@ import { BASE_URL } from "./base.url";
 
 export const DASHBOARD_ENDPOINTS = {
   DASHBOARD_KPI: `${BASE_URL}/api/v1/admin/dashboard/stats/kpi`,
+  // 🔄 Uncomment when backend is ready
+  // DASHBOARD_DATA: `${BASE_URL}/api/v1/admin/dashboard/data`,
 };

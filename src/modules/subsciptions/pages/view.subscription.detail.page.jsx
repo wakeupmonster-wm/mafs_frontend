@@ -483,7 +483,7 @@ export default function ViewSubscriptionDetailPage() {
                                   {ext.occurredAt
                                     ? format(
                                         new Date(ext.occurredAt),
-                                        "MMM dd, yyyy",
+                                        "dd MMM, yyyy",
                                       )
                                     : "—"}
                                 </span>
@@ -779,7 +779,7 @@ export default function ViewSubscriptionDetailPage() {
                               {hist.startedAt
                                 ? format(
                                     new Date(hist.startedAt),
-                                    "MMM dd, yyyy",
+                                    "dd MMM, yyyy",
                                   )
                                 : "-"}
                             </TableCell>
@@ -787,7 +787,7 @@ export default function ViewSubscriptionDetailPage() {
                               {hist.expiresAt
                                 ? format(
                                     new Date(hist.expiresAt),
-                                    "MMM dd, yyyy",
+                                    "dd MMM, yyyy",
                                   )
                                 : "-"}
                             </TableCell>
@@ -1161,7 +1161,7 @@ export default function ViewSubscriptionDetailPage() {
                   Preview
                 </p>
                 <p className="text-xs font-bold text-slate-600">
-                  Current: {format(new Date(sub.expiresAt), "MMM dd, yyyy")}
+                  Current: {format(new Date(sub.expiresAt), "dd MMM, yyyy")}
                 </p>
                 <p className="text-xs font-black text-brand-aqua">
                   New:{" "}
@@ -1170,7 +1170,7 @@ export default function ViewSubscriptionDetailPage() {
                       new Date(sub.expiresAt).getTime() +
                         (Number(extendDays) || 0) * 86400000,
                     ),
-                    "MMM dd, yyyy",
+                    "dd MMM, yyyy",
                   )}
                 </p>
               </div>

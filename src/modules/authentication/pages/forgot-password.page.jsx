@@ -1,52 +1,40 @@
-import { Sparkles } from "lucide-react";
 import React from "react";
 import { Outlet } from "react-router";
+import loginImg from "@/assets/web/loginImg.webp";
 
 export default function ForgotPasswordPage() {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 w-full h-screen">
-      {/* Left Side: Hero Section (Inspired by SaleSkip) */}
-      <div className="relative hidden lg:flex flex-col items-start justify-center p-12 xl:p-24 overflow-hidden bg-brand-aqua/90 text-white">
-        {/* Background Decorative Arcs */}
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <svg
-            className="w-full h-full"
-            viewBox="0 0 800 800"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            {/* Concentric arcs centered in the bottom-right for a dynamic look */}
-            <circle cx="810" cy="870" r="100" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="200" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="300" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="400" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="500" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="600" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="700" stroke="white" strokeWidth="1" />
-            <circle cx="810" cy="870" r="800" stroke="white" strokeWidth="1" />
-          </svg>
-        </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 w-full min-h-screen bg-white overflow-hidden">
+      {/* Left Side: Premium Hero Section (As per Reference) */}
+      <div className="hidden lg:flex flex-col p-2">
+        <div className="relative flex-1 overflow-hidden rounded-2xl shadow-2xl shadow-slate-200/50">
+          {/* Background Image Layer */}
+          <div
+            className="absolute inset-0 bg-cover transition-transform duration-700 hover:scale-105"
+            style={{
+              backgroundImage: `url(${loginImg})`,
+            }}
+          />
 
-        {/* Main Content */}
-        <div className="relative z-10 max-w-lg">
-          <div className="mb-10 animate-pulse">
-            <Sparkles className="w-16 h-16 text-white" />
+          {/* High-Fidelity Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+
+          {/* Main Content Overlay */}
+          <div className="absolute bottom-16 left-12 right-10 z-20 space-y-4">
+            <div className="space-y-2 max-w-96">
+              <h1 className="text-white text-5xl xl:text-6xl font-normal leading-[1.5] tracking-tight">
+                Welcome to <br />
+                Keen As Mustard{" "}
+                <span className="inline-block animate-wave origin-bottom text-4xl xl:text-5xl">
+                  👋
+                </span>
+              </h1>
+              <p className="text-gray-200/90 text-sm xl:text-xs font-medium leading-relaxed max-w-xs">
+                Your space to manage, monitor, and grow the platform. Everything
+                you need. All in one place.
+              </p>
+            </div>
           </div>
-          <h1 className="text-5xl xl:text-7xl font-black mb-8 leading-tight tracking-tight">
-            Hello <br />
-            Keen As Mustard!{" "}
-            <span className="inline-block animate-wave origin-bottom">👋</span>
-          </h1>
-          <p className="text-sm xl:text-md text-gray-100 leading-relaxed font-medium">
-            Skip repetitive and manual administrative tasks. Get highly
-            productive through automation and save tons of time!
-          </p>
-        </div>
-
-        {/* Section Footer */}
-        <div className="absolute bottom-12 left-12 xl:left-24 text-sm text-gray-300 font-bold">
-          © {new Date().getFullYear()} KEEN AS MUSTARD DATING APP ALL RIGHTS
-          RESERVED
         </div>
       </div>
 

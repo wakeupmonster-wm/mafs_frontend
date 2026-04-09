@@ -73,7 +73,7 @@ export default function ReportsProfilesPage() {
     if (!initialFilter) return;
 
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-    if (initialFilter === "Urgent") setStatusFilter("pending");
+    if (initialFilter === "Medium") setStatusFilter("new");
   }, [location?.state]);
 
   const columns = useMemo(() => reportColumns(navigate), [navigate]);

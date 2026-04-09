@@ -349,7 +349,7 @@ export default function ViewSubscriptionsPage() {
                           {userData?.startedAt
                             ? format(
                                 new Date(userData.startedAt),
-                                "MMM dd, yyyy",
+                                "dd MMM, yyyy",
                               )
                             : "-"}
                         </p>
@@ -363,7 +363,7 @@ export default function ViewSubscriptionsPage() {
                           {userData?.expiresAt
                             ? format(
                                 new Date(userData.expiresAt),
-                                "MMM dd, yyyy",
+                                "dd MMM, yyyy",
                               )
                             : "-"}
                         </p>

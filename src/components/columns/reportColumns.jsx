@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { AlertCircle, AlertTriangle, Eye, Info } from "lucide-react";
 import dummyImg from "@/assets/web/dummyImg.webp";
 import { IoFlagSharp } from "react-icons/io5";
+import { format } from "date-fns";
 
 export const reportColumns = (navigate) => [
   {
@@ -71,13 +72,14 @@ export const reportColumns = (navigate) => [
       const date = new Date(dateValue);
 
       return (
-        <div className="text-sm w-max">
+        <div className="text-xs w-max">
           <div className="text-slate-900 font-medium">
-            {date.toLocaleDateString("en-IN", {
+            {/* {date.toLocaleDateString("en-IN", {
               day: "numeric",
               month: "short",
               year: "numeric",
-            })}
+            })} */}
+            {format(new Date(dateValue), "dd MMM, yyyy")}
           </div>
           <div className="text-slate-500 text-xs">
             {date.toLocaleTimeString("en-IN", {

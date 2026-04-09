@@ -198,9 +198,9 @@ export default function TermsSectionCard({
           />
 
           {/* Icon badge */}
-          <div className="tc-section-header__badge">
+          {/* <div className="tc-section-header__badge">
             <IconComponent size={18} />
-          </div>
+          </div> */}
 
           {/* Title */}
           <span className="tc-section-header__title">{section.title}</span>
@@ -249,7 +249,7 @@ export default function TermsSectionCard({
       {isEditing && (
         <div className="tc-section-edit">
           {/* Icon Picker */}
-          <div className="tc-icon-picker">
+          {/* <div className="tc-icon-picker">
             <label className="tc-icon-picker__label">Select Section Icon</label>
             <div className="tc-icon-picker__grid">
               {Object.keys(ICON_MAP).map((iconKey) => {
@@ -267,7 +267,7 @@ export default function TermsSectionCard({
                 );
               })}
             </div>
-          </div>
+          </div> */}
 
           {/* Title input */}
           <input

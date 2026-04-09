@@ -26,12 +26,12 @@ const navigationData = {
       icon: IconLayoutDashboard,
       badge: null,
     },
-    {
-      title: "Analytics",
-      url: "/admin/analytics",
-      icon: IconChartLine,
-      badge: null,
-    },
+    // {
+    //   title: "Analytics",
+    //   url: "/admin/analytics",
+    //   icon: IconChartLine,
+    //   badge: null,
+    // },
   ],
   navManagement: [
     {

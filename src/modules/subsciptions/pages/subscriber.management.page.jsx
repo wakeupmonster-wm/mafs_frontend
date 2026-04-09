@@ -54,7 +54,7 @@ import { PreLoader } from "@/app/loader/preloader";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import { bgMap, colorMap } from "@/constants/colors";
 import { RiUserForbidLine } from "react-icons/ri";
-import { LuUserRoundCheck, LuUserRound } from "react-icons/lu";
+import { LuUserRoundCheck, LuUserRound, LuUserRoundCog } from "react-icons/lu";
 import { Container } from "@/components/common/container";
 
 // ─── Animation variants ───
@@ -220,6 +220,13 @@ export default function SubscriberManagementPage() {
           <div className="flex md:items-center justify-between gap-3">
             <PageHeader
               heading="Subscriber Management"
+              icon={
+                <LuUserRoundCog
+                  strokeWidth={2}
+                  className="w-9 h-9 text-white animate-pulse"
+                />
+              }
+              color="bg-brand-aqua shadow-brand-aqua/30"
               subheading="Browse, search, and manage all subscribers."
             />
             <Button

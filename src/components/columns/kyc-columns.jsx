@@ -25,6 +25,7 @@ import { IconCalendar } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { format } from "date-fns";
 
 export const getKYCColumns = (onAction, onPreview) => [
   {
@@ -193,11 +194,7 @@ export const getKYCColumns = (onAction, onPreview) => [
         <div className="flex items-center justify-center gap-2 text-gray-600 font-medium whitespace-nowrap">
           <IconCalendar className="h-4 w-4 text-slate-400" />
           <span className="text-xs">
-            {new Date(dateValue).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })}
+            {format(new Date(dateValue), "dd MMM, yyyy")}
           </span>
         </div>
       );
@@ -279,8 +276,10 @@ export const getKYCColumns = (onAction, onPreview) => [
     cell: ({ row }) => {
       const user = row.original;
       const userId = user?.userId;
-      // Status check
+
       const currentStatus = user?.verification?.status;
+
+      // Status check
       const isProcessed =
         currentStatus === "approved" || currentStatus === "rejected";
 
@@ -319,7 +318,7 @@ export const getKYCColumns = (onAction, onPreview) => [
               </DropdownMenuItem>
 
               {/* 2. APPROVE - Disable agar process ho chuka hai ya already approved hai */}
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 className={cn(
                   "cursor-pointer rounded-lg gap-2 disabled:cursor-not-allowed text-emerald-800 focus:text-emerald-600 focus:bg-emerald-50",
                   isProcessed &&
@@ -337,10 +336,23 @@ export const getKYCColumns = (onAction, onPreview) => [
                     ? "Already Approved"
                     : "Approve KYC"}
                 </span>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
+
+              {/* 2. APPROVE - Hidden if processed */}
+              {!isProcessed && (
+                <DropdownMenuItem
+                  className="cursor-pointer rounded-lg gap-2 text-emerald-800 focus:text-emerald-600 focus:bg-emerald-50"
+                  onClick={() =>
+                    onAction(user.userId, "approve", user.nickname)
+                  }
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  <span className="font-semibold text-xs">Approve KYC</span>
+                </DropdownMenuItem>
+              )}
 
               {/* 3. REJECT - Disable agar process ho chuka hai */}
-              <DropdownMenuItem
+              {/* <DropdownMenuItem
                 className={cn(
                   "cursor-pointer rounded-lg gap-2 text-red-800 focus:text-red-600 focus:bg-red-50",
                   isProcessed &&
@@ -358,7 +370,20 @@ export const getKYCColumns = (onAction, onPreview) => [
                     ? "Already Rejected"
                     : "Reject KYC"}
                 </span>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
+
+              {/* 3. REJECT - Hidden if processed */}
+              {!isProcessed && (
+                <DropdownMenuItem
+                  className="cursor-pointer rounded-lg gap-2 text-red-800 focus:text-red-600 focus:bg-red-50"
+                  onClick={() =>
+                    onAction(user.userId, "reject", "Document unclear")
+                  }
+                >
+                  <XCircle className="h-4 w-4" />
+                  <span className="font-semibold text-xs">Reject KYC</span>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

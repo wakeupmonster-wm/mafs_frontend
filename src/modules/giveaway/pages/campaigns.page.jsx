@@ -115,7 +115,7 @@ export default function CampaignsPage() {
     const dateObj = typeof date === "string" ? parseISO(date) : new Date(date);
 
     const displayDate = isValid(dateObj)
-      ? format(dateObj, "MMM dd, yyyy")
+      ? format(dateObj, "dd MMM, yyyy")
       : "Unknown Date";
 
     setConfirmDelete({

@@ -234,7 +234,7 @@ export const getSubscriberColumns = (navigate) => [
       return (
         <div className="space-y-0">
           <p className="text-[11px] font-bold text-slate-700">
-            {date ? format(new Date(date), "MMM dd, yyyy") : "-"}
+            {date ? format(new Date(date), "dd MMM, yyyy") : "-"}
           </p>
           <p className="text-[10px] text-slate-400">
             {date
@@ -264,7 +264,7 @@ export const getSubscriberColumns = (navigate) => [
               isExpired ? "text-rose-500" : "text-slate-700",
             )}
           >
-            {date ? format(new Date(date), "MMM dd, yyyy") : "-"}
+            {date ? format(new Date(date), "dd MMM, yyyy") : "-"}
           </p>
           <p className="text-[10px] text-slate-400">
             {date

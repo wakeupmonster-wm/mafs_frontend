@@ -28,6 +28,7 @@ import { SuspendUserModal } from "../components/suspendUserModal";
 import { bgMap, colorMap } from "@/constants/colors";
 import { Download, Loader2 } from "lucide-react";
 import { Container } from "@/components/common/container";
+import { LuUsersRound } from "react-icons/lu";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -258,6 +259,13 @@ export default function UserManagementPage() {
           <div className="flex md:items-center justify-between gap-4">
             <PageHeader
               heading="User Management"
+              icon={
+                <LuUsersRound
+                  strokeWidth={2}
+                  className="w-9 h-9 text-white animate-pulse"
+                />
+              }
+              color="bg-brand-aqua shadow-brand-aqua/30"
               subheading="Monitor community activity and manage member accounts."
             />
             <Button

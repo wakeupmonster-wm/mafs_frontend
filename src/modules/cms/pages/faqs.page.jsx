@@ -14,10 +14,8 @@ import {
   MessageSquareText,
   Pencil,
   Plus,
-  Search,
   Trash2,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -50,7 +48,7 @@ const containerVariants = {
 
 const FAQSPage = () => {
   const dispatch = useDispatch();
-  const { items, loading } = useSelector((state) => state.faqs);
+  const { items, categories, loading } = useSelector((state) => state.faqs);
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
 
@@ -84,33 +82,36 @@ const FAQSPage = () => {
     );
   }
 
-  const CATEGORIES = [
-    "general",
-    "account",
-    "dating",
-    "subscriptions",
-    "troubleshooting",
-    "billing",
-    "technical",
-    "security_privacy",
-    "safety_reporting",
-    "other",
-  ];
+  const CATEGORIES =
+    categories?.length > 0
+      ? categories
+      : [
+          "general",
+          "account",
+          "dating",
+          "subscriptions",
+          "troubleshooting",
+          "billing",
+          "technical",
+          "security_privacy",
+          "safety_reporting",
+          "other",
+        ];
 
-  const CATEGORY_COLORS = {
-    general: "bg-alerts-success/30 text-slate-600 border-alerts-success/80",
-    account: "bg-brand-aqua/30 text-slate-600 border-brand-aqua/80",
-    dating: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
-    subscriptions: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
-    troubleshooting:
-      "bg-alerts-warning/30 text-slate-600 border-alerts-warning/80",
-    billing: "bg-alerts-info/30 text-slate-600 border-alerts-info/80",
-    technical: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
-    security_privacy: "bg-alerts-info/30 text-slate-600 border-alerts-info/80",
-    safety_reporting:
-      "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
-    other: "bg-alerts-aqua/30 text-slate-600 border-alerts-aqua/80",
-  };
+  // const CATEGORY_COLORS = {
+  //   general: "bg-alerts-success/30 text-slate-600 border-alerts-success/80",
+  //   account: "bg-brand-aqua/30 text-slate-600 border-brand-aqua/80",
+  //   dating: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
+  //   subscriptions: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
+  //   troubleshooting:
+  //     "bg-alerts-warning/30 text-slate-600 border-alerts-warning/80",
+  //   billing: "bg-alerts-info/30 text-slate-600 border-alerts-info/80",
+  //   technical: "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
+  //   security_privacy: "bg-alerts-info/30 text-slate-600 border-alerts-info/80",
+  //   safety_reporting:
+  //     "bg-alerts-error/30 text-slate-600 border-alerts-error/80",
+  //   other: "bg-alerts-aqua/30 text-slate-600 border-alerts-aqua/80",
+  // };
 
   const formatLabel = (str) => {
     return str

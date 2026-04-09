@@ -14,12 +14,16 @@
 
 .tc-section-card:hover {
   border-color: #cbd5e1;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.04),
+    0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .tc-section-card--editing {
   border-color: #22d3ee;
-  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1), 0 8px 32px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 0 0 3px rgba(34, 211, 238, 0.1),
+    0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
 /* ── Left Accent Border ──────────────────────────────────── */
@@ -409,8 +413,14 @@
 
 /* ── Animations ──────────────────────────────────────────── */
 @keyframes tc-fadeIn {
-  from { opacity: 0; transform: translateY(-8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Empty State ─────────────────────────────────────────── */

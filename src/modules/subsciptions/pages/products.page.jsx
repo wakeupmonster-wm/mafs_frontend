@@ -52,6 +52,7 @@ import StatsGrid from "@/components/common/stats.grid";
 import { DataNotFound } from "@/modules/not-found/components/data.not-found";
 import { Container } from "@/components/common/container";
 import { bgMap, colorMap } from "@/constants/colors";
+import { GrCatalog } from "react-icons/gr";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -422,6 +423,13 @@ export default function ProductsPage() {
           <div className="flex md:items-center justify-between gap-3">
             <PageHeader
               heading="Product Catalog"
+              icon={
+                <GrCatalog
+                  strokeWidth={2}
+                  className="w-9 h-9 text-white animate-pulse"
+                />
+              }
+              color="bg-brand-aqua shadow-brand-aqua/30"
               subheading="Manage subscription plans & consumable packs."
             />
             <div className="flex gap-2">

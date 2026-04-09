@@ -3,217 +3,291 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUsers } from "@/modules/users/store/user.slice";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-
-// Deterministic bg color per initials
-const AVATAR_COLORS = [
-  "#6366f1",
-  "#0ea5e9",
-  "#f59e0b",
-  "#8b5cf6",
-  "#ef4444",
-  "#14b8a6",
-  "#ec4899",
-  "#22c55e",
-];
-
-const getInitials = (firstName = "", lastName = "") => {
-  const f = firstName.trim().charAt(0).toUpperCase();
-  const l = lastName.trim().charAt(0).toUpperCase();
-  return f || l ? `${f}${l}` : "?";
-};
-
-const getDisplayName = (firstName = "", lastName = "") => {
-  const name = `${firstName.trim()} ${lastName.trim()}`.trim();
-  return name || "Unknown";
-};
-
-const getColorByIndex = (i) => AVATAR_COLORS[i % AVATAR_COLORS.length];
+import { cn } from "@/lib/utils";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import dummyImg from "@/assets/web/dummyImg.webp";
 
 const STATUS_STYLES = {
-  active: "bg-emerald-50 text-emerald-600 border-emerald-200",
-  pending: "bg-amber-50 text-amber-600 border-amber-200",
-  banned: "bg-rose-50 text-rose-600 border-rose-200",
-  suspended: "bg-orange-50 text-orange-600 border-orange-200",
-  deactivated: "bg-slate-100 text-slate-500 border-slate-200",
+  active: {
+    bg: "bg-emerald-100 text-emerald-700 border-emerald-100/50",
+    dot: "bg-emerald-500",
+  },
+  pending: {
+    bg: "bg-amber-100 text-amber-700 border-amber-100/50",
+    dot: "bg-amber-500",
+  },
+  banned: {
+    bg: "bg-rose-100 text-rose-700 border-rose-100/50",
+    dot: "bg-rose-500",
+  },
+  suspended: {
+    bg: "bg-orange-100 text-orange-700 border-orange-100/50",
+    dot: "bg-orange-500",
+  },
+  deactivated: {
+    bg: "bg-slate-100 text-slate-600 border-slate-200/50",
+    dot: "bg-slate-400",
+  },
 };
 
-const getPlan = (user) => {
-  if (!user.subscription?.isPremium) return "Free";
-  const months = user.subscription?.durationMonths;
-  if (months === 3) return "Premium (3 Month)";
-  return "Premium (1 Month)";
+const AVATAR_COLORS = [
+  "bg-indigo-500",
+  "bg-cyan-500",
+  "bg-amber-500",
+  "bg-violet-500",
+  "bg-rose-500",
+  "bg-emerald-500",
+  "bg-pink-500",
+  "bg-blue-500",
+];
+
+const getInitials = (nickname) => {
+  return nickname?.trim().charAt(0).toUpperCase() || "?";
 };
+
+const getAvatarColor = (index) => AVATAR_COLORS[index % AVATAR_COLORS.length];
 
 export function RecentUsersTable() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { items, loading } = useSelector((state) => state.users);
 
   useEffect(() => {
-    // Only fetch if not already loaded
     if (!items || items.length === 0) {
-      dispatch(
-        fetchUsers({
-          page: 1,
-          limit: 10,
-          search: "",
-          accountStatus: "",
-          isPremium: "",
-          last24Hours: false,
-          gender: "",
-          isDeactivated: false,
-          isScheduledForDeletion: false,
-        }),
-      );
+      dispatch(fetchUsers({ page: 1, limit: 10 }));
     }
   }, [dispatch, items]);
 
-  // Take top 6 most recently joined (sorted by createdAt desc)
   const recentUsers = [...(items || [])]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 5);
+    .slice(0, 6);
 
   return (
-    <Card className="rounded-[20px] py-3.5 shadow-md bg-slate-50 border border-slate-200 flex flex-col flex-1 h-full">
-      <CardHeader className="flex flex-row items-start justify-between pb-3 pt-5 px-6">
-        <div>
-          <CardTitle className="text-[17px] font-semibold text-slate-900 tracking-tight">
+    <Card className="rounded-2xl shadow-sm bg-slate-50 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 overflow-hidden flex flex-col h-full">
+      <CardHeader className="flex flex-row items-center justify-between px-6 border-b border-slate-50 shrink-0">
+        <div className="space-y-0">
+          <CardTitle className="text-base font-bold text-slate-800">
             Recent Joined Users
           </CardTitle>
-          <p className="text-[12px] text-slate-400 mt-0.5 font-normal">
-            Latest registrations on the platform
+          <p className="text-[11px] text-slate-500 font-normal">
+            Monitor the latest member registrations
           </p>
         </div>
         <button
           onClick={() => navigate("/admin/management/users-management")}
-          className="flex items-center gap-1 text-[12px] font-semibold text-[#46C7CD] hover:text-cyan-600 transition-colors mt-1"
+          className="flex items-center gap-1.5 text-sm font-semibold text-cyan-600 hover:text-cyan-700 transition-colors"
         >
-          View all <ArrowUpRight size={14} strokeWidth={2.5} />
+          View all <ArrowUpRight size={16} />
         </button>
       </CardHeader>
 
-      <CardContent className="px-6 pb-5 flex-1 overflow-hidden">
-        {/* Table Header */}
-        <div className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)] gap-3 pb-2 border-b border-slate-200 mb-1">
-          {["Customer", "Gender", "Joined", "Plan", "Completion", "Status"].map(
-            (h) => (
-              <span
-                key={h}
-                className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider"
-              >
-                {h}
-              </span>
-            ),
-          )}
-        </div>
+      <CardContent className="p-0 flex-1 overflow-auto">
+        <div className="block bg-slate-50 overflow-hidden mx-5 rounded-xl border border-slate-200">
+          <Table>
+            <TableHeader className="bg-slate-50/50">
+              <TableRow className="hover:bg-transparent border-b border-slate-100">
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-6">
+                  Sr.No
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-6">
+                  User
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-4">
+                  Gender
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-4 whitespace-nowrap">
+                  Joined Date
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-4">
+                  Plan
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-4">
+                  Completion
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-4">
+                  Status
+                </TableHead>
+                <TableHead className="text-slate-700 font-semibold h-10 bg-slate-200/50 text-xs px-6 text-right">
+                  Actions
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                [...Array(7)].map((_, i) => (
+                  <TableRow key={i} className="animate-pulse border-slate-50">
+                    <TableCell className="px-6 py-">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-slate-100 rounded-full" />
+                        <div className="space-y-2">
+                          <div className="h-3 w-20 bg-slate-100 rounded" />
+                          <div className="h-2 w-28 bg-slate-100 rounded" />
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="px-4 py-1">
+                      <div className="h-3 w-12 bg-slate-100 rounded" />
+                    </TableCell>
+                    <TableCell className="px-4 py-1">
+                      <div className="h-3 w-16 bg-slate-100 rounded" />
+                    </TableCell>
+                    <TableCell className="px-4 py-1">
+                      <div className="h-4 w-10 bg-slate-100 rounded" />
+                    </TableCell>
+                    <TableCell className="px-4 py-1">
+                      <div className="h-2 w-20 bg-slate-100 rounded" />
+                    </TableCell>
+                    <TableCell className="px-4 py-1">
+                      <div className="h-5 w-14 bg-slate-100 rounded-full" />
+                    </TableCell>
+                    <TableCell className="px-6 py-1 text-right">
+                      <div className="h-8 w-8 bg-slate-100 rounded-lg ml-auto" />
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : recentUsers.length > 0 ? (
+                recentUsers.map((user, idx) => {
+                  const status = (user.accountStatus || "active").toLowerCase();
+                  const completion = user.profile?.totalCompletion ?? 0;
+                  const nickname = user.profile?.nickname || "unknown";
 
-        {/* Loading Skeleton */}
-        {loading && (
-          <div className="divide-y divide-slate-100">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)] gap-3 items-center py-2.5"
-              >
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-slate-200 animate-pulse shrink-0" />
-                  <div className="flex flex-col gap-1">
-                    <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
-                    <div className="h-2.5 w-20 rounded bg-slate-100 animate-pulse" />
-                  </div>
-                </div>
-                <div className="h-3 w-10 rounded bg-slate-200 animate-pulse" />
-                <div className="h-3 w-20 rounded bg-slate-200 animate-pulse" />
-                <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
-                <div className="h-3 w-12 rounded bg-slate-200 animate-pulse" />
-                <div className="h-5 w-14 rounded bg-slate-200 animate-pulse" />
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Rows */}
-        {!loading && (
-          <div className="divide-y divide-slate-100">
-            {recentUsers.map((user, i) => {
-              const firstName = user.profile?.firstName || "";
-              const lastName = user.profile?.lastName || "";
-              const email = user.account?.email || user.email || "";
-              const gender = user.profile?.gender || "-";
-              const completion = user.profile?.totalCompletion ?? 0;
-              const displayName = getDisplayName(firstName, lastName);
-              const displayEmail = email.trim() || "-";
-              const status = (user.accountStatus || "active").toLowerCase();
-              const joinedDate = user.createdAt
-                ? format(new Date(user.createdAt), "MMM dd, yyyy")
-                : "—";
-
-              return (
-                <div
-                  key={user._id || i}
-                  className="grid grid-cols-[minmax(0,1.8fr)_minmax(0,0.8fr)_minmax(0,1.2fr)_minmax(0,1.2fr)_minmax(0,1fr)_minmax(0,0.8fr)] gap-3 items-center py-2.5 hover:bg-white/70 rounded-lg px-1 transition-colors cursor-default"
-                >
-                  {/* Avatar + Name */}
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[11px] font-bold shrink-0"
-                      style={{ backgroundColor: getColorByIndex(i) }}
+                  return (
+                    <TableRow
+                      key={user._id}
+                      className="hover:bg-slate-50/50 transition-colors group border-slate-200"
                     >
-                      {getInitials(firstName, lastName)}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[13px] font-semibold text-slate-800 truncate leading-tight">
-                        {displayName}
-                      </p>
-                      <p className="text-[11px] text-slate-400 truncate leading-tight">
-                        {displayEmail}
-                      </p>
-                    </div>
-                  </div>
+                      <TableCell className="py-2 px-6">{idx + 1}</TableCell>
+                      {/* User */}
+                      <TableCell className="py-2 px-6">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8 border border-slate-100 shadow-sm">
+                            <AvatarImage
+                              src={user.photos || dummyImg}
+                              className="object-cover"
+                            />
+                            <AvatarFallback
+                              className={cn(
+                                "text-white text-xs font-bold",
+                                getAvatarColor(idx),
+                              )}
+                            >
+                              {getInitials(nickname)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col min-w-0 -space-y-1">
+                            <span className="text-xs font-bold text-slate-700 truncate">
+                              {nickname}
+                            </span>
+                            <span className="text-[10px] text-slate-400 truncate">
+                              {user.account?.email || user.email || "-"}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
 
-                  {/* Gender */}
-                  <span className="text-[12px] text-slate-500 font-medium truncate capitalize">
-                    {gender}
-                  </span>
+                      {/* Gender */}
+                      <TableCell className="py-2 px-4">
+                        <span className="text-xs text-slate-600 capitalize">
+                          {user.profile?.gender || "-"}
+                        </span>
+                      </TableCell>
 
-                  {/* Date */}
-                  <span className="text-[12px] text-slate-500 font-medium truncate">
-                    {joinedDate}
-                  </span>
+                      {/* Joined Date */}
+                      <TableCell className="py-2 px-4">
+                        <span className="text-xs text-slate-500 font-medium whitespace-nowrap">
+                          {user.createdAt
+                            ? format(new Date(user.createdAt), "dd MMM yyyy")
+                            : "-"}
+                        </span>
+                      </TableCell>
 
-                  {/* Plan */}
-                  <span className="text-[12px] text-slate-600 font-medium truncate">
-                    {getPlan(user)}
-                  </span>
+                      {/* Plan */}
+                      <TableCell className="py-2 px-4">
+                        <Badge
+                          variant="secondary"
+                          className="w-fit bg-slate-100 text-muted-foreground hover:bg-slate-200 border border-slate-200 px-2 py-0.5 text-[10px] font-bold"
+                        >
+                          {user.subscription?.isPremium ? "Premium" : "Free"}
+                        </Badge>
+                      </TableCell>
 
-                  {/* Completion */}
-                  <span className="text-[12px] text-cyan-600 font-bold truncate">
-                    {completion}%
-                  </span>
+                      {/* Completion */}
+                      <TableCell className="py-2 px-4">
+                        <div className="flex flex-col gap-1.5 min-w-[80px]">
+                          <span className="text-[11px] font-bold text-brand-aqua">
+                            {completion}%
+                          </span>
+                          <div className="h-1.5 w-full bg-slate-300/60 rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-brand-aqua rounded-full transition-all duration-500"
+                              style={{ width: `${completion}%` }}
+                            />
+                          </div>
+                        </div>
+                      </TableCell>
 
-                  {/* Status Badge */}
-                  <Badge
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md border w-fit capitalize ${STATUS_STYLES[status] || "bg-slate-100 text-slate-500 border-slate-200"}`}
-                    variant="outline"
+                      {/* Status */}
+                      <TableCell className="py-2 px-4">
+                        <Badge
+                          className={cn(
+                            "text-[11px] font-bold px-2.5 py-1 rounded-full border shadow-none flex items-center gap-1.5 w-fit uppercase whitespace-nowrap",
+                            STATUS_STYLES[status]?.bg,
+                          )}
+                        >
+                          <div
+                            className={cn(
+                              "w-1.5 h-1.5 rounded-full",
+                              STATUS_STYLES[status]?.dot,
+                            )}
+                          />
+                          {status}
+                        </Badge>
+                      </TableCell>
+
+                      {/* Actions */}
+                      <TableCell className="py-2 px-6 text-right transition-all">
+                        <button
+                          onClick={() =>
+                            navigate(
+                              "/admin/management/users-management/view-profile",
+                              {
+                                state: { userId: user._id },
+                              },
+                            )
+                          }
+                          className="p-1 px-2.5 rounded-lg text-slate-400 hover:text-cyan-600 hover:bg-cyan-50/50 transition-all border border-slate-100 hover:border-cyan-100 shadow-sm bg-white"
+                          title="View Profile"
+                        >
+                          <Eye size={15} strokeWidth={2.5} />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={7}
+                    className="py-20 text-center text-slate-400 text-sm italic"
                   >
-                    {status}
-                  </Badge>
-                </div>
-              );
-            })}
-
-            {/* Empty state */}
-            {recentUsers.length === 0 && (
-              <div className="py-10 text-center text-[13px] text-slate-400">
-                No users found.
-              </div>
-            )}
-          </div>
-        )}
+                    No new users found in this period.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

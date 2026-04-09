@@ -260,7 +260,7 @@ export const FinancialsTab = ({
                       Start Billing Date
                     </span>
                     <span className="text-sm font-bold">
-                      {format(new Date(subscription.startedAt), "MMM dd, yyyy")}
+                      {format(new Date(subscription.startedAt), "dd MMM, yyyy")}
                     </span>
                   </div>
                 )}
@@ -273,7 +273,7 @@ export const FinancialsTab = ({
                         : "Expired On"}
                     </span>
                     <span className="text-sm font-bold">
-                      {format(new Date(subscription.expiresAt), "MMM dd, yyyy")}
+                      {format(new Date(subscription.expiresAt), "dd MMM, yyyy")}
                     </span>
                   </div>
                 )}
@@ -287,7 +287,7 @@ export const FinancialsTab = ({
                 <span className="text-sm opacity-70">Member Since</span>
                 <span className="text-sm font-bold">
                   {account?.createdAt
-                    ? format(new Date(account.createdAt), "MMM dd, yyyy")
+                    ? format(new Date(account.createdAt), "dd MMM, yyyy")
                     : "N/A"}
                 </span>
               </div>

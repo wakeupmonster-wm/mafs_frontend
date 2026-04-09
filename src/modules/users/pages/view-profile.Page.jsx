@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   IconArrowLeft,
   IconCircleCheck,
-  IconMapPin,
   IconCalendar,
   IconSettings,
   IconHistory,
@@ -20,13 +19,13 @@ import { GallleryTab } from "../components/Tabs/galllery.Tab";
 import { DiscoveryTab } from "../components/Tabs/discovery.Tab";
 import { ActivityTab } from "../components/Tabs/activity.Tab";
 import { FinancialsTab } from "../components/Tabs/financials.Tab";
-import { SubscriptionTab } from "../components/Tabs/subscription.Tab";
 import { SettingsTab } from "../components/Tabs/settings.Tab";
 import { Check, Copy } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";
 import { ManageAccountDialog } from "../components/Dialogs/manage.account.dialog";
 import { AttributesTab } from "../components/Tabs/attributes.Tab";
 import { clearSelectedUser, fetchUserData } from "../store/user.slice";
+import { format } from "date-fns";
 
 export default function ViewProfilePage() {
   const navigate = useNavigate();
@@ -161,7 +160,7 @@ export default function ViewProfilePage() {
                 )}
               </div>
 
-              <div className="flex-1 space-y-1">
+              <div className="flex-1 space-y-1.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-2xl font-bold text-slate-900">
                     {profile?.nickname},{" "}
@@ -189,45 +188,51 @@ export default function ViewProfilePage() {
 
                 <div className="flex flex-wrap items-center gap-6 font-semibold text-sm text-slate-600">
                   {/* Location */}
-                  <div className="flex items-center gap-1">
+                  {/* <div className="flex items-center gap-1">
                     <IconMapPin className="h-4 w-4 text-slate-500" />
                     {userLoc?.city}, {userLoc?.country}
-                  </div>
+                  </div> */}
 
                   {/* Vertical Separator for desktop */}
                   {/* <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" /> */}
 
                   {/* Joined Date */}
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 text-xs">
                     <IconCalendar className="h-4 w-4 text-slate-400" />
-                    Joined:
-                    {new Date(account?.createdAt).toLocaleDateString(
+                    Joined:{" "}
+                    {/* {new Date(account?.createdAt).toLocaleDateString(
                       undefined,
                       {
-                        month: "short",
                         day: "numeric",
+                        month: "short",
                         year: "numeric",
                       },
-                    )}
+                    )} */}
+                    {account?.createdAt
+                      ? format(new Date(account?.createdAt), "dd MMM, yyyy")
+                      : "-"}
                   </div>
 
                   {/* Vertical Separator for desktop */}
                   {/* <span className="hidden md:block w-1 h-1 rounded-full bg-slate-300" /> */}
 
                   {/* Last Update Date - NEW FIELD */}
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 text-xs">
                     <IconHistory className="h-4 w-4 text-indigo-400" />
                     <span className="font-medium text-slate-600">Updated:</span>
-                    {lastProfileUpdate
+                    {/* {lastProfileUpdate
                       ? new Date(lastProfileUpdate).toLocaleDateString(
                           undefined,
                           {
-                            month: "short",
                             day: "numeric",
+                            month: "short",
                             year: "numeric",
                           },
                         )
-                      : "Never"}
+                      : "Never"} */}
+                    {lastProfileUpdate
+                      ? format(new Date(lastProfileUpdate), "dd MMM, yyyy")
+                      : "-"}
                   </div>
                 </div>
               </div>

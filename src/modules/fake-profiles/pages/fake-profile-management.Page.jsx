@@ -63,6 +63,7 @@ import {
 import { fakeProfileColumns } from "../components/fake-profile-columns";
 import { BulkCreateModal } from "../components/bulk-create-modal";
 import { Container } from "@/components/common/container";
+import { LuUserRoundX } from "react-icons/lu";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -267,6 +268,13 @@ export default function FakeProfileManagementPage() {
           <div className="flex md:items-center justify-between gap-3">
             <PageHeader
               heading="Fake Profile Management"
+              icon={
+                <LuUserRoundX
+                  strokeWidth={2}
+                  className="w-9 h-9 text-white animate-pulse"
+                />
+              }
+              color="bg-brand-aqua shadow-brand-aqua/30"
               subheading="Create and manage simulated member accounts."
             />
             <div className="flex gap-2">

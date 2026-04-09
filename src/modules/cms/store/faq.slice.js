@@ -13,7 +13,7 @@ export const fetchFAQs = createAsyncThunk(
     try {
       const response = await getAllFAQsAPI();
       return response.success
-        ? response.data
+        ? response
         : rejectWithValue(response.message);
     } catch (error) {
       return rejectWithValue(
@@ -74,6 +74,7 @@ const faqSlice = createSlice({
   name: "faqs",
   initialState: {
     items: [], // This will hold your "data" array
+    categories: [],
     loading: false,
     error: null,
   },
@@ -95,7 +96,8 @@ const faqSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchFAQs.fulfilled, (state, action) => {
-        state.items = action.payload; // Assuming payload is the array from your JSON
+        state.items = action.payload.data || []; 
+        state.categories = action.payload.allCategories || [];
       })
       .addCase(createFAQ.pending, (state) => {
         state.loading = true;

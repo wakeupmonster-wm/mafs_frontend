@@ -335,7 +335,7 @@
 /* Override range start and end button colors to brand teal */
 button[data-range-start="true"],
 button[data-range-end="true"] {
-  background-color: #46C7CD !important;
+  background-color: #46c7cd !important;
   color: #ffffff !important;
   border-radius: 0.375rem !important;
 }

@@ -1,92 +1,135 @@
 import React from "react";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarDateRangePicker } from "@/components/shared/date-range-picker";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import { Info } from "lucide-react";
 
 export function ChartUserDistribution() {
   const data = [
-    { name: "Free", value: 72, color: "#3b82f6" },
-    { name: "Premium (1 month)", value: 16, color: "#f472b6" },
-    { name: "Premium (3 month)", value: 12, color: "#8b5cf6" },
+    { name: "Active Users", value: 62, color: "hsl(182, 59%, 54%)" }, // Brand aqua main
+    { name: "Deactivated", value: 20, color: "hsl(160, 60%, 45%)" }, // Deep emerald
+    { name: "Deleted", value: 7, color: "hsl(200, 70%, 50%)" }, // Solid sky blue
+    { name: "Suspended", value: 9, color: "hsl(35, 92%, 55%)" }, // Solid orange
+    { name: "Banned", value: 2, color: "hsl(348, 83%, 55%)" }, // Deep red
   ];
 
+  const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const activeItem = data[activeIndex];
+
   return (
-    <Card className="rounded-[20px] shadow-md bg-slate-50 border border-slate-200 w-full h-full flex flex-col pt-5">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 pt-0 px-6 gap-2">
-        <CardTitle className="text-[17px] font-semibold text-slate-900 tracking-normal shrink-0">
-          User Type Distribution
+    <Card className="rounded-2xl shadow-sm bg-slate-50 gap-0 border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 w-full h-full flex flex-col py-5">
+      <CardHeader className="flex flex-row items-center justify-between pt-0 px-6 pb-4">
+        <CardTitle className="text-base font-bold text-primary">
+          User Distribution
         </CardTitle>
-        <CalendarDateRangePicker className="shrink-0" compact />
       </CardHeader>
 
-      <CardContent className="px-6 pb-6 flex-1 flex flex-col justify-between">
-        {/* Doughnut Chart wrapper */}
-        <div className="relative flex justify-center items-center h-[266px] mt-2 mb-4">
-          <PieChart width={240} height={240}>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={75}
-              outerRadius={105}
-              paddingAngle={2}
-              dataKey="value"
-              stroke="none"
-              cornerRadius={0}
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip
-              cursor={false}
-              content={({ active, payload }) => {
-                if (active && payload && payload.length) {
-                  return (
-                    <div className="bg-slate-900 text-white p-2 px-3 rounded-lg text-[12px] font-medium shadow-xl">
-                      {payload[0].name}: {payload[0].value}%
-                    </div>
-                  );
-                }
-                return null;
-              }}
-            />
-          </PieChart>
+      <CardContent className="flex-1 flex flex-col lg:flex-row items-center gap-4 px-6 pb-6">
+        {/* Left Side: Doughnut Chart */}
+        <div className="relative flex justify-center items-center h-[240px] w-full lg:w-7/12">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart style={{ outline: "none" }}>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={100}
+                paddingAngle={0}
+                dataKey="value"
+                stroke="white"
+                strokeWidth={0}
+                startAngle={90}
+                endAngle={-270}
+                onClick={(_, index) => setActiveIndex(index)}
+                className="cursor-pointer outline-none"
+                style={{ outline: "none" }}
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.color}
+                    opacity={activeIndex === index ? 1 : 0.8}
+                    style={{ outline: "none" }}
+                    className="transition-all duration-300 hover:opacity-100 border-none ring-0 focus-visible:ring-0 focus-visible:outline-none"
+                  />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
 
-          {/* Inner Text overlay for Doughnut */}
+          {/* Inner Text Center overlay */}
           <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-[26px] font-black text-slate-900 leading-none tracking-tight">
-              13K
+            <span className="text-[32px] font-black text-[#1e293b] leading-tight tracking-tight transition-all duration-300">
+              {activeItem.value}%
             </span>
-            <span className="text-[12px] font-medium text-slate-400 mt-1">
-              Total Users
+            <span className="text-[13px] font-semibold text-slate-500 transition-all duration-300">
+              {activeItem.name}
             </span>
           </div>
         </div>
 
-        {/* Custom Legend at the bottom mimicking the reference image */}
-        <div className="flex justify-between items-center w-full px-2">
+        {/* Right Side: Legend List with Progress Bars */}
+        <div className="flex-1 flex flex-col gap-3 w-full pl-0">
           {data.map((item, index) => (
-            <div key={index} className="flex flex-col gap-1 items-start">
-              <div className="flex items-center gap-1.5">
-                <div
-                  className="w-1.5 h-3 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                ></div>
+            <div
+              key={index}
+              className={`flex flex-col gap-1.5 cursor-pointer transition-all duration-300 ${activeIndex === index ? "opacity-100 scale-[1.02]" : "opacity-80 hover:opacity-100"}`}
+              onClick={() => setActiveIndex(index)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-2 h-2 rounded-full shadow-sm"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span
+                    className={`text-[12px] ${activeIndex === index ? "font-bold text-slate-800" : "font-medium text-slate-600"}`}
+                  >
+                    {item.name}
+                  </span>
+                </div>
                 <span
-                  className="text-[11px] font-medium text-slate-500 line-clamp-1 truncate max-w-[80px]"
-                  title={item.name}
+                  className={`text-[12px] ${activeIndex === index ? "font-bold text-slate-800" : "font-semibold text-slate-600"}`}
                 >
-                  {item.name}
+                  {item.value}%
                 </span>
               </div>
-              <span className="text-[18px] font-bold text-slate-800 ml-[12px] leading-none">
-                {item.value}%
-              </span>
+
+              {/* Progress Bar under the text */}
+              <div
+                className="w-full h-1.5 bg-slate-300 rounded-full overflow-hidden ml-[24px]"
+                style={{ width: "calc(100% - 24px)" }}
+              >
+                <div
+                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  style={{
+                    width: `${item.value}%`,
+                    backgroundColor: item.color,
+                  }}
+                />
+              </div>
             </div>
           ))}
         </div>
       </CardContent>
+
+      {/* Info Banner Footer */}
+      <CardFooter className="pt-0 pb-[23px] px-5">
+        <div className="w-full flex items-center gap-3 px-4 py-3 bg-brand-aqua/5 border border-brand-aqua/20 rounded-xl text-slate-600 text-[13px] font-medium transition-all duration-300">
+          <Info size={16} className="text-brand-aqua shrink-0" />
+          <span>
+            <strong className="text-slate-800">{activeItem.name}</strong>{" "}
+            represent {activeItem.value}% of total users
+          </span>
+        </div>
+      </CardFooter>
     </Card>
   );
 }

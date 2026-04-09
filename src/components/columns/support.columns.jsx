@@ -8,7 +8,6 @@ import {
   ArrowUpDown,
   MessageSquare,
   Trash,
-  EyeIcon,
   Eye,
 } from "lucide-react";
 import {
@@ -251,7 +250,7 @@ export const supportColumns = (onAction, onPreview) => [
           </span>
           {/* Full date underneath in a smaller, muted font */}
           <span className="text-[10px] text-muted-foreground">
-            {format(date, "MMM dd, yyyy p")} {/* e.g., Feb 09, 2026 12:15 PM */}
+            {format(date, "dd MMM, yyyy p")} {/* e.g., Feb 09, 2026 12:15 PM */}
           </span>
         </div>
       );

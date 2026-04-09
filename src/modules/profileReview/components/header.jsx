@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom"; // Use react-router-dom
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 
 export const Header = ({ p }) => {
   const areAllReportsResolved = p?.reports?.every(
@@ -36,7 +37,7 @@ export const Header = ({ p }) => {
         {/* Optional: Last updated timestamp or ID */}
         <div className="hidden md:flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
           <History className="w-3.5 h-3.5" />
-          Last Activity: {new Date().toLocaleDateString()}
+          Last Activity: {format(new Date(), "dd MMM, yyyy")}
         </div>
       </div>
 

@@ -65,6 +65,7 @@ import {
 } from "@/constants/transection.config";
 import { bgMap, colorMap } from "@/constants/colors";
 import { Container } from "@/components/common/container";
+import { TbTransactionDollar } from "react-icons/tb";
 
 // ─── Animation variants ───
 const containerVariants = {
@@ -259,6 +260,13 @@ export default function TransactionsPage() {
           <div className="flex md:items-center justify-between gap-3">
             <PageHeader
               heading="Transactions"
+              icon={
+                <TbTransactionDollar
+                  strokeWidth={2}
+                  className="w-9 h-9 text-white animate-pulse"
+                />
+              }
+              color="bg-brand-aqua shadow-brand-aqua/30"
               subheading="Revenue tracking, transaction history & export."
             />
             <div className="flex gap-2">

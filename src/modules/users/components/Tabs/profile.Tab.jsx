@@ -591,7 +591,7 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                                 <Badge
                                   variant="outline"
                                   className={cn(
-                                    "px-1 h-10 flex items-center justify-center border-none rounded-full",
+                                    "px-1 h-4 flex items-center justify-center border-none rounded-full",
                                     item.verified
                                       ? "text-sky-500"
                                       : "text-red-500",
@@ -792,13 +792,16 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                     icon={<IconCalendar size={18} />}
                     iconBg="bg-amber-50 text-amber-500"
                     label="Joined Date"
-                    value={new Date(
-                      props?.account?.createdAt,
-                    ).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    value={
+                      new Date(props?.account?.createdAt).toLocaleDateString(
+                        undefined,
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      ) || "-"
+                    }
                   />
                   <DetailRow
                     icon={<IconMapPin size={18} />}

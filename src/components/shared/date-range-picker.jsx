@@ -1,5 +1,5 @@
 import * as React from "react";
-import { subDays, format } from "date-fns";
+import { subDays, format, startOfDay, endOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -10,6 +10,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function CalendarDateRangePicker({
   className,
@@ -17,13 +24,57 @@ export function CalendarDateRangePicker({
   onDateChange,
 }) {
   const [date, setDate] = React.useState({
-    from: subDays(new Date(), 7),
-    to: new Date(),
+    from: startOfDay(new Date()),
+    to: endOfDay(new Date()),
   });
+
+  const [presetValue, setPresetValue] = React.useState("today");
 
   const handleSelect = (selected) => {
     setDate(selected);
+    setPresetValue("custom");
     if (onDateChange) onDateChange(selected);
+  };
+
+  const handlePresetSelect = (value) => {
+    setPresetValue(value);
+    const today = startOfDay(new Date());
+    const endOfToday = endOfDay(new Date());
+    let newDate;
+
+    switch (value) {
+      case "today":
+        newDate = { from: today, to: endOfToday };
+        break;
+      case "yesterday":
+        const yesterday = subDays(today, 1);
+        newDate = { from: yesterday, to: endOfDay(yesterday) };
+        break;
+      case "last3days":
+        newDate = { from: subDays(today, 3), to: endOfToday };
+        break;
+      case "last7days":
+        newDate = { from: subDays(today, 7), to: endOfToday };
+        break;
+      case "last30days":
+        newDate = { from: subDays(today, 30), to: endOfToday };
+        break;
+      default:
+        break;
+    }
+
+    if (newDate) {
+      newDate.preset =
+        value === "last3days"
+          ? "last3"
+          : value === "last7days"
+            ? "last7"
+            : value === "last30days"
+              ? "last30"
+              : value;
+      setDate(newDate);
+      if (onDateChange) onDateChange(newDate);
+    }
   };
 
   return (
@@ -34,7 +85,7 @@ export function CalendarDateRangePicker({
             id="date"
             variant={"outline"}
             className={cn(
-              "w-full justify-start text-left font-medium bg-white text-slate-600 border border-slate-200 shadow-sm hover:bg-slate-50 hover:text-slate-900 rounded-lg",
+              "w-full justify-start group text-left font-medium bg-white hover:bg-brand-aqua text-slate-500 border border-slate-200 hover:border-transparent transition-all duration-300 shadow-sm hover:text-white rounded-lg",
               compact
                 ? "w-auto h-8 text-[12px] px-2.5"
                 : "max-w-xs h-9 text-[13px]",
@@ -43,7 +94,7 @@ export function CalendarDateRangePicker({
           >
             <CalendarIcon
               className={cn(
-                "text-slate-400 shrink-0",
+                "text-slate-400 group-hover:text-white shrink-0",
                 compact ? "mr-1.5 h-3.5 w-3.5" : "mr-2 h-4 w-4",
               )}
             />
@@ -60,7 +111,30 @@ export function CalendarDateRangePicker({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 rounded-xl" align="end">
+        <PopoverContent
+          className="w-auto p-0 rounded-xl flex flex-col sm:flex-row"
+          align="end"
+        >
+          <div className="flex flex-col gap-2 p-3 border-b sm:border-b-0 sm:border-r border-slate-200 min-w-[140px]">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+              Presets
+            </span>
+            <Select value={presetValue} onValueChange={handlePresetSelect}>
+              <SelectTrigger className="w-full h-8 text-xs">
+                <SelectValue placeholder="Select preset" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="today">Today</SelectItem>
+                <SelectItem value="yesterday">Yesterday</SelectItem>
+                <SelectItem value="last3days">Last 3 Days</SelectItem>
+                <SelectItem value="last7days">Last 7 Days</SelectItem>
+                <SelectItem value="last30days">Last 30 Days</SelectItem>
+                <SelectItem value="custom" disabled className="hidden">
+                  Custom
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <Calendar
             initialFocus
             mode="range"

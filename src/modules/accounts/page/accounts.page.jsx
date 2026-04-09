@@ -3,27 +3,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { format } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AdminEditDialog from "../components/AdminEditDialog";
 import { fetchProfile, resetPasswordStatus } from "../store/account.slice";
 import {
   Calendar,
-  CheckCircle2,
   Clock,
   Edit3,
   Globe,
   Hash,
   Mail,
-  MapPin,
   Phone,
-  ShieldCheck,
   User,
 } from "lucide-react";
 import { PreLoader } from "@/app/loader/preloader";
 import SecurityCredentials from "../components/security.credentials";
 import { cn } from "@/lib/utils";
-import accountBg from "@/assets/accountbg.jpg";
+import accountBg from "@/assets/web/accountbg.webp";
 
 export default function AccountsPage() {
   const dispatch = useDispatch();
@@ -53,7 +49,7 @@ export default function AccountsPage() {
 
     return isNaN(date.getTime())
       ? "Invalid Date"
-      : format(date, "MMMM dd, yyyy - h:mm a");
+      : format(date, "dd MMM, yyyy - h:mm a");
   };
 
   const initials = account?.nickname

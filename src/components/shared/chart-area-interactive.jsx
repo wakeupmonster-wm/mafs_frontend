@@ -21,6 +21,7 @@ import { PreLoader } from "@/app/loader/preloader";
 import ErrorState from "./ErrorState";
 import { AiFillAndroid } from "react-icons/ai";
 import { IoLogoApple } from "react-icons/io5";
+import { Button } from "../ui/button";
 
 export const description = "Real-time visitor analytics";
 
@@ -38,7 +39,7 @@ const chartConfig = {
 export function ChartAreaInteractive({ kpiData, loading, error }) {
   const dispatch = useDispatch();
   const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = useState("30d");
+  const [timeRange, setTimeRange] = useState("7d");
   const [activeChart, setActiveChart] = useState("both");
 
   useEffect(() => {
@@ -114,7 +115,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
 
   if (loading) {
     return (
-      <Card className="rounded-[24px] shadow-sm bg-white border border-slate-100 flex-1">
+      <Card className="rounded-[24px] shadow-sm bg-slate-50 border border-slate-200 flex-1">
         <CardContent className="h-[400px] flex items-center justify-center">
           <PreLoader />
         </CardContent>
@@ -127,86 +128,38 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
   }
 
   return (
-    <Card className="rounded-[20px] border border-slate-200 shadow-md bg-slate-50 overflow-hidden p-2 sm:p-5 flex-1 flex flex-col h-full">
-      <CardHeader className="flex flex-row items-start justify-between pb-8 pt-2 px-4 sm:px-6">
-        <div className="flex flex-col gap-4">
-          <CardTitle className="text-[20px] font-bold text-slate-900 tracking-tight">
+    <Card className="rounded-2xl border border-slate-200 hover:border-brand-aqua/50 transition-all duration-300 shadow-sm py-5 bg-slate-50 overflow-hidden flex flex-col h-full gap-0">
+      <CardHeader className="flex flex-row items-start justify-between px-6 pb-0 tracking-tight shrink-0">
+        <div className="flex flex-col space-y-2">
+          <CardTitle className="text-base font-bold text-primary">
             Platform Visitors
           </CardTitle>
 
-          <div className="flex flex-col gap-4">
-            <button
-              onClick={() => setActiveChart("both")}
-              className={cn(
-                "flex items-center gap-2.5 outline-none transition-all duration-300 text-left",
-                activeChart !== "both"
-                  ? "opacity-40 hover:opacity-70"
-                  : "opacity-100",
-              )}
-            >
-              <div className="w-[14px] h-[14px] rounded-full bg-emerald-400 shadow-sm shadow-emerald-200"></div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-[26px] font-black text-slate-800 leading-none tracking-tight">
-                  {totalActive.toLocaleString()}
-                </span>
-                <span className="text-[16px] font-medium text-slate-500">
-                  online
-                </span>
-              </div>
-            </button>
-
-            <div className="flex gap-4">
-              <button
-                onClick={() =>
-                  setActiveChart(activeChart === "android" ? "both" : "android")
-                }
-                className={cn(
-                  "flex items-center gap-2.5 outline-none transition-all duration-300 text-left",
-                  activeChart === "ios"
-                    ? "opacity-30 hover:opacity-70"
-                    : "opacity-100",
-                )}
-              >
-                <AiFillAndroid className="w-5 h-5 mb-0.5 text-emerald-500" />
-                <div className="flex items-baseline gap-1">
-                  <span className="text-sm font-bold text-slate-700 leading-none">
-                    {currentAndroid.toLocaleString()}
-                  </span>
-                  <span className="text-[13px] font-medium text-slate-500 leading-none">
-                    visitors
-                  </span>
-                </div>
-              </button>
-
-              <button
-                onClick={() =>
-                  setActiveChart(activeChart === "ios" ? "both" : "ios")
-                }
-                className={cn(
-                  "flex items-center gap-2.5 outline-none transition-all duration-300 text-left",
-                  activeChart === "android"
-                    ? "opacity-30 hover:opacity-70"
-                    : "opacity-100",
-                )}
-              >
-                <IoLogoApple className="w-5 h-5 mb-0.5 text-blue-500" />
-                <div className="flex items-baseline gap-1">
-                  <span className="text-sm font-bold text-slate-700 leading-none">
-                    {currentIos.toLocaleString()}
-                  </span>
-                  <span className="text-[13px] font-medium text-slate-500 leading-none">
-                    visitors
-                  </span>
-                </div>
-              </button>
+          <button
+            onClick={() => setActiveChart("both")}
+            className={cn(
+              "flex items-center gap-2 outline-none transition-all duration-300 text-left",
+              activeChart !== "both"
+                ? "opacity-60 hover:opacity-100"
+                : "opacity-100",
+            )}
+          >
+            <div className="w-3 h-3 rounded-full bg-[#2dd4bf] shadow-sm shadow-teal-200/50" />
+            <div className="flex items-baseline gap-1.5 ml-0.5">
+              <span className="text-sm font-black text-slate-800 leading-none">
+                {totalActive.toLocaleString()}
+              </span>
+              <span className="text-[17px] font-medium text-slate-500">
+                online
+              </span>
             </div>
-          </div>
+          </button>
         </div>
 
-        <div className="pt-0.5 z-10">
+        <div className="z-10 mt-0.5">
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
-              className="flex w-[130px] h-9 rounded-lg border-slate-200 bg-white text-slate-700 font-medium text-[13px] shadow-sm"
+              className="flex w-[140px] h-8 rounded-lg border-slate-200 hover:border-transparent bg-white hover:bg-brand-aqua text-slate-600 hover:text-white transition-all duration-300 font-semibold text-xs shadow-sm focus:ring-0 focus:ring-offset-0"
               aria-label="Select time range"
             >
               <SelectValue placeholder="Last 30 days" />
@@ -214,19 +167,19 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
             <SelectContent className="rounded-xl border-slate-100 shadow-lg z-50">
               <SelectItem
                 value="90d"
-                className="rounded-lg text-[13px] font-medium"
+                className="rounded-lg text-[13px] font-medium py-2"
               >
                 Last 3 months
               </SelectItem>
               <SelectItem
                 value="30d"
-                className="rounded-lg text-[13px] font-medium"
+                className="rounded-lg text-[13px] font-medium py-2"
               >
                 Last 30 days
               </SelectItem>
               <SelectItem
                 value="7d"
-                className="rounded-lg text-[13px] font-medium"
+                className="rounded-lg text-[13px] font-medium py-2"
               >
                 Last 7 days
               </SelectItem>
@@ -235,28 +188,28 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
         </div>
       </CardHeader>
 
-      <CardContent className="px-0 sm:px-2 pb-2">
+      <CardContent className="flex-1 flex flex-col justify-end px-0 sm:px-2 pb-5 mt-4">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[200px] w-full"
+          className="aspect-auto h-[220px] w-full"
         >
           <AreaChart
             data={filteredData}
-            margin={{ top: 20, left: -15, right: 0, bottom: 0 }}
+            margin={{ top: 20, left: -10, right: 0, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="fillIos" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#bfdbfe" stopOpacity={0.9} />
-                <stop offset="95%" stopColor="#eff6ff" stopOpacity={0.1} />
-              </linearGradient>
               <linearGradient id="fillAndroid" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#a7f3d0" stopOpacity={0.9} />
-                <stop offset="95%" stopColor="#ecfdf5" stopOpacity={0.1} />
+                <stop offset="5%" stopColor="#2dd4bf" stopOpacity={0.6} />
+                <stop offset="95%" stopColor="#2dd4bf" stopOpacity={0.05} />
+              </linearGradient>
+              <linearGradient id="fillIos" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#0d9488" stopOpacity={0.6} />
+                <stop offset="95%" stopColor="#0d9488" stopOpacity={0.05} />
               </linearGradient>
             </defs>
             <CartesianGrid
               vertical={false}
-              stroke="#f1f5f9"
+              stroke="#e2e8f0"
               strokeDasharray="0"
             />
             <XAxis
@@ -265,7 +218,7 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
               axisLine={false}
               tickMargin={12}
               minTickGap={30}
-              tick={{ fill: "#64748b", fontSize: 12, fontWeight: 500 }}
+              tick={{ fill: "#64748b", fontSize: 13, fontWeight: 500 }}
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return date.toLocaleDateString("en-US", {
@@ -277,12 +230,16 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
             <YAxis
               tickLine={false}
               axisLine={false}
-              tickMargin={10}
-              tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 500 }}
+              tickMargin={12}
+              tick={{ fill: "#64748b", fontSize: 13, fontWeight: 500 }}
               tickFormatter={(value) => value.toLocaleString()}
             />
             <ChartTooltip
-              cursor={false}
+              cursor={{
+                stroke: "#cbd5e1",
+                strokeWidth: 1,
+                strokeDasharray: "4 4",
+              }}
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) => {
@@ -299,14 +256,14 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
             {(activeChart === "both" || activeChart === "android") && (
               <Area
                 dataKey="android"
-                type="linear"
+                type="monotone"
                 fill="url(#fillAndroid)"
-                stroke="#34d399"
-                strokeWidth={1.5}
+                stroke="#2dd4bf"
+                strokeWidth={2}
                 activeDot={{
-                  r: 5,
-                  fill: "#34d399",
-                  stroke: "#d1fae5",
+                  r: 6,
+                  fill: "#ffffff",
+                  stroke: "#2dd4bf",
                   strokeWidth: 3,
                 }}
               />
@@ -314,14 +271,14 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
             {(activeChart === "both" || activeChart === "ios") && (
               <Area
                 dataKey="ios"
-                type="linear"
+                type="monotone"
                 fill="url(#fillIos)"
-                stroke="#60a5fa"
-                strokeWidth={1.5}
+                stroke="#0d9488"
+                strokeWidth={2}
                 activeDot={{
-                  r: 5,
-                  fill: "#60a5fa",
-                  stroke: "#e0f2fe",
+                  r: 6,
+                  fill: "#ffffff",
+                  stroke: "#0d9488",
                   strokeWidth: 3,
                 }}
               />
@@ -329,33 +286,44 @@ export function ChartAreaInteractive({ kpiData, loading, error }) {
           </AreaChart>
         </ChartContainer>
 
-        <div className="flex px-4 sm:px-12 mt-4 items-center gap-6">
-          <div
+        <div className="flex w-full mt-6 items-center justify-center gap-4 px-4 relative z-10">
+          <Button
             className={cn(
-              "flex items-center gap-2 cursor-pointer transition-opacity duration-300",
-              activeChart === "ios" ? "opacity-40" : "opacity-100",
+              "flex items-center gap-2 cursor-pointer bg-teal-100/50 hover:bg-teal-200/50 shadow-sm px-4 py-2 rounded-xl transition-all duration-300 border border-teal-200",
+              activeChart === "ios" ? "opacity-50" : "opacity-100",
             )}
             onClick={() =>
               setActiveChart(activeChart === "android" ? "both" : "android")
             }
           >
-            <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
-            <span className="text-[14px] font-medium text-slate-800">
-              Android
-            </span>
-          </div>
-          <div
+            <AiFillAndroid className="w-5 h-5 text-[#02baab]" />
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[15px] font-bold text-slate-800">
+                {currentAndroid.toLocaleString()}
+              </span>
+              <span className="text-sm font-medium text-slate-600">
+                Android
+              </span>
+            </div>
+          </Button>
+
+          <Button
             className={cn(
-              "flex items-center gap-2 cursor-pointer transition-opacity duration-300",
-              activeChart === "android" ? "opacity-40" : "opacity-100",
+              "flex items-center gap-2 cursor-pointer bg-slate-100 hover:bg-slate-200/50 shadow-sm px-4 py-2 rounded-lg transition-all duration-300 border border-slate-300",
+              activeChart === "android" ? "opacity-50" : "opacity-100",
             )}
             onClick={() =>
               setActiveChart(activeChart === "ios" ? "both" : "ios")
             }
           >
-            <div className="w-3 h-3 rounded-full bg-black"></div>
-            <span className="text-[14px] font-medium text-slate-800">IOS</span>
-          </div>
+            <IoLogoApple className="w-[18px] h-[18px] mb-0.5 text-black" />
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-[15px] font-bold text-slate-800">
+                {currentIos.toLocaleString()}
+              </span>
+              <span className="text-sm font-medium text-slate-600">IOS</span>
+            </div>
+          </Button>
         </div>
       </CardContent>
     </Card>
