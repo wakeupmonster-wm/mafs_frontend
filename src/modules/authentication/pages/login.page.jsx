@@ -1,5 +1,5 @@
+import loginImg from "@/assets/web/LoginImg.webp";
 import { LoginForm } from "../components/login-form";
-import loginImg from "@/assets/web/loginImg.webp";
 
 export default function LoginPage() {
   return (
