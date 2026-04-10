@@ -264,8 +264,8 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                         }}
                       >
                         <TileLayer
-                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                          attribution='Tiles &copy; StatelliteMap'
                         />
                         <Marker position={[userLatitude, userLongitude]}>
                           <Popup>
@@ -318,8 +318,8 @@ export const ProfileTab = ({ userData: initialUserData, ...props }) => {
                               style={{ height: "100%", width: "100%" }}
                             >
                               <TileLayer
-                                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                                attribution='Tiles &copy; StatelliteMap'
                               />
                               <Marker position={[userLatitude, userLongitude]}>
                                 <Popup>
