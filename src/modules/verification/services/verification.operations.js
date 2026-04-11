@@ -1,4 +1,4 @@
-import { USERENDPOINTS } from "@/services/api-enpoints/users-management.endpoints";
+import { USERENDPOINTS } from "@/services/api-endpoints/users-management.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const getAllPendingVerificationsApi = async (
@@ -6,7 +6,7 @@ export const getAllPendingVerificationsApi = async (
   limit,
   search,
   status,
-  sortBy
+  sortBy,
 ) => {
   const queryParams = {
     page,
@@ -22,7 +22,7 @@ export const getAllPendingVerificationsApi = async (
       USERENDPOINTS.GET_PENDING_KYC,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {

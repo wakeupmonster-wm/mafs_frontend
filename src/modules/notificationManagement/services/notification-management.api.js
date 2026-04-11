@@ -1,4 +1,4 @@
-import { NOTIFY_ENDPOINTS } from "@/services/api-enpoints/notify.endpoints";
+import { NOTIFY_ENDPOINTS } from "@/services/api-endpoints/notify.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 /**

@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import { SUPPORT_ENDPOINTS } from "@/services/api-enpoints/support.endpoints";
+import { SUPPORT_ENDPOINTS } from "@/services/api-endpoints/support.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 /**
@@ -29,7 +29,7 @@ export const getMyTicketsApi = async (page, limit, search, status) => {
       SUPPORT_ENDPOINTS.MY_TICKETS,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -48,7 +48,7 @@ export const getMyTicketByIdApi = (ticketId) => {
  * Admin action to respond to a user ticket
  */
 export const replyToTicketApi = (payload) => {
-    console.log("=== API CALL DEBUG ===");
+  console.log("=== API CALL DEBUG ===");
   console.log("payload:", payload);
   return apiConnector("POST", SUPPORT_ENDPOINTS.ADMIN_REPLY, payload);
 };

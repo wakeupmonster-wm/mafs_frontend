@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-catch */
-import { GIVEAWAYS_ENDPOINTS } from "@/services/api-enpoints/giveaway.endpoints";
+import { GIVEAWAYS_ENDPOINTS } from "@/services/api-endpoints/giveaway.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 /* ===== PRIZE MANAGEMENT ===== */
@@ -22,7 +22,7 @@ export const getAllPrizesApi = async (page, limit, search, type) => {
       GIVEAWAYS_ENDPOINTS.GET_PRIZES,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -53,7 +53,7 @@ export const getAllCampaignsApi = async (page, limit, search, drawStatus) => {
       GIVEAWAYS_ENDPOINTS.GET_CAMPAIGNS,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -65,7 +65,7 @@ export const getAllParticipantsAPI = async (
   campaignId,
   page,
   limit,
-  search
+  search,
 ) => {
   const queryParams = {
     page,
@@ -79,7 +79,7 @@ export const getAllParticipantsAPI = async (
       GIVEAWAYS_ENDPOINTS.GET_PARTICIPANTS(campaignId),
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -99,7 +99,7 @@ export const updateCampaignApi = (id, data) => {
   return apiConnector(
     "PATCH",
     GIVEAWAYS_ENDPOINTS.PATCH_CAMPAIGN_BY_ID(id),
-    data
+    data,
   );
 };
 
@@ -107,7 +107,7 @@ export const deleteCampaignApi = (id) => {
   return apiConnector(
     "DELETE",
     GIVEAWAYS_ENDPOINTS.DELETE_CAMPAIGN_BY_ID(id),
-    {}
+    {},
   );
 };
 
@@ -141,7 +141,7 @@ export const getWinnerApi = async (page, limit, search, status) => {
       GIVEAWAYS_ENDPOINTS.CAMPAIGN_WINNER,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -157,7 +157,7 @@ export const getPendingDeliveriesApi = async (
   page,
   limit,
   search,
-  deliveryStatus
+  deliveryStatus,
 ) => {
   const queryParams = {
     page,
@@ -172,7 +172,7 @@ export const getPendingDeliveriesApi = async (
       GIVEAWAYS_ENDPOINTS.PENDING_DELIVERIES,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {

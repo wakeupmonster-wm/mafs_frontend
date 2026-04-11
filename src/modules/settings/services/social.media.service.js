@@ -1,4 +1,4 @@
-import { SOCIAL_ENDPOINTS } from "@/services/api-enpoints/settings.endpoints";
+import { SOCIAL_ENDPOINTS } from "@/services/api-endpoints/settings.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const getSocialMediaApi = () => {

@@ -1,4 +1,4 @@
-import { CMS_ENDPOINTS } from "@/services/api-enpoints/cms.endpoints";
+import { CMS_ENDPOINTS } from "@/services/api-endpoints/cms.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const getAllFAQsAPI = async () => {

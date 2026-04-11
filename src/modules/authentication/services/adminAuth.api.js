@@ -1,6 +1,6 @@
 // src/services/adminAuth.api.js
 import { apiConnector } from "@/services/axios/axios.connector";
-import { AUTHENDPOINTS } from "@/services/api-enpoints/auth.endpoints";
+import { AUTHENDPOINTS } from "@/services/api-endpoints/auth.endpoints";
 
 /*================= ADMIN LOGIN API OPERATION =====================*/
 export const adminLoginAPI = (data) => {

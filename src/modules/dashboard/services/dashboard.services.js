@@ -1,4 +1,4 @@
-import { DASHBOARD_ENDPOINTS } from "@/services/api-enpoints/dashboard.enpoints";
+import { DASHBOARD_ENDPOINTS } from "@/services/api-endpoints/dashboard.enpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const dashboardKPIAPI = () => {

@@ -5,7 +5,7 @@ Yeh document backend team ke liye hai taaki frontend ki **Dashboard Insights API
 Backend ko same JSON structure return karna hai taaki frontend perfectly chal sake bina API structure change kare.
 
 ## 📌 Endpoint Details
-- **Route:** `GET /api/v1/admin/dashboard/data` (Ya jo bhi backend team decide kare, isko `src/services/api-enpoints/dashboard.enpoints.js` me change kr sakte hain baad me)
+- **Route:** `GET /api/v1/admin/dashboard/data` (Ya jo bhi backend team decide kare, isko `src/services/api-endpoints/dashboard.enpoints.js` me change kr sakte hain baad me)
 - **Method:** `GET`
 
 ### 1️⃣ Request Query Parameters (Frontend kya bhejega?)

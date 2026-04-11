@@ -1,4 +1,4 @@
-import { CMS_ENDPOINTS } from "@/services/api-enpoints/cms.endpoints";
+import { CMS_ENDPOINTS } from "@/services/api-endpoints/cms.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 // GET the single Terms And Condition API
@@ -11,6 +11,6 @@ export const updateTermsAndConditionAPI = async (payload) => {
   return apiConnector(
     "POST",
     CMS_ENDPOINTS.TERMSCON_ENDPOINTS.UPDATE_TERMS_CON,
-    payload
+    payload,
   );
 };

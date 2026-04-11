@@ -1,4 +1,4 @@
-import { PROFILE_ENDPOINTS } from "@/services/api-enpoints/profiles.endpoints";
+import { PROFILE_ENDPOINTS } from "@/services/api-endpoints/profiles.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const getReportedProfilesApi = async (page, limit, search, status) => {
@@ -15,7 +15,7 @@ export const getReportedProfilesApi = async (page, limit, search, status) => {
       PROFILE_ENDPOINTS.PROFILE.REPORTED,
       null,
       {},
-      queryParams
+      queryParams,
     );
     return response;
   } catch (error) {
@@ -32,6 +32,6 @@ export const updateProfileStatusApi = (userId, payload) => {
   return apiConnector(
     "PUT",
     PROFILE_ENDPOINTS.PROFILE.UPDATE_STATUS(userId),
-    payload
+    payload,
   );
 };

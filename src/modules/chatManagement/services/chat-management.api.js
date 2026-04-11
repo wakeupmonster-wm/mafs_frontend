@@ -1,4 +1,4 @@
-import { CHAT_ENDPOINTS } from "@/services/api-enpoints/chat.endpoints";
+import { CHAT_ENDPOINTS } from "@/services/api-endpoints/chat.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 /** Fetch all reported chats currently in the moderation queue */
@@ -9,13 +9,13 @@ export const getReportedChatsApi = () => {
 /** Fetch messages of a specific match for review. Pagination is added via query params. */
 export const getChatMessagesForReviewApi = (
   matchId,
-  params = { limit: 50, page: 1 }
+  params = { limit: 50, page: 1 },
 ) => {
   return apiConnector(
     "GET",
     CHAT_ENDPOINTS.CHAT_MESSAGES(matchId),
     null,
-    params
+    params,
   );
 };
 

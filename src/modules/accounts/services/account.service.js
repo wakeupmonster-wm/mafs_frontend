@@ -1,4 +1,4 @@
-import { ACCOUNTENDPOINTS } from "@/services/api-enpoints/auth.endpoints";
+import { ACCOUNTENDPOINTS } from "@/services/api-endpoints/auth.endpoints";
 import { apiConnector } from "@/services/axios/axios.connector";
 
 export const getAdminAccountAPI = () => {

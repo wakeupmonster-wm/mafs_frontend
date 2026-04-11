@@ -1,5 +1,5 @@
 import { apiConnector } from "@/services/axios/axios.connector";
-import { FAKE_PROFILE_ENDPOINTS } from "@/services/api-enpoints/fake-profiles.endpoints";
+import { FAKE_PROFILE_ENDPOINTS } from "@/services/api-endpoints/fake-profiles.endpoints";
 
 /**
  * GET /fake-profiles — List all with pagination, sorting, filters
@@ -12,7 +12,7 @@ export const getFakeProfilesApi = async (params = {}) => {
       FAKE_PROFILE_ENDPOINTS.LIST_ALL,
       null,
       null,
-      params
+      params,
     );
     return response;
   } catch (error) {
@@ -29,7 +29,7 @@ export const bulkCreateFakeProfilesApi = async (payload) => {
     const response = await apiConnector(
       "POST",
       FAKE_PROFILE_ENDPOINTS.BULK_CREATE,
-      payload
+      payload,
     );
     return response;
   } catch (error) {
@@ -45,7 +45,7 @@ export const toggleFakeProfileStatusApi = async (id) => {
   try {
     const response = await apiConnector(
       "PATCH",
-      FAKE_PROFILE_ENDPOINTS.TOGGLE_STATUS(id)
+      FAKE_PROFILE_ENDPOINTS.TOGGLE_STATUS(id),
     );
     return response;
   } catch (error) {
@@ -61,7 +61,7 @@ export const deleteFakeProfileApi = async (id) => {
   try {
     const response = await apiConnector(
       "DELETE",
-      FAKE_PROFILE_ENDPOINTS.DELETE_SINGLE(id)
+      FAKE_PROFILE_ENDPOINTS.DELETE_SINGLE(id),
     );
     return response;
   } catch (error) {

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -13,7 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ArrowLeft, Loader2, Trash2, ShieldAlert, UserX, Snowflake,
+  ArrowLeft,
+  Loader2,
+  Trash2,
+  ShieldAlert,
+  UserX,
+  Snowflake,
 } from "lucide-react";
 import {
   fetchChatMessagesForReview,
@@ -27,9 +31,14 @@ import {
 
 export default function ChatReviewDetail({ matchId }) {
   const dispatch = useDispatch();
-  const { selected, history, selectedMessageIds, loading, error, successMessage } = useSelector(
-    (s) => s.chatManagement || {}
-  );
+  const {
+    selected,
+    history,
+    selectedMessageIds,
+    loading,
+    error,
+    successMessage,
+  } = useSelector((s) => s.chatManagement || {});
 
   const [action, setAction] = useState("delete_message");
   const [reason, setReason] = useState("");
@@ -92,7 +101,9 @@ export default function ChatReviewDetail({ matchId }) {
     return (
       <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-8">
         <div className="max-w-3xl mx-auto">
-          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">{error}</div>
+          <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+            {error}
+          </div>
         </div>
       </div>
     );
@@ -114,14 +125,23 @@ export default function ChatReviewDetail({ matchId }) {
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center gap-3">
-          <Button variant="outline" size="icon" asChild className="bg-transparent">
+          <Button
+            variant="outline"
+            size="icon"
+            asChild
+            className="bg-transparent"
+          >
             <a href="/admin/management/chat">
               <ArrowLeft className="w-4 h-4" />
             </a>
           </Button>
           <div>
-            <h1 className="text-xl md:text-2xl font-semibold text-gray-900">Chat Review</h1>
-            <p className="text-sm text-gray-500">Match: {selected.matchId || matchId}</p>
+            <h1 className="text-xl md:text-2xl font-semibold text-gray-900">
+              Chat Review
+            </h1>
+            <p className="text-sm text-gray-500">
+              Match: {selected.matchId || matchId}
+            </p>
           </div>
         </div>
 
@@ -130,12 +150,22 @@ export default function ChatReviewDetail({ matchId }) {
           <div className="lg:col-span-2 space-y-4">
             <Card className="border-0 shadow-sm overflow-hidden">
               <div className="p-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                <div className="text-sm text-gray-600">Messages ({messages.length})</div>
+                <div className="text-sm text-gray-600">
+                  Messages ({messages.length})
+                </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={() => dispatch(selectAllMessages())}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => dispatch(selectAllMessages())}
+                  >
                     Select All
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => dispatch(clearSelection())}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => dispatch(clearSelection())}
+                  >
                     Clear
                   </Button>
                 </div>
@@ -143,7 +173,10 @@ export default function ChatReviewDetail({ matchId }) {
 
               <div className="p-4 space-y-2 max-h-[70vh] overflow-y-auto bg-white">
                 {messages.map((m) => (
-                  <div key={m.id} className="flex items-start gap-3 p-2 border border-gray-100 rounded-lg">
+                  <div
+                    key={m.id}
+                    className="flex items-start gap-3 p-2 border border-gray-100 rounded-lg"
+                  >
                     <input
                       type="checkbox"
                       className="mt-1"
@@ -160,7 +193,9 @@ export default function ChatReviewDetail({ matchId }) {
                           <Badge variant="destructive">Flagged</Badge>
                         )}
                       </div>
-                      <div className="text-sm text-gray-800 whitespace-pre-wrap mt-1">{m.text || (m.media?.length ? "[media]" : "")}</div>
+                      <div className="text-sm text-gray-800 whitespace-pre-wrap mt-1">
+                        {m.text || (m.media?.length ? "[media]" : "")}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -168,15 +203,22 @@ export default function ChatReviewDetail({ matchId }) {
             </Card>
 
             <Card className="border-0 shadow-sm overflow-hidden">
-              <div className="p-4 bg-gray-50 border-b border-gray-100">Action History</div>
+              <div className="p-4 bg-gray-50 border-b border-gray-100">
+                Action History
+              </div>
               <div className="p-4 space-y-2">
                 {(history || []).length === 0 && (
                   <p className="text-sm text-gray-500">No actions yet</p>
                 )}
                 {history?.map((h, idx) => (
-                  <div key={idx} className="p-3 border border-gray-100 rounded-lg">
+                  <div
+                    key={idx}
+                    className="p-3 border border-gray-100 rounded-lg"
+                  >
                     <div className="text-sm text-gray-800">{h.resolution}</div>
-                    <div className="text-xs text-gray-500 mt-1">{new Date(h.resolvedAt).toLocaleString()}</div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {new Date(h.resolvedAt).toLocaleString()}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -187,10 +229,14 @@ export default function ChatReviewDetail({ matchId }) {
           <div className="lg:col-span-1">
             <div className="lg:sticky lg:top-6 space-y-4">
               <Card className="border-0 shadow-sm overflow-hidden">
-                <div className="p-4 bg-gray-50 border-b border-gray-100">Take Action</div>
+                <div className="p-4 bg-gray-50 border-b border-gray-100">
+                  Take Action
+                </div>
                 <form onSubmit={onSubmit} className="p-4 space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Action</label>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                      Action
+                    </label>
                     <Select value={action} onValueChange={setAction}>
                       <SelectTrigger>
                         <SelectValue />
@@ -222,14 +268,18 @@ export default function ChatReviewDetail({ matchId }) {
 
                   {(action === "warn_user" || action === "block_user") && (
                     <div>
-                      <label className="text-sm font-medium text-gray-700 mb-1 block">User</label>
+                      <label className="text-sm font-medium text-gray-700 mb-1 block">
+                        User
+                      </label>
                       <Select value={userId} onValueChange={setUserId}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select user" />
                         </SelectTrigger>
                         <SelectContent>
                           {participants.map((u) => (
-                            <SelectItem key={u} value={u}>{u}</SelectItem>
+                            <SelectItem key={u} value={u}>
+                              {u}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
@@ -237,7 +287,9 @@ export default function ChatReviewDetail({ matchId }) {
                   )}
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-1 block">Reason</label>
+                    <label className="text-sm font-medium text-gray-700 mb-1 block">
+                      Reason
+                    </label>
                     <Textarea
                       value={reason}
                       onChange={(e) => setReason(e.target.value)}
@@ -267,10 +319,14 @@ export default function ChatReviewDetail({ matchId }) {
               </Card>
 
               <Card className="border-0 shadow-sm overflow-hidden">
-                <div className="p-4 bg-gray-50 border-b border-gray-100">Participants</div>
+                <div className="p-4 bg-gray-50 border-b border-gray-100">
+                  Participants
+                </div>
                 <div className="p-4 space-y-2">
                   {participants.map((u) => (
-                    <div key={u} className="text-sm text-gray-800">{u}</div>
+                    <div key={u} className="text-sm text-gray-800">
+                      {u}
+                    </div>
                   ))}
                 </div>
               </Card>
